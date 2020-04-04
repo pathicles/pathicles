@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "@pathicles/vue",
+  "version": "0.1.0",
+  "main": "dist/pathicles-vue.ssr.js",
+  "module": "dist/pathicles-vue.esm.js",
+  "scripts": {
+    "build": "vue-cli-service build",
+    "build:screenshots": "babel-node tools/screenshots.js -- --port $npm_package_config_devPort",
+    "dev": "vue-cli-service serve --port $npm_package_config_devPort",
+    "lint": "eslint --fix src"
+  },
+  "config": {
+    "devPort": 9301
+  },
+  "dependencies": {
+    "@pathicles/config": "^0.1.0",
+    "@pathicles/core": "^0.1.0",
+    "@pathicles/viewer": "^0.1.0",
+    "js-binary": "^1.2.0"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^4.2.3",
+    "binary-loader": "^0.0.1"
+  },
+  "browserslist": [
+    "last 1 chrome version"
+  ],
+  "unpkg": "dist/pathicles-vue.min.js"
+}

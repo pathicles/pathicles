@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "@pathicles/config",
+  "version": "0.1.0",
+  "module": "dist/pathicles-config.esm.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "eslint --fix src",
+    "prepare": "yarn build",
+    "test": "jest"
+  },
+  "dependencies": {
+    "nanomerge": "^0.2.0"
+  }
+}

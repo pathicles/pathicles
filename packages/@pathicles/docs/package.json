@@ -1,0 +1,20 @@
+{
+  "name": "@pathicles/docs",
+  "version": "0.137.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vuepress dev src --temp .temp/dev",
+    "build": "vuepress --debug build src --temp .temp/build",
+    "serve": "ws --http2  --port 8899  --compress --key ./../../.secret-local/localhost.key.pem --cert ./../../.secret-local/localhost.cert.pem --directory ./../../_build/docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@jerrobs/vuepress-plugin-bibliography": "^0.137.0",
+    "@vuepress/theme-default": "^1.0.2",
+    "vuepress": "^1.0.2"
+  }
+}

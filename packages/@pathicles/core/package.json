@@ -1,0 +1,47 @@
+{
+  "private": true,
+  "name": "@pathicles/core",
+  "version": "0.1.0",
+  "module": "dist/pathicles-core.esm.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "eslint --fix src",
+    "test:unit": "jest"
+  },
+  "config": {
+    "devPort": 9002
+  },
+  "dependencies": {
+    "angle-normals": "^1.0.0",
+    "debug": "^4.1.1",
+    "defaults": "^1.0.3",
+    "detect-it": "^3.0.5",
+    "eases": "^1.0.8",
+    "easyimage": "^3.1.1",
+    "event-emitter": "^0.3.5",
+    "gl-mat4": "^1.2.0",
+    "gl-matrix": "^3.0.0",
+    "gl-vec2": "^1.3.0",
+    "gl-vec3": "^1.1.3",
+    "gl-vec4": "^1.0.1",
+    "glsl-diffuse-lambert": "^1.0.0",
+    "glsl-fxaa": "^3.0.0",
+    "glsl-hemisphere-light": "^0.0.0",
+    "glsl-inverse": "^1.0.0",
+    "glsl-look-at": "^1.0.0",
+    "glsl-noise": "0.0.0",
+    "glsl-random": "0.0.5",
+    "glsl-specular-phong": "^1.0.0",
+    "glsl-transpose": "^1.0.0",
+    "inertial-turntable-camera": "^2.0.4",
+    "mouse-change": "^1.4.0",
+    "mouse-event-offset": "^3.0.2",
+    "norm.js": "^0.1.3",
+    "normals": "^1.1.0",
+    "nurbs": "^1.1.0",
+    "primitive-cube": "^2.0.1",
+    "regl": "^1.3.11",
+    "regl-camera": "^2.1.1"
+  }
+}
