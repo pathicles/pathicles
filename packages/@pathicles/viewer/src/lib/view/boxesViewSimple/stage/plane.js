@@ -1,27 +1,21 @@
-// 3x3 plane:
-//
-//  0   1   2   3
-//  4   5   6   7
-//  8   9  10  11
-// 12  13  14  15
 export function createPlane(sx, sy, nx, ny, options) {
   sx = sx || 1
   sy = sy || 1
   nx = nx || 1
   ny = ny || 1
-  var quads = options && options.quads ? options.quads : false
+  const quads = options && options.quads ? options.quads : false
 
-  var positions = []
-  var uvs = []
-  var normals = []
-  var cells = []
+  const positions = []
+  const uvs = []
+  const normals = []
+  const cells = []
 
-  for (var iy = 0; iy <= ny; iy++) {
-    for (var ix = 0; ix <= nx; ix++) {
-      var u = ix / nx
-      var v = iy / ny
-      var x = -sx / 2 + u * sx // starts on the left
-      var y = sy / 2 - v * sy // starts at the top
+  for (let iy = 0; iy <= ny; iy++) {
+    for (let ix = 0; ix <= nx; ix++) {
+      const u = ix / nx
+      const v = iy / ny
+      const x = -sx / 2 + u * sx // starts on the left
+      const y = sy / 2 - v * sy // starts at the top
       positions.push([x, 0, y])
       uvs.push([u, 1.0 - v])
       normals.push([0, 0, 1])
@@ -48,7 +42,6 @@ export function createPlane(sx, sy, nx, ny, options) {
       }
     }
   }
-
   return {
     positions: positions,
     normals: normals,

@@ -22,13 +22,15 @@ export class ReglViewerInstance {
       pixelRatio,
       extensions: [
         'angle_instanced_arrays',
-        'oes_texture_float'
+        'oes_texture_float',
+        'OES_standard_derivatives'
       ],
 
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
           this.regl = regl
+
           this.init(regl)
           this.run(regl)
         } catch (e) {
@@ -44,6 +46,9 @@ export class ReglViewerInstance {
 
   init(regl) {
     this.regl._commands = []
+
+
+
 
     this.initStory()
     this.initCameras()

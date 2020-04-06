@@ -409,17 +409,17 @@ function createPlane(sx, sy, nx, ny, options) {
   sy = sy || 1;
   nx = nx || 1;
   ny = ny || 1;
-  var quads = options && options.quads ? options.quads : false;
-  var positions = [];
-  var uvs = [];
-  var normals = [];
-  var cells = [];
-  for (var iy = 0; iy <= ny; iy++) {
-    for (var ix = 0; ix <= nx; ix++) {
-      var u = ix / nx;
-      var v = iy / ny;
-      var x = -sx / 2 + u * sx;
-      var y = sy / 2 - v * sy;
+  const quads = options && options.quads ? options.quads : false;
+  const positions = [];
+  const uvs = [];
+  const normals = [];
+  const cells = [];
+  for (let iy = 0; iy <= ny; iy++) {
+    for (let ix = 0; ix <= nx; ix++) {
+      const u = ix / nx;
+      const v = iy / ny;
+      const x = -sx / 2 + u * sx;
+      const y = sy / 2 - v * sy;
       positions.push([x, 0, y]);
       uvs.push([u, 1.0 - v]);
       normals.push([0, 0, 1]);
@@ -454,29 +454,14 @@ function createPlane(sx, sy, nx, ny, options) {
   }
 }
 
-var frag$2 = "precision highp float;\n#define GLSLIFY 1\nuniform sampler2D uTex;\nuniform float ambientIntensity;\n//\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nvoid main() {\n\n  vec4 materialColor = vec4(1. * texture2D(uTex, 10. * vUv).r  * vec3(1.), 1.);\n  vec4 ambientColor = (ambientIntensity * materialColor);\n  vec4 lightingColor = vec4(1.*materialColor.rgb, 1.);\n\n  gl_FragColor = vec4(lightingColor.rgb, 1.);\n\n}\n"; // eslint-disable-line
+var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.2;\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n    grid /= fwidth(st);\n  return 1.-(step(res,grid.x) * step(res,grid.y));\n}\n\nvoid main() {\n\n  float resolution = 5.;\n\n  vec2 grid_st = vUv * uResolution * resolution;\n\n  vec3 color = vec3(1.);\n  color -= vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n  color -= vec3(0.2) * grid(grid_st, 10. / resolution);\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor =\n    mix(\n      vec4(color.rgb, 1.),\n      vec4(fogColor, 1),\n      1.0 - exp( - fogDistance * FogDensity )\n    );\n\n}\n"; // eslint-disable-line
 
-var vert$2 = "precision highp float;\n#define GLSLIFY 1\n//attribute float size;\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\n\nvoid main () {\n  vUv = uv / 1.;\n  vNormal = normal;\n  vPosition = position + uOffset;\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n"; // eslint-disable-line
+var vert$2 = "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\n\nvoid main () {\n  vUv = uv / 1.;\n  vPosition = position + uOffset;\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n"; // eslint-disable-line
 
 function drawStageCommands(regl, { stageGrid }) {
   const stage = createPlane(stageGrid.size, stageGrid.size);
-  const texData = createTexture(stageGrid);
   const command = () => {
     return regl({
-      blend: {
-        enable: false,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 'src alpha',
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 'one minus src alpha'
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [0, 0, 0, 1]
-      },
       cull: {
         enable: true,
         face: 'front'
@@ -485,19 +470,11 @@ function drawStageCommands(regl, { stageGrid }) {
       elements: stage.cells,
       attributes: {
         position: stage.positions,
-        uv: stage.uvs,
-        normal: stage.normals
+        uv: stage.uvs
       },
       uniforms: {
         uOffset: [0, stageGrid.y - 0, 0],
-        uTex: regl.texture({
-          width: stageGrid.resolution,
-          height: stageGrid.resolution,
-          min: 'linear mipmap linear',
-          wrap: 'repeat',
-          mag: 'linear',
-          data: texData
-        })
+        uResolution: [stageGrid.size, stageGrid.size]
       },
       vert: vert$2,
       frag: frag$2
@@ -506,55 +483,6 @@ function drawStageCommands(regl, { stageGrid }) {
   return {
     lighting: command()
   }
-}
-function createTexture({ dark = 0, light = 1, resolution = 512 } = {}) {
-  const dark255 = dark * 255;
-  const texData = [];
-  for (let y = 0; y < resolution; ++y) {
-    for (let x = 0; x < resolution; ++x) {
-      let ind = 4 * (y * resolution + x);
-      const borderWidth = 1 / resolution;
-      const uvx = x / resolution;
-      const uvy = y / resolution;
-      const k = Math.min(uvx, Math.min(uvy, Math.min(1.0 - uvx, 1.0 - uvy)));
-      if (k < borderWidth) {
-        texData[ind + 0] = light * 255;
-        texData[ind + 1] = light * 255;
-        texData[ind + 2] = light * 255;
-        texData[ind + 3] = 255;
-      } else if (
-        Math.abs(uvx - 0.1) < borderWidth ||
-        Math.abs(uvx - 0.2) < borderWidth ||
-        Math.abs(uvx - 0.3) < borderWidth ||
-        Math.abs(uvx - 0.4) < borderWidth ||
-        Math.abs(uvx - 0.5) < borderWidth ||
-        Math.abs(uvx - 0.6) < borderWidth ||
-        Math.abs(uvx - 0.7) < borderWidth ||
-        Math.abs(uvx - 0.8) < borderWidth ||
-        Math.abs(uvx - 0.9) < borderWidth ||
-        Math.abs(uvy - 0.1) < borderWidth ||
-        Math.abs(uvy - 0.2) < borderWidth ||
-        Math.abs(uvy - 0.3) < borderWidth ||
-        Math.abs(uvy - 0.4) < borderWidth ||
-        Math.abs(uvy - 0.5) < borderWidth ||
-        Math.abs(uvy - 0.6) < borderWidth ||
-        Math.abs(uvy - 0.7) < borderWidth ||
-        Math.abs(uvy - 0.8) < borderWidth ||
-        Math.abs(uvy - 0.9) < borderWidth
-      ) {
-        texData[ind] = (light + dark) * 255;
-        texData[ind + 1] = (light + dark) * 255;
-        texData[ind + 2] = (light + dark) * 255;
-        texData[ind + 3] = 255;
-      } else {
-        texData[ind] = dark255;
-        texData[ind + 1] = dark255;
-        texData[ind + 2] = dark255;
-        texData[ind + 3] = 255;
-      }
-    }
-  }
-  return texData
 }
 
 function boxesViewSimple(regl, { variables, model, config }) {
@@ -859,7 +787,7 @@ const defaultConfig = {
     fxaa: false,
     rgbGamma: 1,
     isStageVisible: true,
-    isShadowEnabled: true,
+    isShadowEnabled: false,
     isLatticeVisible: false,
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
@@ -8631,7 +8559,8 @@ class ReglViewerInstance {
       pixelRatio,
       extensions: [
         'angle_instanced_arrays',
-        'oes_texture_float'
+        'oes_texture_float',
+        'OES_standard_derivatives'
       ],
       onDone: (err, regl) => {
         if (err) return console.error(err)

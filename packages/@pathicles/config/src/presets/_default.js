@@ -81,7 +81,7 @@ export const defaultConfig = {
     rgbGamma: 1,
 
     isStageVisible: true,
-    isShadowEnabled: true,
+    isShadowEnabled: false,
     isLatticeVisible: false,
 
     pathicleRelativeGap: 1,

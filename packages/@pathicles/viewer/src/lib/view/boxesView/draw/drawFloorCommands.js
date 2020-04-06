@@ -38,6 +38,22 @@ export default function(regl, stageGrid) {
   uniform mat4 view;
   varying vec3 vPosition;
   varying vec3 vNormal;
+
+  float grid(vec2 st, float res){
+    vec2 grid = fract(st*res);
+    return 1.-(step(res,grid.x) * step(res,grid.y));
+}
+
+float box(in vec2 st, in vec2 size){
+    size = vec2(0.5) - size*0.5;
+    vec2 uv = smoothstep(size,
+                        size+vec2(0.001),
+                        st);
+    uv *= smoothstep(size,
+                    size+vec2(0.001),
+                    vec2(1.0)-st);
+    return uv.x*uv.y;
+}
   void main () {
     vUv = uv;
     vNormal = normal;
@@ -54,7 +70,7 @@ export default function(regl, stageGrid) {
   varying vec2 vUv;
   uniform sampler2D tex;
   uniform vec3 eye;
-  
+
 float fog_linear(
   const float dist,
   const float start,
@@ -73,14 +89,14 @@ float fog_linear(
         vec3 color =  texture2D(tex, vUv.xy).rgb;
         gl_FragColor = vec4(color , 1.);
       #endif
-      
+
       #ifdef lighting
         float dist = length(vPosition);
         vec3 color =  texture2D(tex, vUv.xy).rgb;
-        
+
         float fogDistance=length(eye - vPosition);
-        float fogAmount = fog_linear(fogDistance, 10., 20.);
-  
+        float fogAmount = fog_linear(fogDistance, 0., 20.);
+
         gl_FragColor = mix(
           vec4(color, 1),
           vec4(1, 1, 1, 1),
@@ -88,7 +104,7 @@ float fog_linear(
       #endif
 
       #ifdef position
-        gl_FragColor = vec4(vPosition, 1);
+        gl_FragColor = vec4(vPosition, 1.);
       #endif
 
     }`,

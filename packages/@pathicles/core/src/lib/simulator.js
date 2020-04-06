@@ -54,9 +54,14 @@ export class ReglSimulatorInstance {
       extensions: simulate
         ? [
             'angle_instanced_arrays',
-            'oes_texture_float'
+            'oes_texture_float',
+            'OES_standard_derivatives'
           ]
-        : ['angle_instanced_arrays', 'oes_texture_float']
+        : [
+            'angle_instanced_arrays',
+            'oes_texture_float',
+            'OES_standard_derivatives'
+          ]
     })
   }
 
