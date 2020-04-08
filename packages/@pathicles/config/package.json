@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@pathicles/config",
   "version": "0.1.0",
   "module": "dist/pathicles-config.esm.js",

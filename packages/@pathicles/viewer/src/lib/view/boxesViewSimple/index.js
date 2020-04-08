@@ -28,7 +28,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     view: config.view
   })
   const drawStage = drawStageCommands(regl, config.view)
-  const drawBackground = drawBackgroundCommand(regl)
+  const drawBackground = drawBackgroundCommand(regl, config.view)
   // const drawTextCommand = drawTextCommands(regl)
 
   function drawDiffuse(props) {

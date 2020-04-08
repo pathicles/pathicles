@@ -1,0 +1,41 @@
+{
+  "name": "@pathicles/app",
+  "version": "0.1.0",
+  "main": "dist/vue-pathicles.cjs.js",
+  "module": "dist/vue-pathicles.umd.js",
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "scripts": {
+    "lint": "eslint --parser-options='ecmaVersion:2018' --ext .js,.vue src",
+    "lint:fix": "npm run lint -- --fix",
+    "build:screenshots": "babel-node tools/screenshots.js -- --port $npm_package_config_devPort",
+    "build": "npm run lint && rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "dependencies": {
+    "@pathicles/config": "^0.1.0",
+    "@pathicles/core": "^0.1.0",
+    "@pathicles/viewer": "^0.1.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.1.6"
+  },
+  "devDependencies": {
+    "pug": "^2.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-jwalker": "^5.2.0",
+    "eslint-plugin-vue": "^6.1.2",
+    "rollup-plugin-buble": "^0.19.8",
+    "rollup-plugin-filesize": "^7.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-vue": "^5.1.6",
+    "rollup-plugin-serve": "^1.0.1",
+    "rollup-plugin-livereload": "^1.1.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "last 1 chrome version"
+  ],
+  "unpkg": "dist/pathicles-vue.min.js"
+}

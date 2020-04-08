@@ -1,5 +1,5 @@
 {
-  "private": true,
+
   "name": "@pathicles/vue",
   "version": "0.1.0",
   "main": "dist/pathicles-vue.ssr.js",

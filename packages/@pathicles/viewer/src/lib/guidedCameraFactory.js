@@ -23,14 +23,22 @@ export default function({ scenes, camera }, regl) {
   const setCameraUniforms = regl({
     uniforms: {
       eye: (context, { scene, activeSceneProgress }) => {
-        guidedCamera.pEye = scene.cameraPositionBSpline(Math.min(activeSceneProgress, 1))
-        guidedCamera.pTarget = scene.cameraTargetBSpline(Math.min(activeSceneProgress, 1))
+        guidedCamera.pEye = scene.cameraPositionBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
+        guidedCamera.pTarget = scene.cameraTargetBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
         sub(guidedCamera.vEye, guidedCamera.pTarget, guidedCamera.pEye)
         return guidedCamera.pEye
       },
       view: (context, { scene, activeSceneProgress }) => {
-        guidedCamera.pEye = scene.cameraPositionBSpline(Math.min(activeSceneProgress, 1))
-        guidedCamera.pTarget = scene.cameraTargetBSpline(Math.min(activeSceneProgress, 1))
+        guidedCamera.pEye = scene.cameraPositionBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
+        guidedCamera.pTarget = scene.cameraTargetBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
 
         sub(guidedCamera.vEye, guidedCamera.pTarget, guidedCamera.pEye)
         normalize(

@@ -1,18 +1,13 @@
 import createCube from 'primitive-cube'
-// import rotateX from 'gl-mat4/rotateX'
-// import translate from 'gl-mat4/translate'
 import identity from 'gl-mat4/identity'
 
-import frag from './sky.frag'
-import vert from './sky.vert'
+import frag from './background.frag'
+import vert from './background.vert'
 
-export default function(regl) {
-  const stage = createCube(50, 50, 50)
+export default function(regl, { stageGrid }) {
+  const stage = createCube(stageGrid.size * 2)
 
   let model = identity([])
-  // mat4.fromXRotation(model, 90)
-  // translate(model, model, [0, 0, 0])
-  // rotateX(model, model, Math.PI / 3)
 
   return regl({
     primitive: 'triangles',
@@ -22,10 +17,10 @@ export default function(regl) {
       uv: stage.uvs
     },
     uniforms: {
-      iResolution: context => [context.viewportHeight, context.viewportWidth],
-      iMouse: context => [
+      uResolution: [stageGrid.size, stageGrid.size],
+      uSunPosition: context => [
         context.viewportHeight / 2,
-        context.viewportWidth / 2
+        (context.viewportWidth / 4) * 3
       ],
       model
     },

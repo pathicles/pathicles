@@ -161,14 +161,22 @@ function guidedCameraFactory({ scenes, camera }, regl) {
   const setCameraUniforms = regl({
     uniforms: {
       eye: (context, { scene, activeSceneProgress }) => {
-        guidedCamera.pEye = scene.cameraPositionBSpline(Math.min(activeSceneProgress, 1));
-        guidedCamera.pTarget = scene.cameraTargetBSpline(Math.min(activeSceneProgress, 1));
+        guidedCamera.pEye = scene.cameraPositionBSpline(
+          Math.min(activeSceneProgress, 1)
+        );
+        guidedCamera.pTarget = scene.cameraTargetBSpline(
+          Math.min(activeSceneProgress, 1)
+        );
         subtract_1(guidedCamera.vEye, guidedCamera.pTarget, guidedCamera.pEye);
         return guidedCamera.pEye
       },
       view: (context, { scene, activeSceneProgress }) => {
-        guidedCamera.pEye = scene.cameraPositionBSpline(Math.min(activeSceneProgress, 1));
-        guidedCamera.pTarget = scene.cameraTargetBSpline(Math.min(activeSceneProgress, 1));
+        guidedCamera.pEye = scene.cameraPositionBSpline(
+          Math.min(activeSceneProgress, 1)
+        );
+        guidedCamera.pTarget = scene.cameraTargetBSpline(
+          Math.min(activeSceneProgress, 1)
+        );
         subtract_1(guidedCamera.vEye, guidedCamera.pTarget, guidedCamera.pEye);
         normalize_1(
           guidedCamera.vUp,
@@ -261,12 +269,12 @@ function createCube(sx, sy, sz, nx, ny, nz) {
 }
 var primitiveCube = createCube;
 
-var frag = "precision highp float;\n#define GLSLIFY 1\nuniform vec2 iResolution;\nuniform vec2 iMouse;\nvarying vec2 vUv;\n\nvec3 getSky(vec2 uv)\n{\n float atmosphere = sqrt(1.0-uv.y);\n    vec3 skyColor = vec3(0.,0.,0.);\n\n    float scatter = pow(iMouse.y / iResolution.y,1.0 / 15.0);\n    scatter = 1.0 - clamp(scatter,0.8,1.0);\n\n    vec3 scatterColor = mix(vec3(1.0),vec3(1.0,0.3,0.0) * 1.5, scatter);\n    return mix(skyColor,vec3(scatterColor),atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1.0 - distance(uv,iMouse.xy / iResolution.y);\n    sun = clamp(sun,0.0,1.0);\n\n    float glow = sun;\n    glow = clamp(glow,0.0,1.0);\n\n    sun = pow(sun,200.0);\n    sun *= 1.0;\n    sun = clamp(sun,0.0,1.0);\n\n    glow = pow(glow,10.0) * 1.0;\n    glow = pow(glow,(uv.y));\n    glow = clamp(glow,0.0,1.0);\n\n    sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n    glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n    sun += glow;\n\n    vec3 sunColor = vec3(1.0,1.,1.) * sun;\n\n    return vec3(sunColor);\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n  gl_FragColor = vec4(sky + sun, 1.);\n}\n"; // eslint-disable-line
+var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec2 uSunPosition;\nvarying vec2 vUv;\nuniform vec3 eye;\nvarying vec3 vPosition;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.;\n\nvec3 getSky(vec2 uv) {\n  float atmosphere = sqrt(1.0-uv.y);\n  vec3 skyColor = vec3(0., 0., 0.);\n\n  float scatter = pow(uSunPosition.y / uResolution.y, 1.0 / 15.0);\n  scatter = 1.0 - clamp(scatter, 0.8, 1.0);\n\n  vec3 scatterColor = mix(vec3(1.0), vec3(1.0, 0.3, 0.0) * 1.5, scatter);\n  return mix(skyColor, vec3(scatterColor), atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1. - distance(uv, uSunPosition.xy / uResolution.x);\n  sun = clamp(sun, 0.0, 1.0);\n\n  float glow = sun;\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun = pow(sun, 200.0);\n  sun *= 1.0;\n  sun = clamp(sun, 0.0, 1.0);\n\n  glow = pow(glow, 10.0) * 1.0;\n  glow = pow(glow, (uv.y));\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n  glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n  sun += glow;\n\n  vec3 sunColor = vec3(1.0, 1., 1.) * sun;\n\n  return vec3(sunColor);\n}\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n//\n//  float resolution = 1000.;\n//  vec2 grid_st = vUv * uResolution * resolution;\n//  vec3 color = vec3(.5);\n//  color += vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n//  color += vec3(0.2) * grid(grid_st, 10. / resolution);\n//\n//  float fogDistance = length(eye - vPosition);\n//\n//  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n    gl_FragColor = vec4(sky + sun, 1.);\n}\n"; // eslint-disable-line
 
-var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vWorldPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  //vec4 worldPosition = model * vec4(aPosition, 1.0);\n  //  vWorldPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n"; // eslint-disable-line
+var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n"; // eslint-disable-line
 
-function drawBackgroundCommand(regl) {
-  const stage = primitiveCube(50, 50, 50);
+function drawBackgroundCommand(regl, { stageGrid }) {
+  const stage = primitiveCube(stageGrid.size * 2);
   let model = identity_1([]);
   return regl({
     primitive: 'triangles',
@@ -276,10 +284,10 @@ function drawBackgroundCommand(regl) {
       uv: stage.uvs
     },
     uniforms: {
-      iResolution: context => [context.viewportHeight, context.viewportWidth],
-      iMouse: context => [
+      uResolution: [stageGrid.size, stageGrid.size],
+      uSunPosition: context => [
         context.viewportHeight / 2,
-        context.viewportWidth / 2
+        (context.viewportWidth / 4) * 3
       ],
       model
     },
@@ -454,7 +462,7 @@ function createPlane(sx, sy, nx, ny, options) {
   }
 }
 
-var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.2;\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n    grid /= fwidth(st);\n  return 1.-(step(res,grid.x) * step(res,grid.y));\n}\n\nvoid main() {\n\n  float resolution = 5.;\n\n  vec2 grid_st = vUv * uResolution * resolution;\n\n  vec3 color = vec3(1.);\n  color -= vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n  color -= vec3(0.2) * grid(grid_st, 10. / resolution);\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor =\n    mix(\n      vec4(color.rgb, 1.),\n      vec4(fogColor, 1),\n      1.0 - exp( - fogDistance * FogDensity )\n    );\n\n}\n"; // eslint-disable-line
+var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.3;\n\nfloat grid(vec2 st, float res, float width) {\n  vec2 grid =  fract(st*res) / width;\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main() {\n\n  float resolution = 1.;\n  vec2 grid_st = vUv * uResolution * resolution;\n  vec3 color = vec3(.6);\n  color -= vec3(.75) * grid(grid_st, 1. / resolution, 3.);\n  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n}\n"; // eslint-disable-line
 
 var vert$2 = "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\n\nvoid main () {\n  vUv = uv / 1.;\n  vPosition = position + uOffset;\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n"; // eslint-disable-line
 
@@ -507,7 +515,7 @@ function boxesViewSimple(regl, { variables, model, config }) {
     view: config.view
   });
   const drawStage = drawStageCommands(regl, config.view);
-  const drawBackground = drawBackgroundCommand(regl);
+  const drawBackground = drawBackgroundCommand(regl, config.view);
   function drawDiffuse(props) {
     setParams(config.view, () => {
       drawBackground();
@@ -732,25 +740,28 @@ const defaultConfig = {
   logPerformance: false,
   stats: false,
   profile: false,
-  colors: [[0.7, 0.7, 0.0], [0.12, 0.45, 0.65], [0.12, 0.45, 0.65], [0.77, 0.2, 0.2]],
+  colors: [[0.92, 0.75, 0.0], [0.12, 0.45, 0.65], [0.12, 0.45, 0.65], [0.77, 0.2, 0.2]],
+  mass: [0, 510998.94, 510998.94, 938272081],
+  charge: [0, -1, 1, 1],
+  chargeMassRatio: [0, -1.75882004556243e11, 1.75882004556243e11, 9.57883323113770929296814695637e7],
   usePostProcessing: false,
   pusher: 'boris',
   runner: {
-    prerender: true,
-    looping: false,
+    prerender: false,
+    looping: true,
     mode: 'framewise',
-    stepsPerTick: 2,
-    stepCount: 128
+    stepsPerTick: 4,
+    stepCount: 256
   },
   model: {
-    bufferLength: 64,
-    tickDurationOverC: 0.5,
+    bufferLength: 256 / 2,
+    tickDurationOverC: 0.2,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
-      particleCount: 128,
+      particleCount: 256,
       particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
@@ -778,7 +789,7 @@ const defaultConfig = {
       dark: 1,
       light: 0.8
     },
-    sky: [0.9, 1, 0.9, 1],
+    sky: [0.9, 1, 0, 1],
     shadowColor: [0.3, 0.3, 0.3],
     ambientIntensity: 0.6,
     diffuse: 0,
@@ -815,9 +826,9 @@ const defaultConfig = {
       theta: Math.PI / 2,
       phi: 0,
       distance: 10,
-      fovY: Math.PI / 3,
-      dTheta: 0.001,
-      autorotate: false,
+      fovY: Math.PI / 2.5,
+      dTheta: 0.01,
+      autorotate: true,
       rotateAboutCenter: true,
       zoomAboutCursor: false,
       zoomDecayTime: 1,
@@ -828,12 +839,13 @@ const defaultConfig = {
   dumpData: false
 };
 const storyDipole = {
+  name: 'story-dipole',
   view: {
     camera: {
       center: [0, 0.1, 0],
       theta: 2 * Math.PI / (360 / 90),
       phi: 2 * Math.PI / (360 / 15),
-      distance: 9
+      distance: 5
     }
   },
   model: {
@@ -880,7 +892,7 @@ const storyElectric = {
       center: [-2, 0, 0],
       theta: Math.PI / 4,
       phi: 0,
-      distance: 6
+      distance: 5
     }
   },
   model: {
@@ -891,7 +903,7 @@ const storyElectric = {
       position: [0, 1, -10],
       directionJitter: [0.01, 0.01, 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 2
+      gamma: 10
     },
     interactions: {
       electricField: [0, 0, 0.001],
@@ -928,6 +940,7 @@ const storyElectric = {
   }
 };
 const storyQuadrupole = {
+  name: 'story-quadrupole',
   view: {
     camera: {
       center: [0, 1, 0],
@@ -940,7 +953,7 @@ const storyQuadrupole = {
     emitter: {
       bunchShape: 'SQUARE_YZ',
       particleType: 'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-10, 1, 0],
+      position: [-5, 1, 0],
       direction: [1, 0, 0],
       directionJitter: [0, 0.1, 0.1],
       positionJitter: [0, 0.1, 0.1],
@@ -975,97 +988,13 @@ const storyQuadrupole = {
     }
   }
 };
-const storyEmpty = {
-  view: {
-    camera: {
-      center: [-2, 0.1, 0],
-      theta: 0.4,
-      phi: 0,
-      distance: 6
-    }
-  },
-  model: {
-    emitter: {
-      particleType: 'PROTON ELECTRON  PHOTON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
-      positionJitter: [0.1, 0.1, 0],
-      gamma: 1.1
-    },
-    interactions: {
-      electricField: [0, 0, 0],
-      particleInteraction: false
-    },
-    lattice: {
-      elements: {},
-      beamline: [],
-      origin: {
-        phi: 0,
-        position: [0, 1, -6]
-      }
-    }
-  }
-};
-const storyLoop = {
-  view: {
-    camera: {
-      center: [-2, 0.1, 0],
-      theta: 0.4,
-      phi: 0,
-      distance: 6
-    }
-  },
-  model: {
-    emitter: {
-      particleType: 'PROTON ELECTRON  PHOTON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
-      positionJitter: [0.1, 0.1, 0],
-      gamma: 1.1
-    },
-    interactions: {
-      electricField: [0, 0, 0.0001],
-      particleInteraction: false
-    },
-    lattice: {
-      elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
-        q1: {
-          type: 'QUAD',
-          k1: 0,
-          l: 3
-        },
-        q2: {
-          type: 'QUAD',
-          k1: -0,
-          l: 3
-        },
-        l2: {
-          type: 'DRIF',
-          l: 3
-        }
-      },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
-      origin: {
-        phi: 0,
-        position: [0, 1, -6]
-      }
-    }
-  }
-};
 const random = {
+  name: 'random',
   model: {
-    boundingBoxSize: 2,
+    boundingBoxSize: 5,
     emitter: {
       randomize: true,
-      gamma: 1000,
+      gamma: 100,
       particleType: 'PHOTON ELECTRON PROTON'
     },
     lattice: {
@@ -1092,6 +1021,7 @@ const random = {
   }
 };
 const freeElectron = {
+  name: 'free-electron',
   view: {
     camera: {
       center: [0, 0, 0],
@@ -1136,6 +1066,7 @@ const freeElectron = {
   }
 };
 const freePhoton = {
+  name: 'free-photon',
   view: {
     camera: {
       center: [0, -0.5, 0],
@@ -1179,16 +1110,59 @@ const freePhoton = {
     }
   }
 };
+const freePhotons = {
+  name: 'free-photons',
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: Math.PI / 2,
+      phi: 0,
+      distance: 2,
+      fovY: Math.PI / 3,
+      dTheta: 0.001,
+      autorotate: false,
+      rotateAboutCenter: true,
+      zoomAboutCursor: false,
+      zoomDecayTime: 1,
+      far: 50,
+      near: 0.0001
+    }
+  },
+  runner: {
+    prerender: true,
+    looping: true,
+    mode: 'framewise',
+    stepsPerTick: 1,
+    stepCount: 8
+  },
+  model: {
+    bufferLength: 8,
+    tickDurationOverC: 0.1,
+    emitter: {
+      particleCount: 2,
+      particleType: 'PHOTON ELECTRON PROTON',
+      bunchShape: 'SQUARE',
+      direction: [0, 0, 1],
+      position: [0, -.5, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0, 0],
+      gamma: 1.1
+    },
+    interactions: {
+      electricField: [0, 0, 0.091],
+      particleInteraction: false,
+      magneticField: [0, 0.0, 0]
+    }
+  }
+};
 const presets = {
-  'story-dipole': storyDipole,
-  'story-electric': storyElectric,
-  'free-electrons': storyElectric,
-  'story-quadrupole': storyQuadrupole,
-  'story-empty': storyEmpty,
-  'story-loop': storyLoop,
-  freeElectron,
-  freePhoton,
-  random
+  [storyDipole.name]: storyDipole,
+  [storyElectric.name]: storyElectric,
+  [storyQuadrupole.name]: storyQuadrupole,
+  [freeElectron.name]: freeElectron,
+  [freePhoton.name]: freePhoton,
+  [freePhotons.name]: freePhotons,
+  [random.name]: random
 };
 const config = presetName => {
   return nanomerge(defaultConfig, presets[presetName]) || defaultConfig;

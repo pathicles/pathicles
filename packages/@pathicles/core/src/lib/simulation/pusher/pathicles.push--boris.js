@@ -1,4 +1,4 @@
-import { getters, latticeChunk, particleDataChunk } from '../../utils/utils'
+import { getters, latticeChunk } from '../../utils/utils'
 
 export default function(regl, { variables, model }) {
   const pushFactory = variableName =>
@@ -24,6 +24,8 @@ export default function(regl, { variables, model }) {
         gravityConstant: model.interactions.gravityConstant,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
+        utParticleChargesMassesChargeMassRatios: () =>
+          variables.particleChargesMassesChargeMassRatios,
 
         utPositionBuffer: (context, props) =>
           variables.position[(props.pathiclesTick + 1) % 2],
@@ -47,6 +49,7 @@ export default function(regl, { variables, model }) {
 
         const highp float c = 2.99792458e+8;
         uniform sampler2D utParticleColorAndType;
+        uniform sampler2D utParticleChargesMassesChargeMassRatios;
         uniform sampler2D utPositionBuffer;
         uniform sampler2D utVelocityBuffer;
         uniform float tick;
@@ -61,7 +64,7 @@ export default function(regl, { variables, model }) {
         uniform float particleInteraction;
 
         ${getters}
-        ${particleDataChunk(model.particleTypes)}
+
         ${latticeChunk(model.lattice)}
 
 
@@ -202,8 +205,8 @@ export default function(regl, { variables, model }) {
 
         void main () {
 
-          initLatticeData();
-          initParticleData();
+          //initLatticeData();
+          //initParticleData();
           float p, b;
 
           p = floor(gl_FragCoord.x);

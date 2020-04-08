@@ -68,6 +68,12 @@ export class ReglSimulatorInstance {
   destroy() {
     this.regl.destroy()
   }
+  loadConfig(config) {
+    this.stop(this.regl)
+    this.config = config
+    this.init(this.regl)
+    this.run(this.regl)
+  }
 
   init(regl) {
     this.regl._commands = []
@@ -131,6 +137,9 @@ export class ReglSimulatorInstance {
         // PerformanceLogger.stop()
       })
     }
-    mainloop()
+    this.loop = mainloop()
+  }
+  stop() {
+    this.loop.cancel()
   }
 }

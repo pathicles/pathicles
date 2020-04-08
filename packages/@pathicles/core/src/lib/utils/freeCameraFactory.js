@@ -1,7 +1,7 @@
 /* eslint-env browser */
+import camera from 'inertial-turntable-camera'
 
-import camera from './inertial-turntable-camera'
-import interactionEvents from './normalized-interaction-events'
+import interactionEvents from 'normalized-interaction-events'
 import { invert } from 'gl-mat4'
 
 export default function(options, regl) {
@@ -56,13 +56,13 @@ function initializeCameraControls(camera, canvas) {
 
   interactionEvents(canvas)
     .on('wheel', function(ev) {
-      // if (!ev.active || ev.buttons !== 1) re turn;
-
-      if (ev.mods.shift) {
+      if (true || ev.mods.shift) {
+        // if (!ev.active || ev.buttons !== 1) return
         camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
         // console.log(camera.params.distance)
-        // if (camera.params.distance > 500) camera.params.distance = 500
-        // if (camera.params.distance < 20) camera.params.distance = 20
+        // console.log(camera.params.distance)
+        // if (camera.params.distance > 10) camera.params.distance = 10
+        // if (camera.params.distance < 1) camera.params.distance = 1
 
         // ev.originalEvent.preventDefault()
       }

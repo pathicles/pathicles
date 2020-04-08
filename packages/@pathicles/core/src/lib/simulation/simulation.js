@@ -48,6 +48,18 @@ export class Simulation {
         data: particleTypes.map(p => configuration.colors[p].concat(p)).flat(),
         shape: [particleCount, 1, 4],
         type: 'float'
+      }),
+      particleChargesMassesChargeMassRatios: regl.texture({
+        data: particleTypes
+          .map(p => [
+            configuration.charge[p],
+            configuration.mass[p],
+            configuration.chargeMassRatio[p],
+            p
+          ])
+          .flat(),
+        shape: [particleCount, 1, 4],
+        type: 'float'
       })
     }
     // } else {

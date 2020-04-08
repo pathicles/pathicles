@@ -1,4 +1,5 @@
 export const storyQuadrupole = {
+  name: 'story-quadrupole',
   view: {
     camera: {
       center: [0, 1, 0],
@@ -12,7 +13,7 @@ export const storyQuadrupole = {
       bunchShape: 'SQUARE_YZ',
       particleType:
         'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-10, 1, 0],
+      position: [-5, 1, 0],
       direction: [1, 0, 0],
       directionJitter: [0, 0.1, 0.1],
       positionJitter: [0, 0.1, 0.1],

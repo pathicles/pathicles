@@ -5,8 +5,8 @@ import router from './router'
 import App from './App'
 
 // import DatGui from "./datgui"
-import PathiclesStory from './components/PathiclesStory'
-Vue.component('pathicles-story', PathiclesStory)
+// import PathiclesStory from './components/PathiclesStory'
+// Vue.component('pathicles-story', PathiclesStory)
 
 Vue.config.productionTip = false
 Vue.directive('scroll', {

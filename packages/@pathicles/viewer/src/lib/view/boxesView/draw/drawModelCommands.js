@@ -2,8 +2,7 @@ import {
   getters,
   inverseMat4,
   lookAt,
-  particleDataChunk,
-  transposeMat4
+  particleDataChunk
 } from '../../../utils/utils'
 
 import normals from 'angle-normals'
@@ -85,12 +84,12 @@ export default function(regl, { variables, model, view }) {
       varying vec2 vUv;
       varying vec3 vDiffuseColor;
       varying float vColorCorrection;
-      
+
 
       ${getters}
       ${inverseMat4}
       ${lookAt}
-      ${transposeMat4}
+
 
       ${particleDataChunk(model.particleTypes)}
 
@@ -104,7 +103,7 @@ export default function(regl, { variables, model, view }) {
         return (undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
 
       }
- 
+
       void main () {
 
         initParticleData();
@@ -129,7 +128,7 @@ export default function(regl, { variables, model, view }) {
 
         const float width = 2.;
         float xFactor = 0. * clamp((vPosition.x-width) / width, -1., 1. );
-        
+
         vColorCorrection =  abs(dot(aNormal, vec3(1., 0., 0.))) * xFactor;
           // + 0.2 * abs(dot(aNormal, vec3(0., 1., 0.)) * abs(vPosition.y));
         // if (
@@ -143,8 +142,8 @@ export default function(regl, { variables, model, view }) {
             aNormal,
             vec3(0., 0., 1.)
           )) == 1.) {vColorCorrection += -.5;}
-        
-        
+
+
         // 1. - .1 * vPosition.x;
           //1. - 1.*((aParticle / particleCount) - (aStep /bufferLength));
 
@@ -161,7 +160,7 @@ export default function(regl, { variables, model, view }) {
       varying vec3 vNormal;
       varying vec3 vDiffuseColor;
       varying float vColorCorrection;
-      
+
          vec3 hemisphere_light(
     vec3 normal
   , vec3 sky
@@ -179,8 +178,8 @@ export default function(regl, { variables, model, view }) {
 
   return mix(ground, sky, weight);
 }
-      
-     
+
+
 
       void main () {
 
@@ -195,9 +194,9 @@ export default function(regl, { variables, model, view }) {
         #endif
 
         #ifdef lighting
-        
-     
-        
+
+
+
          vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));
          float ssao = 1.;
          float ambient = 1.;
@@ -206,7 +205,7 @@ export default function(regl, { variables, model, view }) {
          // vec3 lighting = ssao * (ambientColor + materialColor.rgb * diffuseColor);
          vec3 lightingColor = ambientColor;
 
- 
+
           gl_FragColor =  vec4(lightingColor, 1.);
         #endif
 

@@ -1,33 +1,25 @@
 /* eslint-env browser */
 
 <template lang="pug">
-  .pathicles__scroll-container(ref="scrollContainer" :key="presetName"
-    :style="{height: scrollHeight}")
-    .pathicles__container(
-      ref="container"
-      :style="cssStyles")
-      canvas(ref="canvas" :style="cssStyles" :width="canvasWidth" :height="canvasHeight")
-      <!--    .legend-->
-      <!--      dl-->
-      <!--        dt Particle type-->
-      <!--        dl electrons-->
-      <!--        dt electric field-->
-      <!--        dl 0-->
-      <!--        dt magnetic field-->
-      <!--        dl 0-->
+  div
+    select(v-model="presetName" v-on:change="onChange($event)")
+      option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
+    .pathicles__scroll-container(ref="scrollContainer"
+      :style="{height: scrollHeight}")
+      .pathicles__container(
+        ref="container"
+        :style="cssStyles")
+        canvas(ref="canvas" :style="cssStyles" :width="canvasWidth" :height="canvasHeight")
+
 </template>
 
 <script>
 import { ReglSimulatorInstance } from '@pathicles/core'
-import { config } from '@pathicles/config'
+import { config, presets } from '@pathicles/config'
 
 export default {
   name: 'PathiclesSimulator',
   props: {
-    presetName: {
-      type: String,
-      default: () => 'storyElectric'
-    },
     maxScreenWidth: {
       type: Number,
       default: 300
@@ -55,7 +47,9 @@ export default {
       screenHeight: 600,
       progress: 0.5,
       cameraMode: 'free',
-      viewRange: [0, 1]
+      viewRange: [0, 1],
+      presets,
+      presetName: 'story-electric'
     }
   },
   computed: {
@@ -78,12 +72,16 @@ export default {
 
   mounted() {
     if (typeof window !== 'undefined' && window.document) {
+      const parsedUrl = new URL(window.location.href)
+      if (parsedUrl.searchParams.get('preset') !== null)
+        this.presetName = parsedUrl.searchParams.get('preset')
+
       this.screenWidth = window.innerWidth
       this.screenHeight = window.innerHeight
 
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
-        config: config(this.$route.params.preset || this.presetName),
+        config: config(this.presetName),
         pixelRatio: this.pixelRatio,
         simulate: true,
         control: {
@@ -106,24 +104,35 @@ export default {
   methods: {
     handleResize() {
       this.scrollyHeight = document.documentElement.clientHeight
+    },
+    onChange() {
+      // console.log(this.presetName, config(this.presetName))
+      const params = { presetName: this.presetName }
+      history.pushState(
+        {},
+        null,
+        this.$route.path +
+          '?' +
+          Object.keys(params)
+            .map(key => {
+              return (
+                encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+              )
+            })
+            .join('&')
+      )
+      this.reglInstance.loadConfig(config(this.presetName))
     }
-    // setCameraMode(cameraMode) {
-    //   this.cameraMode = cameraMode
-    //   this.reglInstance.control.cameraMode = cameraMode
-    // },
-    // onScroll() {
-    //   this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
-    //   const p = this.offsetTop / (this.scrollyHeight - window.innerHeight)
-    //   this.progress = p > 1 ? 1 : p
-    //   this.reglInstance.control.viewRange = [0, p]
-    //   this.reglInstance.control.progress = p
-    //   this.reglInstance.story.setPosition(p * 9)
-    // }
   }
 }
 </script>
 
 <style lang="stylus">
+
+select
+  position absolute
+  z-index 10000
+  top 0
 
 body
   margin 0

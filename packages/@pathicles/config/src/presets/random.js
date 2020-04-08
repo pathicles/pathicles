@@ -1,4 +1,5 @@
 export const random = {
+  name: 'random',
   // view: {
   //   camera: {
   //     center: [0, 0, 0],
@@ -9,7 +10,7 @@ export const random = {
   // },
 
   model: {
-    boundingBoxSize: 2,
+    boundingBoxSize: 5,
     emitter: {
       randomize: true,
       // position: [0, 0, 0],
@@ -17,7 +18,7 @@ export const random = {
       // particleSeparation: 0.1,
       // directionJitter: [0, 0, 0],
       // emitterDirectionJitter: [0, 0, 0],
-      gamma: 1000,
+      gamma: 100,
       particleType: 'PHOTON ELECTRON PROTON'
     },
 

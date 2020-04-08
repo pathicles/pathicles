@@ -9,26 +9,35 @@ export const defaultConfig = {
   profile: false,
 
   colors: [
-    [0.7, 0.7, 0.0],
+    [0.92, 0.75, 0.0],
     [0.12, 0.45, 0.65],
     [0.12, 0.45, 0.65],
     [0.77, 0.2, 0.2]
   ],
+  mass: [0, 510998.94, 510998.94, 938272081],
+  charge: [0, -1, 1, 1],
+  chargeMassRatio: [
+    0,
+    -1.75882004556243e11,
+    1.75882004556243e11,
+    9.57883323113770929296814695637e7
+  ],
+
   usePostProcessing: false,
   pusher: 'boris', // "boris", "euler"
 
   runner: {
-    prerender: true,
-    looping: false,
+    prerender: false,
+    looping: true,
 
     mode: 'framewise',
-    stepsPerTick: 2,
-    stepCount: 128
+    stepsPerTick: 4,
+    stepCount: 256
   },
 
   model: {
-    bufferLength: 64,
-    tickDurationOverC: 0.5,
+    bufferLength: 256 / 2,
+    tickDurationOverC: 0.2,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -37,7 +46,7 @@ export const defaultConfig = {
 
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'disc',
-      particleCount: 128,
+      particleCount: 256,
       particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
@@ -69,7 +78,7 @@ export const defaultConfig = {
       light: 0.8
     },
 
-    sky: [0.9, 1, 0.9, 1],
+    sky: [0.9, 1, 0, 1],
 
     shadowColor: [0.3, 0.3, 0.3],
     ambientIntensity: 0.6,
@@ -118,9 +127,9 @@ export const defaultConfig = {
       phi: 0,
       distance: 10,
 
-      fovY: Math.PI / 3,
-      dTheta: 0.001,
-      autorotate: false,
+      fovY: Math.PI / 2.5,
+      dTheta: 0.01,
+      autorotate: true,
       // rotationDecayTime: 0,
       rotateAboutCenter: true,
       zoomAboutCursor: false,

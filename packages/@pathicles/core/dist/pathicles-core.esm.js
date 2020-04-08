@@ -1,286 +1,6 @@
 import Debug from 'debug';
 import REGL from 'regl';
 
-var epsilon = 0.000001;
-
-var create_1 = create;
-function create() {
-    var out = new Float32Array(3);
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
-    return out
-}
-
-var clone_1 = clone;
-function clone(a) {
-    var out = new Float32Array(3);
-    out[0] = a[0];
-    out[1] = a[1];
-    out[2] = a[2];
-    return out
-}
-
-var fromValues_1 = fromValues;
-function fromValues(x, y, z) {
-    var out = new Float32Array(3);
-    out[0] = x;
-    out[1] = y;
-    out[2] = z;
-    return out
-}
-
-var normalize_1 = normalize;
-function normalize(out, a) {
-    var x = a[0],
-        y = a[1],
-        z = a[2];
-    var len = x*x + y*y + z*z;
-    if (len > 0) {
-        len = 1 / Math.sqrt(len);
-        out[0] = a[0] * len;
-        out[1] = a[1] * len;
-        out[2] = a[2] * len;
-    }
-    return out
-}
-
-var dot_1 = dot;
-function dot(a, b) {
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
-}
-
-var angle_1 = angle;
-function angle(a, b) {
-    var tempA = fromValues_1(a[0], a[1], a[2]);
-    var tempB = fromValues_1(b[0], b[1], b[2]);
-    normalize_1(tempA, tempA);
-    normalize_1(tempB, tempB);
-    var cosine = dot_1(tempA, tempB);
-    if(cosine > 1.0){
-        return 0
-    } else {
-        return Math.acos(cosine)
-    }
-}
-
-var copy_1 = copy;
-function copy(out, a) {
-    out[0] = a[0];
-    out[1] = a[1];
-    out[2] = a[2];
-    return out
-}
-
-var set_1 = set;
-function set(out, x, y, z) {
-    out[0] = x;
-    out[1] = y;
-    out[2] = z;
-    return out
-}
-
-var equals_1 = equals;
-function equals(a, b) {
-  var a0 = a[0];
-  var a1 = a[1];
-  var a2 = a[2];
-  var b0 = b[0];
-  var b1 = b[1];
-  var b2 = b[2];
-  return (Math.abs(a0 - b0) <= epsilon * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
-          Math.abs(a1 - b1) <= epsilon * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
-          Math.abs(a2 - b2) <= epsilon * Math.max(1.0, Math.abs(a2), Math.abs(b2)))
-}
-
-var exactEquals_1 = exactEquals;
-function exactEquals(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
-}
-
-var add_1 = add;
-function add(out, a, b) {
-    out[0] = a[0] + b[0];
-    out[1] = a[1] + b[1];
-    out[2] = a[2] + b[2];
-    return out
-}
-
-var subtract_1 = subtract;
-function subtract(out, a, b) {
-    out[0] = a[0] - b[0];
-    out[1] = a[1] - b[1];
-    out[2] = a[2] - b[2];
-    return out
-}
-
-var sub = subtract_1;
-
-var multiply_1 = multiply;
-function multiply(out, a, b) {
-    out[0] = a[0] * b[0];
-    out[1] = a[1] * b[1];
-    out[2] = a[2] * b[2];
-    return out
-}
-
-var mul = multiply_1;
-
-var divide_1 = divide;
-function divide(out, a, b) {
-    out[0] = a[0] / b[0];
-    out[1] = a[1] / b[1];
-    out[2] = a[2] / b[2];
-    return out
-}
-
-var div = divide_1;
-
-var min_1 = min;
-function min(out, a, b) {
-    out[0] = Math.min(a[0], b[0]);
-    out[1] = Math.min(a[1], b[1]);
-    out[2] = Math.min(a[2], b[2]);
-    return out
-}
-
-var max_1 = max;
-function max(out, a, b) {
-    out[0] = Math.max(a[0], b[0]);
-    out[1] = Math.max(a[1], b[1]);
-    out[2] = Math.max(a[2], b[2]);
-    return out
-}
-
-var floor_1 = floor;
-function floor(out, a) {
-  out[0] = Math.floor(a[0]);
-  out[1] = Math.floor(a[1]);
-  out[2] = Math.floor(a[2]);
-  return out
-}
-
-var ceil_1 = ceil;
-function ceil(out, a) {
-  out[0] = Math.ceil(a[0]);
-  out[1] = Math.ceil(a[1]);
-  out[2] = Math.ceil(a[2]);
-  return out
-}
-
-var round_1 = round;
-function round(out, a) {
-  out[0] = Math.round(a[0]);
-  out[1] = Math.round(a[1]);
-  out[2] = Math.round(a[2]);
-  return out
-}
-
-var scale_1 = scale;
-function scale(out, a, b) {
-    out[0] = a[0] * b;
-    out[1] = a[1] * b;
-    out[2] = a[2] * b;
-    return out
-}
-
-var scaleAndAdd_1 = scaleAndAdd;
-function scaleAndAdd(out, a, b, scale) {
-    out[0] = a[0] + (b[0] * scale);
-    out[1] = a[1] + (b[1] * scale);
-    out[2] = a[2] + (b[2] * scale);
-    return out
-}
-
-var distance_1 = distance;
-function distance(a, b) {
-    var x = b[0] - a[0],
-        y = b[1] - a[1],
-        z = b[2] - a[2];
-    return Math.sqrt(x*x + y*y + z*z)
-}
-
-var dist = distance_1;
-
-var squaredDistance_1 = squaredDistance;
-function squaredDistance(a, b) {
-    var x = b[0] - a[0],
-        y = b[1] - a[1],
-        z = b[2] - a[2];
-    return x*x + y*y + z*z
-}
-
-var sqrDist = squaredDistance_1;
-
-var length_1 = length;
-function length(a) {
-    var x = a[0],
-        y = a[1],
-        z = a[2];
-    return Math.sqrt(x*x + y*y + z*z)
-}
-
-var len = length_1;
-
-var squaredLength_1 = squaredLength;
-function squaredLength(a) {
-    var x = a[0],
-        y = a[1],
-        z = a[2];
-    return x*x + y*y + z*z
-}
-
-var sqrLen = squaredLength_1;
-
-var negate_1 = negate;
-function negate(out, a) {
-    out[0] = -a[0];
-    out[1] = -a[1];
-    out[2] = -a[2];
-    return out
-}
-
-var inverse_1 = inverse;
-function inverse(out, a) {
-  out[0] = 1.0 / a[0];
-  out[1] = 1.0 / a[1];
-  out[2] = 1.0 / a[2];
-  return out
-}
-
-var cross_1 = cross;
-function cross(out, a, b) {
-    var ax = a[0], ay = a[1], az = a[2],
-        bx = b[0], by = b[1], bz = b[2];
-    out[0] = ay * bz - az * by;
-    out[1] = az * bx - ax * bz;
-    out[2] = ax * by - ay * bx;
-    return out
-}
-
-var lerp_1 = lerp;
-function lerp(out, a, b, t) {
-    var ax = a[0],
-        ay = a[1],
-        az = a[2];
-    out[0] = ax + t * (b[0] - ax);
-    out[1] = ay + t * (b[1] - ay);
-    out[2] = az + t * (b[2] - az);
-    return out
-}
-
-var random_1 = random;
-function random(out, scale) {
-    scale = scale || 1.0;
-    var r = Math.random() * 2.0 * Math.PI;
-    var z = (Math.random() * 2.0) - 1.0;
-    var zScale = Math.sqrt(1.0-z*z) * scale;
-    out[0] = Math.cos(r) * zScale;
-    out[1] = Math.sin(r) * zScale;
-    out[2] = z * scale;
-    return out
-}
-
 var transformMat4_1 = transformMat4;
 function transformMat4(out, a, m) {
     var x = a[0], y = a[1], z = a[2],
@@ -289,43 +9,6 @@ function transformMat4(out, a, m) {
     out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
     out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
     out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
-    return out
-}
-
-var transformMat3_1 = transformMat3;
-function transformMat3(out, a, m) {
-    var x = a[0], y = a[1], z = a[2];
-    out[0] = x * m[0] + y * m[3] + z * m[6];
-    out[1] = x * m[1] + y * m[4] + z * m[7];
-    out[2] = x * m[2] + y * m[5] + z * m[8];
-    return out
-}
-
-var transformQuat_1 = transformQuat;
-function transformQuat(out, a, q) {
-    var x = a[0], y = a[1], z = a[2],
-        qx = q[0], qy = q[1], qz = q[2], qw = q[3],
-        ix = qw * x + qy * z - qz * y,
-        iy = qw * y + qz * x - qx * z,
-        iz = qw * z + qx * y - qy * x,
-        iw = -qx * x - qy * y - qz * z;
-    out[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
-    out[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz;
-    out[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
-    return out
-}
-
-var rotateX_1 = rotateX;
-function rotateX(out, a, b, c){
-    var by = b[1];
-    var bz = b[2];
-    var py = a[1] - by;
-    var pz = a[2] - bz;
-    var sc = Math.sin(c);
-    var cc = Math.cos(c);
-    out[0] = a[0];
-    out[1] = by + py * cc - pz * sc;
-    out[2] = bz + py * sc + pz * cc;
     return out
 }
 
@@ -343,166 +26,72 @@ function rotateY(out, a, b, c){
     return out
 }
 
-var rotateZ_1 = rotateZ;
-function rotateZ(out, a, b, c){
-    var bx = b[0];
+var rotateX_1 = rotateX;
+function rotateX(out, a, b, c){
     var by = b[1];
-    var px = a[0] - bx;
+    var bz = b[2];
     var py = a[1] - by;
+    var pz = a[2] - bz;
     var sc = Math.sin(c);
     var cc = Math.cos(c);
-    out[0] = bx + px * cc - py * sc;
-    out[1] = by + px * sc + py * cc;
+    out[0] = a[0];
+    out[1] = by + py * cc - pz * sc;
+    out[2] = bz + py * sc + pz * cc;
+    return out
+}
+
+var epsilon = 0.000001;
+
+var equals_1 = equals;
+function equals(a, b) {
+  var a0 = a[0];
+  var a1 = a[1];
+  var a2 = a[2];
+  var b0 = b[0];
+  var b1 = b[1];
+  var b2 = b[2];
+  return (Math.abs(a0 - b0) <= epsilon * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+          Math.abs(a1 - b1) <= epsilon * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+          Math.abs(a2 - b2) <= epsilon * Math.max(1.0, Math.abs(a2), Math.abs(b2)))
+}
+
+var add_1 = add;
+function add(out, a, b) {
+    out[0] = a[0] + b[0];
+    out[1] = a[1] + b[1];
+    out[2] = a[2] + b[2];
+    return out
+}
+
+var scaleAndAdd_1 = scaleAndAdd;
+function scaleAndAdd(out, a, b, scale) {
+    out[0] = a[0] + (b[0] * scale);
+    out[1] = a[1] + (b[1] * scale);
+    out[2] = a[2] + (b[2] * scale);
+    return out
+}
+
+var copy_1 = copy;
+function copy(out, a) {
+    out[0] = a[0];
+    out[1] = a[1];
     out[2] = a[2];
     return out
 }
 
-var forEach_1 = forEach;
-var vec = create_1();
-function forEach(a, stride, offset, count, fn, arg) {
-        var i, l;
-        if(!stride) {
-            stride = 3;
-        }
-        if(!offset) {
-            offset = 0;
-        }
-        if(count) {
-            l = Math.min((count * stride) + offset, a.length);
-        } else {
-            l = a.length;
-        }
-        for(i = offset; i < l; i += stride) {
-            vec[0] = a[i];
-            vec[1] = a[i+1];
-            vec[2] = a[i+2];
-            fn(vec, vec, arg);
-            a[i] = vec[0];
-            a[i+1] = vec[1];
-            a[i+2] = vec[2];
-        }
-        return a
-}
-
-var glVec3 = {
-  EPSILON: epsilon
-  , create: create_1
-  , clone: clone_1
-  , angle: angle_1
-  , fromValues: fromValues_1
-  , copy: copy_1
-  , set: set_1
-  , equals: equals_1
-  , exactEquals: exactEquals_1
-  , add: add_1
-  , subtract: subtract_1
-  , sub: sub
-  , multiply: multiply_1
-  , mul: mul
-  , divide: divide_1
-  , div: div
-  , min: min_1
-  , max: max_1
-  , floor: floor_1
-  , ceil: ceil_1
-  , round: round_1
-  , scale: scale_1
-  , scaleAndAdd: scaleAndAdd_1
-  , distance: distance_1
-  , dist: dist
-  , squaredDistance: squaredDistance_1
-  , sqrDist: sqrDist
-  , length: length_1
-  , len: len
-  , squaredLength: squaredLength_1
-  , sqrLen: sqrLen
-  , negate: negate_1
-  , inverse: inverse_1
-  , normalize: normalize_1
-  , dot: dot_1
-  , cross: cross_1
-  , lerp: lerp_1
-  , random: random_1
-  , transformMat4: transformMat4_1
-  , transformMat3: transformMat3_1
-  , transformQuat: transformQuat_1
-  , rotateX: rotateX_1
-  , rotateY: rotateY_1
-  , rotateZ: rotateZ_1
-  , forEach: forEach_1
-};
-var glVec3_6 = glVec3.copy;
-var glVec3_8 = glVec3.equals;
-var glVec3_10 = glVec3.add;
-var glVec3_23 = glVec3.scaleAndAdd;
-var glVec3_34 = glVec3.normalize;
-var glVec3_39 = glVec3.transformMat4;
-var glVec3_42 = glVec3.rotateX;
-var glVec3_43 = glVec3.rotateY;
-
-var create_1$1 = create$1;
-function create$1() {
-    var out = new Float32Array(16);
-    out[0] = 1;
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[4] = 0;
-    out[5] = 1;
-    out[6] = 0;
-    out[7] = 0;
-    out[8] = 0;
-    out[9] = 0;
-    out[10] = 1;
-    out[11] = 0;
-    out[12] = 0;
-    out[13] = 0;
-    out[14] = 0;
-    out[15] = 1;
-    return out;
-}
-
-var clone_1$1 = clone$1;
-function clone$1(a) {
-    var out = new Float32Array(16);
-    out[0] = a[0];
-    out[1] = a[1];
-    out[2] = a[2];
-    out[3] = a[3];
-    out[4] = a[4];
-    out[5] = a[5];
-    out[6] = a[6];
-    out[7] = a[7];
-    out[8] = a[8];
-    out[9] = a[9];
-    out[10] = a[10];
-    out[11] = a[11];
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
-    return out;
-}
-
-var copy_1$1 = copy$1;
-function copy$1(out, a) {
-    out[0] = a[0];
-    out[1] = a[1];
-    out[2] = a[2];
-    out[3] = a[3];
-    out[4] = a[4];
-    out[5] = a[5];
-    out[6] = a[6];
-    out[7] = a[7];
-    out[8] = a[8];
-    out[9] = a[9];
-    out[10] = a[10];
-    out[11] = a[11];
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
-    return out;
+var normalize_1 = normalize;
+function normalize(out, a) {
+    var x = a[0],
+        y = a[1],
+        z = a[2];
+    var len = x*x + y*y + z*z;
+    if (len > 0) {
+        len = 1 / Math.sqrt(len);
+        out[0] = a[0] * len;
+        out[1] = a[1] * len;
+        out[2] = a[2] * len;
+    }
+    return out
 }
 
 var identity_1 = identity;
@@ -523,45 +112,6 @@ function identity(out) {
     out[13] = 0;
     out[14] = 0;
     out[15] = 1;
-    return out;
-}
-
-var transpose_1 = transpose;
-function transpose(out, a) {
-    if (out === a) {
-        var a01 = a[1], a02 = a[2], a03 = a[3],
-            a12 = a[6], a13 = a[7],
-            a23 = a[11];
-        out[1] = a[4];
-        out[2] = a[8];
-        out[3] = a[12];
-        out[4] = a01;
-        out[6] = a[9];
-        out[7] = a[13];
-        out[8] = a02;
-        out[9] = a12;
-        out[11] = a[14];
-        out[12] = a03;
-        out[13] = a13;
-        out[14] = a23;
-    } else {
-        out[0] = a[0];
-        out[1] = a[4];
-        out[2] = a[8];
-        out[3] = a[12];
-        out[4] = a[1];
-        out[5] = a[5];
-        out[6] = a[9];
-        out[7] = a[13];
-        out[8] = a[2];
-        out[9] = a[6];
-        out[10] = a[10];
-        out[11] = a[14];
-        out[12] = a[3];
-        out[13] = a[7];
-        out[14] = a[11];
-        out[15] = a[15];
-    }
     return out;
 }
 
@@ -604,6 +154,1467 @@ function invert(out, a) {
     out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
     out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
     out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    return out;
+}
+
+var translate_1 = translate;
+function translate(out, a, v) {
+    var x = v[0], y = v[1], z = v[2],
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23;
+    if (a === out) {
+        out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
+        out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
+        out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
+        out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
+    } else {
+        a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+        a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+        a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+        out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
+        out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
+        out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
+        out[12] = a00 * x + a10 * y + a20 * z + a[12];
+        out[13] = a01 * x + a11 * y + a21 * z + a[13];
+        out[14] = a02 * x + a12 * y + a22 * z + a[14];
+        out[15] = a03 * x + a13 * y + a23 * z + a[15];
+    }
+    return out;
+}
+
+var scale_1 = scale;
+function scale(out, a, v) {
+    var x = v[0], y = v[1], z = v[2];
+    out[0] = a[0] * x;
+    out[1] = a[1] * x;
+    out[2] = a[2] * x;
+    out[3] = a[3] * x;
+    out[4] = a[4] * y;
+    out[5] = a[5] * y;
+    out[6] = a[6] * y;
+    out[7] = a[7] * y;
+    out[8] = a[8] * z;
+    out[9] = a[9] * z;
+    out[10] = a[10] * z;
+    out[11] = a[11] * z;
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var lookAt_1 = lookAt;
+function lookAt(out, eye, center, up) {
+    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
+        eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2],
+        centerx = center[0],
+        centery = center[1],
+        centerz = center[2];
+    if (Math.abs(eyex - centerx) < 0.000001 &&
+        Math.abs(eyey - centery) < 0.000001 &&
+        Math.abs(eyez - centerz) < 0.000001) {
+        return identity_1(out);
+    }
+    z0 = eyex - centerx;
+    z1 = eyey - centery;
+    z2 = eyez - centerz;
+    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+    z0 *= len;
+    z1 *= len;
+    z2 *= len;
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
+    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+    if (!len) {
+        x0 = 0;
+        x1 = 0;
+        x2 = 0;
+    } else {
+        len = 1 / len;
+        x0 *= len;
+        x1 *= len;
+        x2 *= len;
+    }
+    y0 = z1 * x2 - z2 * x1;
+    y1 = z2 * x0 - z0 * x2;
+    y2 = z0 * x1 - z1 * x0;
+    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+    if (!len) {
+        y0 = 0;
+        y1 = 0;
+        y2 = 0;
+    } else {
+        len = 1 / len;
+        y0 *= len;
+        y1 *= len;
+        y2 *= len;
+    }
+    out[0] = x0;
+    out[1] = y0;
+    out[2] = z0;
+    out[3] = 0;
+    out[4] = x1;
+    out[5] = y1;
+    out[6] = z1;
+    out[7] = 0;
+    out[8] = x2;
+    out[9] = y2;
+    out[10] = z2;
+    out[11] = 0;
+    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+    out[15] = 1;
+    return out;
+}
+
+var perspective_1 = perspective;
+function perspective(out, fovy, aspect, near, far) {
+    var f = 1.0 / Math.tan(fovy / 2),
+        nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (2 * far * near) * nf;
+    out[15] = 0;
+    return out;
+}
+
+var MAX_PHI = Math.PI * 0.5 - 1e-4;
+var MIN_PHI = -Math.PI * 0.5 + 1e-4;
+var inertialTurntableCamera = function createCamera (opts) {
+  opts = opts || {};
+  var willBeDirty = true;
+  var params = {
+    aspectRatio: opts.aspectRatio ? opts.aspectRatio : 1,
+    zoomAboutCursor: opts.zoomAboutCursor === undefined ? true : opts.zoomAboutCursor,
+    distance: opts.distance === undefined ? 10 : opts.distance,
+    phi: opts.phi === undefined ? 0 : opts.phi,
+    theta: opts.theta === undefined ? 0 : opts.theta,
+    fovY: opts.fovY === undefined ? Math.PI / 4 : opts.fovY,
+    near: opts.near === undefined ? 0.1 : opts.near,
+    far: opts.far === undefined ? 100 : opts.far,
+    panDecayTime: opts.panDecayTime || 100,
+    zoomDecayTime: opts.zoomDecayTime || 100,
+    rotationDecayTime: opts.rotationDecayTime || 100,
+    dirty: true,
+    up: opts.up || new Float32Array([0, 1, 0]),
+    center: opts.center || new Float32Array(3),
+    rotationCenter: opts.rotationCenter || opts.center && opts.center.slice() || new Float32Array(3),
+    zoom: 0,
+    panX: 0,
+    panY: 0,
+    panZ: 0,
+    pitch: 0,
+    yaw: 0,
+    dTheta: 0,
+    dPhi: 0,
+    mouseX: 0,
+    mouseY: 0,
+  };
+  var t0 = null;
+  var camera = {
+    tick: function (mergeState) {
+      if (accumulator.zoom) params.zoom = accumulator.zoom;
+      if (accumulator.dTheta) params.dTheta = accumulator.dTheta;
+      if (accumulator.dPhi) params.dPhi = accumulator.dPhi;
+      if (accumulator.panX) params.panX = accumulator.panX;
+      if (accumulator.panY) params.panY = accumulator.panY;
+      if (accumulator.panZ) params.panZ = accumulator.panZ;
+      if (accumulator.yaw) params.yaw = accumulator.yaw;
+      if (accumulator.pitch) params.pitch = accumulator.pitch;
+      zeroChanges(accumulator);
+      if (mergeState) {
+        var cachedDPhi = params.dPhi;
+        var cachedDTheta = params.dTheta;
+        var cachedZoom = params.zoom;
+        var cachedPanX = params.panX;
+        var cachedPanY = params.panY;
+        var cachedPanZ = params.panZ;
+        var cachedPitch = params.pitch;
+        var cachedYaw = params.yaw;
+        Object.assign(params, mergeState);
+        if (mergeState.dPhi !== undefined) params.dPhi += cachedDPhi;
+        if (mergeState.dTheta !== undefined) params.dTheta += cachedDTheta;
+        if (mergeState.zoom !== undefined) params.zoom += cachedZoom;
+        if (mergeState.panX !== undefined) params.panX += cachedPanX;
+        if (mergeState.panY !== undefined) params.panY += cachedPanY;
+        if (mergeState.panZ !== undefined) params.panZ += cachedPanZ;
+        if (mergeState.pitch !== undefined) params.pitch += cachedPitch;
+        if (mergeState.yaw !== undefined) params.yaw += cachedYaw;
+      }
+      if (paramsVectorHasChanged()) {
+        applyStateChanges();
+      }
+      if (viewIsChanging()) {
+        applyViewChanges(params);
+      } else {
+        zeroChanges(params);
+      }
+      var t = Date.now();
+      if (t0 !== null) decay(t - t0);
+      t0 = t;
+      camera.state.dirty = willBeDirty;
+      willBeDirty = false;
+      storeCurrentState();
+    },
+    taint: taint,
+    resize: resize,
+    params: params,
+    rotate: rotate,
+    pivot: pivot,
+    pan: pan,
+    zoom: zoom,
+  };
+  camera.state = {
+  };
+  camera.state.projection = new Float32Array(16);
+  camera.state.viewInv = new Float32Array(16);
+  camera.state.view = new Float32Array(16);
+  camera.state.width = null;
+  camera.state.height = null;
+  camera.state.eye = new Float32Array(3);
+  var tmp = new Float32Array(3);
+  var viewUp = new Float32Array(3);
+  var viewRight = new Float32Array(3);
+  var viewForward = new Float32Array(3);
+  var origin = new Float32Array(3);
+  var dView = new Float32Array(16);
+  var previousState = {
+    up: new Float32Array(3),
+    center: new Float32Array(3)
+  };
+  storeCurrentState();
+  function storeCurrentState () {
+    copy_1(previousState.up, params.up);
+    copy_1(previousState.center, params.center);
+    previousState.near = params.near;
+    previousState.far = params.far;
+    previousState.distance = params.distance;
+    previousState.phi = params.phi;
+    previousState.theta = params.theta;
+    previousState.fovY = params.fovY;
+  }
+  function paramsVectorHasChanged () {
+    if (!equals_1(params.up, previousState.up)) return true;
+    if (!equals_1(params.center, previousState.center)) return true;
+    if (params.near !== previousState.near) return true;
+    if (params.far !== previousState.far) return true;
+    if (params.phi !== previousState.phi) return true;
+    if (params.theta !== previousState.theta) return true;
+    if (params.distance !== previousState.distance) return true;
+    if (params.fovY !== previousState.fovY) return true;
+    return false;
+  }
+  var paramsChanges = {};
+  function applyStateChanges () {
+    paramsChanges.dPhi = params.phi - previousState.phi;
+    paramsChanges.dTheta = params.theta - previousState.theta;
+    paramsChanges.zoom = params.distance / previousState.distance - 1;
+    params.theta = previousState.theta;
+    params.distance = previousState.distance;
+    params.phi = previousState.phi;
+    paramsChanges.yaw = 0;
+    paramsChanges.pitch = 0;
+    paramsChanges.panX = 0;
+    paramsChanges.panY = 0;
+    paramsChanges.panZ = 0;
+    paramsChanges.mouseX = 0;
+    paramsChanges.mouseY = 0;
+    applyViewChanges(paramsChanges);
+  }
+  function computeMatrices () {
+    camera.state.eye[0] = 0;
+    camera.state.eye[1] = 0;
+    camera.state.eye[2] = params.distance;
+    rotateX_1(camera.state.eye, camera.state.eye, origin, -params.phi);
+    rotateY_1(camera.state.eye, camera.state.eye, origin, params.theta);
+    add_1(camera.state.eye, camera.state.eye, params.center);
+    lookAt_1(camera.state.view, camera.state.eye, params.center, params.up);
+    perspective_1(camera.state.projection, params.fovY, camera.params.aspectRatio, params.near, params.far);
+    invert_1(camera.state.viewInv, camera.state.view);
+  }
+  function taint () {
+    willBeDirty = true;
+  }
+  function resize (aspectRatio) {
+    camera.params.aspectRatio = aspectRatio;
+    computeMatrices();
+    taint();
+  }
+  function viewIsChanging () {
+    if (Math.abs(params.zoom) > 1e-4) return true;
+    if (Math.abs(params.panX) > 1e-4) return true;
+    if (Math.abs(params.panY) > 1e-4) return true;
+    if (Math.abs(params.panZ) > 1e-4) return true;
+    if (Math.abs(params.dTheta) > 1e-4) return true;
+    if (Math.abs(params.dPhi) > 1e-4) return true;
+    if (Math.abs(params.yaw) > 1e-4) return true;
+    if (Math.abs(params.pitch) > 1e-4) return true;
+  }
+  function zeroChanges (obj) {
+    obj.zoom = 0;
+    obj.dTheta = 0;
+    obj.dPhi = 0;
+    obj.panX = 0;
+    obj.panY = 0;
+    obj.panZ = 0;
+    obj.yaw = 0;
+    obj.pitch = 0;
+  }
+  function decay (dt) {
+    var panDecay = params.panDecayTime ? Math.exp(-dt / params.panDecayTime / Math.LN2) : 0;
+    var zoomDecay = params.zoomDecayTime ? Math.exp(-dt / params.zoomDecayTime / Math.LN2) : 0;
+    var rotateDecay = params.rotationDecayTime ? Math.exp(-dt / params.rotationDecayTime / Math.LN2) : 0;
+    params.zoom *= zoomDecay;
+    params.panX *= panDecay;
+    params.panY *= panDecay;
+    params.panZ *= panDecay;
+    params.dTheta *= rotateDecay;
+    params.dPhi *= rotateDecay;
+    params.yaw *= rotateDecay;
+    params.pitch *= rotateDecay;
+  }
+  var accumulator = {};
+  zeroChanges(accumulator);
+  function pan (panX, panY) {
+    var scaleFactor = camera.params.distance * Math.tan(camera.params.fovY * 0.5) * 2.0;
+    accumulator.panX += panX * params.aspectRatio * scaleFactor;
+    accumulator.panY += panY * scaleFactor;
+    return camera;
+  }
+  function zoom (mouseX, mouseY, zoom) {
+    accumulator.zoom += zoom;
+    params.mouseX = mouseX;
+    params.mouseY = mouseY;
+    return camera;
+  }
+  function pivot (yaw, pitch) {
+    var scaleFactor = camera.params.fovY;
+    accumulator.yaw += yaw * scaleFactor * params.aspectRatio;
+    accumulator.pitch += pitch * scaleFactor;
+  }
+  function rotate (dTheta, dPhi) {
+    accumulator.dTheta += dTheta;
+    accumulator.dPhi += dPhi;
+  }
+  function applyViewChanges (changes) {
+    var zoomScaleFactor;
+    identity_1(dView);
+    if (params.zoomAboutCursor) {
+      zoomScaleFactor = params.distance * Math.tan(params.fovY * 0.5);
+      tmp[0] = changes.mouseX * params.aspectRatio * zoomScaleFactor;
+      tmp[1] = changes.mouseY * zoomScaleFactor;
+      tmp[2] = 0;
+      translate_1(dView, dView, tmp);
+    }
+    tmp[0] = 1 + changes.zoom;
+    tmp[1] = 1 + changes.zoom;
+    tmp[2] = 1;
+    scale_1(dView, dView, tmp);
+    if (params.zoomAboutCursor) {
+      zoomScaleFactor = params.distance * Math.tan(params.fovY * 0.5);
+      tmp[0] = -changes.mouseX * params.aspectRatio * zoomScaleFactor;
+      tmp[1] = -changes.mouseY * zoomScaleFactor;
+      tmp[2] = 0;
+      translate_1(dView, dView, tmp);
+    }
+    dView[12] -= changes.panX * 0.5;
+    dView[13] -= changes.panY * 0.5;
+    transformMat4_1(params.center, params.center, camera.state.view);
+    transformMat4_1(params.center, params.center, dView);
+    transformMat4_1(params.center, params.center, camera.state.viewInv);
+    if (params.rotateAboutCenter) {
+      copy_1(params.rotationCenter, params.center);
+    }
+    params.distance *= 1 + changes.zoom;
+    var prevPhi = params.phi;
+    params.phi += changes.dPhi;
+    params.phi = Math.min(MAX_PHI, Math.max(MIN_PHI, params.phi));
+    var dPhi = params.phi - prevPhi;
+    var prevTheta = params.theta;
+    params.theta += changes.dTheta;
+    var dTheta = params.theta - prevTheta;
+    rotateY_1(params.center, params.center, params.rotationCenter, dTheta - params.theta);
+    rotateX_1(params.center, params.center, params.rotationCenter, -dPhi);
+    rotateY_1(params.center, params.center, params.rotationCenter, params.theta);
+    if (changes.yaw !== 0 || changes.pitch !== 0) {
+      viewRight[0] = camera.state.view[0];
+      viewRight[1] = camera.state.view[4];
+      viewRight[2] = camera.state.view[8];
+      normalize_1(viewRight, viewRight);
+      viewUp[0] = camera.state.view[1];
+      viewUp[1] = camera.state.view[5];
+      viewUp[2] = camera.state.view[9];
+      normalize_1(viewUp, viewUp);
+      viewForward[0] = camera.state.view[2];
+      viewForward[1] = camera.state.view[6];
+      viewForward[2] = camera.state.view[10];
+      normalize_1(viewForward, viewForward);
+      var clippedPhi = Math.min(MAX_PHI, Math.max(MIN_PHI, params.phi + changes.pitch * 0.5));
+      var clippedPitch = clippedPhi - params.phi;
+      scaleAndAdd_1(params.center, params.center, viewRight, -Math.sin(changes.yaw * 0.5) * params.distance);
+      scaleAndAdd_1(params.center, params.center, viewUp, -Math.sin(clippedPitch) * params.distance);
+      scaleAndAdd_1(params.center, params.center, viewForward, (2 - Math.cos(changes.yaw * 0.5) - Math.cos(clippedPitch)) * params.distance);
+      params.phi = clippedPhi;
+      params.theta += changes.yaw * 0.5;
+    }
+    computeMatrices();
+    taint();
+  }
+  resize(camera.params.aspectRatio);
+  return camera;
+};
+
+function mouseButtons(ev) {
+  if(typeof ev === 'object') {
+    if('buttons' in ev) {
+      return ev.buttons
+    } else if('which' in ev) {
+      var b = ev.which;
+      if(b === 2) {
+        return 4
+      } else if(b === 3) {
+        return 2
+      } else if(b > 0) {
+        return 1<<(b-1)
+      }
+    } else if('button' in ev) {
+      var b = ev.button;
+      if(b === 1) {
+        return 4
+      } else if(b === 2) {
+        return 2
+      } else if(b >= 0) {
+        return 1<<b
+      }
+    }
+  }
+  return 0
+}
+var buttons = mouseButtons;
+function mouseElement(ev) {
+  return ev.target || ev.srcElement || window
+}
+var element = mouseElement;
+function mouseRelativeX(ev) {
+  if(typeof ev === 'object') {
+    if('offsetX' in ev) {
+      return ev.offsetX
+    }
+    var target = mouseElement(ev);
+    var bounds = target.getBoundingClientRect();
+    return ev.clientX - bounds.left
+  }
+  return 0
+}
+var x = mouseRelativeX;
+function mouseRelativeY(ev) {
+  if(typeof ev === 'object') {
+    if('offsetY' in ev) {
+      return ev.offsetY
+    }
+    var target = mouseElement(ev);
+    var bounds = target.getBoundingClientRect();
+    return ev.clientY - bounds.top
+  }
+  return 0
+}
+var y = mouseRelativeY;
+var mouse = {
+	buttons: buttons,
+	element: element,
+	x: x,
+	y: y
+};
+
+var mouseListen_1 = mouseListen;
+function mouseListen (element, callback) {
+  if (!callback) {
+    callback = element;
+    element = window;
+  }
+  var buttonState = 0;
+  var x = 0;
+  var y = 0;
+  var mods = {
+    shift: false,
+    alt: false,
+    control: false,
+    meta: false
+  };
+  var attached = false;
+  function updateMods (ev) {
+    var changed = false;
+    if ('altKey' in ev) {
+      changed = changed || ev.altKey !== mods.alt;
+      mods.alt = !!ev.altKey;
+    }
+    if ('shiftKey' in ev) {
+      changed = changed || ev.shiftKey !== mods.shift;
+      mods.shift = !!ev.shiftKey;
+    }
+    if ('ctrlKey' in ev) {
+      changed = changed || ev.ctrlKey !== mods.control;
+      mods.control = !!ev.ctrlKey;
+    }
+    if ('metaKey' in ev) {
+      changed = changed || ev.metaKey !== mods.meta;
+      mods.meta = !!ev.metaKey;
+    }
+    return changed
+  }
+  function handleEvent (nextButtons, ev) {
+    var nextX = mouse.x(ev);
+    var nextY = mouse.y(ev);
+    if ('buttons' in ev) {
+      nextButtons = ev.buttons | 0;
+    }
+    if (nextButtons !== buttonState ||
+      nextX !== x ||
+      nextY !== y ||
+      updateMods(ev)) {
+      buttonState = nextButtons | 0;
+      x = nextX || 0;
+      y = nextY || 0;
+      callback && callback(buttonState, x, y, mods);
+    }
+  }
+  function clearState (ev) {
+    handleEvent(0, ev);
+  }
+  function handleBlur () {
+    if (buttonState ||
+      x ||
+      y ||
+      mods.shift ||
+      mods.alt ||
+      mods.meta ||
+      mods.control) {
+      x = y = 0;
+      buttonState = 0;
+      mods.shift = mods.alt = mods.control = mods.meta = false;
+      callback && callback(0, 0, 0, mods);
+    }
+  }
+  function handleMods (ev) {
+    if (updateMods(ev)) {
+      callback && callback(buttonState, x, y, mods);
+    }
+  }
+  function handleMouseMove (ev) {
+    if (mouse.buttons(ev) === 0) {
+      handleEvent(0, ev);
+    } else {
+      handleEvent(buttonState, ev);
+    }
+  }
+  function handleMouseDown (ev) {
+    handleEvent(buttonState | mouse.buttons(ev), ev);
+  }
+  function handleMouseUp (ev) {
+    handleEvent(buttonState & ~mouse.buttons(ev), ev);
+  }
+  function attachListeners () {
+    if (attached) {
+      return
+    }
+    attached = true;
+    element.addEventListener('mousemove', handleMouseMove);
+    element.addEventListener('mousedown', handleMouseDown);
+    element.addEventListener('mouseup', handleMouseUp);
+    element.addEventListener('mouseleave', clearState);
+    element.addEventListener('mouseenter', clearState);
+    element.addEventListener('mouseout', clearState);
+    element.addEventListener('mouseover', clearState);
+    element.addEventListener('blur', handleBlur);
+    element.addEventListener('keyup', handleMods);
+    element.addEventListener('keydown', handleMods);
+    element.addEventListener('keypress', handleMods);
+    if (element !== window) {
+      window.addEventListener('blur', handleBlur);
+      window.addEventListener('keyup', handleMods);
+      window.addEventListener('keydown', handleMods);
+      window.addEventListener('keypress', handleMods);
+    }
+  }
+  function detachListeners () {
+    if (!attached) {
+      return
+    }
+    attached = false;
+    element.removeEventListener('mousemove', handleMouseMove);
+    element.removeEventListener('mousedown', handleMouseDown);
+    element.removeEventListener('mouseup', handleMouseUp);
+    element.removeEventListener('mouseleave', clearState);
+    element.removeEventListener('mouseenter', clearState);
+    element.removeEventListener('mouseout', clearState);
+    element.removeEventListener('mouseover', clearState);
+    element.removeEventListener('blur', handleBlur);
+    element.removeEventListener('keyup', handleMods);
+    element.removeEventListener('keydown', handleMods);
+    element.removeEventListener('keypress', handleMods);
+    if (element !== window) {
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('keyup', handleMods);
+      window.removeEventListener('keydown', handleMods);
+      window.removeEventListener('keypress', handleMods);
+    }
+  }
+  attachListeners();
+  var result = {
+    element: element
+  };
+  Object.defineProperties(result, {
+    enabled: {
+      get: function () { return attached },
+      set: function (f) {
+        if (f) {
+          attachListeners();
+        } else {
+          detachListeners();
+        }
+      },
+      enumerable: true
+    },
+    buttons: {
+      get: function () { return buttonState },
+      enumerable: true
+    },
+    x: {
+      get: function () { return x },
+      enumerable: true
+    },
+    y: {
+      get: function () { return y },
+      enumerable: true
+    },
+    mods: {
+      get: function () { return mods },
+      enumerable: true
+    }
+  });
+  return result
+}
+
+var rootPosition = { left: 0, top: 0 };
+var mouseEventOffset_1 = mouseEventOffset;
+function mouseEventOffset (ev, target, out) {
+  target = target || ev.currentTarget || ev.srcElement;
+  if (!Array.isArray(out)) {
+    out = [ 0, 0 ];
+  }
+  var cx = ev.clientX || 0;
+  var cy = ev.clientY || 0;
+  var rect = getBoundingClientOffset(target);
+  out[0] = cx - rect.left;
+  out[1] = cy - rect.top;
+  return out
+}
+function getBoundingClientOffset (element) {
+  if (element === window ||
+      element === document ||
+      element === document.body) {
+    return rootPosition
+  } else {
+    return element.getBoundingClientRect()
+  }
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var _undefined = void 0;
+var is = function (value) { return value !== _undefined && value !== null; };
+
+var possibleTypes = { "object": true, "function": true, "undefined": true  };
+var is$1 = function (value) {
+	if (!is(value)) return false;
+	return hasOwnProperty.call(possibleTypes, typeof value);
+};
+
+var is$2 = function (value) {
+	if (!is$1(value)) return false;
+	try {
+		if (!value.constructor) return false;
+		return value.constructor.prototype === value;
+	} catch (error) {
+		return false;
+	}
+};
+
+var is$3 = function (value) {
+	if (typeof value !== "function") return false;
+	if (!hasOwnProperty.call(value, "length")) return false;
+	try {
+		if (typeof value.length !== "number") return false;
+		if (typeof value.call !== "function") return false;
+		if (typeof value.apply !== "function") return false;
+	} catch (error) {
+		return false;
+	}
+	return !is$2(value);
+};
+
+var classRe = /^\s*class[\s{/}]/, functionToString = Function.prototype.toString;
+var is$4 = function (value) {
+	if (!is$3(value)) return false;
+	if (classRe.test(functionToString.call(value))) return false;
+	return true;
+};
+
+var isImplemented = function () {
+	var assign = Object.assign, obj;
+	if (typeof assign !== "function") return false;
+	obj = { foo: "raz" };
+	assign(obj, { bar: "dwa" }, { trzy: "trzy" });
+	return obj.foo + obj.bar + obj.trzy === "razdwatrzy";
+};
+
+var isImplemented$1 = function () {
+	try {
+		Object.keys("primitive");
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+
+var noop = function () {};
+
+var _undefined$1 = noop();
+var isValue = function (val) { return val !== _undefined$1 && val !== null; };
+
+var keys = Object.keys;
+var shim = function (object) { return keys(isValue(object) ? Object(object) : object); };
+
+var keys$1 = isImplemented$1() ? Object.keys : shim;
+
+var validValue = function (value) {
+	if (!isValue(value)) throw new TypeError("Cannot use null or undefined");
+	return value;
+};
+
+var max   = Math.max;
+var shim$1 = function (dest, src) {
+	var error, i, length = max(arguments.length, 2), assign;
+	dest = Object(validValue(dest));
+	assign = function (key) {
+		try {
+			dest[key] = src[key];
+		} catch (e) {
+			if (!error) error = e;
+		}
+	};
+	for (i = 1; i < length; ++i) {
+		src = arguments[i];
+		keys$1(src).forEach(assign);
+	}
+	if (error !== undefined) throw error;
+	return dest;
+};
+
+var assign = isImplemented() ? Object.assign : shim$1;
+
+var forEach = Array.prototype.forEach, create = Object.create;
+var process = function (src, obj) {
+	var key;
+	for (key in src) obj[key] = src[key];
+};
+var normalizeOptions = function (opts1) {
+	var result = create(null);
+	forEach.call(arguments, function (options) {
+		if (!isValue(options)) return;
+		process(Object(options), result);
+	});
+	return result;
+};
+
+var str = "razdwatrzy";
+var isImplemented$2 = function () {
+	if (typeof str.contains !== "function") return false;
+	return str.contains("dwa") === true && str.contains("foo") === false;
+};
+
+var indexOf = String.prototype.indexOf;
+var shim$2 = function (searchString) {
+	return indexOf.call(this, searchString, arguments[1]) > -1;
+};
+
+var contains = isImplemented$2() ? String.prototype.contains : shim$2;
+
+var d_1 = createCommonjsModule(function (module) {
+var d = (module.exports = function (dscr, value) {
+	var c, e, w, options, desc;
+	if (arguments.length < 2 || typeof dscr !== "string") {
+		options = value;
+		value = dscr;
+		dscr = null;
+	} else {
+		options = arguments[2];
+	}
+	if (is(dscr)) {
+		c = contains.call(dscr, "c");
+		e = contains.call(dscr, "e");
+		w = contains.call(dscr, "w");
+	} else {
+		c = w = true;
+		e = false;
+	}
+	desc = { value: value, configurable: c, enumerable: e, writable: w };
+	return !options ? desc : assign(normalizeOptions(options), desc);
+});
+d.gs = function (dscr, get, set) {
+	var c, e, options, desc;
+	if (typeof dscr !== "string") {
+		options = set;
+		set = get;
+		get = dscr;
+		dscr = null;
+	} else {
+		options = arguments[3];
+	}
+	if (!is(get)) {
+		get = undefined;
+	} else if (!is$4(get)) {
+		options = get;
+		get = set = undefined;
+	} else if (!is(set)) {
+		set = undefined;
+	} else if (!is$4(set)) {
+		options = set;
+		set = undefined;
+	}
+	if (is(dscr)) {
+		c = contains.call(dscr, "c");
+		e = contains.call(dscr, "e");
+	} else {
+		c = true;
+		e = false;
+	}
+	desc = { get: get, set: set, configurable: c, enumerable: e };
+	return !options ? desc : assign(normalizeOptions(options), desc);
+};
+});
+
+var validCallable = function (fn) {
+	if (typeof fn !== "function") throw new TypeError(fn + " is not a function");
+	return fn;
+};
+
+var eventEmitter = createCommonjsModule(function (module, exports) {
+var apply = Function.prototype.apply, call = Function.prototype.call
+  , create = Object.create, defineProperty = Object.defineProperty
+  , defineProperties = Object.defineProperties
+  , hasOwnProperty = Object.prototype.hasOwnProperty
+  , descriptor = { configurable: true, enumerable: false, writable: true }
+  , on, once, off, emit, methods, descriptors, base;
+on = function (type, listener) {
+	var data;
+	validCallable(listener);
+	if (!hasOwnProperty.call(this, '__ee__')) {
+		data = descriptor.value = create(null);
+		defineProperty(this, '__ee__', descriptor);
+		descriptor.value = null;
+	} else {
+		data = this.__ee__;
+	}
+	if (!data[type]) data[type] = listener;
+	else if (typeof data[type] === 'object') data[type].push(listener);
+	else data[type] = [data[type], listener];
+	return this;
+};
+once = function (type, listener) {
+	var once, self;
+	validCallable(listener);
+	self = this;
+	on.call(this, type, once = function () {
+		off.call(self, type, once);
+		apply.call(listener, this, arguments);
+	});
+	once.__eeOnceListener__ = listener;
+	return this;
+};
+off = function (type, listener) {
+	var data, listeners, candidate, i;
+	validCallable(listener);
+	if (!hasOwnProperty.call(this, '__ee__')) return this;
+	data = this.__ee__;
+	if (!data[type]) return this;
+	listeners = data[type];
+	if (typeof listeners === 'object') {
+		for (i = 0; (candidate = listeners[i]); ++i) {
+			if ((candidate === listener) ||
+					(candidate.__eeOnceListener__ === listener)) {
+				if (listeners.length === 2) data[type] = listeners[i ? 0 : 1];
+				else listeners.splice(i, 1);
+			}
+		}
+	} else {
+		if ((listeners === listener) ||
+				(listeners.__eeOnceListener__ === listener)) {
+			delete data[type];
+		}
+	}
+	return this;
+};
+emit = function (type) {
+	var i, l, listener, listeners, args;
+	if (!hasOwnProperty.call(this, '__ee__')) return;
+	listeners = this.__ee__[type];
+	if (!listeners) return;
+	if (typeof listeners === 'object') {
+		l = arguments.length;
+		args = new Array(l - 1);
+		for (i = 1; i < l; ++i) args[i - 1] = arguments[i];
+		listeners = listeners.slice();
+		for (i = 0; (listener = listeners[i]); ++i) {
+			apply.call(listener, this, args);
+		}
+	} else {
+		switch (arguments.length) {
+		case 1:
+			call.call(listeners, this);
+			break;
+		case 2:
+			call.call(listeners, this, arguments[1]);
+			break;
+		case 3:
+			call.call(listeners, this, arguments[1], arguments[2]);
+			break;
+		default:
+			l = arguments.length;
+			args = new Array(l - 1);
+			for (i = 1; i < l; ++i) {
+				args[i - 1] = arguments[i];
+			}
+			apply.call(listeners, this, args);
+		}
+	}
+};
+methods = {
+	on: on,
+	once: once,
+	off: off,
+	emit: emit
+};
+descriptors = {
+	on: d_1(on),
+	once: d_1(once),
+	off: d_1(off),
+	emit: d_1(emit)
+};
+base = defineProperties({}, descriptors);
+module.exports = exports = function (o) {
+	return (o == null) ? create(base) : defineProperties(Object(o), descriptors);
+};
+exports.methods = methods;
+});
+var eventEmitter_1 = eventEmitter.methods;
+
+var normalizedInteractionEvents_1 = normalizedInteractionEvents;
+function normalizedInteractionEvents (element) {
+  element = element || window;
+  var emitter = eventEmitter();
+  var previousPosition = [null, null];
+  var previousFingerPosition = [null, null];
+  var currentPosition = [null, null];
+  var fingers = [null, null];
+  var activeTouchCount = 0;
+  var ev = {};
+  var width, height;
+  var getSize = element === window ? function () {
+    width = window.innerWidth;
+    height = window.innerHeight;
+  } : function () {
+    width = element.clientWidth;
+    height = element.clientHeight;
+  };
+  var buttons = 0;
+  var mouseX;
+  var mouseY;
+  var mods = {};
+  var changeListener = mouseListen_1(element, function(pbuttons, px, py, pmods) {
+    mouseX = px;
+    mouseY = py;
+    buttons = pbuttons;
+    mods = pmods;
+  });
+  function onWheel (event) {
+    mouseEventOffset_1(event, element, currentPosition);
+    getSize();
+    ev.buttons = buttons;
+    ev.mods = mods;
+    ev.x0 = ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
+    ev.y0 = ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
+    ev.x2 = null;
+    ev.y2 = null;
+    ev.dx = 2 * event.deltaX / width;
+    ev.dy = -2 * event.deltaY / height;
+    ev.dz = 2 * event.deltaZ / width;
+    ev.active = 1;
+    ev.zoomx = 1;
+    ev.zoomy = 1;
+    ev.theta = 0;
+    ev.dtheta = 0;
+    ev.originalEvent = event;
+    emitter.emit('wheel', ev);
+    previousPosition[0] = currentPosition[0];
+    previousPosition[1] = currentPosition[1];
+  }
+  var x0 = null;
+  var y0 = null;
+  var active = 0;
+  function onMouseUp (event) {
+    mouseEventOffset_1(event, element, currentPosition);
+    active = 0;
+    getSize();
+    ev.buttons = buttons;
+    ev.mods = mods;
+    ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
+    ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
+    ev.x2 = null;
+    ev.y2 = null;
+    ev.active = active;
+    ev.x0 = 2 * x0 / width - 1;
+    ev.y0 = 1 - 2 * y0 / height;
+    ev.dx = 0;
+    ev.dy = 0;
+    ev.dz = 0;
+    ev.zoomx = 1;
+    ev.zoomy = 1;
+    ev.theta = 0;
+    ev.dtheta = 0;
+    ev.originalEvent = event;
+    emitter.emit('mouseup', ev);
+    x0 = y0 = null;
+    previousPosition[0] = currentPosition[0];
+    previousPosition[1] = currentPosition[1];
+  }
+  function onMouseDown (event) {
+    mouseEventOffset_1(event, element, currentPosition);
+    active = 1;
+    getSize();
+    x0 = mouseX;
+    y0 = mouseY;
+    ev.buttons = buttons;
+    ev.mods = mods;
+    ev.x = ev.x0 = ev.x1 = 2 * currentPosition[0] / width - 1;
+    ev.y = ev.y0 = ev.y1 = 1 - 2 * currentPosition[1] / height;
+    ev.x2 = null;
+    ev.y2 = null;
+    ev.active = active;
+    ev.dx = 0;
+    ev.dy = 0;
+    ev.dz = 0;
+    ev.zoomx = 1;
+    ev.zoomy = 1;
+    ev.theta = 0;
+    ev.dtheta = 0;
+    ev.originalEvent = event;
+    emitter.emit('mousedown', ev);
+    previousPosition[0] = currentPosition[0];
+    previousPosition[1] = currentPosition[1];
+  }
+  function onMouseMove (event) {
+    mouseEventOffset_1(event, element, currentPosition);
+    getSize();
+    ev.buttons = buttons;
+    ev.mods = mods;
+    ev.x0 = 2 * x0 / width - 1;
+    ev.y0 = 1 - 2 * y0 / height;
+    ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
+    ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
+    ev.x2 = null;
+    ev.y2 = null;
+    ev.dx = 2 * (currentPosition[0] - previousPosition[0]) / width;
+    ev.dy = -2 * (currentPosition[1] - previousPosition[1]) / height;
+    ev.active = active;
+    ev.dz = 0;
+    ev.zoomx = 1;
+    ev.zoomy = 1;
+    ev.theta = 0;
+    ev.dtheta = 0;
+    ev.originalEvent = event;
+    emitter.emit('mousemove', ev);
+    previousPosition[0] = currentPosition[0];
+    previousPosition[1] = currentPosition[1];
+  }
+  function indexOfTouch (touch) {
+    var id = touch.identifier;
+    for (var i = 0; i < fingers.length; i++) {
+      if (fingers[i] &&
+        fingers[i].touch &&
+        fingers[i].touch.identifier === id) {
+        return i
+      }
+    }
+    return -1
+  }
+  function onTouchStart (event) {
+    previousFingerPosition[0] = null;
+    previousFingerPosition[1] = null;
+    for (var i = 0; i < event.changedTouches.length; i++) {
+      var newTouch = event.changedTouches[i];
+      var id = newTouch.identifier;
+      var idx = indexOfTouch(id);
+      if (idx === -1 && activeTouchCount < 2) {
+        var newIndex = fingers[0] ? 1 : 0;
+        var oldIndex = fingers[0] ? 0 : 1;
+        var newFinger = {
+          position: [0, 0],
+          touch: null
+        };
+        fingers[newIndex] = newFinger;
+        activeTouchCount++;
+        newFinger.touch = newTouch;
+        mouseEventOffset_1(newTouch, element, newFinger.position);
+        var oldTouch = fingers[oldIndex] ? fingers[oldIndex].touch : undefined;
+      }
+    }
+    var xavg = 0;
+    var yavg = 0;
+    var fingerCount = 0;
+    for (var i = 0; i < fingers.length; i++) {
+      if (!fingers[i]) continue;
+      xavg += fingers[i].position[0];
+      yavg += fingers[i].position[1];
+      fingerCount++;
+    }
+    xavg /= fingerCount;
+    yavg /= fingerCount;
+    if (activeTouchCount > 0) {
+      ev.theta = 0;
+      if (fingerCount > 1) {
+        var dx = fingers[1].position[0] - fingers[0].position[0];
+        var dy = (fingers[0].position[1] - fingers[1].position[1]) * width / height;
+        ev.theta = Math.atan2(dy, dx);
+      }
+      getSize();
+      ev.buttons = 0;
+      ev.mods = {};
+      ev.active = activeTouchCount;
+      x0 = xavg;
+      y0 = yavg;
+      ev.x0 = 2 * x0 / width - 1;
+      ev.y0 = 1 - 2 * y0 / height;
+      ev.x = 2 * xavg / width - 1;
+      ev.y = 1 - 2 * yavg / height;
+      ev.x1 = 2 * fingers[0].position[0] / width - 1;
+      ev.y1 = 1 - 2 * fingers[0].position[1] / height;
+      if (activeTouchCount > 1) {
+        ev.x2 = 2 * fingers[1].position[0] / width - 1;
+        ev.y2 = 1 - 2 * fingers[1].position[1] / height;
+      }
+      ev.active = activeTouchCount;
+      ev.dx = 0;
+      ev.dy = 0;
+      ev.dz = 0;
+      ev.zoomx = 1;
+      ev.zoomy = 1;
+      ev.dtheta = 0;
+      ev.originalEvent = event;
+      emitter.emit(activeTouchCount === 1 ? 'touchstart' : 'pinchstart', ev);
+    }
+  }
+  function onTouchMove (event) {
+    var idx;
+    var changed = false;
+    for (var i = 0; i < event.changedTouches.length; i++) {
+      var movedTouch = event.changedTouches[i];
+      idx = indexOfTouch(movedTouch);
+      if (idx !== -1) {
+        changed = true;
+        fingers[idx].touch = movedTouch;
+        mouseEventOffset_1(movedTouch, element, fingers[idx].position);
+      }
+    }
+    if (changed) {
+      if (activeTouchCount === 1) {
+        for (idx = 0; idx < fingers.length; idx++) {
+          if (fingers[idx]) break;
+        }
+        if (fingers[idx] && previousFingerPosition[idx]) {
+          var x = fingers[idx].position[0];
+          var y = fingers[idx].position[1];
+          var dx = x - previousFingerPosition[idx][0];
+          var dy = y - previousFingerPosition[idx][1];
+          ev.buttons = 0;
+          ev.mods = {};
+          ev.active = activeTouchCount;
+          ev.x = ev.x1 = 2 * x / width - 1;
+          ev.y = ev.y1 = 1 - 2 * y / height;
+          ev.x2 = null;
+          ev.y2 = null;
+          ev.x0 = 2 * x0 / width - 1;
+          ev.y0 = 1 - 2 * y0 / height;
+          ev.dx = 2 * dx / width;
+          ev.dy = -2 * dy / height;
+          ev.dz = 0;
+          ev.zoomx = 1;
+          ev.zoomy = 1;
+          ev.theta = 0;
+          ev.dtheta = 0;
+          ev.originalEvent = event;
+          emitter.emit('touchmove', ev);
+        }
+      } else if (activeTouchCount === 2) {
+        if (previousFingerPosition[0] && previousFingerPosition[1]) {
+          var pos0A = previousFingerPosition[0];
+          var pos0B = previousFingerPosition[1];
+          var dx0 = pos0B[0] - pos0A[0];
+          var dy0 = (pos0B[1] - pos0A[1]) * width / height;
+          var pos1A = fingers[0].position;
+          var pos1B = fingers[1].position;
+          var dx1 = pos1B[0] - pos1A[0];
+          var dy1 = (pos1A[1] - pos1B[1]) * width / height;
+          var r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.5;
+          var theta0 = Math.atan2(dy0, dx0);
+          var r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * 0.5;
+          var theta1 = Math.atan2(dy1, dx1);
+          var xavg = (pos0B[0] + pos0A[0]) * 0.5;
+          var yavg = (pos0B[1] + pos0A[1]) * 0.5;
+          var dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
+          var dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
+          var dr = r1 / r0;
+          var dtheta = theta1 - theta0;
+          ev.buttons = 0;
+          ev.mods = mods;
+          ev.active = activeTouchCount;
+          ev.x = 2 * xavg / width - 1;
+          ev.y = 1 - 2 * yavg / height;
+          ev.x0 = 2 * x0 / width - 1;
+          ev.y0 = 1 - 2 * y0 / height;
+          ev.x1 = 2 * pos1A[0] / width - 1;
+          ev.y1 = 1 - 2 * pos1A[1] / height;
+          ev.x2 = 2 * pos1B[0] / width - 1;
+          ev.y2 = 1 - 2 * pos1B[1] / height;
+          ev.dx = 2 * dx / width;
+          ev.dy = -2 * dy / height;
+          ev.dz = 0;
+          ev.zoomx = dr;
+          ev.zoomy = dr;
+          ev.theta = theta1;
+          ev.dtheta = dtheta;
+          ev.originalEvent = event;
+          emitter.emit('pinchmove', ev);
+        }
+      }
+    }
+    if (fingers[0]) {
+      previousFingerPosition[0] = fingers[0].position.slice();
+    }
+    if (fingers[1]) {
+      previousFingerPosition[1] = fingers[1].position.slice();
+    }
+  }
+  function onTouchRemoved (event) {
+    var lastFinger;
+    for (var i = 0; i < event.changedTouches.length; i++) {
+      var removed = event.changedTouches[i];
+      var idx = indexOfTouch(removed);
+      if (idx !== -1) {
+        lastFinger = fingers[idx];
+        fingers[idx] = null;
+        activeTouchCount--;
+        var otherIdx = idx === 0 ? 1 : 0;
+        var otherTouch = fingers[otherIdx] ? fingers[otherIdx].touch : undefined;
+      }
+    }
+    var xavg = 0;
+    var yavg = 0;
+    if (activeTouchCount === 0) {
+      if (lastFinger) {
+        xavg = lastFinger.position[0];
+        yavg = lastFinger.position[1];
+      }
+    } else {
+      var fingerCount = 0;
+      for (var i = 0; i < fingers.length; i++) {
+        if (!fingers[i]) continue;
+        xavg += fingers[i].position[0];
+        yavg += fingers[i].position[1];
+        fingerCount++;
+      }
+      xavg /= fingerCount;
+      yavg /= fingerCount;
+    }
+    if (activeTouchCount < 2) {
+      ev.buttons = 0;
+      ev.mods = mods;
+      ev.active = activeTouchCount;
+      ev.x = 2 * xavg / width - 1;
+      ev.y = 1 - 2 * yavg / height;
+      ev.x0 = 2 * x0 / width - 1;
+      ev.y0 = 1 - 2 * y0 / height;
+      ev.dx = 0;
+      ev.dy = 0;
+      ev.dz = 0;
+      ev.zoomx = 1;
+      ev.zoomy = 1;
+      ev.theta = 0;
+      ev.dtheta = 0;
+      ev.originalEvent = event;
+      emitter.emit(activeTouchCount === 0 ? 'touchend' : 'pinchend', ev);
+    }
+    if (activeTouchCount === 0) {
+      x0 = y0 = null;
+    }
+  }
+  var enabled = false;
+  function enable () {
+    if (enabled) return;
+    enabled = true;
+    changeListener.enabled = true;
+    element.addEventListener('wheel', onWheel, false);
+    element.addEventListener('mousedown', onMouseDown, false);
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('mouseup', onMouseUp, false);
+    element.addEventListener('touchstart', onTouchStart, false);
+    window.addEventListener('touchmove', onTouchMove, false);
+    window.addEventListener('touchend', onTouchRemoved, false);
+    window.addEventListener('touchcancel', onTouchRemoved, false);
+  }
+  function disable () {
+    if (!enabled) return;
+    enabled = false;
+    changeListener.enabled = false;
+    element.removeEventListener('wheel', onWheel, false);
+    element.removeEventListener('mousedown', onMouseDown, false);
+    window.removeEventListener('mousemove', onMouseMove, false);
+    window.removeEventListener('mouseup', onMouseUp, false);
+    element.removeEventListener('touchstart', onTouchStart, false);
+    window.removeEventListener('touchmove', onTouchMove, false);
+    window.removeEventListener('touchend', onTouchRemoved, false);
+    window.removeEventListener('touchcancel', onTouchRemoved, false);
+  }
+  enable();
+  emitter.enable = enable;
+  emitter.disable = disable;
+  return emitter;
+}
+
+var create_1 = create$1;
+function create$1() {
+    var out = new Float32Array(16);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+}
+
+var clone_1 = clone;
+function clone(a) {
+    var out = new Float32Array(16);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var copy_1$1 = copy$1;
+function copy$1(out, a) {
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var transpose_1 = transpose;
+function transpose(out, a) {
+    if (out === a) {
+        var a01 = a[1], a02 = a[2], a03 = a[3],
+            a12 = a[6], a13 = a[7],
+            a23 = a[11];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a01;
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a02;
+        out[9] = a12;
+        out[11] = a[14];
+        out[12] = a03;
+        out[13] = a13;
+        out[14] = a23;
+    } else {
+        out[0] = a[0];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a[1];
+        out[5] = a[5];
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a[2];
+        out[9] = a[6];
+        out[10] = a[10];
+        out[11] = a[14];
+        out[12] = a[3];
+        out[13] = a[7];
+        out[14] = a[11];
+        out[15] = a[15];
+    }
     return out;
 }
 
@@ -653,8 +1664,8 @@ function determinant(a) {
     return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 }
 
-var multiply_1$1 = multiply$1;
-function multiply$1(out, a, b) {
+var multiply_1 = multiply;
+function multiply(out, a, b) {
     var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
         a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
         a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
@@ -679,54 +1690,6 @@ function multiply$1(out, a, b) {
     out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
     out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
-    return out;
-}
-
-var translate_1 = translate;
-function translate(out, a, v) {
-    var x = v[0], y = v[1], z = v[2],
-        a00, a01, a02, a03,
-        a10, a11, a12, a13,
-        a20, a21, a22, a23;
-    if (a === out) {
-        out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-        out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-        out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-        out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-    } else {
-        a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
-        a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
-        a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
-        out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
-        out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
-        out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
-        out[12] = a00 * x + a10 * y + a20 * z + a[12];
-        out[13] = a01 * x + a11 * y + a21 * z + a[13];
-        out[14] = a02 * x + a12 * y + a22 * z + a[14];
-        out[15] = a03 * x + a13 * y + a23 * z + a[15];
-    }
-    return out;
-}
-
-var scale_1$1 = scale$1;
-function scale$1(out, a, v) {
-    var x = v[0], y = v[1], z = v[2];
-    out[0] = a[0] * x;
-    out[1] = a[1] * x;
-    out[2] = a[2] * x;
-    out[3] = a[3] * x;
-    out[4] = a[4] * y;
-    out[5] = a[5] * y;
-    out[6] = a[6] * y;
-    out[7] = a[7] * y;
-    out[8] = a[8] * z;
-    out[9] = a[9] * z;
-    out[10] = a[10] * z;
-    out[11] = a[11] * z;
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
     return out;
 }
 
@@ -842,8 +1805,8 @@ function rotateY$1(out, a, rad) {
     return out;
 }
 
-var rotateZ_1$1 = rotateZ$1;
-function rotateZ$1(out, a, rad) {
+var rotateZ_1 = rotateZ;
+function rotateZ(out, a, rad) {
     var s = Math.sin(rad),
         c = Math.cos(rad),
         a00 = a[0],
@@ -1114,29 +2077,6 @@ function frustum(out, left, right, bottom, top, near, far) {
     return out;
 }
 
-var perspective_1 = perspective;
-function perspective(out, fovy, aspect, near, far) {
-    var f = 1.0 / Math.tan(fovy / 2),
-        nf = 1 / (near - far);
-    out[0] = f / aspect;
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[4] = 0;
-    out[5] = f;
-    out[6] = 0;
-    out[7] = 0;
-    out[8] = 0;
-    out[9] = 0;
-    out[10] = (far + near) * nf;
-    out[11] = -1;
-    out[12] = 0;
-    out[13] = 0;
-    out[14] = (2 * far * near) * nf;
-    out[15] = 0;
-    return out;
-}
-
 var perspectiveFromFieldOfView_1 = perspectiveFromFieldOfView;
 function perspectiveFromFieldOfView(out, fov, near, far) {
     var upTan = Math.tan(fov.upDegrees * Math.PI/180.0),
@@ -1188,79 +2128,8 @@ function ortho(out, left, right, bottom, top, near, far) {
     return out;
 }
 
-var lookAt_1 = lookAt;
-function lookAt(out, eye, center, up) {
-    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
-        eyex = eye[0],
-        eyey = eye[1],
-        eyez = eye[2],
-        upx = up[0],
-        upy = up[1],
-        upz = up[2],
-        centerx = center[0],
-        centery = center[1],
-        centerz = center[2];
-    if (Math.abs(eyex - centerx) < 0.000001 &&
-        Math.abs(eyey - centery) < 0.000001 &&
-        Math.abs(eyez - centerz) < 0.000001) {
-        return identity_1(out);
-    }
-    z0 = eyex - centerx;
-    z1 = eyey - centery;
-    z2 = eyez - centerz;
-    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
-    z0 *= len;
-    z1 *= len;
-    z2 *= len;
-    x0 = upy * z2 - upz * z1;
-    x1 = upz * z0 - upx * z2;
-    x2 = upx * z1 - upy * z0;
-    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
-    if (!len) {
-        x0 = 0;
-        x1 = 0;
-        x2 = 0;
-    } else {
-        len = 1 / len;
-        x0 *= len;
-        x1 *= len;
-        x2 *= len;
-    }
-    y0 = z1 * x2 - z2 * x1;
-    y1 = z2 * x0 - z0 * x2;
-    y2 = z0 * x1 - z1 * x0;
-    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
-    if (!len) {
-        y0 = 0;
-        y1 = 0;
-        y2 = 0;
-    } else {
-        len = 1 / len;
-        y0 *= len;
-        y1 *= len;
-        y2 *= len;
-    }
-    out[0] = x0;
-    out[1] = y0;
-    out[2] = z0;
-    out[3] = 0;
-    out[4] = x1;
-    out[5] = y1;
-    out[6] = z1;
-    out[7] = 0;
-    out[8] = x2;
-    out[9] = y2;
-    out[10] = z2;
-    out[11] = 0;
-    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
-    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
-    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
-    out[15] = 1;
-    return out;
-}
-
-var str_1 = str;
-function str(a) {
+var str_1 = str$1;
+function str$1(a) {
     return 'mat4(' + a[0] + ', ' + a[1] + ', ' + a[2] + ', ' + a[3] + ', ' +
                     a[4] + ', ' + a[5] + ', ' + a[6] + ', ' + a[7] + ', ' +
                     a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' +
@@ -1268,21 +2137,21 @@ function str(a) {
 }
 
 var glMat4 = {
-  create: create_1$1
-  , clone: clone_1$1
+  create: create_1
+  , clone: clone_1
   , copy: copy_1$1
   , identity: identity_1
   , transpose: transpose_1
   , invert: invert_1
   , adjoint: adjoint_1
   , determinant: determinant_1
-  , multiply: multiply_1$1
+  , multiply: multiply_1
   , translate: translate_1
-  , scale: scale_1$1
+  , scale: scale_1
   , rotate: rotate_1
   , rotateX: rotateX_1$1
   , rotateY: rotateY_1$1
-  , rotateZ: rotateZ_1$1
+  , rotateZ: rotateZ_1
   , fromRotation: fromRotation_1
   , fromRotationTranslation: fromRotationTranslation_1
   , fromScaling: fromScaling_1
@@ -1298,1467 +2167,10 @@ var glMat4 = {
   , lookAt: lookAt_1
   , str: str_1
 };
-var glMat4_4 = glMat4.identity;
 var glMat4_6 = glMat4.invert;
-var glMat4_10 = glMat4.translate;
-var glMat4_11 = glMat4.scale;
-var glMat4_25 = glMat4.perspective;
-var glMat4_28 = glMat4.lookAt;
-
-var MIN_PHI = 0 * Math.PI * 1 + 1e-2;
-var MAX_PHI = Math.PI / 2 - 1e-4;
-var MIN_DISTANCE = 1;
-var MAX_DISTANCE = 15;
-function createCamera(opts) {
-  opts = opts || {};
-  var willBeDirty = true;
-  var params = {
-    aspectRatio: opts.aspectRatio ? opts.aspectRatio : 1,
-    zoomAboutCursor:
-      opts.zoomAboutCursor === undefined ? false : opts.zoomAboutCursor,
-    distance: opts.distance === undefined ? 10 : opts.distance,
-    phi: opts.phi === undefined ? 0 : opts.phi,
-    theta: opts.theta === undefined ? 0 : opts.theta,
-    fovY: opts.fovY === undefined ? Math.PI / 4 : opts.fovY,
-    near: opts.near === undefined ? 0.1 : opts.near,
-    far: opts.far === undefined ? 100 : opts.far,
-    panDecayTime: opts.panDecayTime || 50,
-    zoomDecayTime: opts.zoomDecayTime || 50,
-    rotationDecayTime: opts.rotationDecayTime || 50,
-    dirty: true,
-    up: opts.up || new Float32Array([0, 1, 0]),
-    center: opts.center || new Float32Array(3),
-    rotationCenter:
-      opts.rotationCenter ||
-      (opts.center && opts.center.slice()) ||
-      new Float32Array(3),
-    zoom: 0,
-    panX: 0,
-    panY: 0,
-    panZ: 0,
-    pitch: 0,
-    yaw: 0,
-    dTheta: 0,
-    dPhi: 0,
-    mouseX: 0,
-    mouseY: 0
-  };
-  var t0 = null;
-  var camera = {
-    tick: function(mergeState) {
-      if (accumulator.zoom) params.zoom = accumulator.zoom;
-      if (accumulator.dTheta) params.dTheta = accumulator.dTheta;
-      if (accumulator.dPhi) params.dPhi = accumulator.dPhi;
-      if (accumulator.panX) params.panX = accumulator.panX;
-      if (accumulator.panY) params.panY = accumulator.panY;
-      if (accumulator.panZ) params.panZ = accumulator.panZ;
-      if (accumulator.yaw) params.yaw = accumulator.yaw;
-      if (accumulator.pitch) params.pitch = accumulator.pitch;
-      zeroChanges(accumulator);
-      if (mergeState) {
-        var cachedDPhi = params.dPhi;
-        var cachedDTheta = params.dTheta;
-        var cachedZoom = params.zoom;
-        var cachedPanX = params.panX;
-        var cachedPanY = params.panY;
-        var cachedPanZ = params.panZ;
-        var cachedPitch = params.pitch;
-        var cachedYaw = params.yaw;
-        Object.assign(params, mergeState);
-        if (mergeState.dPhi !== undefined) params.dPhi += cachedDPhi;
-        if (mergeState.dTheta !== undefined) params.dTheta += cachedDTheta;
-        if (mergeState.zoom !== undefined) params.zoom += cachedZoom;
-        if (mergeState.panX !== undefined) params.panX += cachedPanX;
-        if (mergeState.panY !== undefined) params.panY += cachedPanY;
-        if (mergeState.panZ !== undefined) params.panZ += cachedPanZ;
-        if (mergeState.pitch !== undefined) params.pitch += cachedPitch;
-        if (mergeState.yaw !== undefined) params.yaw += cachedYaw;
-      }
-      if (paramsVectorHasChanged()) {
-        applyStateChanges();
-      }
-      if (viewIsChanging()) {
-        applyViewChanges(params);
-      } else {
-        zeroChanges(params);
-      }
-      var t = Date.now();
-      if (t0 !== null) decay(t - t0);
-      t0 = t;
-      camera.state.dirty = willBeDirty;
-      willBeDirty = false;
-      storeCurrentState();
-    },
-    taint: taint,
-    resize: resize,
-    params: params,
-    rotate: rotate,
-    pivot: pivot,
-    pan: pan,
-    zoom: zoom
-  };
-  camera.state = {};
-  camera.state.projection = new Float32Array(16);
-  camera.state.viewInv = new Float32Array(16);
-  camera.state.view = new Float32Array(16);
-  camera.state.width = null;
-  camera.state.height = null;
-  camera.state.eye = new Float32Array(3);
-  var tmp = new Float32Array(3);
-  var viewUp = new Float32Array(3);
-  var viewRight = new Float32Array(3);
-  var viewForward = new Float32Array(3);
-  var origin = new Float32Array(3);
-  var dView = new Float32Array(16);
-  var previousState = {
-    up: new Float32Array(3),
-    center: new Float32Array(3)
-  };
-  storeCurrentState();
-  function storeCurrentState() {
-    glVec3_6(previousState.up, params.up);
-    glVec3_6(previousState.center, params.center);
-    previousState.near = params.near;
-    previousState.far = params.far;
-    previousState.distance = params.distance;
-    previousState.phi = params.phi;
-    previousState.theta = params.theta;
-    previousState.fovY = params.fovY;
-  }
-  function paramsVectorHasChanged() {
-    if (!glVec3_8(params.up, previousState.up)) return true
-    if (!glVec3_8(params.center, previousState.center)) return true
-    if (params.near !== previousState.near) return true
-    if (params.far !== previousState.far) return true
-    if (params.phi !== previousState.phi) return true
-    if (params.theta !== previousState.theta) return true
-    if (params.distance !== previousState.distance) return true
-    if (params.fovY !== previousState.fovY) return true
-    return false
-  }
-  var paramsChanges = {};
-  function applyStateChanges() {
-    paramsChanges.dPhi = params.phi - previousState.phi;
-    paramsChanges.dTheta = params.theta - previousState.theta;
-    paramsChanges.zoom = params.distance / previousState.distance - 1;
-    params.theta = previousState.theta;
-    params.distance = previousState.distance;
-    params.phi = previousState.phi;
-    paramsChanges.yaw = 0;
-    paramsChanges.pitch = 0;
-    paramsChanges.panX = 0;
-    paramsChanges.panY = 0;
-    paramsChanges.panZ = 0;
-    paramsChanges.mouseX = 0;
-    paramsChanges.mouseY = 0;
-    applyViewChanges(paramsChanges);
-  }
-  function computeMatrices() {
-    camera.state.eye[0] = 0;
-    camera.state.eye[1] = 0;
-    camera.state.eye[2] = params.distance;
-    glVec3_42(camera.state.eye, camera.state.eye, origin, -params.phi);
-    glVec3_43(camera.state.eye, camera.state.eye, origin, params.theta);
-    glVec3_10(camera.state.eye, camera.state.eye, params.center);
-    glMat4_28(camera.state.view, camera.state.eye, params.center, params.up);
-    glMat4_25(
-      camera.state.projection,
-      params.fovY,
-      camera.params.aspectRatio,
-      params.near,
-      params.far
-    );
-    glMat4_6(camera.state.viewInv, camera.state.view);
-  }
-  function taint() {
-    willBeDirty = true;
-  }
-  function resize(aspectRatio) {
-    camera.params.aspectRatio = aspectRatio;
-    computeMatrices();
-    taint();
-  }
-  function viewIsChanging() {
-    if (Math.abs(params.zoom) > 1e-4) return true
-    if (Math.abs(params.panX) > 1e-4) return true
-    if (Math.abs(params.panY) > 1e-4) return true
-    if (Math.abs(params.panZ) > 1e-4) return true
-    if (Math.abs(params.dTheta) > 1e-4) return true
-    if (Math.abs(params.dPhi) > 1e-4) return true
-    if (Math.abs(params.yaw) > 1e-4) return true
-    if (Math.abs(params.pitch) > 1e-4) return true
-  }
-  function zeroChanges(obj) {
-    obj.zoom = 0;
-    obj.dTheta = 0;
-    obj.dPhi = 0;
-    obj.panX = 0;
-    obj.panY = 0;
-    obj.panZ = 0;
-    obj.yaw = 0;
-    obj.pitch = 0;
-  }
-  function decay(dt) {
-    var panDecay = params.panDecayTime
-      ? Math.exp(-dt / params.panDecayTime / Math.LN2)
-      : 0;
-    var zoomDecay = params.zoomDecayTime
-      ? Math.exp(-dt / params.zoomDecayTime / Math.LN2)
-      : 0;
-    var rotateDecay = params.rotationDecayTime
-      ? Math.exp(-dt / params.rotationDecayTime / Math.LN2)
-      : 0;
-    params.zoom *= zoomDecay;
-    params.panX *= panDecay;
-    params.panY *= panDecay;
-    params.panZ *= panDecay;
-    params.dTheta *= rotateDecay;
-    params.dPhi *= rotateDecay;
-    params.yaw *= rotateDecay;
-    params.pitch *= rotateDecay;
-  }
-  var accumulator = {};
-  zeroChanges(accumulator);
-  function pan(panX, panY) {
-    var scaleFactor =
-      camera.params.distance * Math.tan(camera.params.fovY * 0.5) * 2.0;
-    accumulator.panX += panX * params.aspectRatio * scaleFactor;
-    accumulator.panY += panY * scaleFactor;
-    return camera
-  }
-  function zoom(mouseX, mouseY, zoom) {
-    accumulator.zoom += zoom;
-    params.mouseX = mouseX;
-    params.mouseY = mouseY;
-    return camera
-  }
-  function pivot(yaw, pitch) {
-    var scaleFactor = camera.params.fovY;
-    accumulator.yaw += yaw * scaleFactor * params.aspectRatio;
-    accumulator.pitch += pitch * scaleFactor;
-  }
-  function rotate(dTheta, dPhi) {
-    accumulator.dTheta += dTheta;
-    accumulator.dPhi += dPhi;
-  }
-  function applyViewChanges(changes) {
-    var zoomScaleFactor;
-    glMat4_4(dView);
-    if (params.zoomAboutCursor) {
-      zoomScaleFactor = params.distance * Math.tan(params.fovY * 0.5);
-      tmp[0] = changes.mouseX * params.aspectRatio * zoomScaleFactor;
-      tmp[1] = changes.mouseY * zoomScaleFactor;
-      tmp[2] = 0;
-      glMat4_10(dView, dView, tmp);
-    }
-    tmp[0] = 1 + changes.zoom;
-    tmp[1] = 1 + changes.zoom;
-    tmp[2] = 1;
-    glMat4_11(dView, dView, tmp);
-    if (params.zoomAboutCursor) {
-      zoomScaleFactor = params.distance * Math.tan(params.fovY * 0.5);
-      tmp[0] = -changes.mouseX * params.aspectRatio * zoomScaleFactor;
-      tmp[1] = -changes.mouseY * zoomScaleFactor;
-      tmp[2] = 0;
-      glMat4_10(dView, dView, tmp);
-    }
-    dView[12] -= changes.panX * 0.5;
-    dView[13] -= changes.panY * 0.5;
-    glVec3_39(params.center, params.center, camera.state.view);
-    glVec3_39(params.center, params.center, dView);
-    glVec3_39(params.center, params.center, camera.state.viewInv);
-    if (params.rotateAboutCenter) {
-      glVec3_6(params.rotationCenter, params.center);
-    }
-    params.distance *= 1 + changes.zoom;
-    params.distance = Math.min(
-      MAX_DISTANCE,
-      Math.max(MIN_DISTANCE, params.distance)
-    );
-    var prevPhi = params.phi;
-    params.phi += changes.dPhi;
-    params.phi = Math.min(MAX_PHI, Math.max(MIN_PHI, params.phi));
-    var dPhi = params.phi - prevPhi;
-    var prevTheta = params.theta;
-    params.theta += changes.dTheta;
-    var dTheta = params.theta - prevTheta;
-    glVec3_43(
-      params.center,
-      params.center,
-      params.rotationCenter,
-      dTheta - params.theta
-    );
-    glVec3_42(params.center, params.center, params.rotationCenter, -dPhi);
-    glVec3_43(
-      params.center,
-      params.center,
-      params.rotationCenter,
-      params.theta
-    );
-    if (changes.yaw !== 0 || changes.pitch !== 0) {
-      viewRight[0] = camera.state.view[0];
-      viewRight[1] = camera.state.view[4];
-      viewRight[2] = camera.state.view[8];
-      glVec3_34(viewRight, viewRight);
-      viewUp[0] = camera.state.view[1];
-      viewUp[1] = camera.state.view[5];
-      viewUp[2] = camera.state.view[9];
-      glVec3_34(viewUp, viewUp);
-      viewForward[0] = camera.state.view[2];
-      viewForward[1] = camera.state.view[6];
-      viewForward[2] = camera.state.view[10];
-      glVec3_34(viewForward, viewForward);
-      var clippedPhi = Math.min(
-        MAX_PHI,
-        Math.max(MIN_PHI, params.phi + changes.pitch * 0.5)
-      );
-      var clippedPitch = clippedPhi - params.phi;
-      glVec3_23(
-        params.center,
-        params.center,
-        viewRight,
-        -Math.sin(changes.yaw * 0.5) * params.distance
-      );
-      glVec3_23(
-        params.center,
-        params.center,
-        viewUp,
-        -Math.sin(clippedPitch) * params.distance
-      );
-      glVec3_23(
-        params.center,
-        params.center,
-        viewForward,
-        (2 - Math.cos(changes.yaw * 0.5) - Math.cos(clippedPitch)) *
-          params.distance
-      );
-      params.phi = clippedPhi;
-      params.theta += changes.yaw * 0.5;
-    }
-    computeMatrices();
-    taint();
-  }
-  resize(camera.params.aspectRatio);
-  return camera
-}
-
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var lib = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var detectHover = {
-  update: function update() {
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-      detectHover.hover = window.matchMedia('(hover: hover)').matches;
-      detectHover.none = window.matchMedia('(hover: none)').matches || window.matchMedia('(hover: on-demand)').matches;
-      detectHover.anyHover = window.matchMedia('(any-hover: hover)').matches;
-      detectHover.anyNone = window.matchMedia('(any-hover: none)').matches || window.matchMedia('(any-hover: on-demand)').matches;
-    }
-  }
-};
-detectHover.update();
-exports.default = detectHover;
-});
-unwrapExports(lib);
-
-var lib$1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var detectPointer = {
-  update: function update() {
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-      detectPointer.fine = window.matchMedia('(pointer: fine)').matches;
-      detectPointer.coarse = window.matchMedia('(pointer: coarse)').matches;
-      detectPointer.none = window.matchMedia('(pointer: none)').matches;
-      detectPointer.anyFine = window.matchMedia('(any-pointer: fine)').matches;
-      detectPointer.anyCoarse = window.matchMedia('(any-pointer: coarse)').matches;
-      detectPointer.anyNone = window.matchMedia('(any-pointer: none)').matches;
-    }
-  }
-};
-detectPointer.update();
-exports.default = detectPointer;
-});
-unwrapExports(lib$1);
-
-var lib$2 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var detectTouchEvents = {
-  update: function update() {
-    if (typeof window !== 'undefined') {
-      detectTouchEvents.hasSupport = 'ontouchstart' in window;
-      detectTouchEvents.browserSupportsApi = Boolean(window.TouchEvent);
-    }
-  }
-};
-detectTouchEvents.update();
-exports.default = detectTouchEvents;
-});
-unwrapExports(lib$2);
-
-var lib$3 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var detectPassiveEvents = {
-  update: function update() {
-    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
-      var passive = false;
-      var options = Object.defineProperty({}, 'passive', {
-        get: function get() {
-          passive = true;
-        }
-      });
-      var noop = function noop() {};
-      window.addEventListener('testPassiveEventSupport', noop, options);
-      window.removeEventListener('testPassiveEventSupport', noop, options);
-      detectPassiveEvents.hasSupport = passive;
-    }
-  }
-};
-detectPassiveEvents.update();
-exports.default = detectPassiveEvents;
-});
-unwrapExports(lib$3);
-
-var lib$4 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var _detectHover2 = _interopRequireDefault(lib);
-var _detectPointer2 = _interopRequireDefault(lib$1);
-var _detectTouchEvents2 = _interopRequireDefault(lib$2);
-var _detectPassiveEvents2 = _interopRequireDefault(lib$3);
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function determineDeviceType(hasTouch, anyHover, anyFine, state) {
-  if (hasTouch && (anyHover || anyFine)) return 'hybrid';
-  if (hasTouch && Object.keys(state.detectHover).filter(function (key) {
-    return key !== 'update';
-  }).every(function (key) {
-    return state.detectHover[key] === false;
-  }) && Object.keys(state.detectPointer).filter(function (key) {
-    return key !== 'update';
-  }).every(function (key) {
-    return state.detectPointer[key] === false;
-  })) {
-    if (window.navigator && /android/.test(window.navigator.userAgent.toLowerCase())) {
-      return 'touchOnly';
-    }
-    return 'hybrid';
-  }
-  return hasTouch ? 'touchOnly' : 'mouseOnly';
-}
-var detectIt = {
-  state: {
-    detectHover: _detectHover2.default,
-    detectPointer: _detectPointer2.default,
-    detectTouchEvents: _detectTouchEvents2.default,
-    detectPassiveEvents: _detectPassiveEvents2.default
-  },
-  update: function update() {
-    detectIt.state.detectHover.update();
-    detectIt.state.detectPointer.update();
-    detectIt.state.detectTouchEvents.update();
-    detectIt.state.detectPassiveEvents.update();
-    detectIt.updateOnlyOwnProperties();
-  },
-  updateOnlyOwnProperties: function updateOnlyOwnProperties() {
-    if (typeof window !== 'undefined') {
-      detectIt.passiveEvents = detectIt.state.detectPassiveEvents.hasSupport || false;
-      detectIt.hasTouch = detectIt.state.detectTouchEvents.hasSupport || false;
-      detectIt.deviceType = determineDeviceType(detectIt.hasTouch, detectIt.state.detectHover.anyHover, detectIt.state.detectPointer.anyFine, detectIt.state);
-      detectIt.hasMouse = detectIt.deviceType !== 'touchOnly';
-      detectIt.primaryInput = detectIt.deviceType === 'mouseOnly' && 'mouse' || detectIt.deviceType === 'touchOnly' && 'touch' ||
-      detectIt.state.detectPointer.fine && 'mouse' || detectIt.state.detectPointer.coarse && 'touch' ||
-      'mouse';
-      var inVersionRange = function inVersionRange(version) {
-        return version >= 59 && version < 62;
-      };
-      var isAffectedWindowsChromeVersion = /windows/.test(window.navigator.userAgent.toLowerCase()) && /chrome/.test(window.navigator.userAgent.toLowerCase()) && inVersionRange(parseInt(/Chrome\/([0-9.]+)/.exec(navigator.userAgent)[1], 10));
-      if (isAffectedWindowsChromeVersion && detectIt.hasTouch) {
-        detectIt.deviceType = 'hybrid';
-        detectIt.hasMouse = true;
-        detectIt.primaryInput = 'mouse';
-      }
-    }
-  }
-};
-detectIt.updateOnlyOwnProperties();
-exports.default = detectIt;
-});
-var detectIt = unwrapExports(lib$4);
-
-function mouseButtons(ev) {
-  if(typeof ev === 'object') {
-    if('buttons' in ev) {
-      return ev.buttons
-    } else if('which' in ev) {
-      var b = ev.which;
-      if(b === 2) {
-        return 4
-      } else if(b === 3) {
-        return 2
-      } else if(b > 0) {
-        return 1<<(b-1)
-      }
-    } else if('button' in ev) {
-      var b = ev.button;
-      if(b === 1) {
-        return 4
-      } else if(b === 2) {
-        return 2
-      } else if(b >= 0) {
-        return 1<<b
-      }
-    }
-  }
-  return 0
-}
-var buttons = mouseButtons;
-function mouseElement(ev) {
-  return ev.target || ev.srcElement || window
-}
-var element = mouseElement;
-function mouseRelativeX(ev) {
-  if(typeof ev === 'object') {
-    if('offsetX' in ev) {
-      return ev.offsetX
-    }
-    var target = mouseElement(ev);
-    var bounds = target.getBoundingClientRect();
-    return ev.clientX - bounds.left
-  }
-  return 0
-}
-var x = mouseRelativeX;
-function mouseRelativeY(ev) {
-  if(typeof ev === 'object') {
-    if('offsetY' in ev) {
-      return ev.offsetY
-    }
-    var target = mouseElement(ev);
-    var bounds = target.getBoundingClientRect();
-    return ev.clientY - bounds.top
-  }
-  return 0
-}
-var y = mouseRelativeY;
-var mouse = {
-	buttons: buttons,
-	element: element,
-	x: x,
-	y: y
-};
-
-var mouseListen_1 = mouseListen;
-function mouseListen (element, callback) {
-  if (!callback) {
-    callback = element;
-    element = window;
-  }
-  var buttonState = 0;
-  var x = 0;
-  var y = 0;
-  var mods = {
-    shift: false,
-    alt: false,
-    control: false,
-    meta: false
-  };
-  var attached = false;
-  function updateMods (ev) {
-    var changed = false;
-    if ('altKey' in ev) {
-      changed = changed || ev.altKey !== mods.alt;
-      mods.alt = !!ev.altKey;
-    }
-    if ('shiftKey' in ev) {
-      changed = changed || ev.shiftKey !== mods.shift;
-      mods.shift = !!ev.shiftKey;
-    }
-    if ('ctrlKey' in ev) {
-      changed = changed || ev.ctrlKey !== mods.control;
-      mods.control = !!ev.ctrlKey;
-    }
-    if ('metaKey' in ev) {
-      changed = changed || ev.metaKey !== mods.meta;
-      mods.meta = !!ev.metaKey;
-    }
-    return changed
-  }
-  function handleEvent (nextButtons, ev) {
-    var nextX = mouse.x(ev);
-    var nextY = mouse.y(ev);
-    if ('buttons' in ev) {
-      nextButtons = ev.buttons | 0;
-    }
-    if (nextButtons !== buttonState ||
-      nextX !== x ||
-      nextY !== y ||
-      updateMods(ev)) {
-      buttonState = nextButtons | 0;
-      x = nextX || 0;
-      y = nextY || 0;
-      callback && callback(buttonState, x, y, mods);
-    }
-  }
-  function clearState (ev) {
-    handleEvent(0, ev);
-  }
-  function handleBlur () {
-    if (buttonState ||
-      x ||
-      y ||
-      mods.shift ||
-      mods.alt ||
-      mods.meta ||
-      mods.control) {
-      x = y = 0;
-      buttonState = 0;
-      mods.shift = mods.alt = mods.control = mods.meta = false;
-      callback && callback(0, 0, 0, mods);
-    }
-  }
-  function handleMods (ev) {
-    if (updateMods(ev)) {
-      callback && callback(buttonState, x, y, mods);
-    }
-  }
-  function handleMouseMove (ev) {
-    if (mouse.buttons(ev) === 0) {
-      handleEvent(0, ev);
-    } else {
-      handleEvent(buttonState, ev);
-    }
-  }
-  function handleMouseDown (ev) {
-    handleEvent(buttonState | mouse.buttons(ev), ev);
-  }
-  function handleMouseUp (ev) {
-    handleEvent(buttonState & ~mouse.buttons(ev), ev);
-  }
-  function attachListeners () {
-    if (attached) {
-      return
-    }
-    attached = true;
-    element.addEventListener('mousemove', handleMouseMove);
-    element.addEventListener('mousedown', handleMouseDown);
-    element.addEventListener('mouseup', handleMouseUp);
-    element.addEventListener('mouseleave', clearState);
-    element.addEventListener('mouseenter', clearState);
-    element.addEventListener('mouseout', clearState);
-    element.addEventListener('mouseover', clearState);
-    element.addEventListener('blur', handleBlur);
-    element.addEventListener('keyup', handleMods);
-    element.addEventListener('keydown', handleMods);
-    element.addEventListener('keypress', handleMods);
-    if (element !== window) {
-      window.addEventListener('blur', handleBlur);
-      window.addEventListener('keyup', handleMods);
-      window.addEventListener('keydown', handleMods);
-      window.addEventListener('keypress', handleMods);
-    }
-  }
-  function detachListeners () {
-    if (!attached) {
-      return
-    }
-    attached = false;
-    element.removeEventListener('mousemove', handleMouseMove);
-    element.removeEventListener('mousedown', handleMouseDown);
-    element.removeEventListener('mouseup', handleMouseUp);
-    element.removeEventListener('mouseleave', clearState);
-    element.removeEventListener('mouseenter', clearState);
-    element.removeEventListener('mouseout', clearState);
-    element.removeEventListener('mouseover', clearState);
-    element.removeEventListener('blur', handleBlur);
-    element.removeEventListener('keyup', handleMods);
-    element.removeEventListener('keydown', handleMods);
-    element.removeEventListener('keypress', handleMods);
-    if (element !== window) {
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('keyup', handleMods);
-      window.removeEventListener('keydown', handleMods);
-      window.removeEventListener('keypress', handleMods);
-    }
-  }
-  attachListeners();
-  var result = {
-    element: element
-  };
-  Object.defineProperties(result, {
-    enabled: {
-      get: function () { return attached },
-      set: function (f) {
-        if (f) {
-          attachListeners();
-        } else {
-          detachListeners();
-        }
-      },
-      enumerable: true
-    },
-    buttons: {
-      get: function () { return buttonState },
-      enumerable: true
-    },
-    x: {
-      get: function () { return x },
-      enumerable: true
-    },
-    y: {
-      get: function () { return y },
-      enumerable: true
-    },
-    mods: {
-      get: function () { return mods },
-      enumerable: true
-    }
-  });
-  return result
-}
-
-var rootPosition = { left: 0, top: 0 };
-var mouseEventOffset_1 = mouseEventOffset;
-function mouseEventOffset (ev, target, out) {
-  target = target || ev.currentTarget || ev.srcElement;
-  if (!Array.isArray(out)) {
-    out = [ 0, 0 ];
-  }
-  var cx = ev.clientX || 0;
-  var cy = ev.clientY || 0;
-  var rect = getBoundingClientOffset(target);
-  out[0] = cx - rect.left;
-  out[1] = cy - rect.top;
-  return out
-}
-function getBoundingClientOffset (element) {
-  if (element === window ||
-      element === document ||
-      element === document.body) {
-    return rootPosition
-  } else {
-    return element.getBoundingClientRect()
-  }
-}
-
-var _undefined = void 0;
-var is = function (value) { return value !== _undefined && value !== null; };
-
-var possibleTypes = { "object": true, "function": true, "undefined": true  };
-var is$1 = function (value) {
-	if (!is(value)) return false;
-	return hasOwnProperty.call(possibleTypes, typeof value);
-};
-
-var is$2 = function (value) {
-	if (!is$1(value)) return false;
-	try {
-		if (!value.constructor) return false;
-		return value.constructor.prototype === value;
-	} catch (error) {
-		return false;
-	}
-};
-
-var is$3 = function (value) {
-	if (typeof value !== "function") return false;
-	if (!hasOwnProperty.call(value, "length")) return false;
-	try {
-		if (typeof value.length !== "number") return false;
-		if (typeof value.call !== "function") return false;
-		if (typeof value.apply !== "function") return false;
-	} catch (error) {
-		return false;
-	}
-	return !is$2(value);
-};
-
-var classRe = /^\s*class[\s{/}]/, functionToString = Function.prototype.toString;
-var is$4 = function (value) {
-	if (!is$3(value)) return false;
-	if (classRe.test(functionToString.call(value))) return false;
-	return true;
-};
-
-var isImplemented = function () {
-	var assign = Object.assign, obj;
-	if (typeof assign !== "function") return false;
-	obj = { foo: "raz" };
-	assign(obj, { bar: "dwa" }, { trzy: "trzy" });
-	return obj.foo + obj.bar + obj.trzy === "razdwatrzy";
-};
-
-var isImplemented$1 = function () {
-	try {
-		Object.keys("primitive");
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-
-var noop = function () {};
-
-var _undefined$1 = noop();
-var isValue = function (val) { return val !== _undefined$1 && val !== null; };
-
-var keys = Object.keys;
-var shim = function (object) { return keys(isValue(object) ? Object(object) : object); };
-
-var keys$1 = isImplemented$1() ? Object.keys : shim;
-
-var validValue = function (value) {
-	if (!isValue(value)) throw new TypeError("Cannot use null or undefined");
-	return value;
-};
-
-var max$1   = Math.max;
-var shim$1 = function (dest, src) {
-	var error, i, length = max$1(arguments.length, 2), assign;
-	dest = Object(validValue(dest));
-	assign = function (key) {
-		try {
-			dest[key] = src[key];
-		} catch (e) {
-			if (!error) error = e;
-		}
-	};
-	for (i = 1; i < length; ++i) {
-		src = arguments[i];
-		keys$1(src).forEach(assign);
-	}
-	if (error !== undefined) throw error;
-	return dest;
-};
-
-var assign = isImplemented() ? Object.assign : shim$1;
-
-var forEach$1 = Array.prototype.forEach, create$2 = Object.create;
-var process = function (src, obj) {
-	var key;
-	for (key in src) obj[key] = src[key];
-};
-var normalizeOptions = function (opts1) {
-	var result = create$2(null);
-	forEach$1.call(arguments, function (options) {
-		if (!isValue(options)) return;
-		process(Object(options), result);
-	});
-	return result;
-};
-
-var str$1 = "razdwatrzy";
-var isImplemented$2 = function () {
-	if (typeof str$1.contains !== "function") return false;
-	return str$1.contains("dwa") === true && str$1.contains("foo") === false;
-};
-
-var indexOf = String.prototype.indexOf;
-var shim$2 = function (searchString) {
-	return indexOf.call(this, searchString, arguments[1]) > -1;
-};
-
-var contains = isImplemented$2() ? String.prototype.contains : shim$2;
-
-var d_1 = createCommonjsModule(function (module) {
-var d = (module.exports = function (dscr, value) {
-	var c, e, w, options, desc;
-	if (arguments.length < 2 || typeof dscr !== "string") {
-		options = value;
-		value = dscr;
-		dscr = null;
-	} else {
-		options = arguments[2];
-	}
-	if (is(dscr)) {
-		c = contains.call(dscr, "c");
-		e = contains.call(dscr, "e");
-		w = contains.call(dscr, "w");
-	} else {
-		c = w = true;
-		e = false;
-	}
-	desc = { value: value, configurable: c, enumerable: e, writable: w };
-	return !options ? desc : assign(normalizeOptions(options), desc);
-});
-d.gs = function (dscr, get, set) {
-	var c, e, options, desc;
-	if (typeof dscr !== "string") {
-		options = set;
-		set = get;
-		get = dscr;
-		dscr = null;
-	} else {
-		options = arguments[3];
-	}
-	if (!is(get)) {
-		get = undefined;
-	} else if (!is$4(get)) {
-		options = get;
-		get = set = undefined;
-	} else if (!is(set)) {
-		set = undefined;
-	} else if (!is$4(set)) {
-		options = set;
-		set = undefined;
-	}
-	if (is(dscr)) {
-		c = contains.call(dscr, "c");
-		e = contains.call(dscr, "e");
-	} else {
-		c = true;
-		e = false;
-	}
-	desc = { get: get, set: set, configurable: c, enumerable: e };
-	return !options ? desc : assign(normalizeOptions(options), desc);
-};
-});
-
-var validCallable = function (fn) {
-	if (typeof fn !== "function") throw new TypeError(fn + " is not a function");
-	return fn;
-};
-
-var eventEmitter = createCommonjsModule(function (module, exports) {
-var apply = Function.prototype.apply, call = Function.prototype.call
-  , create = Object.create, defineProperty = Object.defineProperty
-  , defineProperties = Object.defineProperties
-  , hasOwnProperty = Object.prototype.hasOwnProperty
-  , descriptor = { configurable: true, enumerable: false, writable: true }
-  , on, once, off, emit, methods, descriptors, base;
-on = function (type, listener) {
-	var data;
-	validCallable(listener);
-	if (!hasOwnProperty.call(this, '__ee__')) {
-		data = descriptor.value = create(null);
-		defineProperty(this, '__ee__', descriptor);
-		descriptor.value = null;
-	} else {
-		data = this.__ee__;
-	}
-	if (!data[type]) data[type] = listener;
-	else if (typeof data[type] === 'object') data[type].push(listener);
-	else data[type] = [data[type], listener];
-	return this;
-};
-once = function (type, listener) {
-	var once, self;
-	validCallable(listener);
-	self = this;
-	on.call(this, type, once = function () {
-		off.call(self, type, once);
-		apply.call(listener, this, arguments);
-	});
-	once.__eeOnceListener__ = listener;
-	return this;
-};
-off = function (type, listener) {
-	var data, listeners, candidate, i;
-	validCallable(listener);
-	if (!hasOwnProperty.call(this, '__ee__')) return this;
-	data = this.__ee__;
-	if (!data[type]) return this;
-	listeners = data[type];
-	if (typeof listeners === 'object') {
-		for (i = 0; (candidate = listeners[i]); ++i) {
-			if ((candidate === listener) ||
-					(candidate.__eeOnceListener__ === listener)) {
-				if (listeners.length === 2) data[type] = listeners[i ? 0 : 1];
-				else listeners.splice(i, 1);
-			}
-		}
-	} else {
-		if ((listeners === listener) ||
-				(listeners.__eeOnceListener__ === listener)) {
-			delete data[type];
-		}
-	}
-	return this;
-};
-emit = function (type) {
-	var i, l, listener, listeners, args;
-	if (!hasOwnProperty.call(this, '__ee__')) return;
-	listeners = this.__ee__[type];
-	if (!listeners) return;
-	if (typeof listeners === 'object') {
-		l = arguments.length;
-		args = new Array(l - 1);
-		for (i = 1; i < l; ++i) args[i - 1] = arguments[i];
-		listeners = listeners.slice();
-		for (i = 0; (listener = listeners[i]); ++i) {
-			apply.call(listener, this, args);
-		}
-	} else {
-		switch (arguments.length) {
-		case 1:
-			call.call(listeners, this);
-			break;
-		case 2:
-			call.call(listeners, this, arguments[1]);
-			break;
-		case 3:
-			call.call(listeners, this, arguments[1], arguments[2]);
-			break;
-		default:
-			l = arguments.length;
-			args = new Array(l - 1);
-			for (i = 1; i < l; ++i) {
-				args[i - 1] = arguments[i];
-			}
-			apply.call(listeners, this, args);
-		}
-	}
-};
-methods = {
-	on: on,
-	once: once,
-	off: off,
-	emit: emit
-};
-descriptors = {
-	on: d_1(on),
-	once: d_1(once),
-	off: d_1(off),
-	emit: d_1(emit)
-};
-base = defineProperties({}, descriptors);
-module.exports = exports = function (o) {
-	return (o == null) ? create(base) : defineProperties(Object(o), descriptors);
-};
-exports.methods = methods;
-});
-var eventEmitter_1 = eventEmitter.methods;
-
-function normalizedInteractionEvents(element) {
-  element = element || window;
-  var emitter = eventEmitter();
-  let previousPosition = [null, null];
-  let previousFingerPosition = [null, null];
-  let currentPosition = [null, null];
-  let fingers = [null, null];
-  let activeTouchCount = 0;
-  let ev = {};
-  let width, height;
-  let getSize =
-    element === window
-      ? function() {
-          width = window.innerWidth;
-          height = window.innerHeight;
-        }
-      : function() {
-          width = element.clientWidth;
-          height = element.clientHeight;
-        };
-  let buttons = 0;
-  let mouseX;
-  let mouseY;
-  let mods = {};
-  let changeListener = mouseListen_1(element, function(pbuttons, px, py, pmods) {
-    mouseX = px;
-    mouseY = py;
-    buttons = pbuttons;
-    mods = pmods;
-  });
-  function onWheel(event) {
-    mouseEventOffset_1(event, element, currentPosition);
-    getSize();
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x0 = ev.x = ev.x1 = (2 * currentPosition[0]) / width - 1;
-    ev.y0 = ev.y = ev.y1 = 1 - (2 * currentPosition[1]) / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.dx = (2 * event.deltaX) / width;
-    ev.dy = (-2 * event.deltaY) / height;
-    ev.dz = (2 * event.deltaZ) / width;
-    ev.active = 1;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-    emitter.emit('wheel', ev);
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-  let x0 = null;
-  let y0 = null;
-  let active = 0;
-  function onMouseUp(event) {
-    mouseEventOffset_1(event, element, currentPosition);
-    active = 0;
-    getSize();
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x = ev.x1 = (2 * currentPosition[0]) / width - 1;
-    ev.y = ev.y1 = 1 - (2 * currentPosition[1]) / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.active = active;
-    ev.x0 = (2 * x0) / width - 1;
-    ev.y0 = 1 - (2 * y0) / height;
-    ev.dx = 0;
-    ev.dy = 0;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-    emitter.emit('mouseup', ev);
-    x0 = y0 = null;
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-  function onMouseDown(event) {
-    mouseEventOffset_1(event, element, currentPosition);
-    active = 1;
-    getSize();
-    x0 = mouseX;
-    y0 = mouseY;
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x = ev.x0 = ev.x1 = (2 * currentPosition[0]) / width - 1;
-    ev.y = ev.y0 = ev.y1 = 1 - (2 * currentPosition[1]) / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.active = active;
-    ev.dx = 0;
-    ev.dy = 0;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-    emitter.emit('mousedown', ev);
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-  function onMouseMove(event) {
-    mouseEventOffset_1(event, element, currentPosition);
-    getSize();
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x0 = (2 * x0) / width - 1;
-    ev.y0 = 1 - (2 * y0) / height;
-    ev.x = ev.x1 = (2 * currentPosition[0]) / width - 1;
-    ev.y = ev.y1 = 1 - (2 * currentPosition[1]) / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.dx = (2 * (currentPosition[0] - previousPosition[0])) / width;
-    ev.dy = (-2 * (currentPosition[1] - previousPosition[1])) / height;
-    ev.active = active;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-    emitter.emit('mousemove', ev);
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-  function indexOfTouch(touch) {
-    let id = touch.identifier;
-    for (let i = 0; i < fingers.length; i++) {
-      if (
-        fingers[i] &&
-        fingers[i].touch &&
-        fingers[i].touch.identifier === id
-      ) {
-        return i
-      }
-    }
-    return -1
-  }
-  function onTouchStart(event) {
-    previousFingerPosition[0] = null;
-    previousFingerPosition[1] = null;
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      let newTouch = event.changedTouches[i];
-      let id = newTouch.identifier;
-      let idx = indexOfTouch(id);
-      if (idx === -1 && activeTouchCount < 2) {
-        let newIndex = fingers[0] ? 1 : 0;
-        var newFinger = {
-          position: [0, 0],
-          touch: null
-        };
-        fingers[newIndex] = newFinger;
-        activeTouchCount++;
-        newFinger.touch = newTouch;
-        mouseEventOffset_1(newTouch, element, newFinger.position);
-      }
-    }
-    let xavg = 0;
-    let yavg = 0;
-    let fingerCount = 0;
-    for (let i = 0; i < fingers.length; i++) {
-      if (!fingers[i]) continue
-      xavg += fingers[i].position[0];
-      yavg += fingers[i].position[1];
-      fingerCount++;
-    }
-    xavg /= fingerCount;
-    yavg /= fingerCount;
-    if (activeTouchCount > 0) {
-      ev.theta = 0;
-      if (fingerCount > 1) {
-        let dx = fingers[1].position[0] - fingers[0].position[0];
-        let dy =
-          ((fingers[0].position[1] - fingers[1].position[1]) * width) / height;
-        ev.theta = Math.atan2(dy, dx);
-      }
-      getSize();
-      ev.buttons = 0;
-      ev.mods = {};
-      ev.active = activeTouchCount;
-      x0 = xavg;
-      y0 = yavg;
-      ev.x0 = (2 * x0) / width - 1;
-      ev.y0 = 1 - (2 * y0) / height;
-      ev.x = (2 * xavg) / width - 1;
-      ev.y = 1 - (2 * yavg) / height;
-      ev.x1 = (2 * fingers[0].position[0]) / width - 1;
-      ev.y1 = 1 - (2 * fingers[0].position[1]) / height;
-      if (activeTouchCount > 1) {
-        ev.x2 = (2 * fingers[1].position[0]) / width - 1;
-        ev.y2 = 1 - (2 * fingers[1].position[1]) / height;
-      }
-      ev.active = activeTouchCount;
-      ev.dx = 0;
-      ev.dy = 0;
-      ev.dz = 0;
-      ev.zoomx = 1;
-      ev.zoomy = 1;
-      ev.dtheta = 0;
-      ev.originalEvent = event;
-      emitter.emit(activeTouchCount === 1 ? 'touchstart' : 'pinchstart', ev);
-    }
-  }
-  function onTouchMove(event) {
-    let idx;
-    let changed = false;
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      let movedTouch = event.changedTouches[i];
-      idx = indexOfTouch(movedTouch);
-      if (idx !== -1) {
-        changed = true;
-        fingers[idx].touch = movedTouch;
-        mouseEventOffset_1(movedTouch, element, fingers[idx].position);
-      }
-    }
-    if (changed) {
-      if (activeTouchCount === 1) {
-        for (idx = 0; idx < fingers.length; idx++) {
-          if (fingers[idx]) break
-        }
-        if (fingers[idx] && previousFingerPosition[idx]) {
-          let x = fingers[idx].position[0];
-          let y = fingers[idx].position[1];
-          let dx = x - previousFingerPosition[idx][0];
-          let dy = y - previousFingerPosition[idx][1];
-          ev.buttons = 0;
-          ev.mods = {};
-          ev.active = activeTouchCount;
-          ev.x = ev.x1 = (2 * x) / width - 1;
-          ev.y = ev.y1 = 1 - (2 * y) / height;
-          ev.x2 = null;
-          ev.y2 = null;
-          ev.x0 = (2 * x0) / width - 1;
-          ev.y0 = 1 - (2 * y0) / height;
-          ev.dx = (2 * dx) / width;
-          ev.dy = (-2 * dy) / height;
-          ev.dz = 0;
-          ev.zoomx = 1;
-          ev.zoomy = 1;
-          ev.theta = 0;
-          ev.dtheta = 0;
-          ev.originalEvent = event;
-          emitter.emit('touchmove', ev);
-        }
-      } else if (activeTouchCount === 2) {
-        if (previousFingerPosition[0] && previousFingerPosition[1]) {
-          let pos0A = previousFingerPosition[0];
-          let pos0B = previousFingerPosition[1];
-          let dx0 = pos0B[0] - pos0A[0];
-          let dy0 = ((pos0B[1] - pos0A[1]) * width) / height;
-          let pos1A = fingers[0].position;
-          let pos1B = fingers[1].position;
-          let dx1 = pos1B[0] - pos1A[0];
-          let dy1 = ((pos1A[1] - pos1B[1]) * width) / height;
-          let r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.5;
-          let theta0 = Math.atan2(dy0, dx0);
-          let r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * 0.5;
-          let theta1 = Math.atan2(dy1, dx1);
-          let xavg = (pos0B[0] + pos0A[0]) * 0.5;
-          let yavg = (pos0B[1] + pos0A[1]) * 0.5;
-          let dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
-          let dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
-          let dr = r1 / r0;
-          let dtheta = theta1 - theta0;
-          ev.buttons = 0;
-          ev.mods = mods;
-          ev.active = activeTouchCount;
-          ev.x = (2 * xavg) / width - 1;
-          ev.y = 1 - (2 * yavg) / height;
-          ev.x0 = (2 * x0) / width - 1;
-          ev.y0 = 1 - (2 * y0) / height;
-          ev.x1 = (2 * pos1A[0]) / width - 1;
-          ev.y1 = 1 - (2 * pos1A[1]) / height;
-          ev.x2 = (2 * pos1B[0]) / width - 1;
-          ev.y2 = 1 - (2 * pos1B[1]) / height;
-          ev.dx = (2 * dx) / width;
-          ev.dy = (-2 * dy) / height;
-          ev.dz = 0;
-          ev.zoomx = dr;
-          ev.zoomy = dr;
-          ev.theta = theta1;
-          ev.dtheta = dtheta;
-          ev.originalEvent = event;
-          emitter.emit('pinchmove', ev);
-        }
-      }
-    }
-    if (fingers[0]) {
-      previousFingerPosition[0] = fingers[0].position.slice();
-    }
-    if (fingers[1]) {
-      previousFingerPosition[1] = fingers[1].position.slice();
-    }
-  }
-  function onTouchRemoved(event) {
-    let lastFinger;
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      let removed = event.changedTouches[i];
-      let idx = indexOfTouch(removed);
-      if (idx !== -1) {
-        lastFinger = fingers[idx];
-        fingers[idx] = null;
-        activeTouchCount--;
-      }
-    }
-    let xavg = 0;
-    let yavg = 0;
-    if (activeTouchCount === 0) {
-      if (lastFinger) {
-        xavg = lastFinger.position[0];
-        yavg = lastFinger.position[1];
-      }
-    } else {
-      let fingerCount = 0;
-      for (let i = 0; i < fingers.length; i++) {
-        if (!fingers[i]) continue
-        xavg += fingers[i].position[0];
-        yavg += fingers[i].position[1];
-        fingerCount++;
-      }
-      xavg /= fingerCount;
-      yavg /= fingerCount;
-    }
-    if (activeTouchCount < 2) {
-      ev.buttons = 0;
-      ev.mods = mods;
-      ev.active = activeTouchCount;
-      ev.x = (2 * xavg) / width - 1;
-      ev.y = 1 - (2 * yavg) / height;
-      ev.x0 = (2 * x0) / width - 1;
-      ev.y0 = 1 - (2 * y0) / height;
-      ev.dx = 0;
-      ev.dy = 0;
-      ev.dz = 0;
-      ev.zoomx = 1;
-      ev.zoomy = 1;
-      ev.theta = 0;
-      ev.dtheta = 0;
-      ev.originalEvent = event;
-      emitter.emit(activeTouchCount === 0 ? 'touchend' : 'pinchend', ev);
-    }
-    if (activeTouchCount === 0) {
-      x0 = y0 = null;
-    }
-  }
-  let enabled = false;
-  function enable() {
-    if (enabled) return
-    enabled = true;
-    changeListener.enabled = true;
-    element.addEventListener(
-      'wheel',
-      onWheel,
-      detectIt.passiveEvents
-        ? {
-            passive: true
-          }
-        : false
-    );
-    element.addEventListener('mousedown', onMouseDown, false);
-    window.addEventListener('mousemove', onMouseMove, false);
-    window.addEventListener('mouseup', onMouseUp, false);
-    element.addEventListener(
-      'touchstart',
-      onTouchStart,
-      detectIt.passiveEvents
-        ? {
-            passive: true
-          }
-        : false
-    );
-    window.addEventListener(
-      'touchmove',
-      onTouchMove,
-      detectIt.passiveEvents
-        ? {
-            passive: true
-          }
-        : false
-    );
-    window.addEventListener(
-      'touchend',
-      onTouchRemoved,
-      detectIt.passiveEvents
-        ? {
-            passive: true
-          }
-        : false
-    );
-    window.addEventListener('touchcancel', onTouchRemoved, false);
-  }
-  function disable() {
-    if (!enabled) return
-    enabled = false;
-    changeListener.enabled = false;
-    element.removeEventListener('wheel', onWheel, false);
-    element.removeEventListener('mousedown', onMouseDown, false);
-    window.removeEventListener('mousemove', onMouseMove, false);
-    window.removeEventListener('mouseup', onMouseUp, false);
-    element.removeEventListener('touchstart', onTouchStart, false);
-    window.removeEventListener('touchmove', onTouchMove, false);
-    window.removeEventListener('touchend', onTouchRemoved, false);
-    window.removeEventListener('touchcancel', onTouchRemoved, false);
-  }
-  enable();
-  emitter.enable = enable;
-  emitter.disable = disable;
-  return emitter
-}
 
 function freeCameraFactory(options, regl) {
-  const aCamera = createCamera({
+  const aCamera = inertialTurntableCamera({
     ...options,
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   });
@@ -2801,9 +2213,9 @@ function initializeCameraControls(camera, canvas) {
     }
   });
   const radiansPerHalfScreenWidth = Math.PI * 0.5;
-  normalizedInteractionEvents(canvas)
+  normalizedInteractionEvents_1(canvas)
     .on('wheel', function(ev) {
-      if (ev.mods.shift) {
+      {
         camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0);
       }
     })
@@ -3121,11 +2533,11 @@ var normjs = {
 var norm_js = normjs;
 
 let seed = 1;
-const random$1 = () => {
+const random = () => {
   let x = Math.sin(seed++) * 10000;
   return x - Math.floor(x)
 };
-const boundedRandom = (min = -1, max = 1) => random$1() * max + min;
+const boundedRandom = (min = -1, max = 1) => random() * max + min;
 
 function particleTypesArrayFromDescriptor(
   particleTypeDescriptor,
@@ -3307,11 +2719,11 @@ function initialize(
       fourPositions[p * 4 + 1] = boundedRandom() * boundingBoxSize;
       fourPositions[p * 4 + 2] = boundedRandom() * boundingBoxSize;
       fourPositions[p * 4 + 3] = 0;
-      fourVelocities[p * 4] = random$1();
-      fourVelocities[p * 4 + 1] = random$1();
-      fourVelocities[p * 4 + 2] = random$1();
+      fourVelocities[p * 4] = random();
+      fourVelocities[p * 4 + 1] = random();
+      fourVelocities[p * 4 + 2] = random();
       fourVelocities[p * 4 + 3] = 0;
-      particleTypes[p] = 1;
+      particleTypes[p] = Math.floor(random() * 4);
     }
   } else {
     const particleCollection = createParticleCollection({
@@ -3346,14 +2758,13 @@ function initialize(
   }
 }
 
-function particleTypeArrayDefintion(particleTypes) {
-  return particleTypes.map((v, i) => `ptype[${i}]=${v}.`).join(';')
-}
 const getters = `
-  // vec4 getPosition(float p, float g) {
-  //   vec2 coords = vec2( p + .5, g + .5) / vec2(particleCount, bufferLength);
-  //   return texture2D(uTexPositions, coords);
-  // }
+  struct ParticleData {
+    float charge;
+    float mass;
+    float chargeMassRatio;
+    float particleType;
+  };
   vec4 EncodeFloatRGBA( float v ) {
     vec4 enc = vec4(1.0, 255.0, 65025.0, 16581375.0) * v;
     enc = fract(enc);
@@ -3363,8 +2774,11 @@ const getters = `
   float DecodeFloatRGBA( vec4 rgba ) {
     return dot( rgba, vec4(1.0, 1./255.0, 1./65025.0, 1./16581375.0) );
   }
-  
-  
+  ParticleData getParticleData(float p) {
+    vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
+    vec4 data = texture2D(utParticleChargesMassesChargeMassRatios, coords);
+    return ParticleData(data.x, data.y, data.z, data.w);
+  }
   vec4 get_color(float p) {
     vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
     return texture2D(utParticleColorAndType, coords);
@@ -3377,7 +2791,6 @@ const getters = `
     vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
     return texture2D(utVelocityBuffer, coords);
   }
-
 `;
 function latticeChunk(lattice) {
   return `
@@ -3419,98 +2832,12 @@ function latticeChunk(lattice) {
       }
   }
   return getBeamlineElement(float(bestIndex));
-
   }
-
 
   void initLatticeData() {
     ${lattice.toGLSLDefinition()};
   }
   `
-}
-function particleDataChunk(particleTypes) {
-  return `
-const float chargeMassRatio_unit_Ckg_1_0 = 0.;
-const float chargeMassRatio_unit_Ckg_1_1 = -1.75882004556243e+11;
-const float chargeMassRatio_unit_Ckg_1_2 = 1.75882004556243e+11;
-const float chargeMassRatio_unit_Ckg_1_3 = 9.57883323113770929296814695637e+7;
-const float chargeMassRatioOverC_unit_Ckg_1_0 = 0.;
-const float chargeMassRatioOverC_unit_Ckg_1_1 = -5.86679217114404525813654725097e+2;
-const float chargeMassRatioOverC_unit_Ckg_1_2 = 5.86679217114404525813654725097e+2;
-const float chargeMassRatioOverC_unit_Ckg_1_3 = 3.19515483979844149381503119735e-1 ;
-const float charge_unit_qe_0 = 0.;
-const float charge_unit_qe_1 = -1.;
-const float charge_unit_qe_2 = 1.;
-const float charge_unit_qe_3 = 1.;
-const float mass_unit_eVc_2_0 = 0.;
-const float mass_unit_eVc_2_1 = 510998.94;
-const float mass_unit_eVc_2_2 = 510998.94;
-const float mass_unit_eVc_2_3 = 938272081.;
-const vec3 pathicle_color_0 = vec3(0.7, 0.7, 0.0);
-const vec3 pathicle_color_1 = vec3(0.12, 0.45, 0.65);
-const vec3 pathicle_color_2 = vec3(0.12, 0.45, 0.65);
-const vec3 pathicle_color_3 = vec3(0.77, 0.2, 0.2);
-
-
-float ptype[${particleTypes.length}];
-
-float getParticleType(float id) {
-  for (int i=0; i < 2048; i++) {
-      if (float(i) == id) return ptype[i];
-  }
-}
-
-struct ParticleData {
-  float mass;
-  float charge;
-  float chargeMassRatio;
-  vec3 color;
-};
-
-const ParticleData particleData_0 = ParticleData(
-  mass_unit_eVc_2_0,
-  charge_unit_qe_0,
-  chargeMassRatio_unit_Ckg_1_0,
-  pathicle_color_0
-);
-const ParticleData particleData_1 = ParticleData(
-  mass_unit_eVc_2_1,
-  charge_unit_qe_1,
-  chargeMassRatio_unit_Ckg_1_1,
-  pathicle_color_1
-);
-const ParticleData particleData_2 = ParticleData(
-  mass_unit_eVc_2_2,
-  charge_unit_qe_2,
-  chargeMassRatio_unit_Ckg_1_2,
-  pathicle_color_2
-);
-const ParticleData particleData_3 = ParticleData(
-  mass_unit_eVc_2_3,
-  charge_unit_qe_3,
-  chargeMassRatio_unit_Ckg_1_3,
-  pathicle_color_3
-);
-
-ParticleData getParticleData(float p) {
-
-  float particleType = getParticleType(p);
-
-  if (particleType == 0.) {
-    return particleData_0;
-  } else if (particleType == 1.) {
-    return particleData_1;
-  } else if (particleType == 2.) {
-    return particleData_2;
-  } else {
-    return particleData_3;
-  }
-}
-void initParticleData()  {
-
-  ${particleTypeArrayDefintion(particleTypes)};
-}
-`
 }
 
 function pushBoris(regl, { variables, model }) {
@@ -3535,6 +2862,8 @@ function pushBoris(regl, { variables, model }) {
         gravityConstant: model.interactions.gravityConstant,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
+        utParticleChargesMassesChargeMassRatios: () =>
+          variables.particleChargesMassesChargeMassRatios,
         utPositionBuffer: (context, props) =>
           variables.position[(props.pathiclesTick + 1) % 2],
         utVelocityBuffer: (context, props) =>
@@ -3556,6 +2885,7 @@ function pushBoris(regl, { variables, model }) {
 
         const highp float c = 2.99792458e+8;
         uniform sampler2D utParticleColorAndType;
+        uniform sampler2D utParticleChargesMassesChargeMassRatios;
         uniform sampler2D utPositionBuffer;
         uniform sampler2D utVelocityBuffer;
         uniform float tick;
@@ -3570,7 +2900,7 @@ function pushBoris(regl, { variables, model }) {
         uniform float particleInteraction;
 
         ${getters}
-        ${particleDataChunk(model.particleTypes)}
+
         ${latticeChunk(model.lattice)}
 
 
@@ -3711,8 +3041,8 @@ function pushBoris(regl, { variables, model }) {
 
         void main () {
 
-          initLatticeData();
-          initParticleData();
+          //initLatticeData();
+          //initParticleData();
           float p, b;
 
           p = floor(gl_FragCoord.x);
@@ -4022,6 +3352,18 @@ class Simulation {
         data: particleTypes.map(p => configuration.colors[p].concat(p)).flat(),
         shape: [particleCount, 1, 4],
         type: 'float'
+      }),
+      particleChargesMassesChargeMassRatios: regl.texture({
+        data: particleTypes
+          .map(p => [
+            configuration.charge[p],
+            configuration.mass[p],
+            configuration.chargeMassRatio[p],
+            p
+          ])
+          .flat(),
+        shape: [particleCount, 1, 4],
+        type: 'float'
       })
     };
     this.model = {
@@ -4290,10 +3632,10 @@ function createCube(sx, sy, sz, nx, ny, nz) {
     }
 }
 var primitiveCube = createCube;
-var frag = "precision highp float;\n#define GLSLIFY 1\nuniform vec2 iResolution;\nuniform vec2 iMouse;\nvarying vec2 vUv;\n\nvec3 getSky(vec2 uv)\n{\n float atmosphere = sqrt(1.0-uv.y);\n    vec3 skyColor = vec3(0.,0.,0.);\n\n    float scatter = pow(iMouse.y / iResolution.y,1.0 / 15.0);\n    scatter = 1.0 - clamp(scatter,0.8,1.0);\n\n    vec3 scatterColor = mix(vec3(1.0),vec3(1.0,0.3,0.0) * 1.5, scatter);\n    return mix(skyColor,vec3(scatterColor),atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1.0 - distance(uv,iMouse.xy / iResolution.y);\n    sun = clamp(sun,0.0,1.0);\n\n    float glow = sun;\n    glow = clamp(glow,0.0,1.0);\n\n    sun = pow(sun,200.0);\n    sun *= 1.0;\n    sun = clamp(sun,0.0,1.0);\n\n    glow = pow(glow,10.0) * 1.0;\n    glow = pow(glow,(uv.y));\n    glow = clamp(glow,0.0,1.0);\n\n    sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n    glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n    sun += glow;\n\n    vec3 sunColor = vec3(1.0,1.,1.) * sun;\n\n    return vec3(sunColor);\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n  gl_FragColor = vec4(sky + sun, 1.);\n}\n";
-var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vWorldPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  //vec4 worldPosition = model * vec4(aPosition, 1.0);\n  //  vWorldPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n";
-function drawBackgroundCommand(regl) {
-  const stage = primitiveCube(50, 50, 50);
+var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec2 uSunPosition;\nvarying vec2 vUv;\nuniform vec3 eye;\nvarying vec3 vPosition;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.;\n\nvec3 getSky(vec2 uv) {\n  float atmosphere = sqrt(1.0-uv.y);\n  vec3 skyColor = vec3(0., 0., 0.);\n\n  float scatter = pow(uSunPosition.y / uResolution.y, 1.0 / 15.0);\n  scatter = 1.0 - clamp(scatter, 0.8, 1.0);\n\n  vec3 scatterColor = mix(vec3(1.0), vec3(1.0, 0.3, 0.0) * 1.5, scatter);\n  return mix(skyColor, vec3(scatterColor), atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1. - distance(uv, uSunPosition.xy / uResolution.x);\n  sun = clamp(sun, 0.0, 1.0);\n\n  float glow = sun;\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun = pow(sun, 200.0);\n  sun *= 1.0;\n  sun = clamp(sun, 0.0, 1.0);\n\n  glow = pow(glow, 10.0) * 1.0;\n  glow = pow(glow, (uv.y));\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n  glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n  sun += glow;\n\n  vec3 sunColor = vec3(1.0, 1., 1.) * sun;\n\n  return vec3(sunColor);\n}\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n//\n//  float resolution = 1000.;\n//  vec2 grid_st = vUv * uResolution * resolution;\n//  vec3 color = vec3(.5);\n//  color += vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n//  color += vec3(0.2) * grid(grid_st, 10. / resolution);\n//\n//  float fogDistance = length(eye - vPosition);\n//\n//  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n    gl_FragColor = vec4(sky + sun, 1.);\n}\n";
+var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n";
+function drawBackgroundCommand(regl, { stageGrid }) {
+  const stage = primitiveCube(stageGrid.size * 2);
   let model = identity_1$1([]);
   return regl({
     primitive: 'triangles',
@@ -4303,10 +3645,10 @@ function drawBackgroundCommand(regl) {
       uv: stage.uvs
     },
     uniforms: {
-      iResolution: context => [context.viewportHeight, context.viewportWidth],
-      iMouse: context => [
+      uResolution: [stageGrid.size, stageGrid.size],
+      uSunPosition: context => [
         context.viewportHeight / 2,
-        context.viewportWidth / 2
+        (context.viewportWidth / 4) * 3
       ],
       model
     },
@@ -4475,7 +3817,7 @@ function createPlane(sx, sy, nx, ny, options) {
     cells: cells
   }
 }
-var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.2;\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n    grid /= fwidth(st);\n  return 1.-(step(res,grid.x) * step(res,grid.y));\n}\n\nvoid main() {\n\n  float resolution = 5.;\n\n  vec2 grid_st = vUv * uResolution * resolution;\n\n  vec3 color = vec3(1.);\n  color -= vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n  color -= vec3(0.2) * grid(grid_st, 10. / resolution);\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor =\n    mix(\n      vec4(color.rgb, 1.),\n      vec4(fogColor, 1),\n      1.0 - exp( - fogDistance * FogDensity )\n    );\n\n}\n";
+var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.3;\n\nfloat grid(vec2 st, float res, float width) {\n  vec2 grid =  fract(st*res) / width;\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main() {\n\n  float resolution = 1.;\n  vec2 grid_st = vUv * uResolution * resolution;\n  vec3 color = vec3(.6);\n  color -= vec3(.75) * grid(grid_st, 1. / resolution, 3.);\n  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n}\n";
 var vert$2 = "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\n\nvoid main () {\n  vUv = uv / 1.;\n  vPosition = position + uOffset;\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n";
 function drawStageCommands(regl, { stageGrid }) {
   const stage = createPlane(stageGrid.size, stageGrid.size);
@@ -4525,7 +3867,7 @@ function boxesViewSimple(regl, { variables, model, config }) {
     view: config.view
   });
   const drawStage = drawStageCommands(regl, config.view);
-  const drawBackground = drawBackgroundCommand(regl);
+  const drawBackground = drawBackgroundCommand(regl, config.view);
   function drawDiffuse(props) {
     setParams(config.view, () => {
       drawBackground();
@@ -4544,11 +3886,11 @@ var map;
 try {
   map = Map;
 } catch (_) {}
-var set$1;
+var set;
 try {
-  set$1 = Set;
+  set = Set;
 } catch (_) {}
-function clone$2(src) {
+function clone$1(src) {
   if (!src || typeof src !== 'object' || typeof src === 'function') {
     return src;
   }
@@ -4562,24 +3904,24 @@ function clone$2(src) {
     return new RegExp(src);
   }
   if (Array.isArray(src)) {
-    return src.map(clone$2);
+    return src.map(clone$1);
   }
   if (map && src instanceof map) {
     return new Map(Array.from(src.entries()));
   }
-  if (set$1 && src instanceof set$1) {
+  if (set && src instanceof set) {
     return new Set(Array.from(src.values()));
   }
   if (src instanceof Object) {
     var obj = {};
     for (var key in src) {
-      obj[key] = clone$2(src[key]);
+      obj[key] = clone$1(src[key]);
     }
     return obj;
   }
   return src;
 }
-var nanoclone = clone$2;
+var nanoclone = clone$1;
 var types = [{
   name: "primitive",
   is: function (el) {
@@ -4691,25 +4033,28 @@ const defaultConfig = {
   logPerformance: false,
   stats: false,
   profile: false,
-  colors: [[0.7, 0.7, 0.0], [0.12, 0.45, 0.65], [0.12, 0.45, 0.65], [0.77, 0.2, 0.2]],
+  colors: [[0.92, 0.75, 0.0], [0.12, 0.45, 0.65], [0.12, 0.45, 0.65], [0.77, 0.2, 0.2]],
+  mass: [0, 510998.94, 510998.94, 938272081],
+  charge: [0, -1, 1, 1],
+  chargeMassRatio: [0, -1.75882004556243e11, 1.75882004556243e11, 9.57883323113770929296814695637e7],
   usePostProcessing: false,
   pusher: 'boris',
   runner: {
-    prerender: true,
-    looping: false,
+    prerender: false,
+    looping: true,
     mode: 'framewise',
-    stepsPerTick: 2,
-    stepCount: 128
+    stepsPerTick: 4,
+    stepCount: 256
   },
   model: {
-    bufferLength: 64,
-    tickDurationOverC: 0.5,
+    bufferLength: 256 / 2,
+    tickDurationOverC: 0.2,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
-      particleCount: 128,
+      particleCount: 256,
       particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
@@ -4737,7 +4082,7 @@ const defaultConfig = {
       dark: 1,
       light: 0.8
     },
-    sky: [0.9, 1, 0.9, 1],
+    sky: [0.9, 1, 0, 1],
     shadowColor: [0.3, 0.3, 0.3],
     ambientIntensity: 0.6,
     diffuse: 0,
@@ -4774,9 +4119,9 @@ const defaultConfig = {
       theta: Math.PI / 2,
       phi: 0,
       distance: 10,
-      fovY: Math.PI / 3,
-      dTheta: 0.001,
-      autorotate: false,
+      fovY: Math.PI / 2.5,
+      dTheta: 0.01,
+      autorotate: true,
       rotateAboutCenter: true,
       zoomAboutCursor: false,
       zoomDecayTime: 1,
@@ -4787,12 +4132,13 @@ const defaultConfig = {
   dumpData: false
 };
 const storyDipole = {
+  name: 'story-dipole',
   view: {
     camera: {
       center: [0, 0.1, 0],
       theta: 2 * Math.PI / (360 / 90),
       phi: 2 * Math.PI / (360 / 15),
-      distance: 9
+      distance: 5
     }
   },
   model: {
@@ -4839,7 +4185,7 @@ const storyElectric = {
       center: [-2, 0, 0],
       theta: Math.PI / 4,
       phi: 0,
-      distance: 6
+      distance: 5
     }
   },
   model: {
@@ -4850,7 +4196,7 @@ const storyElectric = {
       position: [0, 1, -10],
       directionJitter: [0.01, 0.01, 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 2
+      gamma: 10
     },
     interactions: {
       electricField: [0, 0, 0.001],
@@ -4887,6 +4233,7 @@ const storyElectric = {
   }
 };
 const storyQuadrupole = {
+  name: 'story-quadrupole',
   view: {
     camera: {
       center: [0, 1, 0],
@@ -4899,7 +4246,7 @@ const storyQuadrupole = {
     emitter: {
       bunchShape: 'SQUARE_YZ',
       particleType: 'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-10, 1, 0],
+      position: [-5, 1, 0],
       direction: [1, 0, 0],
       directionJitter: [0, 0.1, 0.1],
       positionJitter: [0, 0.1, 0.1],
@@ -4934,97 +4281,13 @@ const storyQuadrupole = {
     }
   }
 };
-const storyEmpty = {
-  view: {
-    camera: {
-      center: [-2, 0.1, 0],
-      theta: 0.4,
-      phi: 0,
-      distance: 6
-    }
-  },
+const random$1 = {
+  name: 'random',
   model: {
-    emitter: {
-      particleType: 'PROTON ELECTRON  PHOTON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
-      positionJitter: [0.1, 0.1, 0],
-      gamma: 1.1
-    },
-    interactions: {
-      electricField: [0, 0, 0],
-      particleInteraction: false
-    },
-    lattice: {
-      elements: {},
-      beamline: [],
-      origin: {
-        phi: 0,
-        position: [0, 1, -6]
-      }
-    }
-  }
-};
-const storyLoop = {
-  view: {
-    camera: {
-      center: [-2, 0.1, 0],
-      theta: 0.4,
-      phi: 0,
-      distance: 6
-    }
-  },
-  model: {
-    emitter: {
-      particleType: 'PROTON ELECTRON  PHOTON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
-      positionJitter: [0.1, 0.1, 0],
-      gamma: 1.1
-    },
-    interactions: {
-      electricField: [0, 0, 0.0001],
-      particleInteraction: false
-    },
-    lattice: {
-      elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
-        q1: {
-          type: 'QUAD',
-          k1: 0,
-          l: 3
-        },
-        q2: {
-          type: 'QUAD',
-          k1: -0,
-          l: 3
-        },
-        l2: {
-          type: 'DRIF',
-          l: 3
-        }
-      },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
-      origin: {
-        phi: 0,
-        position: [0, 1, -6]
-      }
-    }
-  }
-};
-const random$2 = {
-  model: {
-    boundingBoxSize: 2,
+    boundingBoxSize: 5,
     emitter: {
       randomize: true,
-      gamma: 1000,
+      gamma: 100,
       particleType: 'PHOTON ELECTRON PROTON'
     },
     lattice: {
@@ -5051,6 +4314,7 @@ const random$2 = {
   }
 };
 const freeElectron = {
+  name: 'free-electron',
   view: {
     camera: {
       center: [0, 0, 0],
@@ -5095,6 +4359,7 @@ const freeElectron = {
   }
 };
 const freePhoton = {
+  name: 'free-photon',
   view: {
     camera: {
       center: [0, -0.5, 0],
@@ -5138,16 +4403,59 @@ const freePhoton = {
     }
   }
 };
+const freePhotons = {
+  name: 'free-photons',
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: Math.PI / 2,
+      phi: 0,
+      distance: 2,
+      fovY: Math.PI / 3,
+      dTheta: 0.001,
+      autorotate: false,
+      rotateAboutCenter: true,
+      zoomAboutCursor: false,
+      zoomDecayTime: 1,
+      far: 50,
+      near: 0.0001
+    }
+  },
+  runner: {
+    prerender: true,
+    looping: true,
+    mode: 'framewise',
+    stepsPerTick: 1,
+    stepCount: 8
+  },
+  model: {
+    bufferLength: 8,
+    tickDurationOverC: 0.1,
+    emitter: {
+      particleCount: 2,
+      particleType: 'PHOTON ELECTRON PROTON',
+      bunchShape: 'SQUARE',
+      direction: [0, 0, 1],
+      position: [0, -.5, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0, 0],
+      gamma: 1.1
+    },
+    interactions: {
+      electricField: [0, 0, 0.091],
+      particleInteraction: false,
+      magneticField: [0, 0.0, 0]
+    }
+  }
+};
 const presets = {
-  'story-dipole': storyDipole,
-  'story-electric': storyElectric,
-  'free-electrons': storyElectric,
-  'story-quadrupole': storyQuadrupole,
-  'story-empty': storyEmpty,
-  'story-loop': storyLoop,
-  freeElectron,
-  freePhoton,
-  random: random$2
+  [storyDipole.name]: storyDipole,
+  [storyElectric.name]: storyElectric,
+  [storyQuadrupole.name]: storyQuadrupole,
+  [freeElectron.name]: freeElectron,
+  [freePhoton.name]: freePhoton,
+  [freePhotons.name]: freePhotons,
+  [random$1.name]: random$1
 };
 const config = presetName => {
   return nanomerge(defaultConfig, presets[presetName]) || defaultConfig;
@@ -5162,9 +4470,9 @@ var map$1;
 try {
   map$1 = Map;
 } catch (_) {}
-var set$1$1;
+var set$1;
 try {
-  set$1$1 = Set;
+  set$1 = Set;
 } catch (_) {}
 function clone$1$1 (src) {
   if (!src || typeof src !== 'object' || typeof src === 'function') {
@@ -5185,7 +4493,7 @@ function clone$1$1 (src) {
   if (map$1 && src instanceof map$1) {
     return new Map(Array.from(src.entries()))
   }
-  if (set$1$1 && src instanceof set$1$1) {
+  if (set$1 && src instanceof set$1) {
     return new Set(Array.from(src.values()))
   }
   if (src instanceof Object) {
@@ -12541,6 +11849,12 @@ class ReglSimulatorInstance {
   destroy() {
     this.regl.destroy();
   }
+  loadConfig(config) {
+    this.stop(this.regl);
+    this.config = config;
+    this.init(this.regl);
+    this.run(this.regl);
+  }
   init(regl) {
     this.regl._commands = [];
     this.cameras = [];
@@ -12590,7 +11904,10 @@ class ReglSimulatorInstance {
         );
       })
     };
-    mainloop();
+    this.loop = mainloop();
+  }
+  stop() {
+    this.loop.cancel();
   }
 }
 

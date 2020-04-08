@@ -31,8 +31,9 @@ export default function(
       fourVelocities[p * 4 + 1] = random()
       fourVelocities[p * 4 + 2] = random()
       fourVelocities[p * 4 + 3] = 0
-      particleTypes[p] = 1
+      particleTypes[p] = Math.floor(random() * 4)
     }
+
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,

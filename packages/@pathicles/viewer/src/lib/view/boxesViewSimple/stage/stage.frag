@@ -10,32 +10,25 @@ varying vec3 vNormal;
 varying vec2 vUv;
 
 const vec3 fogColor = vec3(1.0);
-const float FogDensity = 0.2;
+const float FogDensity = 0.3;
 
 
-float grid(vec2 st, float res){
-  vec2 grid = fract(st*res);
-    grid /= fwidth(st);
-  return 1.-(step(res,grid.x) * step(res,grid.y));
+float grid(vec2 st, float res, float width) {
+  vec2 grid =  fract(st*res) / width;
+  grid /= fwidth(st);
+  return 1. - (step(res, grid.x) * step(res, grid.y));
 }
 
 void main() {
 
-  float resolution = 5.;
-
+  float resolution = 1.;
   vec2 grid_st = vUv * uResolution * resolution;
-
-  vec3 color = vec3(1.);
-  color -= vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);
-  color -= vec3(0.2) * grid(grid_st, 10. / resolution);
+  vec3 color = vec3(.6);
+  color -= vec3(.75) * grid(grid_st, 1. / resolution, 3.);
+  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);
 
   float fogDistance = length(eye - vPosition);
 
-  gl_FragColor =
-    mix(
-      vec4(color.rgb, 1.),
-      vec4(fogColor, 1),
-      1.0 - exp( - fogDistance * FogDensity )
-    );
+  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));
 
 }

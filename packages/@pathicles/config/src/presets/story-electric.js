@@ -5,7 +5,7 @@ export const storyElectric = {
       center: [-2, 0, 0],
       theta: Math.PI / 4,
       phi: 0,
-      distance: 6
+      distance: 5
     }
   },
 
@@ -19,7 +19,7 @@ export const storyElectric = {
       directionJitter: [0.01, 0.01, 0],
       positionJitter: [0.1, 0.1, 0],
 
-      gamma: 2
+      gamma: 10
     },
 
     interactions: {

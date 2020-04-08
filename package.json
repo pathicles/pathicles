@@ -14,9 +14,11 @@
   "workspaces": {
     "nohoist": [],
     "packages": [
+      "packages/@pathicles/specrel",
       "packages/@pathicles/core",
       "packages/@pathicles/config",
       "packages/@pathicles/viewer",
+      "packages/@pathicles/app",
       "packages/@pathicles/vue"
     ]
   },

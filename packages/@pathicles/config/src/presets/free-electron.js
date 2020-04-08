@@ -1,4 +1,5 @@
 export const freeElectron = {
+  name: 'free-electron',
   view: {
     camera: {
       center: [0, 0, 0],

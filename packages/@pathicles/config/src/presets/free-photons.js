@@ -1,4 +1,5 @@
 export const freePhotons = {
+  name: 'free-photons',
   view: {
     camera: {
       center: [0, 0, 0],

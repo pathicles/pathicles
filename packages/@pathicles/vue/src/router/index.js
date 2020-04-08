@@ -9,7 +9,7 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/simulator/:preset', component: PathiclesSimulator },
+    { path: '/simulator/', component: PathiclesSimulator },
     // { path: '/viewer/:preset', component: PathiclesViewer },
     { path: '/story/', component: StoryView }
   ]
