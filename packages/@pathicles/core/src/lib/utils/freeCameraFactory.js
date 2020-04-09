@@ -56,7 +56,7 @@ function initializeCameraControls(camera, canvas) {
 
   interactionEvents(canvas)
     .on('wheel', function(ev) {
-      if (true || ev.mods.shift) {
+      if (ev.mods.shift) {
         // if (!ev.active || ev.buttons !== 1) return
         camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
         // console.log(camera.params.distance)

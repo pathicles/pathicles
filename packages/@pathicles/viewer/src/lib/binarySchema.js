@@ -1,4 +1,4 @@
-const Type = require('js-binary').Type
+import { Type } from 'js-binary'
 export const binarySchema = new Type({
   tick: 'uint',
   data: {

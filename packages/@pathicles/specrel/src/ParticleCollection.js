@@ -1,6 +1,6 @@
 import * as d3random from 'd3-random'
-import { default as seedrandom } from 'seedrandom'
-import createLogger from './Logger.js'
+// import { default as seedrandom } from 'seedrandom'
+//import createLogger from './Logger.js'
 import Particle from './Particle'
 import {
   columnDistribution,
@@ -10,9 +10,9 @@ import {
 } from './distribution/Distributions'
 import ParticleTypes from './ParticleTypes'
 
-const logger = createLogger('ParticleCollection')
+//const logger = createLogger('ParticleCollection')
 
-const random = d3random.randomUniform.source(seedrandom('a22ebc7ca3a47'))(0, 1)
+//const random = d3random.randomUniform.source(seedrandom('a22ebc7ca3a47'))(0, 1)
 
 class ParticleCollection {
   constructor(particles) {
@@ -25,6 +25,7 @@ class ParticleCollection {
     return this._particles || []
   }
 
+  // eslint-disable-next-line no-unused-vars
   distributeLocation({ bunchShape, dx = 0.1, x0 = 0, y0 = 0, z0 = 0 }) {
     if (
       ['SQUARE', 'ROW', 'COLUMN', 'SQUARE_HORIZONTAL'].indexOf(bunchShape) ===

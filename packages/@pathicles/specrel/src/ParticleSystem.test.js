@@ -10,7 +10,9 @@ describe('System ', function() {
     let constructor = () => {
       new ParticleSystem()
     }
-    // expect(constructor).toThrow("The constructor of class System has a mandatory argument");
+    expect(constructor).toThrow(
+      'The constructor of class System has a mandatory argument'
+    )
   })
 })
 
@@ -25,7 +27,7 @@ describe('System of 10 photons ', function() {
   const pSystem = new ParticleSystem(pCollection)
 
   it('has correct initial state', () => {
-    expect(pSystem.particleCollection.particles.length).toEqual(particleCount)
+    expect(pSystem.particleCollection.particles).toHaveLength(particleCount)
     expect(pSystem._fields).toEqual([])
 
     expect(format6(pSystem.particles[0].position)).toEqual('[0 m, 0 m, 0 m]')
@@ -41,7 +43,7 @@ describe('System.load(gyrotest--10-electrons', function() {
   const system = ParticleSystem.load(config)
 
   it('has correct particle count', () => {
-    expect(system.particleCollection.particles.length).toEqual(
+    expect(system.particleCollection.particles).toHaveLength(
       config.particleCount
     )
   })

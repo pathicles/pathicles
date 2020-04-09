@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "build:screenshots": "babel-node tools/screenshots.js -- --port $npm_package_config_devPort",
     "dev": "vue-cli-service serve --port $npm_package_config_devPort",
-    "lint": "eslint --fix src"
+    "lint-fix": "eslint --fix src"
   },
   "config": {
     "devPort": 9301

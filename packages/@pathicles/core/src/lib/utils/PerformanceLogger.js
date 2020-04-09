@@ -1,6 +1,5 @@
 /* eslint-env browser */
 
-
 class PerformanceLogger {
   constructor(active = true) {
     if (window.performanceLogger) return window.performanceLogger

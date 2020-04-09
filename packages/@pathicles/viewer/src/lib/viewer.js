@@ -47,9 +47,6 @@ export class ReglViewerInstance {
   init(regl) {
     this.regl._commands = []
 
-
-
-
     this.initStory()
     this.initCameras()
     this.loopTick = -1

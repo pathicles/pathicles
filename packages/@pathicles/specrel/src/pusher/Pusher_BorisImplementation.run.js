@@ -52,7 +52,9 @@ logger.debug(
   )
 )
 //
-pusherTestSystem.particles[0]._momentum__eVc_1[2] = bigNumberMath.bignumber(51097340)
+pusherTestSystem.particles[0]._momentum__eVc_1[2] = bigNumberMath.bignumber(
+  51097340
+)
 
 // const dt__s = Specrel.speedOfLight__ms_1.pow(-1).times(configGyrotest.tickDuration__c_1);
 const dt__s = Specrel.speedOfLight__ms_1

@@ -37,7 +37,7 @@ export const freePhotons = {
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -.5, 0],
+      position: [0, -0.5, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.1

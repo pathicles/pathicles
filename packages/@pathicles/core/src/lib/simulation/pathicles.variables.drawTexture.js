@@ -29,10 +29,11 @@ export default function drawVariableTexture(
     },
 
     viewport: {
-      x: ({}, props) =>
-        props.variableName === 'velocity'
+      x: (_, props) => {
+        return props.variableName === 'velocity'
           ? (variables.initialData.particleCount + 1) * texelSize
-          : 0,
+          : 0
+      },
       y: y0,
       width: variables.initialData.particleCount * texelSize,
       height: variables.initialData.bufferLength * texelSize

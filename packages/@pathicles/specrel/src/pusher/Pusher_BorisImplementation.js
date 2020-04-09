@@ -93,11 +93,17 @@ export default class Pusher_BorisImplementation extends Pusher {
 
         const dv_mag = bigNumberMath.multiply(
           bigNumberMath.divide(2, bigNumberMath.add(1, b_0_square)),
-          bigNumberMath.cross(bigNumberMath.add(v_el1, bigNumberMath.cross(v_el1, b_0)), b_0)
+          bigNumberMath.cross(
+            bigNumberMath.add(v_el1, bigNumberMath.cross(v_el1, b_0)),
+            b_0
+          )
         )
 
         logger.info('v_el1', format6(v_el1))
-        logger.info('v_el1_cross_b_0__c', format6(bigNumberMath.cross(v_el1, b_0)))
+        logger.info(
+          'v_el1_cross_b_0__c',
+          format6(bigNumberMath.cross(v_el1, b_0))
+        )
         logger.info(
           'factor',
           format6(bigNumberMath.divide(2, bigNumberMath.add(1, b_0_square)))

@@ -22,15 +22,13 @@ export default function readData(regl, { variables, model }) {
     })
   })
 
-  const position = Object.values(data.position[variables.tick.value % 2]).map(
-    d => Math.floor(d * 1000) / 1000
-  )
-  const velocity = Object.values(data.velocity[variables.tick.value % 2])
   return {
     tick: variables.tick.value,
     data: {
-      position,
-      // velocity,
+      position: Object.values(data.position[variables.tick.value % 2]).map(
+        d => Math.floor(d * 1000) / 1000
+      ),
+      // velocity: Object.values(data.velocity[variables.tick.value % 2]),
       particleTypes: variables.initialData.particleTypes
     }
   }

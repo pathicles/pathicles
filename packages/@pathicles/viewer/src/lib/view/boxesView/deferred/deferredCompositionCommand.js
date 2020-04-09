@@ -1,4 +1,5 @@
-const deferredFrag = require('raw-loader!glslify-loader!./deferredCompositionCommand.frag.glsl')
+import deferredFrag from './deferredCompositionCommand.frag.glsl'
+
 export default function(regl) {
   return regl({
     vert: `

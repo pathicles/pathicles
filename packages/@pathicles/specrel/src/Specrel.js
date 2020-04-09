@@ -87,8 +87,8 @@ export function betaSquareFromVelocity__c(velocity__c, round = a => a) {
 }
 
 export function betaSquareFromVelocityPrime(
-  velocityPrime__ms_1,
-  round = a => a
+  velocityPrime__ms_1
+  // round = a => a
 ) {
   return (
     3 -

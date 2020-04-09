@@ -1,7 +1,10 @@
+import vert from './fxaa.vert.glsl'
+import frag from './fxaa.frag.glsl'
+
 export default function(regl, buffer) {
   return regl({
-    vert: require('raw-loader!./fxaa.vert.glsl'),
-    frag: require('raw-loader!glslify-loader!./fxaa.frag.glsl'),
+    vert,
+    frag,
     attributes: {
       position: [
         [-4, -4],

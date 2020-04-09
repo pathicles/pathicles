@@ -1,4 +1,5 @@
 // based on https://github.com/rreusser/rreusser.github.io/blob/master/src/src/flamms-paraboloid/sequencer.js
+/* eslint-env browser */
 
 import bspline from 'b-spline'
 import * as presets from '@pathicles/config'

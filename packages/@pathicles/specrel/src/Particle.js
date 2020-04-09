@@ -1,4 +1,9 @@
-import { bigNumberMath, format30 } from './Specrel'
+import {
+  bigNumberMath,
+  format30,
+  speedOfLight__ms_1,
+  speedOfLight
+} from './Specrel'
 
 class Particle {
   constructor(particleType) {
@@ -6,8 +11,7 @@ class Particle {
       throw 'The constructor of class Particle has a mandatory argument'
     }
 
-    console.log(bigNumberMath)
-
+    this._mass__eVc_2 = bigNumberMath.bignumber(particleType.mass__eVc_2)
     this._mass__eVc_2 = bigNumberMath.bignumber(particleType.mass__eVc_2)
     this._charge__qe = bigNumberMath.bignumber(particleType.charge__qe)
     this._chargeMassRatio__Ckg_1 = bigNumberMath.bignumber(
@@ -101,7 +105,7 @@ class Particle {
   }
 
   get velocity__ms_1() {
-    return bigNumberMath.multiply(this.velocity__c, Specrel.speedOfLight__ms_1)
+    return bigNumberMath.multiply(this.velocity__c, speedOfLight__ms_1)
   }
 
   get velocity() {
@@ -228,7 +232,7 @@ class Particle {
       const newMomentumLength = bigNumberMath.multiply(
         gamma2.minus(1).sqrt(),
         this.mass,
-        Specrel.speedOfLight
+        speedOfLight
       )
 
       const newMomentum = bigNumberMath.multiply(
@@ -284,7 +288,7 @@ class Particle {
           velocity[1].pow(2),
           velocity[2].pow(2)
         ),
-        Specrel.speedOfLight.pow(2)
+        speedOfLight.pow(2)
       )
       .sqrt()
 
@@ -304,13 +308,11 @@ class Particle {
         1,
         bigNumberMath.divide(
           bigNumberMath.add(u[0].pow(2), u[1].pow(2), u[2].pow(2)),
-          Specrel.speedOfLight.pow(2)
+          speedOfLight.pow(2)
         )
       )
       .sqrt()
   }
-
-  calculateGammaForMomentum(momentum) {}
 
   toString() {
     return (

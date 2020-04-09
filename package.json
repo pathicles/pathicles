@@ -14,11 +14,9 @@
   "workspaces": {
     "nohoist": [],
     "packages": [
-      "packages/@pathicles/specrel",
       "packages/@pathicles/core",
       "packages/@pathicles/config",
       "packages/@pathicles/viewer",
-      "packages/@pathicles/app",
       "packages/@pathicles/vue"
     ]
   },
@@ -26,16 +24,11 @@
     "dev:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue dev",
     "build:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
-    "commit": "npx git-cz",
     "lint-fix": "yarn workspaces run lint-fix",
-    "packages:changed": "lerna changed",
-    "packages:list": "lerna ls -l",
     "prettier-packages": "prettier-package-json --write; lerna exec -- prettier-package-json --write",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits",
     "version:bump-patch": "lerna version patch --no-push --conventional-commits",
-    "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md",
-    "version:push": "npm version --git-tag-version; git push; git push --tags",
-    "yi": "yarn install"
+    "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md"
   },
   "config": {
     "commitizen": {
@@ -49,6 +42,8 @@
   "dependencies": {
     "d3": "^5.15.0",
     "debug": "^4.1.1",
+    "loglevel": "^1.6.7",
+    "chalk": "^4.0.0",
     "regl": "^1.4.2",
     "tornis": "^0.3.0",
     "vue": "^2.6.11"

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "lint": "eslint --fix src",
+    "lint-fix": "eslint --fix src",
     "prepare": "yarn build",
     "test": "jest"
   },

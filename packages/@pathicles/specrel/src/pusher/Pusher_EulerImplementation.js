@@ -27,7 +27,10 @@ export default class Pusher_EulerImplementation extends Pusher {
           intermediatePosition.toNumber()
         )
 
-        const v_cross_B__ms_1T = bigNumberMath.cross(intermediateVelocity__ms_1, B__T)
+        const v_cross_B__ms_1T = bigNumberMath.cross(
+          intermediateVelocity__ms_1,
+          B__T
+        )
         const qv_cross_B__Cms_1T = bigNumberMath.multiply(
           v_cross_B__ms_1T,
           particle.charge__C
