@@ -5,7 +5,7 @@
     <router-view :key="$route.fullPath"></router-view>
     <nav v-if="!printMode">
       <!--      <router-link to="/viewer/story-dipole">viewer</router-link>-->
-      <router-link to="/story/">story</router-link>
+      <!--      <router-link to="/story/">story</router-link>-->
     </nav>
   </div>
 </template>

@@ -274,7 +274,7 @@ var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : e
 var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n"; // eslint-disable-line
 
 function drawBackgroundCommand(regl, { stageGrid }) {
-  const stage = primitiveCube(stageGrid.size * 2);
+  const stage = primitiveCube(stageGrid.size * 2, stageGrid.size * 2, stageGrid.size * 2);
   let model = identity_1([]);
   return regl({
     primitive: 'triangles',
@@ -750,7 +750,7 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 4,
+    stepsPerTick: 2,
     stepCount: 256
   },
   model: {
@@ -990,8 +990,16 @@ const storyQuadrupole = {
 };
 const random = {
   name: 'random',
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: -0.6163632477299,
+      phi: 0.04608544417465289,
+      distance: 5
+    }
+  },
   model: {
-    boundingBoxSize: 5,
+    boundingBoxSize: 2,
     emitter: {
       randomize: true,
       gamma: 100,
@@ -1143,7 +1151,7 @@ const freePhotons = {
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -.5, 0],
+      position: [0, -0.5, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.1
@@ -8651,13 +8659,4 @@ class ReglViewerInstance {
   }
 }
 
-const Type = require('js-binary').Type;
-const binarySchema = new Type({
-  tick: 'uint',
-  data: {
-    position: ['int'],
-    particleTypes: ['uint']
-  }
-});
-
-export { ReglViewerInstance, binarySchema, boxesViewSimple };
+export { ReglViewerInstance, boxesViewSimple };

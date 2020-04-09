@@ -1,5 +1,4 @@
 {
-
   "name": "@pathicles/vue",
   "version": "0.1.0",
   "main": "dist/pathicles-vue.ssr.js",
@@ -17,7 +16,8 @@
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "@pathicles/viewer": "^0.1.0",
-    "js-binary": "^1.2.0"
+    "js-binary": "^1.2.0",
+    "dat.gui": "^0.7.7"
   },
   "devDependencies": {
     "@vue/cli-service": "^4.2.3",

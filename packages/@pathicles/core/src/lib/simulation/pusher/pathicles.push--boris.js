@@ -112,7 +112,7 @@ export default function(regl, { variables, model }) {
             B += vec3(0., ble.strength, 0.);
           } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
           B += (ble.strength > 0.) ?
-              ble.strength * vec3(0, position.z, position.y-1.)
+              ble.strength * vec3(0, position.z, position.y- 1.)
               : abs(ble.strength) * vec3(0, -position.z, -(position.y-1.));
               }
 
@@ -182,30 +182,25 @@ export default function(regl, { variables, model }) {
           vec3 nextVelocity_unit_c_1 = v_mag_unit_c_1 + dv_el_unit_c_1;
 
 
+          if (boundingBoxSize > 0.) {
+            if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
+              nextVelocity_unit_c_1.x *= -1.0;
+            }
+            if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
+              nextVelocity_unit_c_1.y *= -1.0;
+            }
+            if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
+              nextVelocity_unit_c_1.z *= -1.0;
+            }
+          }
 
-
-
-          //
-          //
-          // if (boundingBoxSize > 0.) {
-          //   if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.x *= -1.0;
-          //   }
-          //   if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.y *= -1.0;
-          //   }
-          //   if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.z *= -1.0;
-          //   }
-          // }
-
-          //return vec4( nextVelocity_unit_c_1, gamma_el1_unit_c_1 );
-          return vec4( nextVelocity_unit_c_1, previousGamma );
+          return vec4( nextVelocity_unit_c_1, gamma_el1_unit_c_1 );
+          // return vec4( nextVelocity_unit_c_1, previousGamma );
         }
 
         void main () {
 
-          //initLatticeData();
+          initLatticeData();
           //initParticleData();
           float p, b;
 

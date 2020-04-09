@@ -11,7 +11,7 @@ import { canWriteToFBOOfType } from './utils/canWriteToFBOOfType'
 import REGL from 'regl'
 
 import * as Debug from 'debug'
-const log = Debug('pathicles:log')
+const log = new Debug('pathicles:log')
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {

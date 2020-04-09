@@ -1,4 +1,5 @@
-import Debug from 'debug';
+import * as Debug from 'debug';
+import Debug__default from 'debug';
 import REGL from 'regl';
 
 var transformMat4_1 = transformMat4;
@@ -2215,7 +2216,7 @@ function initializeCameraControls(camera, canvas) {
   const radiansPerHalfScreenWidth = Math.PI * 0.5;
   normalizedInteractionEvents_1(canvas)
     .on('wheel', function(ev) {
-      {
+      if (ev.mods.shift) {
         camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0);
       }
     })
@@ -2537,7 +2538,7 @@ const random = () => {
   let x = Math.sin(seed++) * 10000;
   return x - Math.floor(x)
 };
-const boundedRandom = (min = -1, max = 1) => random() * max + min;
+const boundedRandom = (min = -1, max = 1) => random() * (max -min) + min;
 
 function particleTypesArrayFromDescriptor(
   particleTypeDescriptor,
@@ -2715,16 +2716,17 @@ function initialize(
   let particleTypes = new Array(particleCount);
   if (randomize) {
     for (let p = 0; p < particleCount; p++) {
-      fourPositions[p * 4] = boundedRandom() * boundingBoxSize;
-      fourPositions[p * 4 + 1] = boundedRandom() * boundingBoxSize;
-      fourPositions[p * 4 + 2] = boundedRandom() * boundingBoxSize;
+      fourPositions[p * 4] = boundedRandom() * 0;
+      fourPositions[p * 4 + 1] = boundedRandom() * 0;
+      fourPositions[p * 4 + 2] = boundedRandom() * 0;
       fourPositions[p * 4 + 3] = 0;
-      fourVelocities[p * 4] = random();
-      fourVelocities[p * 4 + 1] = random();
-      fourVelocities[p * 4 + 2] = random();
+      fourVelocities[p * 4] = boundedRandom();
+      fourVelocities[p * 4 + 1] = boundedRandom();
+      fourVelocities[p * 4 + 2] = boundedRandom();
       fourVelocities[p * 4 + 3] = 0;
       particleTypes[p] = Math.floor(random() * 4);
     }
+    console.log(fourVelocities);
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
@@ -2948,7 +2950,7 @@ function pushBoris(regl, { variables, model }) {
             B += vec3(0., ble.strength, 0.);
           } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
           B += (ble.strength > 0.) ?
-              ble.strength * vec3(0, position.z, position.y-1.)
+              ble.strength * vec3(0, position.z, position.y- 1.)
               : abs(ble.strength) * vec3(0, -position.z, -(position.y-1.));
               }
 
@@ -3018,30 +3020,25 @@ function pushBoris(regl, { variables, model }) {
           vec3 nextVelocity_unit_c_1 = v_mag_unit_c_1 + dv_el_unit_c_1;
 
 
+          if (boundingBoxSize > 0.) {
+            if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
+              nextVelocity_unit_c_1.x *= -1.0;
+            }
+            if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
+              nextVelocity_unit_c_1.y *= -1.0;
+            }
+            if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
+              nextVelocity_unit_c_1.z *= -1.0;
+            }
+          }
 
-
-
-          //
-          //
-          // if (boundingBoxSize > 0.) {
-          //   if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.x *= -1.0;
-          //   }
-          //   if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.y *= -1.0;
-          //   }
-          //   if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
-          //     nextVelocity_unit_c_1.z *= -1.0;
-          //   }
-          // }
-
-          //return vec4( nextVelocity_unit_c_1, gamma_el1_unit_c_1 );
-          return vec4( nextVelocity_unit_c_1, previousGamma );
+          return vec4( nextVelocity_unit_c_1, gamma_el1_unit_c_1 );
+          // return vec4( nextVelocity_unit_c_1, previousGamma );
         }
 
         void main () {
 
-          //initLatticeData();
+          initLatticeData();
           //initParticleData();
           float p, b;
 
@@ -3100,14 +3097,12 @@ function readData(regl, { variables, model }) {
       regl.read({ data: data[variableName][1] });
     });
   });
-  const position = Object.values(data.position[variables.tick.value % 2]).map(
-    d => Math.floor(d * 1000) / 1000
-  );
-  const velocity = Object.values(data.velocity[variables.tick.value % 2]);
   return {
     tick: variables.tick.value,
     data: {
-      position,
+      position: Object.values(data.position[variables.tick.value % 2]).map(
+        d => Math.floor(d * 1000) / 1000
+      ),
       particleTypes: variables.initialData.particleTypes
     }
   }
@@ -3168,10 +3163,11 @@ function drawVariableTexture(
       texture: ({ tick }, props) => variables[props.variableName][tick % 2]
     },
     viewport: {
-      x: ({}, props) =>
-        props.variableName === 'velocity'
+      x: (_, props) => {
+        return props.variableName === 'velocity'
           ? (variables.initialData.particleCount + 1) * texelSize
-          : 0,
+          : 0
+      },
       y: y0,
       width: variables.initialData.particleCount * texelSize,
       height: variables.initialData.bufferLength * texelSize
@@ -3465,8 +3461,8 @@ class PerformanceLogger {
 }
 var PerformanceLogger$1 = new PerformanceLogger();
 
-const log = Debug('pathicles:log');
-const error = Debug('pathicles:error');
+const log = Debug__default('pathicles:log');
+const error = Debug__default('pathicles:error');
 
 class SimulationFSM {
   constructor(
@@ -3635,7 +3631,7 @@ var primitiveCube = createCube;
 var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec2 uSunPosition;\nvarying vec2 vUv;\nuniform vec3 eye;\nvarying vec3 vPosition;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.;\n\nvec3 getSky(vec2 uv) {\n  float atmosphere = sqrt(1.0-uv.y);\n  vec3 skyColor = vec3(0., 0., 0.);\n\n  float scatter = pow(uSunPosition.y / uResolution.y, 1.0 / 15.0);\n  scatter = 1.0 - clamp(scatter, 0.8, 1.0);\n\n  vec3 scatterColor = mix(vec3(1.0), vec3(1.0, 0.3, 0.0) * 1.5, scatter);\n  return mix(skyColor, vec3(scatterColor), atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1. - distance(uv, uSunPosition.xy / uResolution.x);\n  sun = clamp(sun, 0.0, 1.0);\n\n  float glow = sun;\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun = pow(sun, 200.0);\n  sun *= 1.0;\n  sun = clamp(sun, 0.0, 1.0);\n\n  glow = pow(glow, 10.0) * 1.0;\n  glow = pow(glow, (uv.y));\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n  glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n  sun += glow;\n\n  vec3 sunColor = vec3(1.0, 1., 1.) * sun;\n\n  return vec3(sunColor);\n}\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n//\n//  float resolution = 1000.;\n//  vec2 grid_st = vUv * uResolution * resolution;\n//  vec3 color = vec3(.5);\n//  color += vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n//  color += vec3(0.2) * grid(grid_st, 10. / resolution);\n//\n//  float fogDistance = length(eye - vPosition);\n//\n//  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n    gl_FragColor = vec4(sky + sun, 1.);\n}\n";
 var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n";
 function drawBackgroundCommand(regl, { stageGrid }) {
-  const stage = primitiveCube(stageGrid.size * 2);
+  const stage = primitiveCube(stageGrid.size * 2, stageGrid.size * 2, stageGrid.size * 2);
   let model = identity_1$1([]);
   return regl({
     primitive: 'triangles',
@@ -4043,7 +4039,7 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 4,
+    stepsPerTick: 2,
     stepCount: 256
   },
   model: {
@@ -4283,8 +4279,16 @@ const storyQuadrupole = {
 };
 const random$1 = {
   name: 'random',
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: -0.6163632477299,
+      phi: 0.04608544417465289,
+      distance: 5
+    }
+  },
   model: {
-    boundingBoxSize: 5,
+    boundingBoxSize: 2,
     emitter: {
       randomize: true,
       gamma: 100,
@@ -4436,7 +4440,7 @@ const freePhotons = {
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -.5, 0],
+      position: [0, -0.5, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.1
@@ -11661,14 +11665,6 @@ function wrapREGL (args) {
 return wrapREGL;
 })));
 });
-const Type = require('js-binary').Type;
-const binarySchema = new Type({
-  tick: 'uint',
-  data: {
-    position: ['int'],
-    particleTypes: ['uint']
-  }
-});
 
 function saveCanvas(canvasElement, fileName, format = 'png') {
   let MIME_TYPE, FILE_EXTENTION;
@@ -11711,7 +11707,7 @@ function keyControl(app) {
     } else if (keyCode === 67) {
       if (app.camera) {
         const cameraConfig = app.camera.toConfig();
-        Debug.log(JSON.stringify({ camera: cameraConfig }, null, 2));
+        Debug__default.log(JSON.stringify({ camera: cameraConfig }, null, 2));
       }
     } else if (keyCode === 68) {
       console.log(JSON.stringify(app.simulation.dump(), null, 2));
@@ -11801,7 +11797,7 @@ function canWriteToFBOOfType(regl, type = 'float') {
   }
 }
 
-const log$1 = require('debug')('pathicles:log');
+const log$1 = new Debug('pathicles:log');
 class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
     keyControl(this);

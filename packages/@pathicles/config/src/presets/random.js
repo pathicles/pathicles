@@ -1,16 +1,16 @@
 export const random = {
   name: 'random',
-  // view: {
-  //   camera: {
-  //     center: [0, 0, 0],
-  //     theta: -0.6163632477299,
-  //     phi: 0.04608544417465289,
-  //     distance: 5
-  //   }
-  // },
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: -0.6163632477299,
+      phi: 0.04608544417465289,
+      distance: 5
+    }
+  },
 
   model: {
-    boundingBoxSize: 5,
+    boundingBoxSize: 2,
     emitter: {
       randomize: true,
       // position: [0, 0, 0],

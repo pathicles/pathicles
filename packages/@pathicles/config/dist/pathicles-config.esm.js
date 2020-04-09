@@ -193,7 +193,7 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 4,
+    stepsPerTick: 2,
     stepCount: 256
   },
   model: {
@@ -437,8 +437,16 @@ const storyQuadrupole = {
 
 const random = {
   name: 'random',
+  view: {
+    camera: {
+      center: [0, 0, 0],
+      theta: -0.6163632477299,
+      phi: 0.04608544417465289,
+      distance: 5
+    }
+  },
   model: {
-    boundingBoxSize: 5,
+    boundingBoxSize: 2,
     emitter: {
       randomize: true,
       gamma: 100,
@@ -593,7 +601,7 @@ const freePhotons = {
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -.5, 0],
+      position: [0, -0.5, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.1

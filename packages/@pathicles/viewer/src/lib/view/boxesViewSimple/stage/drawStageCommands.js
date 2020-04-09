@@ -8,6 +8,20 @@ export default function(regl, { stageGrid }) {
 
   const command = () => {
     return regl({
+      // blend: {
+      //   enable: true,
+      //   func: {
+      //     srcRGB: 'src alpha',
+      //     srcAlpha: 1,
+      //     dstRGB: 'one minus src alpha',
+      //     dstAlpha: 1
+      //   },
+      //   equation: {
+      //     rgb: 'add',
+      //     alpha: 'add'
+      //   },
+      //   color: [1, 1, 0, 1]
+      // },
       cull: {
         enable: true,
         face: 'front'

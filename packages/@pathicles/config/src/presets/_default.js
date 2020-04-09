@@ -31,7 +31,7 @@ export const defaultConfig = {
     looping: true,
 
     mode: 'framewise',
-    stepsPerTick: 4,
+    stepsPerTick: 2,
     stepCount: 256
   },
 

@@ -22,17 +22,20 @@ export default function(
   let particleTypes = new Array(particleCount)
 
   if (randomize) {
+
     for (let p = 0; p < particleCount; p++) {
-      fourPositions[p * 4] = boundedRandom() * boundingBoxSize
-      fourPositions[p * 4 + 1] = boundedRandom() * boundingBoxSize
-      fourPositions[p * 4 + 2] = boundedRandom() * boundingBoxSize
+      fourPositions[p * 4] = boundedRandom() * 0 //boundingBoxSize
+      fourPositions[p * 4 + 1] = boundedRandom() * 0 //boundingBoxSize
+      fourPositions[p * 4 + 2] = boundedRandom() * 0 //boundingBoxSize
       fourPositions[p * 4 + 3] = 0
-      fourVelocities[p * 4] = random()
-      fourVelocities[p * 4 + 1] = random()
-      fourVelocities[p * 4 + 2] = random()
+      fourVelocities[p * 4] = boundedRandom()
+      fourVelocities[p * 4 + 1] = boundedRandom()
+      fourVelocities[p * 4 + 2] = boundedRandom()
       fourVelocities[p * 4 + 3] = 0
       particleTypes[p] = Math.floor(random() * 4)
     }
+
+    console.log(fourVelocities)
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
