@@ -1,0 +1,27 @@
+{
+  "name": "@pathicles/specrel",
+  "version": "0.1.0",
+  "module": "dist/pathicles-specrel.esm.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "eslint --fix src",
+    "test:unit": "jest",
+    "test": "jest"
+  },
+  "esm": {},
+  "devDependencies": {
+    "jest": "^25.2.7"
+  },
+  "dependencies": {
+    "@pathicles/config": "^0.1.0",
+    "loglevel-plugin-prefix": "^0.8.4",
+    "prettyjson": "^1.2.1",
+    "d3-random": "^2.1.0",
+    "seedrandom": "^3.0.5",
+    "three": "^0.115.0",
+    "decimal.js": "^10.2.0",
+    "mathjs": "^6.6.2"
+  }
+}
