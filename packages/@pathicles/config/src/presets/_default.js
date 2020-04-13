@@ -1,5 +1,5 @@
 export const defaultConfig = {
-  MAX_CANVAS_SIZE: 1024,
+  MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
   logPushing: false,
@@ -27,16 +27,16 @@ export const defaultConfig = {
   pusher: 'boris', // "boris", "euler"
 
   runner: {
-    prerender: false,
-    looping: true,
+    prerender: true,
+    looping: false,
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 256
+    stepCount: 1024
   },
 
   model: {
-    bufferLength: 256 / 4,
+    bufferLength: 1024 / 4,
     tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
@@ -46,7 +46,7 @@ export const defaultConfig = {
 
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'disc',
-      particleCount: 256,
+      particleCount: 1024,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],

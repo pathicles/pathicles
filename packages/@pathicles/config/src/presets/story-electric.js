@@ -10,6 +10,7 @@ export const storyElectric = {
   },
 
   model: {
+    boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',

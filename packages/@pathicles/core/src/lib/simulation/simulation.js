@@ -29,10 +29,7 @@ export class Simulation {
       configuration.model.emitter
     ))
 
-    console.log({ initialData: this.initialData })
-
     const lattice = new Lattice(this.configuration.model.lattice)
-    // if (configuration.simulate) {
     this.variables = {
       initialData: this.initialData,
       position: loadBuffers(
@@ -64,87 +61,6 @@ export class Simulation {
         type: 'float'
       })
     }
-    // } else {
-    //   const data_electric = require('@pathicles/core/src/data/story-electric.json')
-    //     .data
-    //   const data_dipole = require('@pathicles/core/src/data/story-dipole.json')
-    //     .data
-    //   const data_quadrupole = require('@pathicles/core/src/data/story-quadrupole.json')
-    //     .data
-    //
-    //   this.variables = {
-    //     initialData: this.initialData,
-    //
-    //     particleColorsAndTypesMap: {
-    //       empty: regl.texture({
-    //         data: Array(this.initialData.particleCount * 4)
-    //           .fill(0)
-    //           .flat(),
-    //         shape: [this.initialData.particleCount, 1, 4],
-    //         type: 'float'
-    //       }),
-    //       'story-electric': regl.texture({
-    //         data: data_electric.particleTypes
-    //           .map(p => configuration.colors[p].concat(p))
-    //           .flat(),
-    //         shape: [this.initialData.particleCount, 1, 4],
-    //         type: 'float'
-    //       }),
-    //       'story-dipole': regl.texture({
-    //         data: data_dipole.particleTypes
-    //           .map(p => configuration.colors[p].concat(p))
-    //           .flat(),
-    //         shape: [this.initialData.particleCount, 1, 4],
-    //         type: 'float'
-    //       }),
-    //       'story-quadrupole': regl.texture({
-    //         data: data_quadrupole.particleTypes
-    //           .map(p => configuration.colors[p].concat(p))
-    //           .flat(),
-    //         shape: [this.initialData.particleCount, 1, 4],
-    //         type: 'float'
-    //       })
-    //     },
-    //
-    //     positionsMap: {
-    //       empty: createPingPongVariableTextures(
-    //         regl,
-    //         this.initialData.particleCount,
-    //         this.initialData.bufferLength,
-    //         new Float32Array(
-    //           this.initialData.particleCount * this.initialData.bufferLength * 4
-    //         )
-    //       ),
-    //       'story-electric': createPingPongVariableTextures(
-    //         regl,
-    //         this.initialData.particleCount,
-    //         this.initialData.bufferLength,
-    //         data_electric.position
-    //       ),
-    //       'story-dipole': createPingPongVariableTextures(
-    //         regl,
-    //         this.initialData.particleCount,
-    //         this.initialData.bufferLength,
-    //         data_dipole.position
-    //       ),
-    //       'story-quadrupole': createPingPongVariableTextures(
-    //         regl,
-    //         this.initialData.particleCount,
-    //         this.initialData.bufferLength,
-    //         data_quadrupole.position
-    //       )
-    //     },
-    //
-    //     tick: { value: this.initialData.bufferLength },
-    //     referencePoint: [0, 0, 0],
-    //     pingPong: 0
-    //   }
-    //
-    //   this.variables.position = this.variables.positionsMap['empty']
-    //   this.variables.particleColorsAndTypes = this.variables.particleColorsAndTypesMap[
-    //     'story-quadrupole'
-    //   ]
-    // }
 
     this.model = {
       halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,

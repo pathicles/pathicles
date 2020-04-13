@@ -46,7 +46,7 @@ export default {
         l0: {
           type: LatticeElementTypes.SBEN,
           l: 20,
-          strength: .01
+          strength: 1
         }
       },
       beamline: ['l0'],

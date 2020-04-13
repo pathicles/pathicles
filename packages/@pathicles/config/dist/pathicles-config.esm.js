@@ -176,7 +176,7 @@ var nanomerge = function nanomerge() {
 };
 
 const defaultConfig = {
-  MAX_CANVAS_SIZE: 1024,
+  MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
   logPushing: false,
@@ -190,21 +190,21 @@ const defaultConfig = {
   usePostProcessing: false,
   pusher: 'boris',
   runner: {
-    prerender: false,
-    looping: true,
+    prerender: true,
+    looping: false,
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 256
+    stepCount: 1024
   },
   model: {
-    bufferLength: 256 / 4,
+    bufferLength: 1024 / 4,
     tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
-      particleCount: 256,
+      particleCount: 1024,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
@@ -305,6 +305,7 @@ const storyDipole = {
   },
   model: {
     emitter: {
+      boundingBox: -1,
       particleType: 'ELECTRON',
       bunchShape: 'DISC',
       direction: [0, 0.3, -1],
@@ -345,6 +346,7 @@ const storyElectric = {
     }
   },
   model: {
+    boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
@@ -544,7 +546,7 @@ var gyrotest_1_electron = {
         l0: {
           type: LatticeElementTypes.SBEN,
           l: 20,
-          strength: .01
+          strength: 1
         }
       },
       beamline: ['l0'],

@@ -13,6 +13,7 @@ export const storyDipole = {
 
   model: {
     emitter: {
+      boundingBox: -1,
       particleType: 'ELECTRON',
       bunchShape: 'DISC',
       direction: [0, 0.3, -1],
