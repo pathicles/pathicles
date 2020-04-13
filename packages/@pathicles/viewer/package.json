@@ -28,6 +28,7 @@
     "ogl": "^0.0.37",
     "primitive-cube": "^2.0.1",
     "primitive-plane": "^2.0.0",
+    "primitive-rounded-cube": "^1.0.2",
     "primitive-sphere": "^3.0.0",
     "vectorize-text": "^3.2.1"
   },

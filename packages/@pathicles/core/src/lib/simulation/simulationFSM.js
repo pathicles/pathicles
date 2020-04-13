@@ -62,6 +62,7 @@ export default class SimulationFSM {
         PerformanceLogger.stop()
       }
       this._simulation.variables.tick.value = this._stepCount
+      this._simulation.push({})
       this.fsm = { state: 'paused' }
     } else {
       this.fsm = { state: 'restart' }
@@ -73,7 +74,7 @@ export default class SimulationFSM {
     const stateInitial = this.fsm.state
 
     if (this.fsm.state === 'active') {
-      if (this._simulation.variables.tick.value >= this._stepCount - 1) {
+      if (this._simulation.variables.tick.value > this._stepCount - 1) {
         if (this._looping) {
           this.fsm.state = 'restart'
         } else {
@@ -82,7 +83,7 @@ export default class SimulationFSM {
       } else {
         for (let s = 0; s < this._stepsPerTick; s++) {
           this._simulation.push({})
-          if (this._simulation.variables.tick.value >= this._stepCount) break
+          if (this._simulation.variables.tick.value > this._stepCount) break
         }
 
         if (this._mode === 'stepwise') {
@@ -91,6 +92,7 @@ export default class SimulationFSM {
       }
     } else if (this.fsm.state === 'restart') {
       this._simulation.reset({})
+      this._simulation.push({})
       this.fsm.state = this.fsm.state.replace(/restart/, 'active')
     }
 

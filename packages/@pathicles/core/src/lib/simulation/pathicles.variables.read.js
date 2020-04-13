@@ -21,14 +21,16 @@ export default function readData(regl, { variables, model }) {
       regl.read({ data: data[variableName][1] })
     })
   })
-
+  const precision = 1000;
   return {
     tick: variables.tick.value,
     data: {
       position: Object.values(data.position[variables.tick.value % 2]).map(
-        d => Math.floor(d * 1000) / 1000
+        d => Math.floor(d * precision) / precision
       ),
-      // velocity: Object.values(data.velocity[variables.tick.value % 2]),
+      velocity: Object.values(data.velocity[variables.tick.value % 2]).map(
+        d => Math.floor(d * precision) / precision
+      ),
       particleTypes: variables.initialData.particleTypes
     }
   }

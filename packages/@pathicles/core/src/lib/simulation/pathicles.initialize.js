@@ -19,10 +19,10 @@ export default function(
 ) {
   let fourPositions = new Float32Array(particleCount * bufferLength * 4)
   let fourVelocities = new Float32Array(particleCount * bufferLength * 4)
+  let fourMomenta = new Float32Array(particleCount * bufferLength * 4)
   let particleTypes = new Array(particleCount)
 
   if (randomize) {
-
     for (let p = 0; p < particleCount; p++) {
       fourPositions[p * 4] = boundedRandom() * 0 //boundingBoxSize
       fourPositions[p * 4 + 1] = boundedRandom() * 0 //boundingBoxSize
@@ -34,8 +34,6 @@ export default function(
       fourVelocities[p * 4 + 3] = 0
       particleTypes[p] = Math.floor(random() * 4)
     }
-
-    console.log(fourVelocities)
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
@@ -65,6 +63,15 @@ export default function(
         // ...particleCollection.fourVelocities
       ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
     )
+    fourMomenta = new Float32Array(
+      [
+        ...particleCollection.fourMomenta
+        // ...particleCollection.fourVelocities,
+        // ...particleCollection.fourVelocities,
+        // ...particleCollection.fourVelocities
+      ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
+    )
+
     particleTypes = particleCollection.particleTypes
   }
 

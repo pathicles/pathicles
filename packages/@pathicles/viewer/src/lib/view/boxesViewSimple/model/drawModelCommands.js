@@ -32,6 +32,10 @@ export default function(regl, { variables, model, view }) {
         },
         color: [1, 1, 0, 1]
       },
+      cull: {
+        enable: false,
+        face: 'back'
+      },
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -41,6 +45,8 @@ export default function(regl, { variables, model, view }) {
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
+        aUV: geometry.uvs,
+
         aParticle: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
@@ -66,6 +72,7 @@ export default function(regl, { variables, model, view }) {
           ),
           divisor: 1
         },
+
         aStep: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
@@ -80,6 +87,7 @@ export default function(regl, { variables, model, view }) {
       frag: [`#define ${mode} 1`, frag].join('\n'),
 
       uniforms: {
+        uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
         utPositionBuffer: () => variables.position[0],

@@ -1,6 +1,8 @@
-import { ParticleSystem } from './System'
-import Specrel, { bigNumberMath, format30 } from '../Specrel'
-import Pusher_BorisImplementation from './Pusher_BorisImplementation'
+/* eslint-env node */
+
+//import { ParticleSystem } from './../ParticleSystem'
+// import { bigNumberMath, format30 } from './../Specrel'
+import Pusher_BorisImplementation from '@pathicles/specrel/src/pusher/Pusher_BorisImplementation'
 import presets from './../PathiclesConfigurationPresets.js'
 import { PusherTestSystemFactory } from './PusherTestSystemFactory'
 import createLogger from '../../utils/Logger'

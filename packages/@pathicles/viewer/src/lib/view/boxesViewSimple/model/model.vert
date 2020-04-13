@@ -16,6 +16,7 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
 
 attribute vec3 aPosition;
 attribute vec3 aNormal;
+attribute vec2 aUV;
 attribute float aParticle;
 attribute float aColorCorrection;
 attribute float aStep;
@@ -32,20 +33,66 @@ uniform float pathicleGap;
 uniform float stageGrid_y;
 uniform float stageGrid_size;
 uniform vec3 shadowColor;
+uniform vec4 uLight;
 
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D utPositionBuffer;
 uniform sampler2D utVelocityBuffer;
 uniform mat4 projection, view, model;
+uniform vec3 eye;
 
 varying float toBeDiscarded;
 varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec2 vUv;
+varying vec3 vAmbientColor;
 varying vec3 vDiffuseColor;
+
 varying float vColorCorrection;
 
+vec3 hemisphere_light(
+  vec3 normal,
+  vec3 sky,
+  vec3 ground,
+  vec3 lightDirection,
+  mat4 modelMatrix,
+  mat4 viewMatrix,
+  vec3 viewPosition,
+  float shininess,
+  float specularity
+) {
+  vec3 direction = normalize((
+  modelMatrix * vec4(lightDirection, 1.0)
+  ).xyz);
 
+  float weight = 0.5 * dot(
+  normal
+  , direction
+  ) + 0.5;
+
+  vec3 diffuse = mix(ground, sky, weight);
+
+  vec3 specDirection = normalize((
+  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)
+  ).xyz);
+
+  float skyWeight = 0.5 * dot(
+  normal
+  , normalize(specDirection + viewPosition)
+  ) + 0.5;
+
+  float gndWeight = 0.5 * dot(
+  normal
+  , normalize(viewPosition - specDirection)
+  ) + 0.5;
+
+  vec3 specular = specularity * diffuse * (
+  max(pow(skyWeight, shininess), 0.0) +
+  max(pow(gndWeight, shininess), 0.0)
+  ) * weight;
+
+  return diffuse + specular;
+}
 
 vec4 get_color(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
@@ -70,13 +117,6 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition
 
 void main () {
 
-  #ifdef lighting
-  vDiffuseColor = get_color(aParticle).rgb;
-  #endif
-
-  #ifdef shadow
-  vDiffuseColor = shadowColor;
-  #endif
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
@@ -85,13 +125,8 @@ void main () {
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
   float scale = 1.;
-  #ifdef lighting
-  scale = 1.;
-  #endif
-
   #ifdef shadow
-//  scale = 2.;
-  if (aPosition.z < 0.) toBeDiscarded = 1.;
+  scale = 1.;
   #endif
 
   vec3 scaledPosition = vec3(
@@ -101,29 +136,47 @@ void main () {
 
   vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
   + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
-  #ifdef shadow
-  vPosition.y = vPosition.y * 0. + stageGrid_y + .1;
-  #endif
+
   vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);
 
-  gl_Position = projection * view * model * vec4(vPosition, 1.0);
+
+
+  vUv = aUV;
 
   #ifdef lighting
+//  vDiffuseColor = get_color(aParticle).rgb;
+
+  vDiffuseColor = get_color(aParticle).rgb;
+  //vDiffuseColor = vec4(max(dot(normalize(uLight.xyz), vNormal), 0.) * get_color(aParticle).rgb, 1);
+
+  vec3 sky = vec3(1.0, 1.0, 0.9);
+  vec3 gnd = vec3(0.1, 0., 0.);
+  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);
+
+
+  float maxDistance = 4.;
   vColorCorrection =  -1. * aColorCorrection;
+//  float distance = length(vPosition - eye);
+//  vColorCorrection = mix(.25, .5, maxDistance-distance/maxDistance);
+
 
   if (
   abs(dot(
   aNormal,
   vec3(0., 0., 1.)
-  )) == 1.) { vColorCorrection += -.2; }
+  )) == 1.) { vColorCorrection -= .2; }
 
     #endif
 
     #ifdef shadow
+  vPosition.y = vPosition.y * 0. + stageGrid_y + .01;
   vColorCorrection = 0.;
+  vDiffuseColor = shadowColor;
+  if (aPosition.z < 0.) toBeDiscarded = 1.;
   #endif
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
+  gl_Position = projection * view * model * vec4(vPosition, 1.0);
 
 }
 

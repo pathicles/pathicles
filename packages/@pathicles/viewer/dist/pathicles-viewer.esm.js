@@ -274,11 +274,15 @@ var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : e
 var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n"; // eslint-disable-line
 
 function drawBackgroundCommand(regl, { stageGrid }) {
-  const stage = primitiveCube(stageGrid.size * 2, stageGrid.size * 2, stageGrid.size * 2);
+  const stage = primitiveCube(stageGrid.size );
   let model = identity_1([]);
   return regl({
     primitive: 'triangles',
     elements: stage.cells,
+    cull: {
+      enable: true,
+      face: 'front'
+    },
     attributes: {
       aPosition: stage.positions,
       uv: stage.uvs
@@ -296,9 +300,9 @@ function drawBackgroundCommand(regl, { stageGrid }) {
   })
 }
 
-var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  #ifdef lighting\n  vDiffuseColor = get_color(aParticle).rgb;\n  #endif\n\n  #ifdef shadow\n  vDiffuseColor = shadowColor;\n  #endif\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  #ifdef lighting\n  scale = 1.;\n  #endif\n\n  #ifdef shadow\n//  scale = 2.;\n  if (aPosition.z < 0.) toBeDiscarded = 1.;\n  #endif\n\n  vec3 scaledPosition = vec3(\n  scale * aPosition.x,\n  aPosition.y,\n  scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n  #ifdef shadow\n  vPosition.y = vPosition.y * 0. + stageGrid_y + .1;\n  #endif\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n  #ifdef lighting\n  vColorCorrection =  -1. * aColorCorrection;\n\n  if (\n  abs(dot(\n  aNormal,\n  vec3(0., 0., 1.)\n  )) == 1.) { vColorCorrection += -.2; }\n\n    #endif\n\n    #ifdef shadow\n  vColorCorrection = 0.;\n  #endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n\n}\n\n"; // eslint-disable-line
+var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aUV;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\nuniform vec4 uLight;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\nuniform vec3 eye;\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\n\nvarying float vColorCorrection;\n\nvec3 hemisphere_light(\n  vec3 normal,\n  vec3 sky,\n  vec3 ground,\n  vec3 lightDirection,\n  mat4 modelMatrix,\n  mat4 viewMatrix,\n  vec3 viewPosition,\n  float shininess,\n  float specularity\n) {\n  vec3 direction = normalize((\n  modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float weight = 0.5 * dot(\n  normal\n  , direction\n  ) + 0.5;\n\n  vec3 diffuse = mix(ground, sky, weight);\n\n  vec3 specDirection = normalize((\n  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float skyWeight = 0.5 * dot(\n  normal\n  , normalize(specDirection + viewPosition)\n  ) + 0.5;\n\n  float gndWeight = 0.5 * dot(\n  normal\n  , normalize(viewPosition - specDirection)\n  ) + 0.5;\n\n  vec3 specular = specularity * diffuse * (\n  max(pow(skyWeight, shininess), 0.0) +\n  max(pow(gndWeight, shininess), 0.0)\n  ) * weight;\n\n  return diffuse + specular;\n}\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  #ifdef shadow\n  scale = 1.;\n  #endif\n\n  vec3 scaledPosition = vec3(\n  scale * aPosition.x,\n  aPosition.y,\n  scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  vUv = aUV;\n\n  #ifdef lighting\n//  vDiffuseColor = get_color(aParticle).rgb;\n\n  vDiffuseColor = get_color(aParticle).rgb;\n  //vDiffuseColor = vec4(max(dot(normalize(uLight.xyz), vNormal), 0.) * get_color(aParticle).rgb, 1);\n\n  vec3 sky = vec3(1.0, 1.0, 0.9);\n  vec3 gnd = vec3(0.1, 0., 0.);\n  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);\n\n  float maxDistance = 4.;\n  vColorCorrection =  -1. * aColorCorrection;\n//  float distance = length(vPosition - eye);\n//  vColorCorrection = mix(.25, .5, maxDistance-distance/maxDistance);\n\n  if (\n  abs(dot(\n  aNormal,\n  vec3(0., 0., 1.)\n  )) == 1.) { vColorCorrection -= .2; }\n\n    #endif\n\n    #ifdef shadow\n  vPosition.y = vPosition.y * 0. + stageGrid_y + .01;\n  vColorCorrection = 0.;\n  vDiffuseColor = shadowColor;\n  if (aPosition.z < 0.) toBeDiscarded = 1.;\n  #endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n}\n\n"; // eslint-disable-line
 
-var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n\n  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(0.6, 0.6, 0.6, .5);\n  #endif\n  #ifdef lighting\n  gl_FragColor = vec4(lightingColor, opacity);\n  #endif\n\n}\n\n"; // eslint-disable-line
+var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\n//float gridFactor (vec2 parameter, float width) {\n//  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);\n//  vec2 a2 = smoothstep(width - 0.05, width + 0.05, l);\n//  return min(a2.x, a2.y);\n//}\n//\n//float grid(vec2 st, float res, float width) {\n//  vec2 grid =  fract(st*res) / width;\n//  grid /= fwidth(st);\n//  return 1. - (step(res, grid.x) * step(res, grid.y));\n//}\n\nfloat gridFactor (vec2 parameter, float width, float feather) {\n  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);\n  vec2 a2 = smoothstep(width - feather, width + feather, l);\n  return min(a2.x, a2.y);\n}\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n//  vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));\n\n//  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n//  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n//  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(0.6, 0.6, 0.6, .5);\n  #endif\n  #ifdef lighting\n\n  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1.); //vec4(lightingColor, opacity);\n  #endif\n\n}\n\n"; // eslint-disable-line
 
 var fromTranslation_1 = fromTranslation;
 function fromTranslation(out, v) {
@@ -345,6 +349,10 @@ function drawModelCommands(regl, { variables, model, view }) {
         },
         color: [1, 1, 0, 1]
       },
+      cull: {
+        enable: false,
+        face: 'back'
+      },
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -353,6 +361,7 @@ function drawModelCommands(regl, { variables, model, view }) {
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
+        aUV: geometry.uvs,
         aParticle: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
@@ -388,6 +397,7 @@ function drawModelCommands(regl, { variables, model, view }) {
       vert: [`#define ${mode} 1`, vert$1].join('\n'),
       frag: [`#define ${mode} 1`, frag$1].join('\n'),
       uniforms: {
+        uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
         utPositionBuffer: () => variables.position[0],
@@ -750,19 +760,19 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 2,
+    stepsPerTick: 4,
     stepCount: 256
   },
   model: {
-    bufferLength: 256 / 2,
-    tickDurationOverC: 0.2,
+    bufferLength: 256 / 4,
+    tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
       particleCount: 256,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -798,11 +808,11 @@ const defaultConfig = {
     fxaa: false,
     rgbGamma: 1,
     isStageVisible: true,
-    isShadowEnabled: false,
-    isLatticeVisible: false,
+    isShadowEnabled: true,
+    isLatticeVisible: true,
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.002,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -825,7 +835,7 @@ const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 10,
+      distance: 5,
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
       autorotate: true,
@@ -833,10 +843,20 @@ const defaultConfig = {
       zoomAboutCursor: false,
       zoomDecayTime: 1,
       far: 50,
-      near: 0.0001
+      near: 0.0001,
+      minDistance: 1,
+      maxDistance: 10
     }
   },
   dumpData: false
+};
+const DRIF = 'DRIF';
+const QUAD = 'QUAD';
+const SBEN = 'SBEN';
+const LatticeElementTypes = {
+  DRIF,
+  SBEN,
+  QUAD
 };
 const storyDipole = {
   name: 'story-dipole',
@@ -844,43 +864,36 @@ const storyDipole = {
     camera: {
       center: [0, 0.1, 0],
       theta: 2 * Math.PI / (360 / 90),
-      phi: 2 * Math.PI / (360 / 15),
+      phi: 2 * Math.PI / (360 / 5),
       distance: 5
     }
   },
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0.15, -1],
+      bunchShape: 'DISC',
+      direction: [0, 0.3, -1],
       position: [3.2, -1.5, 0],
       directionJitter: [0.05, 0.0, 0.05],
       positionJitter: [0.5, 0.5, 0.1],
-      gamma: 900
+      gamma: 2
     },
     interactions: {
-      magneticField: [0, 0.5, 0],
+      magneticField: [0, 0, 0],
       particleInteraction: false
     },
     lattice: {
       elements: {
-        l2: {
-          type: 'DRIF',
-          l: 0
-        },
-        bm: {
-          type: 'SBEN',
-          angle: 0.78539816,
-          e1: 0.39269908,
-          e2: 0.39269908,
-          l: 10,
-          k1: -0.5
+        l0: {
+          type: LatticeElementTypes.SBEN,
+          l: 20,
+          strength: 0.002
         }
       },
-      beamline: [],
+      beamline: ['l0'],
       origin: {
         phi: 0,
-        position: [-5, 1, 0]
+        position: [0, 0, -10]
       }
     }
   }
@@ -889,49 +902,30 @@ const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [-2, 0, 0],
-      theta: Math.PI / 4,
+      center: [0, 0, -1],
+      theta: Math.PI / 4 * 1,
       phi: 0,
-      distance: 5
+      distance: 2
     }
   },
   model: {
     emitter: {
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON PROTON PROTON   PHOTON PHOTON PHOTON',
+      particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
       position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
+      directionJitter: [0.2, 0.2, 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 10
+      gamma: 1.3
     },
     interactions: {
-      electricField: [0, 0, 0.001],
+      electricField: [0, 0, -0.00000000001],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
     },
     lattice: {
-      elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
-        q1: {
-          type: 'QUAD',
-          k1: 0,
-          l: 3
-        },
-        q2: {
-          type: 'QUAD',
-          k1: -0,
-          l: 3
-        },
-        l2: {
-          type: 'DRIF',
-          l: 3
-        }
-      },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      elements: {},
+      beamline: [],
       origin: {
         phi: 0,
         position: [0, 1, -6]
@@ -943,47 +937,44 @@ const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [0, 1, 0],
-      theta: 2 * Math.PI / (360 / 45),
-      phi: 2 * Math.PI / (360 / 5),
-      distance: 6
+      center: [2, 0, 0],
+      theta: 2 * Math.PI / (360 / 85),
+      phi: 2 * Math.PI / (360 / 1),
+      distance: 8
     }
   },
   model: {
     emitter: {
+      particleType: 'PROTON ',
       bunchShape: 'SQUARE_YZ',
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-5, 1, 0],
       direction: [1, 0, 0],
-      directionJitter: [0, 0.1, 0.1],
-      positionJitter: [0, 0.1, 0.1],
-      gamma: 1000
+      position: [-10, 0, 0],
+      particleSeparation: 0.1,
+      directionJitter: [0.0, 0.0, 0],
+      positionJitter: [0.1, 0.1, 0],
+      gamma: 7
     },
     lattice: {
       elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
         q1: {
-          type: 'QUAD',
-          k1: -0.05,
-          l: 3
+          type: LatticeElementTypes.QUAD,
+          strength: -.5,
+          l: 5
         },
         q2: {
-          type: 'QUAD',
-          k1: 0.15,
-          l: 3
+          type: LatticeElementTypes.QUAD,
+          strength: .5,
+          l: 5
         },
-        l2: {
-          type: 'DRIF',
-          l: 3
+        l1: {
+          type: LatticeElementTypes.DRIF,
+          l: 5
         }
       },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      beamline: ['l1', 'q1', 'q2', 'l1'],
       origin: {
         phi: -Math.PI / 2,
-        position: [-10, 1, 0]
+        position: [-10, 0, 0]
       }
     }
   }
@@ -1032,9 +1023,9 @@ const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
       distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -1051,7 +1042,7 @@ const freeElectron = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 10
+    stepCount: 2
   },
   model: {
     bufferLength: 11,
@@ -1061,15 +1052,66 @@ const freeElectron = {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 2
+      gamma: 1
     },
     interactions: {
-      electricField: [0, 0, 1],
+      electricField: [0, 0, 0],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
+    }
+  }
+};
+var gyrotest_1_electron = {
+  name: 'gyrotest-1-electron',
+  view: {
+    camera: {
+      center: [0.5, -1, 0],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 1,
+      fovY: Math.PI / 3,
+      dTheta: 0.001,
+      autorotate: false,
+      rotateAboutCenter: true,
+      zoomAboutCursor: false,
+      zoomDecayTime: 1,
+      far: 50,
+      near: 0.0002
+    }
+  },
+  runner: {
+    stepsPerTick: 2,
+    stepCount: 37
+  },
+  model: {
+    bufferLength: 37,
+    tickDurationOverC: 5.94985880215349239057744464763e-2,
+    emitter: {
+      particleCount: 1,
+      particleType: 'ELECTRON',
+      bunchShape: 'SQUARE',
+      direction: [0, 0, 1],
+      position: [0, -1, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0, 0],
+      gamma: 200
+    },
+    lattice: {
+      elements: {
+        l0: {
+          type: LatticeElementTypes.SBEN,
+          l: 20,
+          strength: .01
+        }
+      },
+      beamline: ['l0'],
+      origin: {
+        phi: 0,
+        position: [0, 0, -10]
+      }
     }
   }
 };
@@ -1077,10 +1119,10 @@ const freePhoton = {
   name: 'free-photon',
   view: {
     camera: {
-      center: [0, -0.5, 0],
-      theta: Math.PI / 2,
-      phi: Math.PI / 4,
-      distance: 1,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -1093,10 +1135,10 @@ const freePhoton = {
   },
   runner: {
     prerender: true,
-    looping: true,
+    looping: false,
     mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 10
+    stepsPerTick: 2,
+    stepCount: 5
   },
   model: {
     bufferLength: 11,
@@ -1106,10 +1148,10 @@ const freePhoton = {
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 10
+      gamma: 0
     },
     interactions: {
       electricField: [0, 0, 0.01],
@@ -1122,10 +1164,10 @@ const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
-      distance: 2,
+      center: [0, 0, 0.5],
+      theta: Math.PI / 4,
+      phi: Math.PI / 8,
+      distance: 1.5,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -1141,23 +1183,23 @@ const freePhotons = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 8
+    stepCount: 11
   },
   model: {
-    bufferLength: 8,
+    bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 2,
-      particleType: 'PHOTON ELECTRON PROTON',
-      bunchShape: 'SQUARE',
+      particleCount: 64,
+      particleType: 'PHOTON',
+      bunchShape: 'DISC',
       direction: [0, 0, 1],
-      position: [0, -0.5, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1.1
+      gamma: 10
     },
     interactions: {
-      electricField: [0, 0, 0.091],
+      electricField: [0, 0, 0],
       particleInteraction: false,
       magneticField: [0, 0.0, 0]
     }
@@ -1170,7 +1212,8 @@ const presets = {
   [freeElectron.name]: freeElectron,
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
-  [random.name]: random
+  [random.name]: random,
+  [gyrotest_1_electron.name]: gyrotest_1_electron
 };
 const config = presetName => {
   return nanomerge(defaultConfig, presets[presetName]) || defaultConfig;

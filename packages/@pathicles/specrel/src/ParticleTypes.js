@@ -11,7 +11,7 @@ const PHOTON = {
 const ELECTRON = {
   name: 'ELECTRON',
   mass__eVc_2: 510998.94,
-  chargeMassRatio__Ckg_1: -1.75882004556243e11,
+  chargeMassRatio__Ckg_1: -1.75882001076e11,
   charge__qe: -1,
   id: 1,
   color: [0.12, 0.45, 0.65],
@@ -21,7 +21,7 @@ const ELECTRON = {
 const POSITRON = {
   name: 'POSITRON',
   mass__eVc_2: 510998.94,
-  chargeMassRatio__Ckg_1: 1.75882004556243e11,
+  chargeMassRatio__Ckg_1: 1.75882001076e11,
   charge__qe: 1,
   id: 2,
   color: [0.22, 0.9, 0.9],
@@ -30,9 +30,9 @@ const POSITRON = {
 
 const PROTON = {
   name: 'PROTON',
-  mass__eVc_2: 938272081,
+  mass__eVc_2: 938.27208816e6,
   charge__qe: 1,
-  chargeMassRatio__Ckg_1: 9.57883323113770929296814695637e7,
+  chargeMassRatio__Ckg_1: 9.57883358e7,
   id: 3,
   color: [0.77, 0.2, 0.2],
   intColor: [197, 50, 40]

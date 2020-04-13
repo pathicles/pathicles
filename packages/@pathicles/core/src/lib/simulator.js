@@ -7,6 +7,7 @@ import PerformanceLogger from './utils/PerformanceLogger'
 import { boxesViewSimple } from '@pathicles/viewer'
 import keyControl from './utils/keyControl'
 import { canWriteToFBOOfType } from './utils/canWriteToFBOOfType'
+import { checkSupport } from './utils/checkSupport'
 
 import REGL from 'regl'
 
@@ -38,6 +39,10 @@ export class ReglSimulatorInstance {
           PerformanceLogger.start('canWriteToFBOOfType')
 
           log('canWriteToFBOOfType: ' + canWriteToFBOOfType(regl, 'float'))
+          PerformanceLogger.stop()
+
+          PerformanceLogger.start('checkSupport')
+          checkSupport()
           PerformanceLogger.stop()
 
           window.pathicles = this

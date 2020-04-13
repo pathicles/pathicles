@@ -200,30 +200,41 @@ export function createParticleCollection({
     })
     .reduce((acc, val) => acc.concat(val), [])
 
-  const fourVelocities = particles
+  const fourVelocities = particles.map((particle, p) => {
+    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
+    const myDirection = jitterDirection({
+      direction,
+      directionJitter,
+      localPosition: [
+        localPositions[p * 3 + 0],
+        localPositions[p * 3 + 1],
+        localPositions[p * 3 + 2]
+      ]
+    })
+    return [
+      beta * myDirection[0],
+      beta * myDirection[1],
+      beta * myDirection[2],
+      gamma
+    ]
+  })
+  //  .reduce((acc, val) => acc.concat(val), [])
+
+  const fourMomenta = particles
     .map((particle, p) => {
-      const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
-      const myDirection = jitterDirection({
-        direction,
-        directionJitter,
-        localPosition: [
-          localPositions[p * 3 + 0],
-          localPositions[p * 3 + 1],
-          localPositions[p * 3 + 2]
-        ]
-      })
       return [
-        beta * myDirection[0],
-        beta * myDirection[1],
-        beta * myDirection[2],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][0],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][1],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][2],
         gamma
       ]
     })
     .reduce((acc, val) => acc.concat(val), [])
-
+  console.log({ gamma, fourMomenta })
   return {
     fourPositions,
-    fourVelocities,
+    fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
+    fourMomenta,
     particleTypes: particles.map(p => p.id)
   }
 }

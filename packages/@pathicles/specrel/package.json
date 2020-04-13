@@ -2,15 +2,16 @@
   "name": "@pathicles/specrel",
   "version": "0.1.0",
   "module": "dist/pathicles-specrel.esm.js",
+  "main": "dist/pathicles-specrel.min.js",
   "type": "module",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint-fix": "eslint --fix src",
     "test:unit": "jest",
-    "test": "jest"
+    "test": "jest",
+    "boris": "node ./src/pusher/Pusher_BorisImplementation.run.js"
   },
-  "esm": {},
   "devDependencies": {
     "jest": "^25.2.7"
   },

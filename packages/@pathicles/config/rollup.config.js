@@ -7,23 +7,45 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import babel from 'rollup-plugin-babel'
 
-export default {
-  input: join('src', 'index.js'),
-  output: {
-    format: 'esm',
-    file: pkg.module
+export default [
+  {
+    input: join('src', 'index.js'),
+    output: {
+      format: 'cjs',
+      file: pkg.main
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      cleanup(),
+      // prettier({
+      //   sourcemap: true,
+      //   parser: 'babel'
+      // }),
+      babel({
+        exclude: 'node_modules/**'
+      }),
+      bundleSize()
+    ]
   },
-  plugins: [
-    resolve(),
-    commonjs(),
-    cleanup(),
-    // prettier({
-    //   sourcemap: true,
-    //   parser: 'babel'
-    // }),
-    babel({
-      exclude: 'node_modules/**'
-    }),
-    bundleSize()
-  ]
-}
+  {
+    input: join('src', 'index.js'),
+    output: {
+      format: 'esm',
+      file: pkg.module
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      cleanup(),
+      // prettier({
+      //   sourcemap: true,
+      //   parser: 'babel'
+      // }),
+      babel({
+        exclude: 'node_modules/**'
+      }),
+      bundleSize()
+    ]
+  }
+]

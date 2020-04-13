@@ -31,13 +31,13 @@ export const defaultConfig = {
     looping: true,
 
     mode: 'framewise',
-    stepsPerTick: 2,
+    stepsPerTick: 4,
     stepCount: 256
   },
 
   model: {
-    bufferLength: 256 / 2,
-    tickDurationOverC: 0.2,
+    bufferLength: 256 / 4,
+    tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -47,7 +47,7 @@ export const defaultConfig = {
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'disc',
       particleCount: 256,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -90,12 +90,12 @@ export const defaultConfig = {
     rgbGamma: 1,
 
     isStageVisible: true,
-    isShadowEnabled: false,
-    isLatticeVisible: false,
+    isShadowEnabled: true,
+    isLatticeVisible: true,
 
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.002,
 
     roughness: 0.7,
 
@@ -125,7 +125,7 @@ export const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 10,
+      distance: 5,
 
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
@@ -136,7 +136,10 @@ export const defaultConfig = {
       zoomDecayTime: 1,
       // panDecayTime: 0,
       far: 50,
-      near: 0.0001
+      near: 0.0001,
+
+      minDistance: 1,
+      maxDistance: 10
     }
   },
 

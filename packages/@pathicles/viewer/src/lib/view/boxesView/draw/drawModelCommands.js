@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 import {
   getters,
   inverseMat4,
@@ -16,7 +18,7 @@ export default function(regl, { variables, model, view }) {
     pathicleWidth: view.pathicleWidth,
     pathicleRelativeHeight: view.pathicleRelativeHeight
   })
-
+  console.log(geometry)
   const scaleFactor = 1.00001
 
   const command = mode =>

@@ -128,14 +128,24 @@ export default {
       this.config = loadConfig(this.presetName)
       this.reglInstance.loadConfig(this.config)
     },
-    update() {
+    update(configModel) {
+
+      this.config.model.interactions.electricField = [
+        0,
+        0,
+        parseFloat(configModel.electricField_z)
+      ]
+      this.config.model.interactions.magneticField = [
+        0,
+        parseFloat(configModel.magneticField_y),
+        0
+      ]
       this.reglInstance.loadConfig(this.config)
     },
 
     initGui(config) {
-      console.log(config)
 
-      const guiDatValues = (this.guiDatValues = {
+      const configModel = (this.configModel = {
         stepCount: 128,
         tickDuration__c_1: 0.1,
         stepHistoryLength: 128,
@@ -156,11 +166,11 @@ export default {
       const update = this.update
       const gui = new dat.GUI({
         // load: guiDatPreset,
-        width: 300,
-        closed: false,
-        closeOnTop: false
+        width: 100,
+        closed: true,
+        closeOnTop: true
       })
-      gui.remember(this.guiDatValues)
+      // gui.remember(this.configModel)
 
       this.guiFolders = {}
       this.controllers = {}
@@ -178,18 +188,18 @@ export default {
       //       'Boris': "boris",
       //     }
       //   )
-      // .onChange(() => { update(guiDatValues, true) })
+      // .onChange(() => { update(configModel, true) })
 
       this.guiFolders.integrator
-        .add(guiDatValues, 'stepCount', 0, 512)
+        .add(configModel, 'stepCount', 0, 512)
         .step(1)
         .onFinishChange(() => {
-          this.configuration = guiDatValues
+          this.configuration = configModel
         })
-      // this.guiFolders.integrator.add(guiDatValues, 'name')
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // this.guiFolders.integrator.add(configModel, 'name')
+      // .onFinishChange(() => { update(configModel, true) })
 
-      this.guiFolders.integrator.add(guiDatValues, 'tickDuration__c_1', {
+      this.guiFolders.integrator.add(configModel, 'tickDuration__c_1', {
         '.01/c': 0.01,
         '.1/c': 0.1,
         '.25/c': 0.25,
@@ -197,54 +207,54 @@ export default {
         '.75/c': 0.75,
         '1/c': 1
       })
-      // .onChange(() => { update(guiDatValues, true) })
+      // .onChange(() => { update(configModel, true) })
 
       this.guiFolders.integrator
-        .add(guiDatValues, 'stepHistoryLength', 0, 512)
+        .add(configModel, 'stepHistoryLength', 0, 512)
         .step(2)
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
       this.guiFolders.integrator
-        .add(guiDatValues, 'ticksPerFrame', 1, 10)
+        .add(configModel, 'ticksPerFrame', 1, 10)
         .step(1)
         .onChange(() => {
-          // update(guiDatValues, true)
+          // update(configModel, true)
         })
 
       this.controllers.looping = this.guiFolders.integrator
-        .add(guiDatValues, 'looping')
+        .add(configModel, 'looping')
         .onChange(() => {
-          this._parentConfiguration.looping = guiDatValues.looping
+          this._parentConfiguration.looping = configModel.looping
         })
 
       this.controllers.stepWise = this.guiFolders.integrator
-        .add(guiDatValues, 'stepWise')
+        .add(configModel, 'stepWise')
         .onChange(() => {
-          this._parentConfiguration.stepWise = guiDatValues.stepWise
+          this._parentConfiguration.stepWise = configModel.stepWise
         })
 
       this.guiFolders.bunch = gui.addFolder('Bunch')
 
-      this.guiFolders.bunch.add(guiDatValues, 'particleCount', 1, 512).step(1)
-      // .onFinishChange(() => { console.log(); update(guiDatValues, true) })
+      this.guiFolders.bunch.add(configModel, 'particleCount', 1, 512).step(1)
+      // .onFinishChange(() => { console.log(); update(configModel, true) })
 
-      this.guiFolders.bunch.add(guiDatValues, 'particleType', {
+      this.guiFolders.bunch.add(configModel, 'particleType', {
         ELECTRON: 'electrons',
         PROTON: 'protons',
         PHOTON: 'photons',
         'PHOTON ELECTRON PROTON': 'PHOTON ELECTRON PROTON'
       })
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
 
-      this.guiFolders.bunch.add(guiDatValues, 'bunchShape', {
+      this.guiFolders.bunch.add(configModel, 'bunchShape', {
         row: 'ROW',
         // 'column': "column",
         // 'cross': "cross",
         square: 'SQUARE'
         // 'disc': "disc",
       })
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
 
-      this.guiFolders.bunch.add(guiDatValues, 'particleSeparation', {
+      this.guiFolders.bunch.add(configModel, 'particleSeparation', {
         '.1 m': 1e-1,
         '10 mm': 1e-2,
         '20 mm': 2e-2,
@@ -252,27 +262,27 @@ export default {
         '1 µm': 1e-6,
         '1 nm': 1e-9
       })
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
 
-      // this.guiFolders.bunch.add(guiDatValues, 'emitterZ', -0.5, 0.5).step(0.1)
-      // .onFinishChange(() => { update(guiDatValues, false) })
+      // this.guiFolders.bunch.add(configModel, 'emitterZ', -0.5, 0.5).step(0.1)
+      // .onFinishChange(() => { update(configModel, false) })
 
-      // this.guiFolders.bunch.add(guiDatValues, 'emitterDirection', {
+      // this.guiFolders.bunch.add(configModel, 'emitterDirection', {
       //   '0, 0, 1': [0, 0, 1],
       //   '0, .1, 1': [0, 0.1, 1]
       // })
-      // this.guiFolders.bunch.add(guiDatValues, 'relativeEmitterDirectionJitter', {
+      // this.guiFolders.bunch.add(configModel, 'relativeEmitterDirectionJitter', {
       //   "0, 0, 0": [0, 0, 0],
       //   "0.1, 0.1, 0": [0.1, 0.1, 0],
       //   "0.1, 0, 0": [0.1, 0, 0],
       // })
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
 
-      // this.guiFolders.bunch.add(guiDatValues, 'bunchVelocityZ', .0, 1.0)
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // this.guiFolders.bunch.add(configModel, 'bunchVelocityZ', .0, 1.0)
+      // .onFinishChange(() => { update(configModel, true) })
 
-      // this.guiFolders.bunch.add(guiDatValues, 'gamma', 1, 100000).onFinishChange(() => { update(guiDatValues, false) })
-      // this.guiFolders.bunch.add(guiDatValues, 'gamma', {
+      // this.guiFolders.bunch.add(configModel, 'gamma', 1, 100000).onFinishChange(() => { update(configModel, false) })
+      // this.guiFolders.bunch.add(configModel, 'gamma', {
       //   '1': 1,
       //   '2': 2,
       //   '3': 3,
@@ -284,18 +294,18 @@ export default {
       //   '1000': 1000,
       //   '10000': 10000
       // })
-      // .onFinishChange(() => { update(guiDatValues, true) })
+      // .onFinishChange(() => { update(configModel, true) })
 
       this.guiFolders.interaction = gui.addFolder('Interaction')
 
       this.guiFolders.interaction
-        .add(guiDatValues, 'particleInteraction')
+        .add(configModel, 'particleInteraction')
         .onFinishChange(() => {
-          update(guiDatValues, false)
+          update(configModel, false)
         })
 
       this.guiFolders.interaction
-        .add(guiDatValues, 'electricField_z', {
+        .add(configModel, 'electricField_z', {
           '0.0000001': 0.0000001,
           '0.000001': 0.000001,
           '0.00001': 0.00001,
@@ -314,11 +324,11 @@ export default {
           '100000000': 100000000
         })
         .onChange(() => {
-          update(guiDatValues, false)
+          update(configModel, false)
         })
 
       this.guiFolders.interaction
-        .add(guiDatValues, 'magneticField_y', {
+        .add(configModel, 'magneticField_y', {
           // '.0000001': 0.0000001,
           // '0.000001': 0.000001,
           // '0.00001': 0.00001,
@@ -338,22 +348,22 @@ export default {
           // '10000000': 10000000,
         })
         .onChange(() => {
-          update(guiDatValues, false)
+          update(configModel, false)
         })
 
       // this.guiFolders.interaction
-      //   .add(guiDatValues, 'dipole_minZ', -100, 100)
+      //   .add(configModel, 'dipole_minZ', -100, 100)
       //   .onFinishChange(() => {
-      //     update(guiDatValues)
+      //     update(configModel)
       //   })
       // this.guiFolders.interaction
-      //   .add(guiDatValues, 'dipole_maxZ', -100, 100)
+      //   .add(configModel, 'dipole_maxZ', -100, 100)
       //   .onFinishChange(() => {
-      //     update(guiDatValues)
+      //     update(configModel)
       //   })
 
       // var this.guiFolders.interaction = gui.addFolder('quadrupole')
-      //     this.guiFolders.interaction.add(guiDatValues,
+      //     this.guiFolders.interaction.add(configModel,
       //       'quadrupoleStrength',
       //       {
       //         // '.0000001': 0.0000001,
@@ -374,105 +384,105 @@ export default {
       //         // '10000000': 10000000,
       //       },
       //       )
-      //       .onChange(() => { update(guiDatValues, false) })
+      //       .onChange(() => { update(configModel, false) })
       //
       //
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_1_strength',
       //   0,
       //   10000.0
       // )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_1_minZ',
       //   0,
       //   10.0
       // )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_1_maxZ',
       //   0,
       //   10.0
       // )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_1_rotated',
       //   0,
       //   10.0
       // ) /
       //   this.guiFolders.interaction.add(
-      //     guiDatValues,
+      //     configModel,
       //     'quadrupole_2_strength',
       //     0,
       //     10000.0
       //   )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_2_minZ',
       //   0,
       //   10.0
       // )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_2_maxZ',
       //   0,
       //   10.0
       // )
       // this.guiFolders.interaction.add(
-      //   guiDatValues,
+      //   configModel,
       //   'quadrupole_2_rotated',
       //   0,
       //   10.0
       // )
-      //     this.guiFolders.interaction.add(guiDatValues,
-      //       'quadrupoleLength', 0, 1.0).onFinishChange(() => { update(guiDatValues) })
+      //     this.guiFolders.interaction.add(configModel,
+      //       'quadrupoleLength', 0, 1.0).onFinishChange(() => { update(configModel) })
 
       //   this.guiFolders.view = gui.addFolder('view')
       //
       //   this.guiFolders.view
-      //     .add(guiDatValues, 'pathicleWidth', {
+      //     .add(configModel, 'pathicleWidth', {
       //       '0.3': 0.3,
       //       '0.2': 0.2,
       //       '0.1': 0.1,
       //       '0.01': 0.01
       //     })
       //     .onChange(() => {
-      //       update(guiDatValues, false)
+      //       update(configModel, false)
       //     })
       //
       //   this.controllers.cameraX = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'cameraX',
       //     -1.9,
       //     2
       //   )
       //   this.controllers.cameraY = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'cameraY',
       //     -2,
       //     2
       //   )
       //   this.controllers.cameraZ = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'cameraZ',
       //     -2,
       //     2
       //   )
       //   this.controllers.targetX = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'targetX',
       //     -1.9,
       //     2
       //   )
       //   this.controllers.targetY = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'targetY',
       //     -2,
       //     2
       //   )
       //   this.controllers.targetZ = this.guiFolders.view.add(
-      //     guiDatValues,
+      //     configModel,
       //     'targetZ',
       //     -2,
       //     2

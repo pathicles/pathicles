@@ -1,9 +1,8 @@
 import {
   bigNumberMath,
-  format30,
   speedOfLight__ms_1,
   speedOfLight
-} from './Specrel'
+} from '@pathicles/specrel'
 
 class Particle {
   constructor(particleType) {
@@ -11,19 +10,30 @@ class Particle {
       throw 'The constructor of class Particle has a mandatory argument'
     }
 
-    this._mass__eVc_2 = bigNumberMath.bignumber(particleType.mass__eVc_2)
-    this._mass__eVc_2 = bigNumberMath.bignumber(particleType.mass__eVc_2)
-    this._charge__qe = bigNumberMath.bignumber(particleType.charge__qe)
-    this._chargeMassRatio__Ckg_1 = bigNumberMath.bignumber(
+    this._mass__eVc_2 = bigNumberMath.evaluate(particleType.mass__eVc_2)
+    this._charge__qe = bigNumberMath.evaluate(particleType.charge__qe)
+    this._chargeMassRatio__Ckg_1 = bigNumberMath.evaluate(
       particleType.chargeMassRatio__Ckg_1
     )
 
-    this._position__m = bigNumberMath.evaluate('[0, 0, 0]')
+    this._position__m = [
+      bigNumberMath.evaluate(0),
+      bigNumberMath.evaluate(0),
+      bigNumberMath.evaluate(0)
+    ]
 
-    this._momentum__eVc_1 = bigNumberMath.evaluate('[0, 0, 0]')
+    this._momentum__eVc_1 = [
+      bigNumberMath.evaluate(0),
+      bigNumberMath.evaluate(0),
+      bigNumberMath.evaluate(0)
+    ]
 
     if (particleType.mass__eVc_2 === 0) {
-      this._momentum__eVc_1 = bigNumberMath.evaluate('[0, 0, 1]')
+      this._momentum__eVc_1 = [
+        bigNumberMath.evaluate(0),
+        bigNumberMath.evaluate(0),
+        bigNumberMath.evaluate(1)
+      ]
     }
     this._particleType = particleType
   }
@@ -57,7 +67,7 @@ class Particle {
   }
 
   get position() {
-    return bigNumberMath.evaluate(format30(this._position__m) + ' m')
+    return this._position__m.map(d => bigNumberMath.unit(d, 'm'))
   }
 
   set position(position__m) {
@@ -65,7 +75,7 @@ class Particle {
   }
 
   get momentum() {
-    return bigNumberMath.evaluate(format30(this._momentum__eVc_1) + ' eV / c')
+    return this._momentum__eVc_1.map(d => bigNumberMath.unit(d, 'eV / c'))
   }
 
   get momentumSquare__eV2c_2() {
@@ -98,18 +108,24 @@ class Particle {
     if (this.beta.equals(1)) {
       return this.direction
     }
-    return bigNumberMath.divide(
-      this._momentum__eVc_1,
-      bigNumberMath.multiply(this._mass__eVc_2, this.gamma)
+    return this._momentum__eVc_1.map(p =>
+      bigNumberMath.divide(
+        p,
+        bigNumberMath.multiply(this._mass__eVc_2, this.gamma)
+      )
     )
   }
 
   get velocity__ms_1() {
-    return bigNumberMath.multiply(this.velocity__c, speedOfLight__ms_1)
+    return this.velocity__c.map(v =>
+      bigNumberMath.multiply(v, speedOfLight__ms_1)
+    )
   }
 
   get velocity() {
-    return bigNumberMath.evaluate(format30(this.velocity__c) + ' c')
+    return this.velocity__c.map(v =>
+      bigNumberMath.multiply(v, speedOfLight__ms_1)
+    )
   }
 
   get u() {
@@ -211,7 +227,7 @@ class Particle {
     this._momentum__eVc_1 = newMomentum__eVc_1
   }
 
-  setMomentumFromGamma(gamma, direction) {
+  setMomentumFromGamma(gamma, direction = [0, 0, 1]) {
     if (direction.length != 3) {
       throw 'direction must bew Array of length 3'
     }

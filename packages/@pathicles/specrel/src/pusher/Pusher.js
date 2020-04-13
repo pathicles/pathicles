@@ -1,4 +1,4 @@
-import Specrel, { bigNumberMath } from '../Specrel'
+import { speedOfLight__ms_1, bigNumberMath } from '../Specrel'
 
 export default class Pusher {
   /**
@@ -12,7 +12,7 @@ export default class Pusher {
     }
 
     if (typeof dt__s === 'undefined') {
-      dt__s = Specrel.speedOfLight__ms_1.pow(-1)
+      dt__s = speedOfLight__ms_1.pow(-1)
     } else {
       // dt__s = bigmath.bignumber(0)
     }

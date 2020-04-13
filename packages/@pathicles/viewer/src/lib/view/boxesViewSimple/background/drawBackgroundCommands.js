@@ -5,13 +5,17 @@ import frag from './background.frag'
 import vert from './background.vert'
 
 export default function(regl, { stageGrid }) {
-  const stage = createCube(stageGrid.size * 2, stageGrid.size * 2, stageGrid.size * 2)
+  const stage = createCube(stageGrid.size )
 
   let model = identity([])
 
   return regl({
     primitive: 'triangles',
     elements: stage.cells,
+    cull: {
+      enable: true,
+      face: 'front'
+    },
     attributes: {
       aPosition: stage.positions,
       uv: stage.uvs

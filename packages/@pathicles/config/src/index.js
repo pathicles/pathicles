@@ -6,6 +6,7 @@ import { storyElectric } from './presets/story-electric'
 import { storyQuadrupole } from './presets/story-quadrupole'
 import { random } from './presets/random'
 import { freeElectron } from './presets/free-electron'
+import gyrotest_1_electron from './presets/gyrotest-1-electron'
 import { freePhoton } from './presets/free-photon'
 import { freePhotons } from './presets/free-photons'
 
@@ -16,7 +17,8 @@ const presets = {
   [freeElectron.name]: freeElectron,
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
-  [random.name]: random
+  [random.name]: random,
+  [gyrotest_1_electron.name]: gyrotest_1_electron
 }
 
 const config = presetName => {

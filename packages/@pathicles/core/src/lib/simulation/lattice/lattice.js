@@ -31,17 +31,17 @@ export class Lattice {
       position: [0, 0, 0]
     }
 
-    let z_l = 0
+    let local_z = 0
     this.beamline = latticeDescriptor.beamline.map(elementKey => {
       if (!latticeDescriptor.elements[elementKey]) {
         throw new Error(`element ${elementKey} not defined`)
       }
       const element = latticeDescriptor.elements[elementKey]
-      z_l += element.l
+      local_z += element.l
       return {
         ...element,
-        z_min: z_l - element.l,
-        z_max: z_l
+        local_z_min: local_z - element.l,
+        local_z_max: local_z
       }
     })
 
@@ -57,8 +57,8 @@ export class Lattice {
     const z_mod = z % this.length()
     for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
       if (
-        z_mod >= this.beamline[idx].z_min &&
-        z_mod <= this.beamline[idx].z_max
+        z_mod >= this.beamline[idx].local_z_min &&
+        z_mod <= this.beamline[idx].local_z_max
       )
         return idx
     }
@@ -66,7 +66,10 @@ export class Lattice {
 
   length() {
     // console.log(this.beamline[this.beamline.length - 1])
-    return this.beamline.length && this.beamline[this.beamline.length - 1].z_max
+    return (
+      this.beamline.length &&
+      this.beamline[this.beamline.length - 1].local_z_max
+    )
   }
 
   toGLSLDefinition() {
@@ -74,12 +77,11 @@ export class Lattice {
     return this.beamline
       .map(
         (v, i) =>
-          `beamline[${i}] = BeamlineElement(vec3(${myStartEnds[i].start.join(
-            ','
-          )}), vec3(${myStartEnds[i].end.join(
-            ','
-          )}), ${LatticeElementTypesArray.indexOf(v.type)},
-          ${v.k1 ? v.k1.toFixed(2) : '0.'})`
+          `beamline[${i}] = BeamlineElement(
+            vec3(${myStartEnds[i].start.join(',')}),
+            vec3(${myStartEnds[i].end.join(',')}),
+            ${LatticeElementTypesArray.indexOf(v.type)},
+            ${v.strength ? v.strength.toFixed(10) : '0.'})`
       )
       .join(',')
   }
@@ -131,7 +133,7 @@ export class Lattice {
   get transformations() {
     let phi = this.origin.phi
     let [x, y, z] = this.origin.position
-    y = -1
+    //y = -1
     return this.beamline.map(element => {
       const start = [x, y, z]
       const phi_half = element.angle ? phi + element.angle / 2 : phi
@@ -147,7 +149,8 @@ export class Lattice {
       return {
         translation: middle,
         phi: phi_half,
-        scale: [2, 0.15, element.l - 0.2 - (element.type === 'SBEN' ? 0.4 : 0)]
+        //scale: [1, 0.15, element.l - 0.2 - (element.type === 'SBEN' ? 0.4 : 0)]
+        scale: [1, 1, 1]
       }
     })
   }

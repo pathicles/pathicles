@@ -10,19 +10,19 @@ module.exports = {
   },
   chainWebpack: config => {
     // GraphQL Loader
-    config.module
-      .rule('binary')
-      .test(/\.dat$/)
-      .use('binary-loader')
-      .loader('binary-loader')
-      .end()
+    // config.module
+    //   .rule('binary')
+    //   .test(/\.dat$/)
+    //   .use('binary-loader')
+    //   .loader('binary-loader')
+    //   .end()
 
-    config.module
-      .rule('binary2')
-      .test(/\.blob$/)
-      .use('binary-loader')
-      .loader('binary-loader')
-      .end()
+    // config.module
+    //   .rule('binary2')
+    //   .test(/\.blob$/)
+    //   .use('binary-loader')
+    //   .loader('binary-loader')
+    //   .end()
     // Add another loader
     // .use('other-loader')
     // .loader('other-loader')

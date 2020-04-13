@@ -193,19 +193,19 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 2,
+    stepsPerTick: 4,
     stepCount: 256
   },
   model: {
-    bufferLength: 256 / 2,
-    tickDurationOverC: 0.2,
+    bufferLength: 256 / 4,
+    tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
       particleCount: 256,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -241,11 +241,11 @@ const defaultConfig = {
     fxaa: false,
     rgbGamma: 1,
     isStageVisible: true,
-    isShadowEnabled: false,
-    isLatticeVisible: false,
+    isShadowEnabled: true,
+    isLatticeVisible: true,
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.002,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -268,7 +268,7 @@ const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 10,
+      distance: 5,
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
       autorotate: true,
@@ -276,10 +276,21 @@ const defaultConfig = {
       zoomAboutCursor: false,
       zoomDecayTime: 1,
       far: 50,
-      near: 0.0001
+      near: 0.0001,
+      minDistance: 1,
+      maxDistance: 10
     }
   },
   dumpData: false
+};
+
+const DRIF = 'DRIF';
+const QUAD = 'QUAD';
+const SBEN = 'SBEN';
+const LatticeElementTypes = {
+  DRIF,
+  SBEN,
+  QUAD
 };
 
 const storyDipole = {
@@ -288,43 +299,36 @@ const storyDipole = {
     camera: {
       center: [0, 0.1, 0],
       theta: 2 * Math.PI / (360 / 90),
-      phi: 2 * Math.PI / (360 / 15),
+      phi: 2 * Math.PI / (360 / 5),
       distance: 5
     }
   },
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0.15, -1],
+      bunchShape: 'DISC',
+      direction: [0, 0.3, -1],
       position: [3.2, -1.5, 0],
       directionJitter: [0.05, 0.0, 0.05],
       positionJitter: [0.5, 0.5, 0.1],
-      gamma: 900
+      gamma: 2
     },
     interactions: {
-      magneticField: [0, 0.5, 0],
+      magneticField: [0, 0, 0],
       particleInteraction: false
     },
     lattice: {
       elements: {
-        l2: {
-          type: 'DRIF',
-          l: 0
-        },
-        bm: {
-          type: 'SBEN',
-          angle: 0.78539816,
-          e1: 0.39269908,
-          e2: 0.39269908,
-          l: 10,
-          k1: -0.5
+        l0: {
+          type: LatticeElementTypes.SBEN,
+          l: 20,
+          strength: 0.002
         }
       },
-      beamline: [],
+      beamline: ['l0'],
       origin: {
         phi: 0,
-        position: [-5, 1, 0]
+        position: [0, 0, -10]
       }
     }
   }
@@ -334,49 +338,30 @@ const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [-2, 0, 0],
-      theta: Math.PI / 4,
+      center: [0, 0, -1],
+      theta: Math.PI / 4 * 1,
       phi: 0,
-      distance: 5
+      distance: 2
     }
   },
   model: {
     emitter: {
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON PROTON PROTON   PHOTON PHOTON PHOTON',
+      particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
       position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
+      directionJitter: [0.2, 0.2, 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 10
+      gamma: 1.3
     },
     interactions: {
-      electricField: [0, 0, 0.001],
+      electricField: [0, 0, -0.00000000001],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
     },
     lattice: {
-      elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
-        q1: {
-          type: 'QUAD',
-          k1: 0,
-          l: 3
-        },
-        q2: {
-          type: 'QUAD',
-          k1: -0,
-          l: 3
-        },
-        l2: {
-          type: 'DRIF',
-          l: 3
-        }
-      },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      elements: {},
+      beamline: [],
       origin: {
         phi: 0,
         position: [0, 1, -6]
@@ -389,47 +374,44 @@ const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [0, 1, 0],
-      theta: 2 * Math.PI / (360 / 45),
-      phi: 2 * Math.PI / (360 / 5),
-      distance: 6
+      center: [2, 0, 0],
+      theta: 2 * Math.PI / (360 / 85),
+      phi: 2 * Math.PI / (360 / 1),
+      distance: 8
     }
   },
   model: {
     emitter: {
+      particleType: 'PROTON ',
       bunchShape: 'SQUARE_YZ',
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-5, 1, 0],
       direction: [1, 0, 0],
-      directionJitter: [0, 0.1, 0.1],
-      positionJitter: [0, 0.1, 0.1],
-      gamma: 1000
+      position: [-10, 0, 0],
+      particleSeparation: 0.1,
+      directionJitter: [0.0, 0.0, 0],
+      positionJitter: [0.1, 0.1, 0],
+      gamma: 7
     },
     lattice: {
       elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
         q1: {
-          type: 'QUAD',
-          k1: -0.05,
-          l: 3
+          type: LatticeElementTypes.QUAD,
+          strength: -.5,
+          l: 5
         },
         q2: {
-          type: 'QUAD',
-          k1: 0.15,
-          l: 3
+          type: LatticeElementTypes.QUAD,
+          strength: .5,
+          l: 5
         },
-        l2: {
-          type: 'DRIF',
-          l: 3
+        l1: {
+          type: LatticeElementTypes.DRIF,
+          l: 5
         }
       },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      beamline: ['l1', 'q1', 'q2', 'l1'],
       origin: {
         phi: -Math.PI / 2,
-        position: [-10, 1, 0]
+        position: [-10, 0, 0]
       }
     }
   }
@@ -480,9 +462,9 @@ const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
       distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -499,7 +481,7 @@ const freeElectron = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 10
+    stepCount: 2
   },
   model: {
     bufferLength: 11,
@@ -509,15 +491,67 @@ const freeElectron = {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 2
+      gamma: 1
     },
     interactions: {
-      electricField: [0, 0, 1],
+      electricField: [0, 0, 0],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
+    }
+  }
+};
+
+var gyrotest_1_electron = {
+  name: 'gyrotest-1-electron',
+  view: {
+    camera: {
+      center: [0.5, -1, 0],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 1,
+      fovY: Math.PI / 3,
+      dTheta: 0.001,
+      autorotate: false,
+      rotateAboutCenter: true,
+      zoomAboutCursor: false,
+      zoomDecayTime: 1,
+      far: 50,
+      near: 0.0002
+    }
+  },
+  runner: {
+    stepsPerTick: 2,
+    stepCount: 37
+  },
+  model: {
+    bufferLength: 37,
+    tickDurationOverC: 5.94985880215349239057744464763e-2,
+    emitter: {
+      particleCount: 1,
+      particleType: 'ELECTRON',
+      bunchShape: 'SQUARE',
+      direction: [0, 0, 1],
+      position: [0, -1, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0, 0],
+      gamma: 200
+    },
+    lattice: {
+      elements: {
+        l0: {
+          type: LatticeElementTypes.SBEN,
+          l: 20,
+          strength: .01
+        }
+      },
+      beamline: ['l0'],
+      origin: {
+        phi: 0,
+        position: [0, 0, -10]
+      }
     }
   }
 };
@@ -526,10 +560,10 @@ const freePhoton = {
   name: 'free-photon',
   view: {
     camera: {
-      center: [0, -0.5, 0],
-      theta: Math.PI / 2,
-      phi: Math.PI / 4,
-      distance: 1,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -542,10 +576,10 @@ const freePhoton = {
   },
   runner: {
     prerender: true,
-    looping: true,
+    looping: false,
     mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 10
+    stepsPerTick: 2,
+    stepCount: 5
   },
   model: {
     bufferLength: 11,
@@ -555,10 +589,10 @@ const freePhoton = {
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 10
+      gamma: 0
     },
     interactions: {
       electricField: [0, 0, 0.01],
@@ -572,10 +606,10 @@ const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
-      distance: 2,
+      center: [0, 0, 0.5],
+      theta: Math.PI / 4,
+      phi: Math.PI / 8,
+      distance: 1.5,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -591,23 +625,23 @@ const freePhotons = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 8
+    stepCount: 11
   },
   model: {
-    bufferLength: 8,
+    bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 2,
-      particleType: 'PHOTON ELECTRON PROTON',
-      bunchShape: 'SQUARE',
+      particleCount: 64,
+      particleType: 'PHOTON',
+      bunchShape: 'DISC',
       direction: [0, 0, 1],
-      position: [0, -0.5, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1.1
+      gamma: 10
     },
     interactions: {
-      electricField: [0, 0, 0.091],
+      electricField: [0, 0, 0],
       particleInteraction: false,
       magneticField: [0, 0.0, 0]
     }
@@ -621,7 +655,8 @@ const presets = {
   [freeElectron.name]: freeElectron,
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
-  [random.name]: random
+  [random.name]: random,
+  [gyrotest_1_electron.name]: gyrotest_1_electron
 };
 
 const config = presetName => {

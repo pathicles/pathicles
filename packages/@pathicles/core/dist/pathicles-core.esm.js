@@ -2175,7 +2175,10 @@ function freeCameraFactory(options, regl) {
     ...options,
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   });
-  initializeCameraControls(aCamera, regl._gl.canvas);
+  initializeCameraControls(aCamera, regl._gl.canvas, {
+    minDistance: options.minDistance || 1,
+    maxDistance: options.maxDistance || 20
+  });
   aCamera.toConfig = () => {
     return {
       center: aCamera.params.center,
@@ -2194,7 +2197,11 @@ function freeCameraFactory(options, regl) {
   });
   return [aCamera, setCameraUniforms]
 }
-function initializeCameraControls(camera, canvas) {
+function initializeCameraControls(
+  camera,
+  canvas,
+  { minDistance, maxDistance }
+) {
   const arrow = { left: 37, up: 38, right: 39, down: 40 };
   const delta = -0.01;
   window.addEventListener('keydown', function(event) {
@@ -2216,9 +2223,12 @@ function initializeCameraControls(camera, canvas) {
   const radiansPerHalfScreenWidth = Math.PI * 0.5;
   normalizedInteractionEvents_1(canvas)
     .on('wheel', function(ev) {
-      if (ev.mods.shift) {
-        camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0);
-      }
+      if (!ev.active) return
+      camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0);
+      camera.params.distance = Math.max(
+        minDistance,
+        Math.min(maxDistance, camera.params.distance)
+      );
     })
     .on('mousemove', function(ev) {
       if (!ev.active || ev.buttons !== 1) return
@@ -2359,7 +2369,7 @@ function discDistributionXY({ n = 0, d = 0 }) {
         ((nx * d) / 2) ** 2
       )
         return [ix * d - dOffsetX, iy * d - dOffsetY, 0]
-      else return [ix * d - dOffsetX, iy * d - dOffsetY - 10, 0]
+      else return [ix * d - dOffsetX, iy * d - dOffsetY - 10000, 0]
     })
     .reduce((acc, val) => acc.concat(val), [])
 }
@@ -2378,8 +2388,10 @@ function discDistributionYZ({ n = 0, d = 0 }) {
         ((nx * d) / 2) ** 2
       )
         return [0, iy * d - dOffsetY, ix * d - dOffsetX]
-      else return [0, iy * d - dOffsetY - 10, ix * d - dOffsetX]
-    })
+      else return [0, iy * d - dOffsetY
+        -10000, ix * d - dOffsetX]
+    }
+    )
     .reduce((acc, val) => acc.concat(val), [])
 }
 
@@ -2538,7 +2550,7 @@ const random = () => {
   let x = Math.sin(seed++) * 10000;
   return x - Math.floor(x)
 };
-const boundedRandom = (min = -1, max = 1) => random() * (max -min) + min;
+const boundedRandom = (min = -1, max = 1) => random() * (max - min) + min;
 
 function particleTypesArrayFromDescriptor(
   particleTypeDescriptor,
@@ -2668,29 +2680,39 @@ function createParticleCollection({
       ]
     })
     .reduce((acc, val) => acc.concat(val), []);
-  const fourVelocities = particles
+  const fourVelocities = particles.map((particle, p) => {
+    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma);
+    const myDirection = jitterDirection({
+      direction,
+      directionJitter,
+      localPosition: [
+        localPositions[p * 3 + 0],
+        localPositions[p * 3 + 1],
+        localPositions[p * 3 + 2]
+      ]
+    });
+    return [
+      beta * myDirection[0],
+      beta * myDirection[1],
+      beta * myDirection[2],
+      gamma
+    ]
+  });
+  const fourMomenta = particles
     .map((particle, p) => {
-      const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma);
-      const myDirection = jitterDirection({
-        direction,
-        directionJitter,
-        localPosition: [
-          localPositions[p * 3 + 0],
-          localPositions[p * 3 + 1],
-          localPositions[p * 3 + 2]
-        ]
-      });
       return [
-        beta * myDirection[0],
-        beta * myDirection[1],
-        beta * myDirection[2],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][0],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][1],
+        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][2],
         gamma
       ]
     })
     .reduce((acc, val) => acc.concat(val), []);
+  console.log({ gamma, fourMomenta });
   return {
     fourPositions,
-    fourVelocities,
+    fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
+    fourMomenta,
     particleTypes: particles.map(p => p.id)
   }
 }
@@ -2713,6 +2735,7 @@ function initialize(
 ) {
   let fourPositions = new Float32Array(particleCount * bufferLength * 4);
   let fourVelocities = new Float32Array(particleCount * bufferLength * 4);
+  let fourMomenta = new Float32Array(particleCount * bufferLength * 4);
   let particleTypes = new Array(particleCount);
   if (randomize) {
     for (let p = 0; p < particleCount; p++) {
@@ -2726,7 +2749,6 @@ function initialize(
       fourVelocities[p * 4 + 3] = 0;
       particleTypes[p] = Math.floor(random() * 4);
     }
-    console.log(fourVelocities);
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
@@ -2747,6 +2769,11 @@ function initialize(
     fourVelocities = new Float32Array(
       [
         ...particleCollection.fourVelocities
+      ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
+    );
+    fourMomenta = new Float32Array(
+      [
+        ...particleCollection.fourMomenta
       ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
     );
     particleTypes = particleCollection.particleTypes;
@@ -2794,6 +2821,7 @@ const getters = `
     return texture2D(utVelocityBuffer, coords);
   }
 `;
+
 function latticeChunk(lattice) {
   return `
   int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
@@ -2813,14 +2841,14 @@ function latticeChunk(lattice) {
   }
 
   BeamlineElement getBeamlineElement(float id) {
-    for (int i=0; i < ${Math.min(lattice.beamline.length, 1000)}; i++) {
+    for (int i=0; i < ${Math.min(lattice.beamline.length, 100)}; i++) {
         if (float(i) == id) return beamline[i];
     }
   }
 
   BeamlineElement getClosestBeamlineElement(vec3 position) {
 
-    float bestLength = 1000.;
+    float bestLength = 50.;
     int bestIndex = 0;
 
     for (int i=0; i < ${lattice.beamline.length}; i++) {
@@ -2832,8 +2860,8 @@ function latticeChunk(lattice) {
         bestIndex = i;
         bestLength = currentLength;
       }
-  }
-  return getBeamlineElement(float(bestIndex));
+    }
+    return getBeamlineElement(float(bestIndex));
   }
 
   void initLatticeData() {
@@ -2906,9 +2934,9 @@ function pushBoris(regl, { variables, model }) {
         ${latticeChunk(model.lattice)}
 
 
-        vec3 get_efield(vec3 position, ParticleData particleData, float p, float previousBufferHead) {
+        vec3 get_efield(vec3 position) {
 
-          vec3 E = electricField * particleData.charge;
+          vec3 E = electricField;
 
 
 
@@ -2950,46 +2978,45 @@ function pushBoris(regl, { variables, model }) {
             B += vec3(0., ble.strength, 0.);
           } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
           B += (ble.strength > 0.) ?
-              ble.strength * vec3(0, position.z, position.y- 1.)
-              : abs(ble.strength) * vec3(0, -position.z, -(position.y-1.));
+              ble.strength * vec3(0, position.z, position.y)
+              : abs(ble.strength) * vec3(0, -position.z, -(position.y));
               }
 
-          // if (position.z > dipole_minZ && position.z < dipole_maxZ ) {
-          //    B += vec3(0., dipole_strength, 0);
-          //  }
-          //
-          //  if (position.z >  quadrupole_1_minZ && position.z < quadrupole_1_maxZ ) {
-          //    float orientation = (quadrupole_1_rotated > 0.) ? -1. : 1.;
-          //    B += quadrupole_1_strength * vec3(position.y-1., position.x, 0);
-          //  }
-          //
-          // if (position.z >  quadrupole_2_minZ && position.z < quadrupole_2_maxZ ) {
-          //    float orientation = (quadrupole_2_rotated > 0.) ? -1. : 1.;
-          //    B +=  quadrupole_2_strength * vec3( position.y-1., -position.x, 0);
-          //  }
            return B;
-
         }
 
         vec4 push_position(float p, float bufferHead, float previousBufferHead) {
 
+          ParticleData particleData = getParticleData(p);
           vec4 previousValue = get_position(p, previousBufferHead);
 
           vec3 previousPosition = previousValue.xyz;
           float previousTime  = previousValue.w;
 
-          vec3 previousVelocity = get_velocity(p, previousBufferHead).xyz;
-          vec3 currentVelocity = get_velocity(p, bufferHead).xyz;
+          vec3 previousMomentum = get_velocity(p, previousBufferHead).xyz;
+          vec3 currentMomentum = get_velocity(p, bufferHead).xyz;
 
-          return vec4(
-            previousPosition + previousVelocity * halfDeltaTOverC + currentVelocity * halfDeltaTOverC,
-            previousTime + 2. * halfDeltaTOverC);
+          float nextTime = previousTime + 2. * halfDeltaTOverC;
+
+          return (particleData.particleType < .1)
+            ? vec4(previousPosition + 2. * previousMomentum.xyz  * halfDeltaTOverC, nextTime)
+            : vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime);
+
+          //
+          // float gamma =  sqrt(1. + dot(currentVelocity,currentVelocity));
+          //
+          // return vec4(
+          //   previousPosition + previousVelocity/gamma * halfDeltaTOverC + currentVelocity * halfDeltaTOverC / gamma,
+          //   previousTime + 2. * halfDeltaTOverC);
         }
 
 
         vec4 push_velocity(float p, float bufferHead, float previousBufferHead) {
 
           ParticleData particleData = getParticleData(p);
+
+               if (particleData.particleType < .1) { return get_velocity(p, previousBufferHead);}
+
 
           vec4 previous4Position = get_position(p, previousBufferHead);
 
@@ -3000,40 +3027,81 @@ function pushBoris(regl, { variables, model }) {
 
           vec3 intermediatePosition = previous4Position.xyz + previousVelocity * halfDeltaTOverC;
 
-          vec3 E = get_efield(intermediatePosition, particleData, p, previousBufferHead);
+          vec3 E = get_efield(intermediatePosition);
           vec3 B = get_bfield(intermediatePosition);
           // vec3 G = vec3(0., -gravityConstant, 0.);
 
 
-          vec3 dv_el_unit_c_1 = particleData.chargeMassRatio / c * E * halfDeltaTOverC;
-          vec3 v_el1_unit_c_1 = previousVelocity + dv_el_unit_c_1;
+// float gamma = 1. / (1. -  dot(previousVelocity,previousVelocity));
+vec3 momentum = previousVelocity;
+float charge = particleData.charge;
+float mass = particleData.mass;
+float chargeMassRatio = particleData.chargeMassRatio;
 
-          float gamma_el1_unit_c_1 = 1.0 / (sqrt(1.0 - dot( v_el1_unit_c_1, v_el1_unit_c_1)));
-          gamma_el1_unit_c_1 = previousGamma;
+momentum += 0.5 * halfDeltaTOverC * chargeMassRatio * E;
+
+float gamma = sqrt(1.0 + dot(momentum, momentum));
+
+vec3 t_ =  halfDeltaTOverC * charge  * c / (gamma * mass) * B ;
+vec3 w_ = momentum + cross(momentum, t_);
+vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
+momentum += cross(w_, s_);
+momentum +=  halfDeltaTOverC * chargeMassRatio * E;
 
 
-          vec3 b_0_unit_c_1 =  particleData.chargeMassRatio / gamma_el1_unit_c_1 *  halfDeltaTOverC / c * B;
-          float b_0_unit_c_1_square = dot(b_0_unit_c_1, b_0_unit_c_1);
 
-          vec3 v_mag_unit_c_1 = v_el1_unit_c_1 + (2.0 / 1.0 + b_0_unit_c_1_square) * cross(  v_el1_unit_c_1 + cross(  v_el1_unit_c_1, b_0_unit_c_1), b_0_unit_c_1) ;
+vec3 t = chargeMassRatio * B * halfDeltaTOverC;
+float t_mag2 = dot(t, t);
+vec3 s =  2. * t / (1. + t_mag2);
 
-          vec3 nextVelocity_unit_c_1 = v_mag_unit_c_1 + dv_el_unit_c_1;
+
+vec3 v_minus = previousVelocity + chargeMassRatio *  E * halfDeltaTOverC;
+vec3 v_minus_cross_t = cross(v_minus, t);
+
+vec3 v_prime = v_minus + v_minus_cross_t;
+
+
+vec3 v_prime_cross_s = cross(v_prime, s);
+vec3 v_plus = v_minus + v_prime_cross_s;
+
+vec3 nextVelocity = v_plus + chargeMassRatio *  E * halfDeltaTOverC;
+
+
+
+          // vec3 dv_el_unit_c_1 = particleData.chargeMassRatio / c * E * halfDeltaTOverC;
+          // vec3 v_el1_unit_c_1 = previousVelocity + dv_el_unit_c_1;
+
+          // // vec3 v_minus = particleData.chargeMassRatio / c * E * halfDeltaTOverC;
+
+          // float gamma_el1_unit_c_1 = 1.0 / (sqrt(1.0 - dot( v_el1_unit_c_1, v_el1_unit_c_1)));
+          // gamma_el1_unit_c_1 = previousGamma;
+
+
+          // vec3 b_0_unit_c_1 =  particleData.chargeMassRatio / gamma_el1_unit_c_1 *  halfDeltaTOverC / c * B;
+          // float b_0_unit_c_1_square = dot(b_0_unit_c_1, b_0_unit_c_1);
+
+          // vec3 v_mag_unit_c_1 = v_el1_unit_c_1 + (2.0 / 1.0 + b_0_unit_c_1_square) * cross(  v_el1_unit_c_1 + cross(  v_el1_unit_c_1, b_0_unit_c_1), b_0_unit_c_1) ;
+
+          // // vec3 nextVelocity = v_mag_unit_c_1 + dv_el_unit_c_1;
+          // //vec3 nextVelocity = v_mag_unit_c_1 + dv_el_unit_c_1;
+
+          // vec3 nextVelocity = previousVelocity + 2. * particleData.chargeMassRatio / c * E * halfDeltaTOverC;
 
 
           if (boundingBoxSize > 0.) {
             if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
-              nextVelocity_unit_c_1.x *= -1.0;
+              momentum.x *= -1.0;
             }
             if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
-              nextVelocity_unit_c_1.y *= -1.0;
+              momentum.y *= -1.0;
             }
             if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
-              nextVelocity_unit_c_1.z *= -1.0;
+              momentum.z *= -1.0;
             }
           }
 
-          return vec4( nextVelocity_unit_c_1, gamma_el1_unit_c_1 );
-          // return vec4( nextVelocity_unit_c_1, previousGamma );
+          return vec4( momentum, previous4Velocity.w );
+
         }
 
         void main () {
@@ -3097,11 +3165,15 @@ function readData(regl, { variables, model }) {
       regl.read({ data: data[variableName][1] });
     });
   });
+  const precision = 1000;
   return {
     tick: variables.tick.value,
     data: {
       position: Object.values(data.position[variables.tick.value % 2]).map(
-        d => Math.floor(d * 1000) / 1000
+        d => Math.floor(d * precision) / precision
+      ),
+      velocity: Object.values(data.velocity[variables.tick.value % 2]).map(
+        d => Math.floor(d * precision) / precision
       ),
       particleTypes: variables.initialData.particleTypes
     }
@@ -3202,17 +3274,17 @@ class Lattice {
       phi: 0,
       position: [0, 0, 0]
     };
-    let z_l = 0;
+    let local_z = 0;
     this.beamline = latticeDescriptor.beamline.map(elementKey => {
       if (!latticeDescriptor.elements[elementKey]) {
         throw new Error(`element ${elementKey} not defined`)
       }
       const element = latticeDescriptor.elements[elementKey];
-      z_l += element.l;
+      local_z += element.l;
       return {
         ...element,
-        z_min: z_l - element.l,
-        z_max: z_l
+        local_z_min: local_z - element.l,
+        local_z_max: local_z
       }
     });
     const startEnds = this.startEnds;
@@ -3225,26 +3297,28 @@ class Lattice {
     const z_mod = z % this.length();
     for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
       if (
-        z_mod >= this.beamline[idx].z_min &&
-        z_mod <= this.beamline[idx].z_max
+        z_mod >= this.beamline[idx].local_z_min &&
+        z_mod <= this.beamline[idx].local_z_max
       )
         return idx
     }
   }
   length() {
-    return this.beamline.length && this.beamline[this.beamline.length - 1].z_max
+    return (
+      this.beamline.length &&
+      this.beamline[this.beamline.length - 1].local_z_max
+    )
   }
   toGLSLDefinition() {
     const myStartEnds = this.startEnds;
     return this.beamline
       .map(
         (v, i) =>
-          `beamline[${i}] = BeamlineElement(vec3(${myStartEnds[i].start.join(
-            ','
-          )}), vec3(${myStartEnds[i].end.join(
-            ','
-          )}), ${LatticeElementTypesArray.indexOf(v.type)},
-          ${v.k1 ? v.k1.toFixed(2) : '0.'})`
+          `beamline[${i}] = BeamlineElement(
+            vec3(${myStartEnds[i].start.join(',')}),
+            vec3(${myStartEnds[i].end.join(',')}),
+            ${LatticeElementTypesArray.indexOf(v.type)},
+            ${v.strength ? v.strength.toFixed(10) : '0.'})`
       )
       .join(',')
   }
@@ -3286,7 +3360,6 @@ class Lattice {
   get transformations() {
     let phi = this.origin.phi;
     let [x, y, z] = this.origin.position;
-    y = -1;
     return this.beamline.map(element => {
       const start = [x, y, z];
       const phi_half = element.angle ? phi + element.angle / 2 : phi;
@@ -3301,7 +3374,7 @@ class Lattice {
       return {
         translation: middle,
         phi: phi_half,
-        scale: [2, 0.15, element.l - 0.2 - (element.type === 'SBEN' ? 0.4 : 0)]
+        scale: [1, 1, 1]
       }
     })
   }
@@ -3330,6 +3403,7 @@ class Simulation {
       configuration.model.bufferLength,
       configuration.model.emitter
     ));
+    console.log({ initialData: this.initialData });
     const lattice = new Lattice(this.configuration.model.lattice);
     this.variables = {
       initialData: this.initialData,
@@ -3423,14 +3497,13 @@ class Simulation {
   }
   prerender() {
     const batchSize = 1;
-    const steps = this.model.bufferLength - 1;
+    const steps = this.model.bufferLength;
     const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize);
     if (steps % batchSize > 0) {
       batchSizes.push(steps % batchSize);
     }
     batchSizes.forEach(batchSize => {
       this.push(batchSize);
-      this.log();
     });
   }
 }
@@ -3517,6 +3590,7 @@ class SimulationFSM {
         PerformanceLogger$1.stop();
       }
       this._simulation.variables.tick.value = this._stepCount;
+      this._simulation.push({});
       this.fsm = { state: 'paused' };
     } else {
       this.fsm = { state: 'restart' };
@@ -3525,7 +3599,7 @@ class SimulationFSM {
   next() {
     const stateInitial = this.fsm.state;
     if (this.fsm.state === 'active') {
-      if (this._simulation.variables.tick.value >= this._stepCount - 1) {
+      if (this._simulation.variables.tick.value > this._stepCount - 1) {
         if (this._looping) {
           this.fsm.state = 'restart';
         } else {
@@ -3534,7 +3608,7 @@ class SimulationFSM {
       } else {
         for (let s = 0; s < this._stepsPerTick; s++) {
           this._simulation.push({});
-          if (this._simulation.variables.tick.value >= this._stepCount) break
+          if (this._simulation.variables.tick.value > this._stepCount) break
         }
         if (this._mode === 'stepwise') {
           this.fsm.state = 'paused';
@@ -3542,6 +3616,7 @@ class SimulationFSM {
       }
     } else if (this.fsm.state === 'restart') {
       this._simulation.reset({});
+      this._simulation.push({});
       this.fsm.state = this.fsm.state.replace(/restart/, 'active');
     }
     if (stateInitial !== this.fsm.state) {
@@ -3631,11 +3706,15 @@ var primitiveCube = createCube;
 var frag = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n\nuniform vec2 uResolution;\nuniform vec2 uSunPosition;\nvarying vec2 vUv;\nuniform vec3 eye;\nvarying vec3 vPosition;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.;\n\nvec3 getSky(vec2 uv) {\n  float atmosphere = sqrt(1.0-uv.y);\n  vec3 skyColor = vec3(0., 0., 0.);\n\n  float scatter = pow(uSunPosition.y / uResolution.y, 1.0 / 15.0);\n  scatter = 1.0 - clamp(scatter, 0.8, 1.0);\n\n  vec3 scatterColor = mix(vec3(1.0), vec3(1.0, 0.3, 0.0) * 1.5, scatter);\n  return mix(skyColor, vec3(scatterColor), atmosphere / 1.);\n\n}\n\nvec3 getSun(vec2 uv){\n  float sun = 1. - distance(uv, uSunPosition.xy / uResolution.x);\n  sun = clamp(sun, 0.0, 1.0);\n\n  float glow = sun;\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun = pow(sun, 200.0);\n  sun *= 1.0;\n  sun = clamp(sun, 0.0, 1.0);\n\n  glow = pow(glow, 10.0) * 1.0;\n  glow = pow(glow, (uv.y));\n  glow = clamp(glow, 0.0, 1.0);\n\n  sun *= pow(dot(uv.y, uv.y), 1.0 / 1.65);\n\n  glow *= pow(dot(uv.y, uv.y), 1.0 / 2.0);\n\n  sun += glow;\n\n  vec3 sunColor = vec3(1.0, 1., 1.) * sun;\n\n  return vec3(sunColor);\n}\n\nfloat grid(vec2 st, float res){\n  vec2 grid = fract(st*res);\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main () {\n  vec3 sky = getSky(vUv);\n  vec3 sun = getSun(vUv);\n\n//\n//  float resolution = 1000.;\n//  vec2 grid_st = vUv * uResolution * resolution;\n//  vec3 color = vec3(.5);\n//  color += vec3(.5, .5, 0.) * grid(grid_st, 1. / resolution);\n//  color += vec3(0.2) * grid(grid_st, 10. / resolution);\n//\n//  float fogDistance = length(eye - vPosition);\n//\n//  gl_FragColor = vec4(color.rgb, exp(- fogDistance * FogDensity));\n\n    gl_FragColor = vec4(sky + sun, 1.);\n}\n";
 var vert = "precision highp float;\n#define GLSLIFY 1\nvarying vec3 vPosition;\nvarying vec2 vUv;\nattribute vec3 aPosition;\nattribute vec2 uv;\n\nuniform mat4 projection;\nuniform mat4 model;\nuniform mat4 view;\n\nvoid main()\n{\n  vUv = uv;\n  vec4 worldPosition = model * vec4(aPosition, 1.0);\n  vPosition = worldPosition.xyz;\n  gl_Position = projection * view * model * vec4(aPosition, 1.0);\n}\n";
 function drawBackgroundCommand(regl, { stageGrid }) {
-  const stage = primitiveCube(stageGrid.size * 2, stageGrid.size * 2, stageGrid.size * 2);
+  const stage = primitiveCube(stageGrid.size );
   let model = identity_1$1([]);
   return regl({
     primitive: 'triangles',
     elements: stage.cells,
+    cull: {
+      enable: true,
+      face: 'front'
+    },
     attributes: {
       aPosition: stage.positions,
       uv: stage.uvs
@@ -3652,8 +3731,8 @@ function drawBackgroundCommand(regl, { stageGrid }) {
     frag
   })
 }
-var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  #ifdef lighting\n  vDiffuseColor = get_color(aParticle).rgb;\n  #endif\n\n  #ifdef shadow\n  vDiffuseColor = shadowColor;\n  #endif\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  #ifdef lighting\n  scale = 1.;\n  #endif\n\n  #ifdef shadow\n//  scale = 2.;\n  if (aPosition.z < 0.) toBeDiscarded = 1.;\n  #endif\n\n  vec3 scaledPosition = vec3(\n  scale * aPosition.x,\n  aPosition.y,\n  scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n  #ifdef shadow\n  vPosition.y = vPosition.y * 0. + stageGrid_y + .1;\n  #endif\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n  #ifdef lighting\n  vColorCorrection =  -1. * aColorCorrection;\n\n  if (\n  abs(dot(\n  aNormal,\n  vec3(0., 0., 1.)\n  )) == 1.) { vColorCorrection += -.2; }\n\n    #endif\n\n    #ifdef shadow\n  vColorCorrection = 0.;\n  #endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n\n}\n\n";
-var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n\n  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(0.6, 0.6, 0.6, .5);\n  #endif\n  #ifdef lighting\n  gl_FragColor = vec4(lightingColor, opacity);\n  #endif\n\n}\n\n";
+var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aUV;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\nuniform vec4 uLight;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\nuniform vec3 eye;\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\n\nvarying float vColorCorrection;\n\nvec3 hemisphere_light(\n  vec3 normal,\n  vec3 sky,\n  vec3 ground,\n  vec3 lightDirection,\n  mat4 modelMatrix,\n  mat4 viewMatrix,\n  vec3 viewPosition,\n  float shininess,\n  float specularity\n) {\n  vec3 direction = normalize((\n  modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float weight = 0.5 * dot(\n  normal\n  , direction\n  ) + 0.5;\n\n  vec3 diffuse = mix(ground, sky, weight);\n\n  vec3 specDirection = normalize((\n  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float skyWeight = 0.5 * dot(\n  normal\n  , normalize(specDirection + viewPosition)\n  ) + 0.5;\n\n  float gndWeight = 0.5 * dot(\n  normal\n  , normalize(viewPosition - specDirection)\n  ) + 0.5;\n\n  vec3 specular = specularity * diffuse * (\n  max(pow(skyWeight, shininess), 0.0) +\n  max(pow(gndWeight, shininess), 0.0)\n  ) * weight;\n\n  return diffuse + specular;\n}\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  #ifdef shadow\n  scale = 1.;\n  #endif\n\n  vec3 scaledPosition = vec3(\n  scale * aPosition.x,\n  aPosition.y,\n  scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  vUv = aUV;\n\n  #ifdef lighting\n//  vDiffuseColor = get_color(aParticle).rgb;\n\n  vDiffuseColor = get_color(aParticle).rgb;\n  //vDiffuseColor = vec4(max(dot(normalize(uLight.xyz), vNormal), 0.) * get_color(aParticle).rgb, 1);\n\n  vec3 sky = vec3(1.0, 1.0, 0.9);\n  vec3 gnd = vec3(0.1, 0., 0.);\n  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);\n\n  float maxDistance = 4.;\n  vColorCorrection =  -1. * aColorCorrection;\n//  float distance = length(vPosition - eye);\n//  vColorCorrection = mix(.25, .5, maxDistance-distance/maxDistance);\n\n  if (\n  abs(dot(\n  aNormal,\n  vec3(0., 0., 1.)\n  )) == 1.) { vColorCorrection -= .2; }\n\n    #endif\n\n    #ifdef shadow\n  vPosition.y = vPosition.y * 0. + stageGrid_y + .01;\n  vColorCorrection = 0.;\n  vDiffuseColor = shadowColor;\n  if (aPosition.z < 0.) toBeDiscarded = 1.;\n  #endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n}\n\n";
+var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\n//float gridFactor (vec2 parameter, float width) {\n//  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);\n//  vec2 a2 = smoothstep(width - 0.05, width + 0.05, l);\n//  return min(a2.x, a2.y);\n//}\n//\n//float grid(vec2 st, float res, float width) {\n//  vec2 grid =  fract(st*res) / width;\n//  grid /= fwidth(st);\n//  return 1. - (step(res, grid.x) * step(res, grid.y));\n//}\n\nfloat gridFactor (vec2 parameter, float width, float feather) {\n  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);\n  vec2 a2 = smoothstep(width - feather, width + feather, l);\n  return min(a2.x, a2.y);\n}\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n//  vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));\n\n//  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n//  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n//  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(0.6, 0.6, 0.6, .5);\n  #endif\n  #ifdef lighting\n\n  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1.); //vec4(lightingColor, opacity);\n  #endif\n\n}\n\n";
 var fromTranslation_1$1 = fromTranslation$1;
 function fromTranslation$1(out, v) {
   out[0] = 1;
@@ -3698,6 +3777,10 @@ function drawModelCommands(regl, { variables, model, view }) {
         },
         color: [1, 1, 0, 1]
       },
+      cull: {
+        enable: false,
+        face: 'back'
+      },
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -3706,6 +3789,7 @@ function drawModelCommands(regl, { variables, model, view }) {
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
+        aUV: geometry.uvs,
         aParticle: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
@@ -3741,6 +3825,7 @@ function drawModelCommands(regl, { variables, model, view }) {
       vert: [`#define ${mode} 1`, vert$1].join('\n'),
       frag: [`#define ${mode} 1`, frag$1].join('\n'),
       uniforms: {
+        uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
         utPositionBuffer: () => variables.position[0],
@@ -4039,19 +4124,19 @@ const defaultConfig = {
     prerender: false,
     looping: true,
     mode: 'framewise',
-    stepsPerTick: 2,
+    stepsPerTick: 4,
     stepCount: 256
   },
   model: {
-    bufferLength: 256 / 2,
-    tickDurationOverC: 0.2,
+    bufferLength: 256 / 4,
+    tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
       particleCount: 256,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -4087,11 +4172,11 @@ const defaultConfig = {
     fxaa: false,
     rgbGamma: 1,
     isStageVisible: true,
-    isShadowEnabled: false,
-    isLatticeVisible: false,
+    isShadowEnabled: true,
+    isLatticeVisible: true,
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.002,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -4114,7 +4199,7 @@ const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 10,
+      distance: 5,
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
       autorotate: true,
@@ -4122,10 +4207,20 @@ const defaultConfig = {
       zoomAboutCursor: false,
       zoomDecayTime: 1,
       far: 50,
-      near: 0.0001
+      near: 0.0001,
+      minDistance: 1,
+      maxDistance: 10
     }
   },
   dumpData: false
+};
+const DRIF$1 = 'DRIF';
+const QUAD$1 = 'QUAD';
+const SBEN$1 = 'SBEN';
+const LatticeElementTypes$1 = {
+  DRIF: DRIF$1,
+  SBEN: SBEN$1,
+  QUAD: QUAD$1
 };
 const storyDipole = {
   name: 'story-dipole',
@@ -4133,43 +4228,36 @@ const storyDipole = {
     camera: {
       center: [0, 0.1, 0],
       theta: 2 * Math.PI / (360 / 90),
-      phi: 2 * Math.PI / (360 / 15),
+      phi: 2 * Math.PI / (360 / 5),
       distance: 5
     }
   },
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE',
-      direction: [0, 0.15, -1],
+      bunchShape: 'DISC',
+      direction: [0, 0.3, -1],
       position: [3.2, -1.5, 0],
       directionJitter: [0.05, 0.0, 0.05],
       positionJitter: [0.5, 0.5, 0.1],
-      gamma: 900
+      gamma: 2
     },
     interactions: {
-      magneticField: [0, 0.5, 0],
+      magneticField: [0, 0, 0],
       particleInteraction: false
     },
     lattice: {
       elements: {
-        l2: {
-          type: 'DRIF',
-          l: 0
-        },
-        bm: {
-          type: 'SBEN',
-          angle: 0.78539816,
-          e1: 0.39269908,
-          e2: 0.39269908,
-          l: 10,
-          k1: -0.5
+        l0: {
+          type: LatticeElementTypes$1.SBEN,
+          l: 20,
+          strength: 0.002
         }
       },
-      beamline: [],
+      beamline: ['l0'],
       origin: {
         phi: 0,
-        position: [-5, 1, 0]
+        position: [0, 0, -10]
       }
     }
   }
@@ -4178,49 +4266,30 @@ const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [-2, 0, 0],
-      theta: Math.PI / 4,
+      center: [0, 0, -1],
+      theta: Math.PI / 4 * 1,
       phi: 0,
-      distance: 5
+      distance: 2
     }
   },
   model: {
     emitter: {
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON PROTON PROTON   PHOTON PHOTON PHOTON',
+      particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
       position: [0, 1, -10],
-      directionJitter: [0.01, 0.01, 0],
+      directionJitter: [0.2, 0.2, 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 10
+      gamma: 1.3
     },
     interactions: {
-      electricField: [0, 0, 0.001],
+      electricField: [0, 0, -0.00000000001],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
     },
     lattice: {
-      elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
-        q1: {
-          type: 'QUAD',
-          k1: 0,
-          l: 3
-        },
-        q2: {
-          type: 'QUAD',
-          k1: -0,
-          l: 3
-        },
-        l2: {
-          type: 'DRIF',
-          l: 3
-        }
-      },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      elements: {},
+      beamline: [],
       origin: {
         phi: 0,
         position: [0, 1, -6]
@@ -4232,47 +4301,44 @@ const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [0, 1, 0],
-      theta: 2 * Math.PI / (360 / 45),
-      phi: 2 * Math.PI / (360 / 5),
-      distance: 6
+      center: [2, 0, 0],
+      theta: 2 * Math.PI / (360 / 85),
+      phi: 2 * Math.PI / (360 / 1),
+      distance: 8
     }
   },
   model: {
     emitter: {
+      particleType: 'PROTON ',
       bunchShape: 'SQUARE_YZ',
-      particleType: 'ELECTRON ELECTRON ELECTRON PROTON ELECTRON ELECTRON ELECTRON ELECTRON PHOTON',
-      position: [-5, 1, 0],
       direction: [1, 0, 0],
-      directionJitter: [0, 0.1, 0.1],
-      positionJitter: [0, 0.1, 0.1],
-      gamma: 1000
+      position: [-10, 0, 0],
+      particleSeparation: 0.1,
+      directionJitter: [0.0, 0.0, 0],
+      positionJitter: [0.1, 0.1, 0],
+      gamma: 7
     },
     lattice: {
       elements: {
-        l1: {
-          type: 'DRIF',
-          l: 3
-        },
         q1: {
-          type: 'QUAD',
-          k1: -0.05,
-          l: 3
+          type: LatticeElementTypes$1.QUAD,
+          strength: -.5,
+          l: 5
         },
         q2: {
-          type: 'QUAD',
-          k1: 0.15,
-          l: 3
+          type: LatticeElementTypes$1.QUAD,
+          strength: .5,
+          l: 5
         },
-        l2: {
-          type: 'DRIF',
-          l: 3
+        l1: {
+          type: LatticeElementTypes$1.DRIF,
+          l: 5
         }
       },
-      beamline: ['l1', 'q1', 'q2', 'l2'],
+      beamline: ['l1', 'q1', 'q2', 'l1'],
       origin: {
         phi: -Math.PI / 2,
-        position: [-10, 1, 0]
+        position: [-10, 0, 0]
       }
     }
   }
@@ -4321,9 +4387,9 @@ const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
       distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -4340,7 +4406,7 @@ const freeElectron = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 10
+    stepCount: 2
   },
   model: {
     bufferLength: 11,
@@ -4350,15 +4416,66 @@ const freeElectron = {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 2
+      gamma: 1
     },
     interactions: {
-      electricField: [0, 0, 1],
+      electricField: [0, 0, 0],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
+    }
+  }
+};
+var gyrotest_1_electron = {
+  name: 'gyrotest-1-electron',
+  view: {
+    camera: {
+      center: [0.5, -1, 0],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 1,
+      fovY: Math.PI / 3,
+      dTheta: 0.001,
+      autorotate: false,
+      rotateAboutCenter: true,
+      zoomAboutCursor: false,
+      zoomDecayTime: 1,
+      far: 50,
+      near: 0.0002
+    }
+  },
+  runner: {
+    stepsPerTick: 2,
+    stepCount: 37
+  },
+  model: {
+    bufferLength: 37,
+    tickDurationOverC: 5.94985880215349239057744464763e-2,
+    emitter: {
+      particleCount: 1,
+      particleType: 'ELECTRON',
+      bunchShape: 'SQUARE',
+      direction: [0, 0, 1],
+      position: [0, -1, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0, 0],
+      gamma: 200
+    },
+    lattice: {
+      elements: {
+        l0: {
+          type: LatticeElementTypes$1.SBEN,
+          l: 20,
+          strength: .01
+        }
+      },
+      beamline: ['l0'],
+      origin: {
+        phi: 0,
+        position: [0, 0, -10]
+      }
     }
   }
 };
@@ -4366,10 +4483,10 @@ const freePhoton = {
   name: 'free-photon',
   view: {
     camera: {
-      center: [0, -0.5, 0],
-      theta: Math.PI / 2,
-      phi: Math.PI / 4,
-      distance: 1,
+      center: [0, -1, 0.5],
+      theta: 2 * Math.PI / (360 / 45),
+      phi: 2 * Math.PI / (360 / 15),
+      distance: 2,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -4382,10 +4499,10 @@ const freePhoton = {
   },
   runner: {
     prerender: true,
-    looping: true,
+    looping: false,
     mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 10
+    stepsPerTick: 2,
+    stepCount: 5
   },
   model: {
     bufferLength: 11,
@@ -4395,10 +4512,10 @@ const freePhoton = {
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 10
+      gamma: 0
     },
     interactions: {
       electricField: [0, 0, 0.01],
@@ -4411,10 +4528,10 @@ const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
-      distance: 2,
+      center: [0, 0, 0.5],
+      theta: Math.PI / 4,
+      phi: Math.PI / 8,
+      distance: 1.5,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -4430,23 +4547,23 @@ const freePhotons = {
     looping: true,
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 8
+    stepCount: 11
   },
   model: {
-    bufferLength: 8,
+    bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 2,
-      particleType: 'PHOTON ELECTRON PROTON',
-      bunchShape: 'SQUARE',
+      particleCount: 64,
+      particleType: 'PHOTON',
+      bunchShape: 'DISC',
       direction: [0, 0, 1],
-      position: [0, -0.5, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1.1
+      gamma: 10
     },
     interactions: {
-      electricField: [0, 0, 0.091],
+      electricField: [0, 0, 0],
       particleInteraction: false,
       magneticField: [0, 0.0, 0]
     }
@@ -4459,7 +4576,8 @@ const presets = {
   [freeElectron.name]: freeElectron,
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
-  [random$1.name]: random$1
+  [random$1.name]: random$1,
+  [gyrotest_1_electron.name]: gyrotest_1_electron
 };
 const config = presetName => {
   return nanomerge(defaultConfig, presets[presetName]) || defaultConfig;
@@ -11797,7 +11915,74 @@ function canWriteToFBOOfType(regl, type = 'float') {
   }
 }
 
-const log$1 = new Debug('pathicles:log');
+function log$1(msg) {
+  console.log(msg);
+}
+function getExt(gl, name, msg) {
+  var ext = gl.getExtension(name);
+  log$1((ext ? 'can ' : 'can **NOT** ') + msg);
+  return ext
+}
+function checkSupport() {
+  try {
+    const canvas = document.createElement('canvas');
+    if (
+      !!window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    ) {
+      const gl =
+        canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      console.log(gl);
+      var testFloat = getExt(
+        gl,
+        'OES_texture_float',
+        'make floating point textures'
+      );
+      getExt(
+        gl,
+        'OES_texture_float_linear',
+        'linear filter floating point textures'
+      );
+      var testHalfFloat = getExt(
+        gl,
+        'OES_texture_half_float',
+        'make half floating point textures'
+      );
+      getExt(
+        gl,
+        'OES_texture_half_float_linear',
+        'linear filter half floating point textures'
+      );
+      const precision = {
+        VERTEX_SHADER: {
+          LOW_FLOAT: gl.getShaderPrecisionFormat(
+            gl.VERTEX_SHADER,
+            gl.LOW_FLOAT
+          ),
+          MEDIUM_FLOAT: gl.getShaderPrecisionFormat(
+            gl.VERTEX_SHADER,
+            gl.MEDIUM_FLOAT
+          ),
+          HIGH_FLOAT: gl.getShaderPrecisionFormat(
+            gl.VERTEX_SHADER,
+            gl.HIGH_FLOAT
+          ),
+          LOW_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT),
+          MEDIUM_INT: gl.getShaderPrecisionFormat(
+            gl.VERTEX_SHADER,
+            gl.MEDIUM_INT
+          ),
+          HIGH_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT)
+        }
+      };
+      console.log(precision);
+    }
+  } catch (e) {
+    throw e
+  }
+}
+
+const log$2 = new Debug('pathicles:log');
 class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
     keyControl(this);
@@ -11817,7 +12002,10 @@ class ReglSimulatorInstance {
         try {
           this.regl = regl;
           PerformanceLogger$1.start('canWriteToFBOOfType');
-          log$1('canWriteToFBOOfType: ' + canWriteToFBOOfType(regl, 'float'));
+          log$2('canWriteToFBOOfType: ' + canWriteToFBOOfType(regl, 'float'));
+          PerformanceLogger$1.stop();
+          PerformanceLogger$1.start('checkSupport');
+          checkSupport();
           PerformanceLogger$1.stop();
           window.pathicles = this;
           PerformanceLogger$1.start('init');
@@ -11826,7 +12014,7 @@ class ReglSimulatorInstance {
           this.run(regl);
         } catch (e) {
           console.error(e);
-          log$1(e);
+          log$2(e);
         }
       },
       extensions: simulate
@@ -11880,7 +12068,7 @@ class ReglSimulatorInstance {
     PerformanceLogger$1.stop();
   }
   run(regl) {
-    log$1('run');
+    log$2('run');
     if (this.simulate) this.pathiclesRunner.start();
     const mainloop = () => {
       return regl.frame(() => {

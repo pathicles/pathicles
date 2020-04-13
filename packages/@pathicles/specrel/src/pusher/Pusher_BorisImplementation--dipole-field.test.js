@@ -1,9 +1,12 @@
-const epsilon = 0.00001
-import { presets } from '../../../config/dist/pathicles-config.esm'
+import { config } from '@pathicles/config'
 
 import { performance } from 'perf_hooks'
 
-import { bigNumberMath, format6, speedOfLight } from '../Specrel'
+import {
+  bigNumberMath,
+  format6,
+  speedOfLight__ms_1
+} from '../Specrel'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'
@@ -34,16 +37,13 @@ describe('Boris Pusher for system of 1 electron in magnetic dipole field ', () =
 })
 
 function simulate(presetName, overwrite = {}) {
-  const load = presetName => presets.find(({ name }) => name === presetName)
-  const configuration = Object.assign(load(presetName), overwrite)
+  const configuration = Object.assign(config(presetName), overwrite)
   const particleSystem = ParticleSystem.load(configuration)
 
-  const dt__s = bigNumberMath
-    .divide(
-      bigNumberMath.bignumber(configuration.tickDuration__c_1),
-      speedOfLight
-    )
-    .toNumeric()
+  const dt__s = bigNumberMath.divide(
+    bigNumberMath.bignumber(configuration.model.tickDurationOverC),
+    speedOfLight__ms_1
+  )
 
   const borisPusher = new Pusher_BorisImplementation({
     system: particleSystem,

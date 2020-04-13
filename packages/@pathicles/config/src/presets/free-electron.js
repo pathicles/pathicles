@@ -2,9 +2,9 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
+      center: [0, -1, 0.5],
+      theta: (2 * Math.PI) / (360 / 45),
+      phi: (2 * Math.PI) / (360 / 15),
       distance: 2,
 
       fovY: Math.PI / 3,
@@ -26,7 +26,7 @@ export const freeElectron = {
 
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 10
+    stepCount: 2
   },
 
   model: {
@@ -37,16 +37,16 @@ export const freeElectron = {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 2
+      gamma: 1
     },
 
     interactions: {
-      electricField: [0, 0, 1],
+      electricField: [0, 0, 0],
       particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
     }
   }
 }

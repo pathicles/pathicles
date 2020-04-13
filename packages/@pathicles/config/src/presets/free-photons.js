@@ -2,10 +2,10 @@ export const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
-      distance: 2,
+      center: [0, 0, 0.5],
+      theta: Math.PI / 4,
+      phi: Math.PI / 8,
+      distance: 1.5,
 
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -26,25 +26,25 @@ export const freePhotons = {
 
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 8
+    stepCount: 11
   },
 
   model: {
-    bufferLength: 8,
+    bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 2,
-      particleType: 'PHOTON ELECTRON PROTON',
-      bunchShape: 'SQUARE',
+      particleCount: 64,
+      particleType: 'PHOTON',
+      bunchShape: 'DISC',
       direction: [0, 0, 1],
-      position: [0, -0.5, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1.1
+      gamma: 10
     },
 
     interactions: {
-      electricField: [0, 0, 0.091],
+      electricField: [0, 0, 0],
       particleInteraction: false,
       magneticField: [0, 0.0, 0]
     }

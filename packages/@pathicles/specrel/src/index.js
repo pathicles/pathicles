@@ -2,14 +2,12 @@ import { create, all } from 'mathjs'
 
 // create a mathjs instance with configuration
 let bigNumberConfig = {
-  number: 'BigNumber',
-  matrix: 'Array'
+  number: 'BigNumber'
 }
 export const bigNumberMath = create(all, bigNumberConfig)
 
 let numberConfig = {
-  number: 'BigNumber',
-  matrix: 'Array'
+  number: 'BigNumber'
 }
 export const numberMath = create(all, numberConfig)
 

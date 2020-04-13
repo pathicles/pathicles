@@ -9,7 +9,10 @@ export default function(options, regl) {
     ...options,
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   })
-  initializeCameraControls(aCamera, regl._gl.canvas)
+  initializeCameraControls(aCamera, regl._gl.canvas, {
+    minDistance: options.minDistance || 1,
+    maxDistance: options.maxDistance || 20
+  })
 
   aCamera.toConfig = () => {
     return {
@@ -31,7 +34,11 @@ export default function(options, regl) {
   return [aCamera, setCameraUniforms]
 }
 
-function initializeCameraControls(camera, canvas) {
+function initializeCameraControls(
+  camera,
+  canvas,
+  { minDistance, maxDistance }
+) {
   const arrow = { left: 37, up: 38, right: 39, down: 40 }
   const delta = -0.01
   window.addEventListener('keydown', function(event) {
@@ -56,16 +63,14 @@ function initializeCameraControls(camera, canvas) {
 
   interactionEvents(canvas)
     .on('wheel', function(ev) {
-      if (ev.mods.shift) {
-        // if (!ev.active || ev.buttons !== 1) return
-        camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
-        // console.log(camera.params.distance)
-        // console.log(camera.params.distance)
-        // if (camera.params.distance > 10) camera.params.distance = 10
-        // if (camera.params.distance < 1) camera.params.distance = 1
+      if (!ev.active) return
+      camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
+      camera.params.distance = Math.max(
+        minDistance,
+        Math.min(maxDistance, camera.params.distance)
+      )
 
-        // ev.originalEvent.preventDefault()
-      }
+      // ev.originalEvent.preventDefault()
     })
     .on('mousemove', function(ev) {
       if (!ev.active || ev.buttons !== 1) return
@@ -93,10 +98,13 @@ function initializeCameraControls(camera, canvas) {
       )
     })
   // .on("pinchmove", function(ev) {
+  //
   //   if (!ev.active) return
-  //   camera.zoom(ev.x, ev.y, 1 - ev.zoomx)
-  //   camera.pan(ev.dx, ev.dy)
-  // })
-  // .on("touchstart", ev => ev.originalEvent.preventDefault())
-  // .on("pinchstart", ev => ev.originalEvent.preventDefault())
+  //   camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
+  //   //   camera.zoom(ev.x, ev.y, 1 - ev.zoomx)
+  //   //   camera.pan(ev.dx, ev.dy)
+  //   // })
+  //   // .on("touchstart", ev => ev.originalEvent.preventDefault())
+  //   // .on("pinchstart", ev => ev.originalEvent.preventDefault())
+  // }
 }

@@ -29,6 +29,8 @@ export class Simulation {
       configuration.model.emitter
     ))
 
+    console.log({ initialData: this.initialData })
+
     const lattice = new Lattice(this.configuration.model.lattice)
     // if (configuration.simulate) {
     this.variables = {
@@ -208,21 +210,11 @@ export class Simulation {
     loadBuffers(this.variables.position, this.initialData.fourPositions)
     loadBuffers(this.variables.velocity, this.initialData.fourVelocities)
     this.variables.tick.value = 0
-
-    // this.variables.position[0].color[0].subimage(this.initialData.fourPositions)
-    // this.variables.velocity[0].color[0].subimage(
-    //   this.initialData.fourVelocities
-    // )
-    // this.variables.position[1].color[0].subimage(this.initialData.fourPositions)
-    // this.variables.velocity[1].color[0].subimage(
-    //   this.initialData.fourVelocities
-    // )
-    // this.variables.tick.value = 0
   }
 
   prerender() {
     const batchSize = 1
-    const steps = this.model.bufferLength - 1
+    const steps = this.model.bufferLength
     const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize)
     if (steps % batchSize > 0) {
       batchSizes.push(steps % batchSize)
@@ -230,7 +222,11 @@ export class Simulation {
     // const t0 = performance.now()
     batchSizes.forEach(batchSize => {
       this.push(batchSize)
-      this.log()
+      // window.prerendered =  readData(this._regl, {
+      //   variables: this.variables,
+      //   model: this.model
+      // })
+      //this.log()
     })
     // const t1 = performance.now()
     // console.log('duration: ', t1 - t0)

@@ -1,8 +1,7 @@
-const epsilon = 0.00001
+import { config } from '@pathicles/config'
+const { performance } = require('perf_hooks')
 
-const { PerformanceObserver, performance } = require('perf_hooks')
-
-import Specrel, { bigNumberMath, format6 } from '../Specrel'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from '../Specrel'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'
@@ -114,18 +113,19 @@ describe('Boris Pusher for system of 1 electron of gamma 1000000000, no field ',
 })
 
 function simulate(presetName) {
-  const load = presetName =>
-    require('../../../config/presets').default.find(
-      ({ name }) => name === presetName
-    )
-  const configuration = load(presetName)
+  // const load = presetName =>
+  //   presets.find(
+  //     ({ name }) => name === presetName
+  //   )
+  const configuration = config(presetName)
   const particleSystem = ParticleSystem.load(configuration)
 
-  console.log(prettyjson.render(particleSystem))
+  console.log(prettyjson.render(configuration))
 
-  const dt__s = bigNumberMath
-    .divide(configuration.tickDuration__c_1, Specrel.speedOfLight)
-    .toNumeric()
+  const dt__s = bigNumberMath.divide(
+    bigNumberMath.bignumber(configuration.model.tickDurationOverC),
+    speedOfLight__ms_1
+  )
 
   const borisPusher = new Pusher_BorisImplementation({
     system: particleSystem,

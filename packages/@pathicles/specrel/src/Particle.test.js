@@ -1,4 +1,5 @@
-import Specrel, { bigNumberMath, format6 } from './Specrel'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from '@pathicles/specrel'
+
 import Particle from './Particle'
 import ParticleTypes from './ParticleTypes'
 // todo: refactor to mathjs
@@ -18,17 +19,82 @@ describe('Particle constructor must be called with arguemtn', () => {
   )
 })
 
+describe('electron at rest', () => {
+  const electron = new Particle.create(ParticleTypes.ELECTRON)
+  it('mass__eVc_2 is 510998.94', () => {
+    expect(electron.mass__eVc_2.toNumber()).toEqual(510998.94)
+  })
+  it('charge__C is 510998.94', () => {
+    expect(electron.charge__C.toNumber()).toEqual(-1.602176634e-19)
+  })
+  it('chargeMassRatio__Ckg_1 is 510998.94', () => {
+    expect(electron.chargeMassRatio__Ckg_1.toNumber()).toEqual(-175882001076)
+  })
+  it('position is [0,0,0]', () => {
+    expect(numberify(electron.position)).toEqual([0, 0, 0])
+  })
+  it('momentum is [0,0,0]', () => {
+    expect(numberify(electron.momentum)).toEqual([0, 0, 0])
+  })
+  it('energy__eV is 1', () => {
+    expect(electron.energy__eV.toNumber()).toEqual(510998.94)
+  })
+  it('gamma is 1', () => {
+    expect(electron.gamma.toNumber()).toEqual(1)
+  })
+  it('velocity__c is [0,0,0]', () => {
+    expect(numberify(electron.velocity__c)).toEqual([0, 0, 0])
+  })
+  it('velocity__ms_1 is [0,0,0]', () => {
+    expect(numberify(electron.velocity__ms_1)).toEqual([0, 0, 0])
+  })
+  it('beta is [0,0,0]', () => {
+    expect(electron.beta.toNumber()).toEqual(0)
+  })
+})
+
+describe('electron with gamma = 2', () => {
+  const electron = new Particle.create(ParticleTypes.ELECTRON)
+
+  electron.setMomentumFromGamma(2)
+
+  it('position is [0,0,0]', () => {
+    expect(numberify(electron.position)).toEqual([0, 0, 0])
+  })
+  it('momentum is [0, 0, 885076.1266938403]', () => {
+    expect(numberify(electron.momentum)).toEqual([0, 0, 885076.1266938403])
+  })
+  it('momentumNormalized is [0,0,1]', () => {
+    expect(numberify(electron.momentumNormalized)).toEqual([0, 0, 1])
+  })
+  it('gamma is 2', () => {
+    expect(electron.gamma.toNumber()).toEqual(2)
+  })
+
+  it('velocity__c is [0,0,0]', () => {
+    expect(numberify(electron.velocity__c)).toEqual([0, 0, 0.8660254037844386])
+  })
+  it('beta is [0,0,0]', () => {
+    expect(electron.beta.toNumber()).toEqual(0.8660254037844386)
+  })
+})
+
+
+
+
+
+
 describe('calculateGammaForVelocity', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
 
   const gamma1 = electron.calculateGammaForVelocity(
-    bigNumberMath.eval('[0 c, 0c, 0.8660254038c]')
+    bigNumberMath.evaluate('[0c, 0c, 0.8660254038c]')
   )
   const gamma2 = electron.calculateGammaForBeta(
     bigNumberMath.bignumber(0.8660254038)
   )
   const gamma3 = electron.calculateGammaForU(
-    bigNumberMath.eval('[0 c, 0c, 1.7320508076c]')
+    bigNumberMath.evaluate('[0 c, 0c, 1.7320508076c]')
   )
 
   expect(format6(gamma2)).toEqual('2')
@@ -58,14 +124,14 @@ test('Particle factory: PHOTON', () => {
   expect(photon.beta.toNumber()).toEqual(1)
 
   photon.setMomentumFromGamma(1, [0, 0, 1])
-  expect(numberify(photon.momentum)).toEqual([0, 0, 1])
+  expect(format6(photon.momentum)).toEqual([0, 0, 1])
 
   expect(() => photon.setMomentumFromKineticEnergy(1, [0, 0, 1])).toThrow(
     'method cannot be used for massless particles.'
   )
 
   const projectedPosition__m = photon.projectedPosition__m(
-    Specrel.speedOfLight__ms_1.pow(-1)
+    speedOfLight__ms_1.pow(-1)
   )
 
   expect(format6(projectedPosition__m)).toEqual('[0, 0, 1]')
@@ -75,7 +141,7 @@ test('Particle factory: ELECTRON', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
 
   expect(format6(electron.mass)).toEqual('5.10999e+5 eV / c^2')
-  expect(format6(electron.charge.to('qe'))).toEqual('-1e+0 qe')
+  expect(format6(electron.charge.to('qe'))).toEqual('-1 qe')
   expect(format6(electron.charge__C)).toEqual('-1.60218e-19')
   expect(format6(electron.position)).toEqual('[0 m, 0 m, 0 m]')
   expect(format6(electron.momentum)).toEqual('[0 eV / c, 0 eV / c, 0 eV / c]')
@@ -219,7 +285,7 @@ describe('Particle.clone', () => {
   it('creates a new particle from the given one', () => {
     const proton1 = new Particle.create(ParticleTypes.PROTON)
     expect(proton1.particleType).toEqual(ParticleTypes.PROTON)
-    proton1.position = bigNumberMath.eval('[1, 2, 3]')
+    proton1.position = bigNumberMath.evaluate('[1, 2, 3]')
 
     const proton2 = proton1.clone()
 
@@ -228,7 +294,7 @@ describe('Particle.clone', () => {
     expect(numberify(proton1.position)).toEqual([1, 2, 3])
     expect(numberify(proton2.position)).toEqual([1, 2, 3])
 
-    proton1.position = bigNumberMath.eval('[4, 5, 6]')
+    proton1.position = bigNumberMath.evaluate('[4, 5, 6]')
     expect(numberify(proton1.position)).toEqual([4, 5, 6])
     expect(numberify(proton2.position)).toEqual([1, 2, 3])
   })

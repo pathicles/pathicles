@@ -22,6 +22,7 @@ class PerformanceLogger {
     if (this.active) {
       this.current.t1 = performance.now()
       this.current.dt = this.current.t1 - this.current.t0
+
       this.entries.push(this.current)
     }
   }

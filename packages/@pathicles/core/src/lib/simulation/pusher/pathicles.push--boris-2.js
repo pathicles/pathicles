@@ -113,8 +113,8 @@ export default function(regl, { variables, model }) {
             B += vec3(0., ble.strength, 0.);
           } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
           B += (ble.strength > 0.) ?
-              ble.strength * vec3(0, position.z, position.y)
-              : abs(ble.strength) * vec3(0, -position.z, -(position.y));
+              ble.strength * vec3(0, position.z, position.y- 1.)
+              : abs(ble.strength) * vec3(0, -position.z, -(position.y-1.));
               }
 
            return B;
@@ -137,12 +137,6 @@ export default function(regl, { variables, model }) {
             ? vec4(previousPosition + 2. * previousMomentum.xyz  * halfDeltaTOverC, nextTime)
             : vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime);
 
-          //
-          // float gamma =  sqrt(1. + dot(currentVelocity,currentVelocity));
-          //
-          // return vec4(
-          //   previousPosition + previousVelocity/gamma * halfDeltaTOverC + currentVelocity * halfDeltaTOverC / gamma,
-          //   previousTime + 2. * halfDeltaTOverC);
         }
 
 
@@ -150,32 +144,32 @@ export default function(regl, { variables, model }) {
 
           ParticleData particleData = getParticleData(p);
 
-               if (particleData.particleType < .1) { return get_velocity(p, previousBufferHead);}
-
+          if (particleData.particleType < .1) { return get_velocity(p, previousBufferHead);}
 
           vec4 previous4Position = get_position(p, previousBufferHead);
-
           vec4 previous4Velocity = get_velocity(p, previousBufferHead);
-          vec3 previousVelocity = previous4Velocity.xyz;
-          float previousGamma = previous4Velocity.w;
+          vec3 momentum = previous4Velocity.xyz;
+          vec3 previousVelocity = momentum;
+
+          float previousGamma =  sqrt(1. + dot(previousVelocity,previousVelocity));
 
 
-          vec3 intermediatePosition = previous4Position.xyz + previousVelocity * halfDeltaTOverC;
+          vec3 intermediatePosition = previous4Position.xyz + previousVelocity * halfDeltaTOverC / previousGamma;
 
           vec3 E = get_efield(intermediatePosition);
           vec3 B = get_bfield(intermediatePosition);
-          // vec3 G = vec3(0., -gravityConstant, 0.);
+          // // vec3 G = vec3(0., -gravityConstant, 0.);
 
 
-// float gamma = 1. / (1. -  dot(previousVelocity,previousVelocity));
-vec3 momentum = previousVelocity;
+float particleType = particleData.particleType;
 float charge = particleData.charge;
 float mass = particleData.mass;
 float chargeMassRatio = particleData.chargeMassRatio;
 
-momentum += 0.5 * halfDeltaTOverC * chargeMassRatio * E;
 
-float gamma = sqrt(1.0 + dot(momentum, momentum));
+momentum +=  halfDeltaTOverC * chargeMassRatio * E;
+
+float gamma =  sqrt(1. + dot(momentum,momentum));
 
 vec3 t_ =  halfDeltaTOverC * charge  * c / (gamma * mass) * B ;
 vec3 w_ = momentum + cross(momentum, t_);
@@ -183,66 +177,26 @@ vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
 momentum += cross(w_, s_);
 momentum +=  halfDeltaTOverC * chargeMassRatio * E;
 
+          // if (boundingBoxSize > 0.) {
+          //   if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
+          //     momentum.x *= -1.0;
+          //   }
+          //   if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
+          //     momentum.y *= -1.0;
+          //   }
+          //   if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
+          //     momentum.z *= -1.0;
+          //   }
+          // }
 
 
-vec3 t = chargeMassRatio * B * halfDeltaTOverC;
-float t_mag2 = dot(t, t);
-vec3 s =  2. * t / (1. + t_mag2);
-
-
-vec3 v_minus = previousVelocity + chargeMassRatio *  E * halfDeltaTOverC;
-vec3 v_minus_cross_t = cross(v_minus, t);
-
-vec3 v_prime = v_minus + v_minus_cross_t;
-
-
-vec3 v_prime_cross_s = cross(v_prime, s);
-vec3 v_plus = v_minus + v_prime_cross_s;
-
-vec3 nextVelocity = v_plus + chargeMassRatio *  E * halfDeltaTOverC;
-
-
-
-          // vec3 dv_el_unit_c_1 = particleData.chargeMassRatio / c * E * halfDeltaTOverC;
-          // vec3 v_el1_unit_c_1 = previousVelocity + dv_el_unit_c_1;
-
-          // // vec3 v_minus = particleData.chargeMassRatio / c * E * halfDeltaTOverC;
-
-          // float gamma_el1_unit_c_1 = 1.0 / (sqrt(1.0 - dot( v_el1_unit_c_1, v_el1_unit_c_1)));
-          // gamma_el1_unit_c_1 = previousGamma;
-
-
-          // vec3 b_0_unit_c_1 =  particleData.chargeMassRatio / gamma_el1_unit_c_1 *  halfDeltaTOverC / c * B;
-          // float b_0_unit_c_1_square = dot(b_0_unit_c_1, b_0_unit_c_1);
-
-          // vec3 v_mag_unit_c_1 = v_el1_unit_c_1 + (2.0 / 1.0 + b_0_unit_c_1_square) * cross(  v_el1_unit_c_1 + cross(  v_el1_unit_c_1, b_0_unit_c_1), b_0_unit_c_1) ;
-
-          // // vec3 nextVelocity = v_mag_unit_c_1 + dv_el_unit_c_1;
-          // //vec3 nextVelocity = v_mag_unit_c_1 + dv_el_unit_c_1;
-
-          // vec3 nextVelocity = previousVelocity + 2. * particleData.chargeMassRatio / c * E * halfDeltaTOverC;
-
-
-          if (boundingBoxSize > 0.) {
-            if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
-              momentum.x *= -1.0;
-            }
-            if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
-              momentum.y *= -1.0;
-            }
-            if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
-              momentum.z *= -1.0;
-            }
-          }
-
-          return vec4( momentum, previous4Velocity.w );
+          return vec4( momentum, previousGamma);
 
         }
 
         void main () {
 
           initLatticeData();
-          //initParticleData();
           float p, b;
 
           p = floor(gl_FragCoord.x);

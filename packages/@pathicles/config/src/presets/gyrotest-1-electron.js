@@ -1,11 +1,13 @@
-export const freePhoton = {
-  name: 'free-photon',
+import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
+
+export default {
+  name: 'gyrotest-1-electron',
   view: {
     camera: {
-      center: [0, -1, 0.5],
+      center: [0.5, -1, 0],
       theta: (2 * Math.PI) / (360 / 45),
       phi: (2 * Math.PI) / (360 / 15),
-      distance: 2,
+      distance: 1,
 
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -16,37 +18,42 @@ export const freePhoton = {
       zoomDecayTime: 1,
       // panDecayTime: 0,
       far: 50,
-      near: 0.0001
+      near: 0.0002
     }
   },
 
   runner: {
-    prerender: true,
-    looping: false,
-
-    mode: 'framewise',
     stepsPerTick: 2,
-    stepCount: 5
+    stepCount: 37
   },
 
   model: {
-    bufferLength: 11,
-    tickDurationOverC: 0.1,
+    bufferLength: 37,
+    tickDurationOverC: 5.94985880215349239057744464763e-2,
     emitter: {
       particleCount: 1,
-      particleType: 'PHOTON',
+      particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
       position: [0, -1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 0
+      gamma: 200
     },
 
-    interactions: {
-      electricField: [0, 0, 0.01],
-      particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+    lattice: {
+      elements: {
+        l0: {
+          type: LatticeElementTypes.SBEN,
+          l: 20,
+          strength: .01
+        }
+      },
+      beamline: ['l0'],
+      origin: {
+        phi: 0,
+        position: [0, 0, -10]
+      }
     }
   }
 }
