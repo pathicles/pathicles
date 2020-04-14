@@ -33,7 +33,7 @@ describe('IEEE754Buffer.pack', () => {
   let packer = new IEEE754Buffer(8, 23)
   let buffer = new Int16Array(4)
   packer.pack(buffer, 3.141592741, 0)
-  console.log(buffer)
+  // console.log(buffer)
 
   fixtures.forEach(({ float64, float16 }) => {
     it(`hfround(${float64}) =>  ${float16}`, () => {

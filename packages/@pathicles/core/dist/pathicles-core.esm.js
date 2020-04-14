@@ -2708,7 +2708,6 @@ function createParticleCollection({
       ]
     })
     .reduce((acc, val) => acc.concat(val), []);
-  console.log({ gamma, fourMomenta });
   return {
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
@@ -2880,7 +2879,7 @@ function pushBoris(regl, { variables, model }) {
       offset: 0,
       count: 3,
       attributes: {
-        aPosition: [0, -4, 0, 4, 4, 0, -4, 4, 0]
+        aXY: [-4, -4, 4, -4, 0, 4]
       },
       uniforms: {
         boundingBoxSize: model.boundingBoxSize,
@@ -2903,9 +2902,9 @@ function pushBoris(regl, { variables, model }) {
       },
       vert: `
         precision highp float;
-        attribute vec3 aPosition;
+        attribute vec2 aXY;
         void main () {
-          gl_Position = vec4(aPosition, 1.);
+          gl_Position = vec4(aXY, 0, 1);
         }
         `,
       frag: `
@@ -3097,13 +3096,13 @@ function readData(regl, { variables, model }) {
   }
 }
 
-function createBuffers(regl, particleCount, bufferLength) {
+function createBuffers(regl, particleCount, bufferLength, RTTFloatType) {
   return [0, 1].map(() => {
     return regl.framebuffer({
       height: bufferLength,
       width: particleCount,
       format: 'rgba',
-      colorType: 'float',
+      colorType: RTTFloatType,
       depthStencil: false,
       color: regl.texture({
         width: particleCount,
@@ -3111,20 +3110,52 @@ function createBuffers(regl, particleCount, bufferLength) {
         min: 'nearest',
         mag: 'nearest',
         format: 'rgba',
-        type: 'float'
+        type: RTTFloatType
       })
     })
   })
 }
-function loadBuffers(buffers, data) {
+function loadBuffers(buffers, data, RTTFloatType) {
 [0, 1].forEach(b =>
     buffers[b].color[0].subimage({
       width: buffers[b].width,
       height: buffers[b].height,
-      data: data
+      data: RTTFloatType === 'float' ? data : convert_arrayToUInt16Array(data)
     })
   );
   return buffers
+}
+function convert_floatToInt16(val) {
+  var floatView = new Float32Array(1);
+  var int32View = new Int32Array(floatView.buffer);
+  floatView[0] = val;
+  var x = int32View[0];
+  var bits = (x >> 16) & 0x8000;
+  var m = (x >> 12) & 0x07ff;
+  var e = (x >> 23) & 0xff;
+  if (e < 103) {
+    return bits
+  }
+  if (e > 142) {
+    bits |= 0x7c00;
+    bits |= (e == 255 ? 0 : 1) && x & 0x007fffff;
+    return bits
+  }
+  if (e < 113) {
+    m |= 0x0800;
+    bits |= (m >> (114 - e)) + ((m >> (113 - e)) & 1);
+    return bits
+  }
+  bits |= ((e - 112) << 10) | (m >> 1);
+  bits += m & 1;
+  return bits
+}
+function convert_arrayToUInt16Array(arr) {
+  var arr16 = new Uint16Array(arr.length);
+  arr.forEach(function(val, ind) {
+    arr16[ind] = convert_floatToInt16(val);
+  });
+  return arr16
 }
 
 function drawVariableTexture(
@@ -3305,11 +3336,15 @@ class Lattice {
 }
 
 class Simulation {
-  constructor(regl, configuration) {
+  constructor(regl, configuration, support) {
     this._regl = regl;
     this._logStore = [];
     this.configuration = configuration;
     this.configuration.simulate = true;
+    this.RTTFloatType = configuration.simulateHalfFloat
+      ? 'half float'
+      : support.RTTFloatType;
+    console.log(this.RTTFloatType);
     const {
       particleCount,
       bufferLength,
@@ -3320,16 +3355,17 @@ class Simulation {
       configuration.model.bufferLength,
       configuration.model.emitter
     ));
-    const lattice = new Lattice(this.configuration.model.lattice);
     this.variables = {
       initialData: this.initialData,
       position: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength),
-        fourPositions
+        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
+        fourPositions,
+        this.RTTFloatType
       ),
       velocity: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength),
-        fourVelocities
+        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
+        fourVelocities,
+        this.RTTFloatType
       ),
       tick: { value: 0 },
       referencePoint: [0, 0, 0],
@@ -3359,8 +3395,8 @@ class Simulation {
       bufferLength: this.initialData.bufferLength,
       stepCount: this.configuration.runner.stepCount,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
-      lattice: lattice,
       latticeConfig: this.configuration.model.lattice,
+      lattice: new Lattice(this.configuration.model.lattice),
       interactions: {
         gravityConstant: this.configuration.model.interactions.gravityConstant,
         particleInteraction: this.configuration.model.interactions
@@ -3407,8 +3443,16 @@ class Simulation {
       });
   }
   reset() {
-    loadBuffers(this.variables.position, this.initialData.fourPositions);
-    loadBuffers(this.variables.velocity, this.initialData.fourVelocities);
+    loadBuffers(
+      this.variables.position,
+      this.initialData.fourPositions,
+      this.RTTFloatType
+    );
+    loadBuffers(
+      this.variables.velocity,
+      this.initialData.fourVelocities,
+      this.RTTFloatType
+    );
     this.variables.tick.value = 0;
   }
   prerender() {
@@ -3446,6 +3490,14 @@ class PerformanceLogger {
       this.current.dt = this.current.t1 - this.current.t0;
       this.entries.push(this.current);
     }
+  }
+  report() {
+    return this.entries
+      .map(
+        ({ label, dt }) => `
+      ${label.padStart(25, ' ')}: ${dt.toFixed(1)}`
+      )
+      .join('\n')
   }
 }
 var PerformanceLogger$1 = new PerformanceLogger();
@@ -4036,6 +4088,7 @@ const defaultConfig = {
   chargeMassRatio: [0, -1.75882004556243e11, 1.75882004556243e11, 9.57883323113770929296814695637e7],
   usePostProcessing: false,
   pusher: 'boris',
+  simulateHalfFloat: false,
   runner: {
     prerender: true,
     looping: false,
@@ -4051,7 +4104,7 @@ const defaultConfig = {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
-      particleCount: 1024,
+      particleCount: 64,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
@@ -4090,9 +4143,9 @@ const defaultConfig = {
     isStageVisible: true,
     isShadowEnabled: true,
     isLatticeVisible: true,
-    pathicleRelativeGap: 1,
+    pathicleRelativeGap: 2,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.002,
+    pathicleWidth: 0.005,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -4124,7 +4177,7 @@ const defaultConfig = {
       zoomDecayTime: 1,
       far: 50,
       near: 0.0001,
-      minDistance: 1,
+      minDistance: 0.1,
       maxDistance: 10
     }
   },
@@ -4404,7 +4457,7 @@ const freePhoton = {
       center: [0, -1, 0.5],
       theta: 2 * Math.PI / (360 / 45),
       phi: 2 * Math.PI / (360 / 15),
-      distance: 2,
+      distance: 1,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -4420,7 +4473,7 @@ const freePhoton = {
     looping: false,
     mode: 'framewise',
     stepsPerTick: 2,
-    stepCount: 5
+    stepCount: 11
   },
   model: {
     bufferLength: 11,
@@ -11769,138 +11822,122 @@ function keyControl(app) {
   }
 }
 
-function canWriteToFBOOfType(regl, type = 'float') {
-  if (!regl.hasExtension(`oes_texture_${type.replace(' ', '_')}`)) return false
-  try {
-    regl.framebuffer({
-      colorType: type,
-      colorFormat: 'rgba',
-      radius: 1
-    });
-    const uintFBO = regl.framebuffer({
-      colorType: 'uint8',
-      colorFormat: 'rgba',
-      radius: 1
-    });
-    const draw = regl({
-      vert: `
-      precision highp float;
-      attribute vec2 aXY;
-      void main () {
-        gl_Position = vec4(aXY, 0, 1);
-        gl_PointSize = 1.0;
-      }`,
-      frag: `
-      precision highp float;
-      void main () {
-        gl_FragColor = vec4(1, 0, 0, 1);
-      }`,
-      primitive: 'points',
-      count: 1,
-      attributes: {
-        aXY: [0, 0]
-      },
-      depth: { enable: false }
-    });
-    const transfer = regl({
-      vert: `
-      precision highp float;
-      attribute vec2 aXY;
-      void main () {
-        gl_Position = vec4(aXY, 0, 1);
-      }`,
-      frag: `
-      precision highp float;
-      void main () {
-        gl_FragColor = vec4(1, 0, 0, 1);
-      }`,
-      attributes: {
-        aXY: [-4, -4, 4, -4, 0, 4]
-      },
-      count: 3,
-      primitive: 'triangles',
-      depth: { enable: false }
-    });
-    draw();
-    let data;
-    uintFBO.use(() => {
-      transfer();
-      data = regl.read();
-    });
-    return data[0] !== 0 && data[1] === 0 && data[2] === 0 && data[3] !== 0
-  } catch (e) {
-    return false
+function test_canRTT(glContext, internalFormat, pixelType) {
+  var testFbo = glContext.createFramebuffer();
+  glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo);
+  var testTexture = glContext.createTexture();
+  glContext.bindTexture(glContext.TEXTURE_2D, testTexture);
+  glContext.texImage2D(
+    glContext.TEXTURE_2D,
+    0,
+    internalFormat,
+    1,
+    1,
+    0,
+    glContext.RGBA,
+    pixelType,
+    null
+  );
+  glContext.framebufferTexture2D(
+    glContext.FRAMEBUFFER,
+    glContext.COLOR_ATTACHMENT0,
+    glContext.TEXTURE_2D,
+    testTexture,
+    0
+  );
+  var fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER);
+  return fbStatus === glContext.FRAMEBUFFER_COMPLETE
+}
+function getRTTFloatType(glContext) {
+  if (
+    glContext.getExtension('OES_texture_float') &&
+    test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
+  ) {
+    return 'float'
   }
-}
-
-function log$1(msg) {
-  console.log(msg);
-}
-function getExt(gl, name, msg) {
-  var ext = gl.getExtension(name);
-  log$1((ext ? 'can ' : 'can **NOT** ') + msg);
-  return ext
+  if (
+    glContext.getExtension('OES_texture_half_float') &&
+    test_canRTT(glContext, glContext.RGBA, glContext.HALF_FLOAT)
+  ) {
+    return 'half float'
+  }
+  return null
 }
 function checkSupport() {
+  const support = {};
   try {
     const canvas = document.createElement('canvas');
     if (
       !!window.WebGLRenderingContext &&
       (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
     ) {
-      const gl =
+      const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      console.log(gl);
-      var testFloat = getExt(
-        gl,
-        'OES_texture_float',
-        'make floating point textures'
-      );
-      getExt(
-        gl,
-        'OES_texture_float_linear',
-        'linear filter floating point textures'
-      );
-      var testHalfFloat = getExt(
-        gl,
-        'OES_texture_half_float',
-        'make half floating point textures'
-      );
-      getExt(
-        gl,
-        'OES_texture_half_float_linear',
-        'linear filter half floating point textures'
-      );
-      const precision = {
+      PerformanceLogger$1.start('getRTTFloatType');
+      support.RTTFloatType = getRTTFloatType(glContext);
+      PerformanceLogger$1.stop();
+      support.precision = {
         VERTEX_SHADER: {
-          LOW_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.LOW_FLOAT
+          LOW_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.LOW_FLOAT
           ),
-          MEDIUM_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.MEDIUM_FLOAT
+          MEDIUM_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.MEDIUM_FLOAT
           ),
-          HIGH_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.HIGH_FLOAT
+          HIGH_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.HIGH_FLOAT
           ),
-          LOW_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT),
-          MEDIUM_INT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.MEDIUM_INT
+          LOW_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.LOW_INT
           ),
-          HIGH_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT)
+          MEDIUM_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.MEDIUM_INT
+          ),
+          HIGH_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.HIGH_INT
+          )
+        },
+        FRAGMENT_SHADER: {
+          LOW_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.LOW_FLOAT
+          ),
+          MEDIUM_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.MEDIUM_FLOAT
+          ),
+          HIGH_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.HIGH_FLOAT
+          ),
+          LOW_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.LOW_INT
+          ),
+          MEDIUM_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.MEDIUM_INT
+          ),
+          HIGH_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.HIGH_INT
+          )
         }
       };
-      console.log(precision);
+      return support
     }
   } catch (e) {
     throw e
   }
 }
 
-const log$2 = new Debug('pathicles:log');
+const log$1 = new Debug('pathicles:log');
 class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
     keyControl(this);
@@ -11919,27 +11956,25 @@ class ReglSimulatorInstance {
         if (err) return console.error(err)
         try {
           this.regl = regl;
-          PerformanceLogger$1.start('canWriteToFBOOfType');
-          log$2('canWriteToFBOOfType: ' + canWriteToFBOOfType(regl, 'float'));
-          PerformanceLogger$1.stop();
-          PerformanceLogger$1.start('checkSupport');
-          checkSupport();
-          PerformanceLogger$1.stop();
           window.pathicles = this;
+          PerformanceLogger$1.start('init');
+          this.checkSupport(regl);
+          PerformanceLogger$1.stop();
           PerformanceLogger$1.start('init');
           this.init(regl);
           PerformanceLogger$1.stop();
           this.run(regl);
         } catch (e) {
           console.error(e);
-          log$2(e);
+          log$1(e);
         }
       },
       extensions: simulate
         ? [
             'angle_instanced_arrays',
             'oes_texture_float',
-            'OES_standard_derivatives'
+            'OES_standard_derivatives',
+            'OES_texture_half_float'
           ]
         : [
             'angle_instanced_arrays',
@@ -11957,6 +11992,9 @@ class ReglSimulatorInstance {
     this.init(this.regl);
     this.run(this.regl);
   }
+  checkSupport() {
+    this.support = checkSupport();
+  }
   init(regl) {
     this.regl._commands = [];
     this.cameras = [];
@@ -11967,9 +12005,13 @@ class ReglSimulatorInstance {
     );
     this.camera = this.cameras['free'];
     PerformanceLogger$1.start('init.simulation');
-    this.simulation = new Simulation(regl, {
-      ...this.config
-    });
+    this.simulation = new Simulation(
+      regl,
+      {
+        ...this.config
+      },
+      this.support
+    );
     PerformanceLogger$1.stop();
     PerformanceLogger$1.start('init.view');
     this.view = boxesViewSimple(regl, {
@@ -11986,7 +12028,7 @@ class ReglSimulatorInstance {
     PerformanceLogger$1.stop();
   }
   run(regl) {
-    log$2('run');
+    log$1('run');
     if (this.simulate) this.pathiclesRunner.start();
     const mainloop = () => {
       return regl.frame(() => {

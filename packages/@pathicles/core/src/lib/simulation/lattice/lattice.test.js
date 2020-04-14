@@ -155,7 +155,6 @@ describe('five elements', () => {
     beamline: ['l0', 'q1', 'bm', 'l0', 'q1']
   })
 
-  console.log(JSON.stringify(lattice.beamline, null, 2))
   it('five elements', () => {
     expect(lattice.beamline).toEqual([
       {

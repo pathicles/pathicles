@@ -1,10 +1,10 @@
-export function createBuffers(regl, particleCount, bufferLength) {
+export function createBuffers(regl, particleCount, bufferLength, RTTFloatType) {
   return [0, 1].map(() => {
     return regl.framebuffer({
       height: bufferLength,
       width: particleCount,
       format: 'rgba',
-      colorType: 'float',
+      colorType: RTTFloatType,
       depthStencil: false,
       color: regl.texture({
         width: particleCount,
@@ -12,18 +12,18 @@ export function createBuffers(regl, particleCount, bufferLength) {
         min: 'nearest',
         mag: 'nearest',
         format: 'rgba',
-        type: 'float'
+        type: RTTFloatType
       })
     })
   })
 }
 
-export function loadBuffers(buffers, data) {
+export function loadBuffers(buffers, data, RTTFloatType) {
   ;[0, 1].forEach(b =>
     buffers[b].color[0].subimage({
       width: buffers[b].width,
       height: buffers[b].height,
-      data: data
+      data: RTTFloatType === 'float' ? data : convert_arrayToUInt16Array(data)
     })
   )
   return buffers

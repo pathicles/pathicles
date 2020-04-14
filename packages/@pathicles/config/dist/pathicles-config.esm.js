@@ -189,6 +189,7 @@ const defaultConfig = {
   chargeMassRatio: [0, -1.75882004556243e11, 1.75882004556243e11, 9.57883323113770929296814695637e7],
   usePostProcessing: false,
   pusher: 'boris',
+  simulateHalfFloat: false,
   runner: {
     prerender: true,
     looping: false,
@@ -204,7 +205,7 @@ const defaultConfig = {
       particleType: 'ELECTRON',
       randomize: false,
       bunchShape: 'disc',
-      particleCount: 1024,
+      particleCount: 64,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
@@ -243,9 +244,9 @@ const defaultConfig = {
     isStageVisible: true,
     isShadowEnabled: true,
     isLatticeVisible: true,
-    pathicleRelativeGap: 1,
+    pathicleRelativeGap: 2,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.002,
+    pathicleWidth: 0.005,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -277,7 +278,7 @@ const defaultConfig = {
       zoomDecayTime: 1,
       far: 50,
       near: 0.0001,
-      minDistance: 1,
+      minDistance: 0.1,
       maxDistance: 10
     }
   },
@@ -565,7 +566,7 @@ const freePhoton = {
       center: [0, -1, 0.5],
       theta: 2 * Math.PI / (360 / 45),
       phi: 2 * Math.PI / (360 / 15),
-      distance: 2,
+      distance: 1,
       fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
@@ -581,7 +582,7 @@ const freePhoton = {
     looping: false,
     mode: 'framewise',
     stepsPerTick: 2,
-    stepCount: 5
+    stepCount: 11
   },
   model: {
     bufferLength: 11,

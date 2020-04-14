@@ -47,7 +47,7 @@ describe('IEEE754Buffer.pack', () => {
   fixtures.forEach(({ float64, int16 }) => {
     const packed = pack(float64, float32Type)
 
-    console.log(packed)
+    // console.log(packed)
     it(`pack(${float64}) =>  ${packed}`, () => {
       // expect(packed).toEqual(int16)
 

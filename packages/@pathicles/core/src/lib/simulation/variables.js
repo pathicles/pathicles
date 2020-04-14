@@ -230,7 +230,7 @@ export function createParticleCollection({
       ]
     })
     .reduce((acc, val) => acc.concat(val), [])
-  console.log({ gamma, fourMomenta })
+  // console.log({ gamma, fourMomenta })
   return {
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),

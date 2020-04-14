@@ -6,7 +6,6 @@ import SimulationFSM from './simulation/simulationFSM'
 import PerformanceLogger from './utils/PerformanceLogger'
 import { boxesViewSimple } from '@pathicles/viewer'
 import keyControl from './utils/keyControl'
-import { canWriteToFBOOfType } from './utils/canWriteToFBOOfType'
 import { checkSupport } from './utils/checkSupport'
 
 import REGL from 'regl'
@@ -36,16 +35,11 @@ export class ReglSimulatorInstance {
         try {
           this.regl = regl
 
-          PerformanceLogger.start('canWriteToFBOOfType')
-
-          log('canWriteToFBOOfType: ' + canWriteToFBOOfType(regl, 'float'))
-          PerformanceLogger.stop()
-
-          PerformanceLogger.start('checkSupport')
-          checkSupport()
-          PerformanceLogger.stop()
-
           window.pathicles = this
+
+          PerformanceLogger.start('init')
+          this.checkSupport(regl)
+          PerformanceLogger.stop()
 
           PerformanceLogger.start('init')
           this.init(regl)
@@ -61,7 +55,8 @@ export class ReglSimulatorInstance {
         ? [
             'angle_instanced_arrays',
             'oes_texture_float',
-            'OES_standard_derivatives'
+            'OES_standard_derivatives',
+            'OES_texture_half_float'
           ]
         : [
             'angle_instanced_arrays',
@@ -81,6 +76,10 @@ export class ReglSimulatorInstance {
     this.run(this.regl)
   }
 
+  checkSupport() {
+    this.support = checkSupport()
+  }
+
   init(regl) {
     this.regl._commands = []
     this.cameras = []
@@ -92,9 +91,13 @@ export class ReglSimulatorInstance {
 
     this.camera = this.cameras['free']
     PerformanceLogger.start('init.simulation')
-    this.simulation = new Simulation(regl, {
-      ...this.config
-    })
+    this.simulation = new Simulation(
+      regl,
+      {
+        ...this.config
+      },
+      this.support
+    )
     PerformanceLogger.stop()
 
     PerformanceLogger.start('init.view')

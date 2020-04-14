@@ -26,6 +26,15 @@ class PerformanceLogger {
       this.entries.push(this.current)
     }
   }
+
+  report() {
+    return this.entries
+      .map(
+        ({ label, dt }) => `
+      ${label.padStart(25, ' ')}: ${dt.toFixed(1)}`
+      )
+      .join('\n')
+  }
 }
 
 export default new PerformanceLogger()

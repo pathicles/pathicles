@@ -11,7 +11,7 @@ export default function(regl, { variables, model }) {
       offset: 0,
       count: 3,
       attributes: {
-        aPosition: [0, -4, 0, 4, 4, 0, -4, 4, 0]
+        aXY: [-4, -4, 4, -4, 0, 4]
       },
 
       uniforms: {
@@ -38,9 +38,9 @@ export default function(regl, { variables, model }) {
 
       vert: `
         precision highp float;
-        attribute vec3 aPosition;
+        attribute vec2 aXY;
         void main () {
-          gl_Position = vec4(aPosition, 1.);
+          gl_Position = vec4(aXY, 0, 1);
         }
         `,
       frag: `

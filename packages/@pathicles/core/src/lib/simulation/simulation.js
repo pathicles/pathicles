@@ -10,13 +10,19 @@ import drawVariableTexture from './pathicles.variables.drawTexture'
 import { Lattice } from './lattice/lattice'
 
 export class Simulation {
-  constructor(regl, configuration) {
+  constructor(regl, configuration, support) {
     this._regl = regl
 
     this._logStore = []
 
     this.configuration = configuration
     this.configuration.simulate = true
+
+    this.RTTFloatType = configuration.simulateHalfFloat
+      ? 'half float'
+      : support.RTTFloatType
+
+    console.log(this.RTTFloatType)
 
     const {
       particleCount,
@@ -29,16 +35,17 @@ export class Simulation {
       configuration.model.emitter
     ))
 
-    const lattice = new Lattice(this.configuration.model.lattice)
     this.variables = {
       initialData: this.initialData,
       position: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength),
-        fourPositions
+        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
+        fourPositions,
+        this.RTTFloatType
       ),
       velocity: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength),
-        fourVelocities
+        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
+        fourVelocities,
+        this.RTTFloatType
       ),
       tick: { value: 0 },
       referencePoint: [0, 0, 0],
@@ -69,8 +76,8 @@ export class Simulation {
       bufferLength: this.initialData.bufferLength,
       stepCount: this.configuration.runner.stepCount,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
-      lattice: lattice,
       latticeConfig: this.configuration.model.lattice,
+      lattice: new Lattice(this.configuration.model.lattice),
       interactions: {
         gravityConstant: this.configuration.model.interactions.gravityConstant,
         particleInteraction: this.configuration.model.interactions
@@ -123,8 +130,16 @@ export class Simulation {
   }
 
   reset() {
-    loadBuffers(this.variables.position, this.initialData.fourPositions)
-    loadBuffers(this.variables.velocity, this.initialData.fourVelocities)
+    loadBuffers(
+      this.variables.position,
+      this.initialData.fourPositions,
+      this.RTTFloatType
+    )
+    loadBuffers(
+      this.variables.velocity,
+      this.initialData.fourVelocities,
+      this.RTTFloatType
+    )
     this.variables.tick.value = 0
   }
 

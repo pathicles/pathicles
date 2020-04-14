@@ -1,4 +1,6 @@
 /* eslint-disable */
+import PerformanceLogger from './PerformanceLogger'
+
 function log(msg) {
   // var div = document.createElement("div");
   // div.appendChild(document.createTextNode(msg));
@@ -16,182 +18,153 @@ function glEnum(gl, v) {
 }
 
 function getExt(gl, name, msg) {
-  var ext = gl.getExtension(name)
+  var ext = glContext.getExtension(name)
   log((ext ? 'can ' : 'can **NOT** ') + msg)
   return ext
 }
 
+//test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
+function test_canRTT(glContext, internalFormat, pixelType) {
+  var testFbo = glContext.createFramebuffer()
+  glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
+
+  var testTexture = glContext.createTexture()
+  glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
+  glContext.texImage2D(
+    glContext.TEXTURE_2D,
+    0,
+    internalFormat,
+    1,
+    1,
+    0,
+    glContext.RGBA,
+    pixelType,
+    null
+  )
+
+  glContext.framebufferTexture2D(
+    glContext.FRAMEBUFFER,
+    glContext.COLOR_ATTACHMENT0,
+    glContext.TEXTURE_2D,
+    testTexture,
+    0
+  )
+  var fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
+
+  return fbStatus === glContext.FRAMEBUFFER_COMPLETE
+}
+
+function getRTTFloatType(glContext) {
+  if (
+    glContext.getExtension('OES_texture_float') &&
+    test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
+  ) {
+    return 'float'
+  }
+  if (
+    glContext.getExtension('OES_texture_half_float') &&
+    test_canRTT(glContext, glContext.RGBA, glContext.HALF_FLOAT)
+  ) {
+    return 'half float'
+  }
+  return null
+}
+
 export function checkSupport() {
   // Get A WebGL context
-
+  const support = {}
   try {
     const canvas = document.createElement('canvas')
     if (
       !!window.WebGLRenderingContext &&
       (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
     ) {
-      const gl =
+      const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
-      console.log(gl)
-      var testFloat = getExt(
-        gl,
-        'OES_texture_float',
-        'make floating point textures'
-      )
-      getExt(
-        gl,
-        'OES_texture_float_linear',
-        'linear filter floating point textures'
-      )
-      var testHalfFloat = getExt(
-        gl,
-        'OES_texture_half_float',
-        'make half floating point textures'
-      )
-      getExt(
-        gl,
-        'OES_texture_half_float_linear',
-        'linear filter half floating point textures'
-      )
+      PerformanceLogger.start('getRTTFloatType')
 
-      const precision = {
+      support.RTTFloatType = getRTTFloatType(glContext)
+
+      PerformanceLogger.stop()
+      //
+      // console.log(gl)
+      // var testFloat = getExt(
+      //   gl,
+      //   'OES_texture_float',
+      //   'make floating point textures'
+      // )
+      // getExt(
+      //   gl,
+      //   'OES_texture_float_linear',
+      //   'linear filter floating point textures'
+      // )
+      // var testHalfFloat = getExt(
+      //   gl,
+      //   'OES_texture_half_float',
+      //   'make half floating point textures'
+      // )
+      // getExt(
+      //   gl,
+      //   'OES_texture_half_float_linear',
+      //   'linear filter half floating point textures'
+      // )
+
+      support.precision = {
         VERTEX_SHADER: {
-          LOW_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.LOW_FLOAT
+          LOW_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.LOW_FLOAT
           ),
-          MEDIUM_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.MEDIUM_FLOAT
+          MEDIUM_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.MEDIUM_FLOAT
           ),
-          HIGH_FLOAT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.HIGH_FLOAT
+          HIGH_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.HIGH_FLOAT
           ),
-          LOW_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT),
-          MEDIUM_INT: gl.getShaderPrecisionFormat(
-            gl.VERTEX_SHADER,
-            gl.MEDIUM_INT
+          LOW_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.LOW_INT
           ),
-          HIGH_INT: gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT)
+          MEDIUM_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.MEDIUM_INT
+          ),
+          HIGH_INT: glContext.getShaderPrecisionFormat(
+            glContext.VERTEX_SHADER,
+            glContext.HIGH_INT
+          )
+        },
+        FRAGMENT_SHADER: {
+          LOW_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.LOW_FLOAT
+          ),
+          MEDIUM_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.MEDIUM_FLOAT
+          ),
+          HIGH_FLOAT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.HIGH_FLOAT
+          ),
+          LOW_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.LOW_INT
+          ),
+          MEDIUM_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.MEDIUM_INT
+          ),
+          HIGH_INT: glContext.getShaderPrecisionFormat(
+            glContext.FRAGMENT_SHADER,
+            glContext.HIGH_INT
+          )
         }
       }
-
-      console.log(precision)
-      //   return
-      //
-      //   gl.HALF_FLOAT_OES = 0x8d61
-      //
-      //   // setup GLSL program
-      //   var program = webglUtils.createProgramFromScripts(gl, [
-      //     '2d-vertex-shader',
-      //     '2d-fragment-shader'
-      //   ])
-      //   gl.useProgram(program)
-      //
-      //   // look up where the vertex data needs to go.
-      //   var positionLocation = gl.getAttribLocation(program, 'a_position')
-      //   var colorLoc = gl.getUniformLocation(program, 'u_color')
-      //
-      //   // provide texture coordinates for the rectangle.
-      //   var positionBuffer = gl.createBuffer()
-      //   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-      //   gl.bufferData(
-      //     gl.ARRAY_BUFFER,
-      //     new Float32Array([
-      //       -1.0,
-      //       -1.0,
-      //       1.0,
-      //       -1.0,
-      //       -1.0,
-      //       1.0,
-      //       -1.0,
-      //       1.0,
-      //       1.0,
-      //       -1.0,
-      //       1.0,
-      //       1.0
-      //     ]),
-      //     gl.STATIC_DRAW
-      //   )
-      //   gl.enableVertexAttribArray(positionLocation)
-      //   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
-      //
-      //   var whiteTex = gl.createTexture()
-      //   gl.bindTexture(gl.TEXTURE_2D, whiteTex)
-      //   gl.texImage2D(
-      //     gl.TEXTURE_2D,
-      //     0,
-      //     gl.RGBA,
-      //     1,
-      //     1,
-      //     0,
-      //     gl.RGBA,
-      //     gl.UNSIGNED_BYTE,
-      //     new Uint8Array([255, 255, 255, 255])
-      //   )
-      //
-      //   function test(format) {
-      //     var tex = gl.createTexture()
-      //     gl.bindTexture(gl.TEXTURE_2D, tex)
-      //     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, format, null)
-      //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-      //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-      //
-      //     var fb = gl.createFramebuffer()
-      //     gl.bindFramebuffer(gl.FRAMEBUFFER, fb)
-      //     gl.framebufferTexture2D(
-      //       gl.FRAMEBUFFER,
-      //       gl.COLOR_ATTACHMENT0,
-      //       gl.TEXTURE_2D,
-      //       tex,
-      //       0
-      //     )
-      //     var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
-      //     if (status !== gl.FRAMEBUFFER_COMPLETE) {
-      //       log('can **NOT** render to ' + glEnum(gl, format) + ' texture')
-      //       return
-      //     }
-      //
-      //     // Draw the rectangle.
-      //     gl.bindTexture(gl.TEXTURE_2D, whiteTex)
-      //     gl.uniform4fv(colorLoc, [0, 10, 20, 1])
-      //     gl.drawArrays(gl.TRIANGLES, 0, 6)
-      //
-      //     gl.bindTexture(gl.TEXTURE_2D, tex)
-      //     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-      //
-      //     gl.clearColor(1, 0, 0, 1)
-      //     gl.clear(gl.COLOR_BUFFER_BIT)
-      //
-      //     gl.uniform4fv(colorLoc, [0, 1 / 10, 1 / 20, 1])
-      //     gl.drawArrays(gl.TRIANGLES, 0, 6)
-      //
-      //     var pixel = new Uint8Array(4)
-      //     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel)
-      //
-      //     if (
-      //       pixel[0] !== 0 ||
-      //       pixel[1] < 248 ||
-      //       pixel[2] < 248 ||
-      //       pixel[3] < 254
-      //     ) {
-      //       log(
-      //         'FAIL!!!: Was not able to actually render to ' +
-      //           glEnum(gl, format) +
-      //           ' texture'
-      //       )
-      //     } else {
-      //       log('succesfully rendered to ' + glEnum(gl, format) + ' texture')
-      //     }
-      //   }
-      //   if (testFloat) {
-      //     test(gl.FLOAT)
-      //   }
-      //   if (testHalfFloat) {
-      //     test(gl.HALF_FLOAT_OES)
-      //   }
+      return support
     }
   } catch (e) {
     throw e

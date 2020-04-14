@@ -5,7 +5,7 @@ export const freePhoton = {
       center: [0, -1, 0.5],
       theta: (2 * Math.PI) / (360 / 45),
       phi: (2 * Math.PI) / (360 / 15),
-      distance: 2,
+      distance: 1,
 
       fovY: Math.PI / 3,
       dTheta: 0.001,
@@ -26,7 +26,7 @@ export const freePhoton = {
 
     mode: 'framewise',
     stepsPerTick: 2,
-    stepCount: 5
+    stepCount: 11
   },
 
   model: {
