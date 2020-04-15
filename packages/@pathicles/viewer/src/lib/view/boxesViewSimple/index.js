@@ -1,6 +1,6 @@
 import drawBackgroundCommand from './background/drawBackgroundCommands'
 import drawModelCommands from './model/drawModelCommands'
-// import drawTextCommands from './text/drawTextCommands'
+import drawTextCommands from './text/drawTextCommands'
 import drawStageCommands from './stage/drawStageCommands'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
@@ -29,7 +29,6 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   })
   const drawStage = drawStageCommands(regl, config.view)
   const drawBackground = drawBackgroundCommand(regl, config.view)
-  // const drawTextCommand = drawTextCommands(regl)
 
   function drawDiffuse(props) {
     setParams(config.view, () => {
@@ -37,7 +36,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       config.view.isStageVisible && drawStage.lighting(props)
       config.view.isShadowEnabled && drawModel.shadow(props)
       drawModel.lighting(props)
-      // drawTextCommands.lighting()
+      // drawTextCommands(regl)
     })
   }
 

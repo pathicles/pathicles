@@ -21,6 +21,8 @@
     ]
   },
   "scripts": {
+    "dev": "mono-run dev",
+    "lint": "mono-run lint-fix --ui row",
     "build:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "dev:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue dev",
@@ -92,6 +94,7 @@
     "lerna": "^3.20.2",
     "lint-staged": "9.5.0",
     "minimist": "^1.2.0",
+    "monorepo-run": "^0.4.2",
     "pkg-up": "^3.1.0",
     "prettier": "1.19.1",
     "prettier-package-json": "^2.1.3",

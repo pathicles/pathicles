@@ -26,6 +26,7 @@ export default function(regl, { stageGrid }) {
         enable: true,
         face: 'front'
       },
+      depth: false,
       primitive: 'triangles',
       elements: stage.cells,
       attributes: {

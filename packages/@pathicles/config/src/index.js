@@ -1,6 +1,6 @@
 import nanomerge from 'nanomerge'
 
-import { defaultConfig } from './presets/_default'
+import defaultConfig from './presets/_default'
 import { storyDipole } from './presets/story-dipole'
 import { storyElectric } from './presets/story-electric'
 import { storyQuadrupole } from './presets/story-quadrupole'

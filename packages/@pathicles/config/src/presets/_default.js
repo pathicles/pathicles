@@ -1,4 +1,4 @@
-export const defaultConfig = {
+export default {
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
@@ -25,7 +25,7 @@ export const defaultConfig = {
 
   usePostProcessing: false,
   pusher: 'boris', // "boris", "euler"
-  simulateHalfFloat: true,
+  simulateHalfFloat: false,
 
   runner: {
     prerender: true,
@@ -74,7 +74,7 @@ export const defaultConfig = {
     stageGrid: {
       resolution: 256,
       y: 0,
-      size: 20,
+      size: 30,
       dark: 1,
       light: 0.8
     },
@@ -134,7 +134,7 @@ export const defaultConfig = {
       // rotationDecayTime: 0,
       rotateAboutCenter: true,
       zoomAboutCursor: false,
-      zoomDecayTime: 1,
+      zoomDecayTime: .1,
       // panDecayTime: 0,
       far: 50,
       near: 0.0001,

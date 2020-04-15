@@ -69,8 +69,6 @@ function initializeCameraControls(
         minDistance,
         Math.min(maxDistance, camera.params.distance)
       )
-
-      // ev.originalEvent.preventDefault()
     })
     .on('mousemove', function(ev) {
       if (!ev.active || ev.buttons !== 1) return
@@ -86,6 +84,7 @@ function initializeCameraControls(
           -ev.dx * radiansPerHalfScreenWidth,
           -ev.dy * radiansPerHalfScreenWidth
         )
+
         // if (camera.params.phi < 0.1) camera.params.phi = 0.1
         // if (camera.params.phi > 0.5) camera.params.phi = 0.5
       }

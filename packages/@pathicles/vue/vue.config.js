@@ -9,6 +9,9 @@ module.exports = {
     }
   },
   chainWebpack: config => {
+    config.watchOptions({
+      aggregateTimeout: 1600
+    })
     // GraphQL Loader
     // config.module
     //   .rule('binary')
