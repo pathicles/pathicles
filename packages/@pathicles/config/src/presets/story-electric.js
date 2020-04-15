@@ -2,10 +2,10 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [0, 0, -1],
-      theta: Math.PI / 4 * 1,
-      phi: 0,
-      distance: 2
+      center: [0, 1, -5],
+      theta: (2 * Math.PI) / (360 / 25),
+      phi: (2 * Math.PI) / (360 / 5),
+      distance: 3
     }
   },
 
@@ -15,11 +15,11 @@ export const storyElectric = {
       particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.2, 0.2, 0],
+      position: [0, 2, -10],
+      directionJitter: [0., 0., 0],
       positionJitter: [0.1, 0.1, 0],
 
-      gamma: 1.3
+      gamma: 1.2
     },
 
     interactions: {

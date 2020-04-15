@@ -20,7 +20,7 @@ export default function(regl, { stageGrid }) {
           rgb: 'add',
           alpha: 'add'
         },
-        color: [1, 1, 0, 1]
+        color: [0, 1, 0, 1]
       },
       cull: {
         enable: true,

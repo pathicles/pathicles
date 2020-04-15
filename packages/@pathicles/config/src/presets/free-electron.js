@@ -2,7 +2,7 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, -1, 0.5],
+      center: [0, 0, 0.5],
       theta: (2 * Math.PI) / (360 / 45),
       phi: (2 * Math.PI) / (360 / 15),
       distance: 2,

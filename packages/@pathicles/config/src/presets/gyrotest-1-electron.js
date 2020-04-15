@@ -4,41 +4,31 @@ export default {
   name: 'gyrotest-1-electron',
   view: {
     camera: {
-      center: [0.5, -1, 0],
+      center: [0.5, 0, 0],
       theta: (2 * Math.PI) / (360 / 45),
       phi: (2 * Math.PI) / (360 / 15),
-      distance: 1,
+      distance: .5
 
-      fovY: Math.PI / 3,
-      dTheta: 0.001,
-      autorotate: false,
-      // rotationDecayTime: 0,
-      rotateAboutCenter: true,
-      zoomAboutCursor: false,
-      zoomDecayTime: 1,
-      // panDecayTime: 0,
-      far: 50,
-      near: 0.0002
     }
   },
 
   runner: {
     stepsPerTick: 2,
-    stepCount: 37
+    stepCount: 27
   },
 
   model: {
-    bufferLength: 37,
-    tickDurationOverC: 5.94985880215349239057744464763e-2,
+    bufferLength: 27,
+    tickDurationOverC: .1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -1, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 200
+      gamma: 310
     },
 
     lattice: {
@@ -46,7 +36,7 @@ export default {
         l0: {
           type: LatticeElementTypes.SBEN,
           l: 20,
-          strength: 1
+          strength: 1.3
         }
       },
       beamline: ['l0'],

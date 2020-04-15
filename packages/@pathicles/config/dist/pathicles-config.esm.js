@@ -195,7 +195,7 @@ const defaultConfig = {
     looping: false,
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 256
+    stepCount: 512
   },
   model: {
     bufferLength: 128,
@@ -206,7 +206,7 @@ const defaultConfig = {
       randomize: false,
       bunchShape: 'disc',
       particleCount: 128,
-      particleSeparation: 0.05,
+      particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -228,13 +228,13 @@ const defaultConfig = {
     ssaoEnabled: false,
     stageGrid: {
       resolution: 256,
-      y: -1,
+      y: 0,
       size: 20,
       dark: 1,
       light: 0.8
     },
     sky: [0.9, 1, 0, 1],
-    shadowColor: [0.3, 0.3, 0.3],
+    shadowColor: [0.8, 0.8, 0.8],
     ambientIntensity: 0.6,
     diffuse: 0,
     exposure: 0.2,
@@ -246,7 +246,7 @@ const defaultConfig = {
     isLatticeVisible: true,
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.0075,
+    pathicleWidth: 0.005,
     roughness: 0.7,
     specular: 1,
     ssaoBlurPower: 2,
@@ -269,7 +269,7 @@ const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 5,
+      distance: 3,
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
       autorotate: true,
@@ -279,7 +279,7 @@ const defaultConfig = {
       far: 50,
       near: 0.0001,
       minDistance: 0.1,
-      maxDistance: 10
+      maxDistance: 5
     }
   },
   dumpData: false
@@ -340,10 +340,10 @@ const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [0, 0, -1],
-      theta: Math.PI / 4 * 1,
-      phi: 0,
-      distance: 2
+      center: [0, 1, -5],
+      theta: 2 * Math.PI / (360 / 25),
+      phi: 2 * Math.PI / (360 / 5),
+      distance: 3
     }
   },
   model: {
@@ -352,10 +352,10 @@ const storyElectric = {
       particleType: 'ELECTRON PROTON  PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 1, -10],
-      directionJitter: [0.2, 0.2, 0],
+      position: [0, 2, -10],
+      directionJitter: [0., 0., 0],
       positionJitter: [0.1, 0.1, 0],
-      gamma: 1.3
+      gamma: 1.2
     },
     interactions: {
       electricField: [0, 0, -0.00000000001],
@@ -377,19 +377,19 @@ const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [2, 0, 0],
-      theta: 2 * Math.PI / (360 / 85),
-      phi: 2 * Math.PI / (360 / 1),
-      distance: 8
+      center: [-1, 1, 0],
+      theta: 2 * Math.PI / (360 / 75),
+      phi: 2 * Math.PI / (360 / 5),
+      distance: 5
     }
   },
   model: {
+    tickDurationOverC: 0.1,
     emitter: {
       particleType: 'PROTON ',
       bunchShape: 'SQUARE_YZ',
       direction: [1, 0, 0],
-      position: [-10, 0, 0],
-      particleSeparation: 0.1,
+      position: [-10, 1, 0],
       directionJitter: [0.0, 0.0, 0],
       positionJitter: [0.1, 0.1, 0],
       gamma: 7
@@ -465,7 +465,7 @@ const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      center: [0, -1, 0.5],
+      center: [0, 0, 0.5],
       theta: 2 * Math.PI / (360 / 45),
       phi: 2 * Math.PI / (360 / 15),
       distance: 2,
@@ -511,43 +511,35 @@ var gyrotest_1_electron = {
   name: 'gyrotest-1-electron',
   view: {
     camera: {
-      center: [0.5, -1, 0],
+      center: [0.5, 0, 0],
       theta: 2 * Math.PI / (360 / 45),
       phi: 2 * Math.PI / (360 / 15),
-      distance: 1,
-      fovY: Math.PI / 3,
-      dTheta: 0.001,
-      autorotate: false,
-      rotateAboutCenter: true,
-      zoomAboutCursor: false,
-      zoomDecayTime: 1,
-      far: 50,
-      near: 0.0002
+      distance: .5
     }
   },
   runner: {
     stepsPerTick: 2,
-    stepCount: 37
+    stepCount: 27
   },
   model: {
-    bufferLength: 37,
-    tickDurationOverC: 5.94985880215349239057744464763e-2,
+    bufferLength: 27,
+    tickDurationOverC: .1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -1, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 200
+      gamma: 310
     },
     lattice: {
       elements: {
         l0: {
           type: LatticeElementTypes.SBEN,
           l: 20,
-          strength: 1
+          strength: 1.3
         }
       },
       beamline: ['l0'],

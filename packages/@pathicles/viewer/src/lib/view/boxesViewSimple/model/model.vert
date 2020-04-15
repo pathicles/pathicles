@@ -127,14 +127,16 @@ void main () {
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
   float scale = 1.;
+  float shadowProjectionScale = 1.;
   #ifdef shadow
   scale = 1.;
+  shadowProjectionScale = .1;
   #endif
 
   vec3 scaledPosition = vec3(
-  scale * aPosition.x,
-  aPosition.y,
-  scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));
+    scale * aPosition.x,
+    aPosition.y * shadowProjectionScale,
+    scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));
 
   vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
   + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
@@ -146,25 +148,15 @@ void main () {
   vUv = aUV;
 
   #ifdef lighting
-//  vDiffuseColor = get_color(aParticle).rgb;
+    vDiffuseColor = get_color(aParticle).rgb;
+    float maxDistance = 4.;
+    vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;
+  #endif
 
-  vDiffuseColor = get_color(aParticle).rgb;
-  //vDiffuseColor = vec4(max(dot(normalize(uLight.xyz), vNormal), 0.) * get_color(aParticle).rgb, 1);
-
-//  vec3 sky = vec3(1.0, 1.0, 0.9);
-//  vec3 gnd = vec3(0.1, 0., 0.);
-//  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);
-
-
-  float maxDistance = 4.;
-  vColorCorrection += vNormalOrig.z * vNormalOrig.z * 1.;
-
-    #endif
-
-    #ifdef shadow
-  vPosition.y = vPosition.y * 0. + stageGrid_y + .1;
-  vDiffuseColor = shadowColor;
-  if (aPosition.z < 0.) toBeDiscarded = 1.;
+  #ifdef shadow
+    vPosition.y = stageGrid_y + 0.01 * abs(sin(aStep));
+    vDiffuseColor = shadowColor;
+//    if (aPosition.y < 0.) toBeDiscarded = 1.;
   #endif
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);

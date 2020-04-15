@@ -13,6 +13,8 @@ uniform float ambientIntensity;
 uniform float stageGrid_size;
 uniform vec3 eye;
 
+const vec3 fogColor = vec3(1.0);
+const float FogDensity = 0.7;
 
 void main () {
 
@@ -27,21 +29,28 @@ void main () {
 
   float opacity = 1.;
   #ifdef shadow
-  gl_FragColor = vec4(0.6, 0.6, 0.6, 1./vPosition.z/vPosition.z); //vec4(lightingColor,
+  gl_FragColor = vec4(vDiffuseColor, .2/vPosition.z/vPosition.z); //vec4(lightingColor,
   #endif
   #ifdef lighting
 
-  float ambientLightAmount = 1.25;
-  float diffuseLightAmount = .75;
-  vec3 lightDir = normalize(vec3(1., 10., 0.));
+  float ambientLightAmount = .5;
+  float diffuseLightAmount = .5;
+
+
   vec3 ambient = ambientLightAmount * vDiffuseColor;
-  float cosTheta = dot(vNormal, lightDir);
-  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(cosTheta , 0.0, 1.0 ) ;
+
+  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +
+                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;
+
+  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition)) , .5, 2. );
+//  vec3 diffuse2 = 0.01 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;
+
+  vec3 combinedDiffuse = clamp(diffuse * cosTheta2 , vec3(0.), vec3(1.));
 
 
   //  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1./vPosition.z/vPosition.z); //vec4(lightingColor, opacity);
-  float gamma = 1.;
-  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (diffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
+  float gamma = 1.5;
+  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
   #endif
 
 }

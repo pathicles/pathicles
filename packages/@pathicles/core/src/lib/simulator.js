@@ -37,7 +37,7 @@ export class ReglSimulatorInstance {
 
           window.pathicles = this
 
-          PerformanceLogger.start('init')
+          PerformanceLogger.start('checkSupport')
           this.checkSupport(regl)
           PerformanceLogger.stop()
 

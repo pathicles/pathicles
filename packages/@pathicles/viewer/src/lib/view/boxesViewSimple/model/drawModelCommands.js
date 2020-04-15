@@ -34,7 +34,7 @@ export default function(regl, { variables, model, view }) {
           rgb: 'add',
           alpha: 'add'
         },
-        color: [1, 1, 0, 1]
+        color: [1, 1, 1, 1]
       },
       cull: {
         enable: true,

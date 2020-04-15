@@ -33,7 +33,7 @@ export const defaultConfig = {
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 256
+    stepCount: 512
   },
 
   model: {
@@ -48,7 +48,7 @@ export const defaultConfig = {
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'disc',
       particleCount: 128,
-      particleSeparation: 0.05,
+      particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -73,7 +73,7 @@ export const defaultConfig = {
 
     stageGrid: {
       resolution: 256,
-      y: -1,
+      y: 0,
       size: 20,
       dark: 1,
       light: 0.8
@@ -81,7 +81,7 @@ export const defaultConfig = {
 
     sky: [0.9, 1, 0, 1],
 
-    shadowColor: [0.3, 0.3, 0.3],
+    shadowColor: [0.8, 0.8, 0.8],
     ambientIntensity: 0.6,
     diffuse: 0,
     //drawBoundingBox: true,
@@ -96,7 +96,7 @@ export const defaultConfig = {
 
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.0075,
+    pathicleWidth: 0.005,
 
     roughness: 0.7,
 
@@ -126,7 +126,7 @@ export const defaultConfig = {
       center: [0, 0, 0],
       theta: Math.PI / 2,
       phi: 0,
-      distance: 5,
+      distance: 3,
 
       fovY: Math.PI / 2.5,
       dTheta: 0.01,
@@ -140,7 +140,7 @@ export const defaultConfig = {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 10
+      maxDistance: 5
     }
   },
 

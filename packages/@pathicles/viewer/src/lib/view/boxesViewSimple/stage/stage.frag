@@ -10,7 +10,7 @@ varying vec3 vNormal;
 varying vec2 vUv;
 
 const vec3 fogColor = vec3(1.0);
-const float FogDensity = 0.7;
+const float FogDensity = 0.3;
 
 
 float grid(vec2 st, float res, float width) {
