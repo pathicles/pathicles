@@ -22,8 +22,6 @@ export class Simulation {
       ? 'half float'
       : support.RTTFloatType
 
-    console.log(this.RTTFloatType)
-
     const {
       particleCount,
       bufferLength,

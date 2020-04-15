@@ -17,10 +17,10 @@ export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
     keyControl(this)
     this.config = config
-
     this.simulate = simulate
 
     this.control = control
+    console.log(control)
 
     REGL({
       canvas,
@@ -47,6 +47,7 @@ export class ReglSimulatorInstance {
 
           this.run(regl)
         } catch (e) {
+          alert(e)
           console.error(e)
           log(e)
         }

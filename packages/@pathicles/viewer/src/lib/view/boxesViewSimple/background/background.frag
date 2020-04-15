@@ -8,13 +8,10 @@ varying vec2 vUv;
 uniform vec3 eye;
 varying vec3 vPosition;
 
-const vec3 fogColor = vec3(1.0);
-const float FogDensity = 0.;
-
 
 vec3 getSky(vec2 uv) {
   float atmosphere = sqrt(1.0-uv.y);
-  vec3 skyColor = vec3(0., 0., 0.);
+  vec3 skyColor = vec3(0.85, 0.85, 0.85);
 
   float scatter = pow(uSunPosition.y / uResolution.y, 1.0 / 15.0);
   scatter = 1.0 - clamp(scatter, 0.8, 1.0);

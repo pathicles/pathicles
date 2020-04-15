@@ -9,6 +9,7 @@ export default function(regl, { variables, model }) {
       primitive: 'triangles',
       elements: null,
       offset: 0,
+      dither: false,
       count: 3,
       attributes: {
         aXY: [-4, -4, 4, -4, 0, 4]

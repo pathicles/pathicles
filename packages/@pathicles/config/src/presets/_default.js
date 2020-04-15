@@ -25,7 +25,7 @@ export const defaultConfig = {
 
   usePostProcessing: false,
   pusher: 'boris', // "boris", "euler"
-  simulateHalfFloat: false,
+  simulateHalfFloat: true,
 
   runner: {
     prerender: true,
@@ -33,11 +33,11 @@ export const defaultConfig = {
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 1024
+    stepCount: 256
   },
 
   model: {
-    bufferLength: 1024 / 4,
+    bufferLength: 128,
     tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
@@ -47,7 +47,7 @@ export const defaultConfig = {
 
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'disc',
-      particleCount: 64,
+      particleCount: 128,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
@@ -94,9 +94,9 @@ export const defaultConfig = {
     isShadowEnabled: true,
     isLatticeVisible: true,
 
-    pathicleRelativeGap: 2,
+    pathicleRelativeGap: 1,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.0075,
 
     roughness: 0.7,
 

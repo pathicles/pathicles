@@ -3,6 +3,7 @@ precision highp float;
 varying float toBeDiscarded;
 varying vec3 vPosition;
 varying vec3 vNormal;
+varying vec3 vNormalOrig;
 varying vec2 vUv;
 varying vec3 vAmbientColor;
 varying vec3 vDiffuseColor;
@@ -11,24 +12,6 @@ varying float vColorCorrection;
 uniform float ambientIntensity;
 uniform float stageGrid_size;
 uniform vec3 eye;
-
-//float gridFactor (vec2 parameter, float width) {
-//  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);
-//  vec2 a2 = smoothstep(width - 0.05, width + 0.05, l);
-//  return min(a2.x, a2.y);
-//}
-//
-//float grid(vec2 st, float res, float width) {
-//  vec2 grid =  fract(st*res) / width;
-//  grid /= fwidth(st);
-//  return 1. - (step(res, grid.x) * step(res, grid.y));
-//}
-
-float gridFactor (vec2 parameter, float width, float feather) {
-  vec2 l = 1.0 - 2.0 * abs(mod(parameter, 1.0) - 0.5);
-  vec2 a2 = smoothstep(width - feather, width + feather, l);
-  return min(a2.x, a2.y);
-}
 
 
 void main () {
@@ -44,12 +27,21 @@ void main () {
 
   float opacity = 1.;
   #ifdef shadow
-  gl_FragColor = vec4(0.6, 0.6, 0.6, .5);
+  gl_FragColor = vec4(0.6, 0.6, 0.6, 1./vPosition.z/vPosition.z); //vec4(lightingColor,
   #endif
   #ifdef lighting
 
+  float ambientLightAmount = 1.25;
+  float diffuseLightAmount = .75;
+  vec3 lightDir = normalize(vec3(1., 10., 0.));
+  vec3 ambient = ambientLightAmount * vDiffuseColor;
+  float cosTheta = dot(vNormal, lightDir);
+  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(cosTheta , 0.0, 1.0 ) ;
 
-  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1.); //vec4(lightingColor, opacity);
+
+  //  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1./vPosition.z/vPosition.z); //vec4(lightingColor, opacity);
+  float gamma = 1.;
+  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (diffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
   #endif
 
 }

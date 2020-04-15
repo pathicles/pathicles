@@ -44,6 +44,7 @@ uniform vec3 eye;
 varying float toBeDiscarded;
 varying vec3 vPosition;
 varying vec3 vNormal;
+varying vec3 vNormalOrig;
 varying vec2 vUv;
 varying vec3 vAmbientColor;
 varying vec3 vDiffuseColor;
@@ -117,6 +118,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition
 
 void main () {
 
+  vNormalOrig = aNormal;
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
@@ -149,28 +151,18 @@ void main () {
   vDiffuseColor = get_color(aParticle).rgb;
   //vDiffuseColor = vec4(max(dot(normalize(uLight.xyz), vNormal), 0.) * get_color(aParticle).rgb, 1);
 
-  vec3 sky = vec3(1.0, 1.0, 0.9);
-  vec3 gnd = vec3(0.1, 0., 0.);
-  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);
+//  vec3 sky = vec3(1.0, 1.0, 0.9);
+//  vec3 gnd = vec3(0.1, 0., 0.);
+//  vAmbientColor = hemisphere_light(vNormal, sky, gnd, vec3(0.,1.,0.), model, view, eye, .5, .5);
 
 
   float maxDistance = 4.;
-  vColorCorrection =  -1. * aColorCorrection;
-//  float distance = length(vPosition - eye);
-//  vColorCorrection = mix(.25, .5, maxDistance-distance/maxDistance);
-
-
-  if (
-  abs(dot(
-  aNormal,
-  vec3(0., 0., 1.)
-  )) == 1.) { vColorCorrection -= .2; }
+  vColorCorrection += vNormalOrig.z * vNormalOrig.z * 1.;
 
     #endif
 
     #ifdef shadow
-  vPosition.y = vPosition.y * 0. + stageGrid_y + .01;
-  vColorCorrection = 0.;
+  vPosition.y = vPosition.y * 0. + stageGrid_y + .1;
   vDiffuseColor = shadowColor;
   if (aPosition.z < 0.) toBeDiscarded = 1.;
   #endif

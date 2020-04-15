@@ -14,6 +14,10 @@ export default function(regl, { variables, model, view }) {
     pathicleRelativeHeight: view.pathicleRelativeHeight
   })
 
+  Math.clip = function(number, min, max) {
+    return Math.max(min, Math.min(number, max))
+  }
+
   let modelMatrix = identity([])
 
   const command = mode =>
@@ -33,7 +37,7 @@ export default function(regl, { variables, model, view }) {
         color: [1, 1, 0, 1]
       },
       cull: {
-        enable: false,
+        enable: true,
         face: 'back'
       },
       primitive: 'triangles',
@@ -67,7 +71,7 @@ export default function(regl, { variables, model, view }) {
 
                 const r = (y ** 2 + x ** 2) / n ** 2
 
-                return 0.5 * Math.pow(Math.cos(2 * r), 4)
+                return 1; //Math.clip(1.25 * Math.pow(Math.cos(2 * r), 4, 0, 1))
               })
           ),
           divisor: 1
