@@ -109,9 +109,7 @@ export function discDistributionYZ({ n = 0, d = 0 }) {
         ((nx * d) / 2) ** 2
       )
         return [0, iy * d - dOffsetY, ix * d - dOffsetX]
-      else return [0, iy * d - dOffsetY
-        -10000, ix * d - dOffsetX]
-    }
-    )
+      else return [0, iy * d - dOffsetY - 10000, ix * d - dOffsetX]
+    })
     .reduce((acc, val) => acc.concat(val), [])
 }

@@ -4,8 +4,8 @@
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollup --config",
+    "dev": "rollup --config -w",
     "lint-fix": "eslint --fix src",
     "prepare": "yarn build",
     "test": "jest"

@@ -5,7 +5,7 @@ import glslify from 'rollup-plugin-glslify'
 import bundleSize from 'rollup-plugin-bundle-size'
 import { join } from 'path'
 import cleanup from 'rollup-plugin-cleanup'
-// import prettier from 'rollup-plugin-prettier'
+import progress from 'rollup-plugin-progress'
 
 export default {
   input: join('src', 'index.js'),
@@ -14,41 +14,17 @@ export default {
     file: pkg.module
   },
   plugins: [
-    nodeResolve({ preferBuiltins: true }),
+    progress({
+      clearLine: false // default: true
+    }),
+    nodeResolve(),
     commonjs({
       // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
-      include: /node_modules/,
-      namedExports: {
-        // node_modules/prop-types/factoryWithTypeCheckers.js#L115
-        'prop-types': [
-          'array',
-          'bool',
-          'func',
-          'number',
-          'object',
-          'string',
-          'symbol',
-          'any',
-          'arrayOf',
-          'element',
-          'elementType',
-          'instanceOf',
-          'node',
-          'objectOf',
-          'oneOf',
-          'oneOfType',
-          'shape',
-          'exact'
-        ]
-      }
+      include: /node_modules/
     }),
     glslify(),
     cleanup(),
-    // prettier({
-    //   sourcemap: false,
-    //   parser: 'babel'
-    // }),
     bundleSize()
   ],
-  external: ['debug', 'regl']
+  external: ['debug', 'regl', 'gl-mat4', 'gl-vec3']
 }

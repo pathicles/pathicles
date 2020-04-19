@@ -5,8 +5,8 @@
   "module": "dist/pathicles-core.esm.js",
   "type": "module",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollup --config ",
+    "dev": "rollup --config -w",
     "lint-fix": "eslint --fix src",
     "test:unit": "jest"
   },

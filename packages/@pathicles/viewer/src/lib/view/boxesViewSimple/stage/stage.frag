@@ -1,9 +1,10 @@
 precision mediump float;
 #extension GL_OES_standard_derivatives : enable
-#define FOG_DENSITY 0.1
+
+#define FOG_DENSITY 0.2
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
-
+const vec4 fogColor = vec4(1.0);
 
 uniform vec2 uResolution;
 uniform vec3 eye;
@@ -13,8 +14,7 @@ varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec2 vUv;
 
-const vec3 fogColor = vec3(1.0);
-const float FogDensity = 0.3;
+
 
 varying vec4 vLightNDC;
 uniform sampler2D shadow;
@@ -36,9 +36,9 @@ void main() {
 
   float resolution = 10.;
   vec2 grid_st = vUv * uResolution * resolution;
-  vec3 color = vec3(.8);
-  color -= vec3(.75) * grid(grid_st, 1. / resolution, 3.);
-  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);
+  vec4 color = vec4(.8, .8, .8, .5);
+  color -= vec4(vec3(.75) * grid(grid_st, 1. / resolution, 2.), -.1);
+  color -= vec4(vec3(.5) * grid(grid_st, 10. / resolution, 1.), -.1);
 
   vec3 texCoord = (vPosition - lightPosition);
   float visibility = 0.0;
@@ -66,13 +66,16 @@ void main() {
 //  }w
 //  visibility *= 1.0 / 8.0;
 
-  vec3 shadowedColor = (1.) * color.rgb;
+  vec4 shadowedColor = color;
 
 
 
-  float fogDistance = length(eye - vPosition);
+  float fogDistance = length( vPosition);
+  float fogAmount = fog_exp2(fogDistance, FOG_DENSITY);
 
-  gl_FragColor = vec4(mix(shadowedColor, fogColor, exp(- fogDistance * FogDensity)), exp(- fogDistance * FogDensity));
+  gl_FragColor = vec4(
+  mix(shadowedColor.rgb, fogColor.rgb, exp(- fogDistance * FOG_DENSITY)),  exp(- fogDistance * FOG_DENSITY));
 //  gl_FragColor = vec4(color.rgb, 1.);
+
 
 }

@@ -21,7 +21,7 @@ export default function readData(regl, { variables, model }) {
       regl.read({ data: data[variableName][1] })
     })
   })
-  const precision = 1000;
+  const precision = 1000
   return {
     tick: variables.tick.value,
     data: {

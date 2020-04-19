@@ -1,4 +1,9 @@
-import { Float16Array, getFloat16, setFloat16, hfround } from "@petamoriken/float16";
+import {
+  Float16Array,
+  getFloat16,
+  setFloat16,
+  hfround
+} from '@petamoriken/float16'
 //
 //
 // void generatetables(){
@@ -32,9 +37,6 @@ import { Float16Array, getFloat16, setFloat16, hfround } from "@petamoriken/floa
 //     shifttable[i|0x100]=13;
 //   } }
 // }
-
-
-
 
 export function float64ToInt16(float64Value) {
   const floatView = new Float32Array(1)
@@ -87,8 +89,7 @@ export function float64ArrayToInt16Array(float64Array) {
 }
 
 export function int16ToFloat64(int16Value) {
-
-  return ((0x8000)<<16) | (((0x7c00)+0x1C000)<<13) | ((0x03FF)<<13)
+  return (0x8000 << 16) | ((0x7c00 + 0x1c000) << 13) | (0x03ff << 13)
 
   return int16Value >= 0x8000
     ? -(0x10000 - int16Value) / 0x8000

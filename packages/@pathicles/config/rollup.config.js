@@ -1,51 +1,30 @@
-import { join } from 'path'
-import bundleSize from 'rollup-plugin-bundle-size'
-import cleanup from 'rollup-plugin-cleanup'
-// import prettier from 'rollup-plugin-prettier'
 import pkg from './package.json'
-import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import babel from 'rollup-plugin-babel'
+import nodeResolve from '@rollup/plugin-node-resolve'
+import glslify from 'rollup-plugin-glslify'
+import bundleSize from 'rollup-plugin-bundle-size'
+import { join } from 'path'
+import cleanup from 'rollup-plugin-cleanup'
+import progress from 'rollup-plugin-progress'
 
-export default [
-  {
-    input: join('src', 'index.js'),
-    output: {
-      format: 'cjs',
-      file: pkg.main
-    },
-    plugins: [
-      resolve(),
-      commonjs(),
-      cleanup(),
-      // prettier({
-      //   sourcemap: true,
-      //   parser: 'babel'
-      // }),
-      babel({
-        exclude: 'node_modules/**'
-      }),
-      bundleSize()
-    ]
+export default {
+  input: join('src', 'index.js'),
+  output: {
+    format: 'esm',
+    file: pkg.module
   },
-  {
-    input: join('src', 'index.js'),
-    output: {
-      format: 'esm',
-      file: pkg.module
-    },
-    plugins: [
-      resolve(),
-      commonjs(),
-      cleanup(),
-      // prettier({
-      //   sourcemap: true,
-      //   parser: 'babel'
-      // }),
-      babel({
-        exclude: 'node_modules/**'
-      }),
-      bundleSize()
-    ]
-  }
-]
+  plugins: [
+    progress({
+      clearLine: false // default: true
+    }),
+    nodeResolve(),
+    commonjs({
+      // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
+      include: /node_modules/
+    }),
+    glslify(),
+    cleanup(),
+    bundleSize()
+  ],
+  external: ['debug', 'regl']
+}

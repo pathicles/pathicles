@@ -33,7 +33,7 @@ export default {
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 512
+    stepCount: 256
   },
 
   model: {
@@ -76,7 +76,7 @@ export default {
     stageGrid: {
       resolution: 256,
       y: 0,
-      size: 30,
+      size: 50,
       dark: 1,
       light: 0.8
     },
@@ -139,7 +139,7 @@ export default {
       zoomAboutCursor: false,
       zoomDecayTime: .1,
       // panDecayTime: 0,
-      far: 20,
+      far: 50,
       near: 0.0001,
 
       minDistance: 0.1,

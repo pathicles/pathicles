@@ -20,8 +20,12 @@ uniform vec3 eye;
 varying vec4 vLightNDC;
 uniform samplerCube cubeShadow;
 #endif
-const vec3 fogColor = vec3(1.0);
-const float FogDensity = 0.7;
+
+
+#define FOG_DENSITY 0.01
+#pragma glslify: fog_exp2 = require(glsl-fog/exp2)
+
+const vec4 fogColor = vec4(1.0);
 
 
 vec4 packRGBA (float v) {
@@ -66,7 +70,7 @@ void main () {
 
 #ifdef lighting
 
-  float ambientLightAmount = .9;
+  float ambientLightAmount = .5;
   float diffuseLightAmount = .5;
 
 
@@ -102,10 +106,15 @@ void main () {
   }
   visibility *= 1.0 / 8.0;
 
-//  visibility = 1.0;
+  visibility = 1.0;
+
+  vec4 shadowedColor = vec4(visibility * (1. - 1.* vColorCorrection) * ( combinedDiffuse + ambient), 1.0);
 
 
-  gl_FragColor =  vec4( visibility * (1. - 0.* vColorCorrection) * ( ambient), 1.);
+  float fogDistance = length(eye - vPosition);
+  float fogAmount = fog_exp2(fogDistance, FOG_DENSITY);
+
+  gl_FragColor = mix(shadowedColor, fogColor, fogAmount);
 
 #endif  // lighting
 
