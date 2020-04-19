@@ -41,6 +41,20 @@ uniform sampler2D utVelocityBuffer;
 uniform mat4 projection, view, model;
 uniform vec3 eye;
 
+
+uniform mat4 shadowViewMatrix_top;
+uniform mat4 shadowViewMatrix;
+uniform mat4 shadowProjectionMatrix;
+varying vec4 vLightNDC;
+// Matrix to shift range from -1->1 to 0->1
+const mat4 depthScaleMatrix = mat4(
+0.5, 0, 0, 0,
+0, 0.5, 0, 0,
+0, 0, 0.5, 0,
+0.5, 0.5, 0.5, 1
+);
+
+
 varying float toBeDiscarded;
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -147,20 +161,24 @@ void main () {
 
   vUv = aUV;
 
-  #ifdef lighting
-    vDiffuseColor = get_color(aParticle).rgb;
-    float maxDistance = 4.;
-    vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;
-  #endif
+#ifdef lighting
 
-  #ifdef shadow
+  vDiffuseColor = get_color(aParticle).rgb;
+  float maxDistance = 4.;
+  vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;
+  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);
+#endif
+
+#ifdef shadow
     vPosition.y = stageGrid_y + 0.01 * abs(sin(aStep));
     vDiffuseColor = shadowColor;
 //    if (aPosition.y < 0.) toBeDiscarded = 1.;
-  #endif
+#endif
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
 
+
+  gl_Position = projection * view * model * vec4(vPosition, 1.0);
 }
 

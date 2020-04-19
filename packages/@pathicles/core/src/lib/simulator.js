@@ -20,6 +20,7 @@ export class ReglSimulatorInstance {
     this.simulate = simulate
 
     this.control = control
+    console.log(control)
 
     REGL({
       canvas,

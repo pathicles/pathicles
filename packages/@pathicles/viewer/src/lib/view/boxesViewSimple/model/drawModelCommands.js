@@ -3,11 +3,15 @@ import createCube from 'primitive-cube'
 import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
-import identity from 'gl-mat4/identity'
+import { identity, perspective, lookAt } from 'gl-mat4'
 
-export default function(regl, { variables, model, view }) {
+import shadowBuilder from './shadow'
+
+export default function(regl, { variables, model, view }, cubeShadowFbo) {
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
+
+  const shadow = shadowBuilder(view.lightPosition)
 
   const geometry = createGeometry({
     pathicleWidth: view.pathicleWidth,
@@ -20,26 +24,33 @@ export default function(regl, { variables, model, view }) {
 
   let modelMatrix = identity([])
 
-  const command = mode =>
-    regl({
-      blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [1, 1, 1, 1]
-      },
-      cull: {
-        enable: true,
-        face: 'back'
-      },
+  const command = mode => {
+    const framebuffer = {
+      framebuffer: function(context, props, batchId) {
+        return cubeShadowFbo.faces[batchId]
+      }
+    }
+
+    return regl({
+      depth: true,
+      // blend: {
+      //   enable: true,
+      //   func: {
+      //     srcRGB: 'src alpha',
+      //     srcAlpha: 1,
+      //     dstRGB: 'one minus src alpha',
+      //     dstAlpha: 1
+      //   },
+      //   equation: {
+      //     rgb: 'add',
+      //     alpha: 'add'
+      //   },
+      //   color: [1, 1, 1, 1]
+      // },
+      // cull: {
+      //   enable: true,
+      //   face: 'back'
+      // },
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -71,7 +82,7 @@ export default function(regl, { variables, model, view }) {
 
                 const r = (y ** 2 + x ** 2) / n ** 2
 
-                return 1; //Math.clip(1.25 * Math.pow(Math.cos(2 * r), 4, 0, 1))
+                return 1 //Math.clip(1.25 * Math.pow(Math.cos(2 * r), 4, 0, 1))
               })
           ),
           divisor: 1
@@ -90,7 +101,29 @@ export default function(regl, { variables, model, view }) {
       vert: [`#define ${mode} 1`, vert].join('\n'),
       frag: [`#define ${mode} 1`, frag].join('\n'),
 
+      ...(mode === 'shadowCube' && framebuffer),
       uniforms: {
+        ...(mode === 'shadowCube' && {
+          shadowViewMatrix: function(context, props, batchId) {
+            switch (batchId) {
+              case 0: // +x
+                return shadow.shadowViewMatrix_x
+              case 1: // -x
+                return shadow.shadowViewMatrix_x_
+              case 2: // +y
+                return shadow.shadowViewMatrix_y
+              case 3: // -y
+                return shadow.shadowViewMatrix_y_
+              case 4: // +z
+                return shadow.shadowViewMatrix_z
+              case 5: // -z
+                return shadow.shadowViewMatrix_z_
+              default:
+                break
+            }
+          }
+        }),
+        ...(mode === 'lighting' && { shadowCube: cubeShadowFbo }),
         uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
@@ -98,6 +131,9 @@ export default function(regl, { variables, model, view }) {
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
+        lightPosition: view.lightPosition,
+        shadowProjectionMatrix: shadow.shadowProjectionMatrix,
+        shadowViewMatrix_top: shadow.shadowViewMatrix_y_,
         stageGrid_y: view.stageGrid.y,
         shadowColor: view.shadowColor,
         stageGrid_size: view.stageGrid.size,
@@ -110,9 +146,11 @@ export default function(regl, { variables, model, view }) {
         }
       }
     })
+  }
 
   return {
     lighting: command('lighting'),
-    shadow: command('shadow')
+    shadow: command('shadow'),
+    shadowCube: command('shadowCube')
   }
 }

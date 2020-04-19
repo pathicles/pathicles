@@ -24,7 +24,7 @@ function getExt(gl, name, msg) {
 }
 
 //test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
-function test_canRTT(glContext, internalFormat, pixelType) {
+function  test_canRTT(glContext, internalFormat, pixelType) {
   var testFbo = glContext.createFramebuffer()
   glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
 
@@ -56,12 +56,15 @@ function test_canRTT(glContext, internalFormat, pixelType) {
 
 function getRTTFloatType(glContext) {
   if (
+
+    glContext.getExtension('WEBGL_color_buffer_float') &&
     glContext.getExtension('OES_texture_float') &&
     test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
   ) {
     return 'float'
   }
   if (
+    glContext.getExtension('WEBGL_color_buffer_float') &&
     glContext.getExtension('OES_texture_half_float') &&
     test_canRTT(glContext, glContext.RGBA, glContext.HALF_FLOAT)
   ) {

@@ -225,6 +225,7 @@ var defaultConfig = {
     }
   },
   view: {
+    lightPosition: [0, 3, 0],
     ssaoEnabled: false,
     stageGrid: {
       resolution: 256,
@@ -279,7 +280,7 @@ var defaultConfig = {
       far: 50,
       near: 0.0001,
       minDistance: 0.1,
-      maxDistance: 5
+      maxDistance: 10
     }
   },
   dumpData: false

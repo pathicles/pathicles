@@ -46,6 +46,7 @@ export default function(regl, { variables, model }) {
         `,
       frag: `
         precision highp float;
+        #extension WEBGL_color_buffer_float : enable
 
         const highp float c = 2.99792458e+8;
         uniform sampler2D utParticleColorAndType;

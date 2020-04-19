@@ -3,10 +3,17 @@ import * as createPlane from './plane'
 import frag from './stage.frag'
 import vert from './stage.vert'
 
-export default function(regl, { stageGrid }) {
-  const stage = createPlane.createPlane(stageGrid.size, stageGrid.size)
+import shadowBuilder from './../model/shadow'
 
-  const command = () => {
+export default function(regl, view, cubeShadowFbo) {
+  const stage = createPlane.createPlane(
+    view.stageGrid.size,
+    view.stageGrid.size
+  )
+
+  const shadow = shadowBuilder(view.lightPosition)
+
+  const command = mode => {
     return regl({
       blend: {
         enable: true,
@@ -34,8 +41,12 @@ export default function(regl, { stageGrid }) {
         uv: stage.uvs
       },
       uniforms: {
-        uOffset: [0, stageGrid.y - 0, 0],
-        uResolution: [stageGrid.size, stageGrid.size]
+        uOffset: [0, view.stageGrid.y - 0, 0],
+        uResolution: [view.stageGrid.size, view.stageGrid.size],
+        shadowCube: cubeShadowFbo,
+        lightPosition: view.lightPosition,
+        shadowProjectionMatrix: shadow.shadowProjectionMatrix,
+        shadowViewMatrix_top: shadow.shadowViewMatrix_y_
       },
       vert,
       frag
@@ -43,6 +54,6 @@ export default function(regl, { stageGrid }) {
   }
 
   return {
-    lighting: command('')
+    lighting: command('lighting')
   }
 }

@@ -69,6 +69,8 @@ export default {
 
   // view
   view: {
+    lightPosition: [0, 3, 0],
+
     ssaoEnabled: false,
 
     stageGrid: {
@@ -109,6 +111,7 @@ export default {
     showTextures: false,
     texelSize: 2,
     viewRange: [0, 1],
+
     lights: [
       {
         position: [0, 1, 0],
@@ -140,7 +143,7 @@ export default {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 5
+      maxDistance: 10
     }
   },
 

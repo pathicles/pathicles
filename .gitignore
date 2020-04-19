@@ -79,3 +79,7 @@ typings/
 
 # Serverless directories
 .serverless
+/packages/@pathicles/core/dist/pathicles-core.cjs.js
+/packages/@pathicles/specrel/dist/
+/packages/@pathicles/viewer/dist/pathicles-viewer.cjs.js
+/packages/@pathicles/app/src_/data/
