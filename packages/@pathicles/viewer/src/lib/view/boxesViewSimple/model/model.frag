@@ -18,7 +18,7 @@ uniform vec3 eye;
 
 #ifdef lighting
 varying vec4 vLightNDC;
-uniform samplerCube shadowCube;
+uniform samplerCube cubeShadow;
 #endif
 const vec3 fogColor = vec3(1.0);
 const float FogDensity = 0.7;
@@ -53,12 +53,14 @@ void main () {
 
 
 
-#ifdef shadowCube
-
+#ifdef cubeShadow
    gl_FragColor = packRGBA(gl_FragCoord.z);
-
 #endif
 
+
+#ifdef shadowMap
+  gl_FragColor = packRGBA(gl_FragCoord.z);
+#endif
 
 
 
@@ -88,10 +90,10 @@ void main () {
     for (int y = 0; y < 2; y++) {
       for (int z = 0; z < 2; z++) {
         float bias = 0.3;
-        vec4 env = textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1));
+        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
         vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
         float depth = lightPos.z - bias;
-        float occluder = unpackRGBA(textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1)));
+        float occluder = unpackRGBA(textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1)));
 
         float shadow = mix(0.2, 1.0, step(depth, occluder));
         visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;

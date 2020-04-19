@@ -27,7 +27,7 @@ const defaultFragment = /* glsl */ `
     }
 `
 
-export default function(regl, { lightPosition }, cubeShadowFbo) {
+export default function(regl, { lightPosition }, fbo) {
   return regl({
     uniforms: {
       projection: perspective([], Math.PI / 2.0, 1.0, 0.25, 70.0),
@@ -85,7 +85,7 @@ export default function(regl, { lightPosition }, cubeShadowFbo) {
     vert: defaultVertex,
 
     framebuffer: function(context, props, batchId) {
-      return cubeShadowFbo.faces[batchId]
+      return fbo.faces[batchId]
     }
   })
 }

@@ -47,7 +47,7 @@ export class ReglSimulatorInstance {
 
           this.run(regl)
         } catch (e) {
-          alert(e)
+          // alert(e)
           console.error(e)
           log(e)
         }
@@ -57,12 +57,14 @@ export class ReglSimulatorInstance {
             'angle_instanced_arrays',
             'oes_texture_float',
             'OES_standard_derivatives',
-            'OES_texture_half_float'
+            'OES_texture_half_float',
+            'WEBGL_depth_texture'
           ]
         : [
             'angle_instanced_arrays',
             'oes_texture_float',
-            'OES_standard_derivatives'
+            'OES_standard_derivatives',
+            'WEBGL_depth_texture'
           ]
     })
   }
@@ -137,7 +139,9 @@ export class ReglSimulatorInstance {
             this.cameras['free'].tick({})
 
             this.view.drawDiffuse({ viewRange: [0, 1] })
+
             if (this.config.view.showTextures) {
+              this.view.shadow.drawFbo()
               this.simulation.drawVariableTexture({ variableName: 'position' })
               this.simulation.drawVariableTexture({ variableName: 'velocity' })
             }

@@ -10,7 +10,6 @@ uniform mat4 view;
 varying vec2 vUv;
 varying vec3 vPosition;
 
-uniform mat4 shadowViewMatrix_top;
 uniform mat4 shadowViewMatrix;
 uniform mat4 shadowProjectionMatrix;
 varying vec4 vLightNDC;
@@ -26,7 +25,7 @@ void main () {
   vUv = uv / 1.;
   vPosition = position + uOffset;
 
-  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top  * vec4(vPosition, 1.0);
+  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix  * vec4(vPosition, 1.0);
 
   gl_Position = projection * view * vec4(vPosition, 1.);
 }

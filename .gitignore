@@ -83,3 +83,4 @@ typings/
 /packages/@pathicles/specrel/dist/
 /packages/@pathicles/viewer/dist/pathicles-viewer.cjs.js
 /packages/@pathicles/app/src_/data/
+/packages/@pathicles/core/dist/pathicles-core.esm.js

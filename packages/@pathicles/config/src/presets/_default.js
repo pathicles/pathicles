@@ -139,7 +139,7 @@ export default {
       zoomAboutCursor: false,
       zoomDecayTime: .1,
       // panDecayTime: 0,
-      far: 50,
+      far: 20,
       near: 0.0001,
 
       minDistance: 0.1,

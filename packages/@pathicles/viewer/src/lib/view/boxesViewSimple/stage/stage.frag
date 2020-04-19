@@ -17,7 +17,7 @@ const vec3 fogColor = vec3(1.0);
 const float FogDensity = 0.3;
 
 varying vec4 vLightNDC;
-uniform samplerCube shadowCube;
+uniform sampler2D shadow;
 uniform vec3 lightPosition;
 
 
@@ -42,27 +42,31 @@ void main() {
 
   vec3 texCoord = (vPosition - lightPosition);
   float visibility = 0.0;
+
+//  vec3 tex = texture2D(shadow, vUv).rgb;
+//  vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+
   //do soft shadows:
-  for (int x = 0; x < 2; x++) {
-    for (int y = 0; y < 2; y++) {
-      for (int z = 0; z < 2; z++) {
-        float bias = 0.3;
-        vec4 env = textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1));
+//  for (int x = 0; x < 2; x++) {
+//    for (int y = 0; y < 2; y++) {
+////      for (int z = 0; z < 2; z++) {
+//        float bias = 0.3;
+//        vec4 env = texture2D(shadow, texCoord + vec2(x,y) * vec2(0.1)).rgb;
+//
+//
+//        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+//        float depth = lightPos.z - bias;
+//        float occluder = unpackRGBA(env);
+//
+//        float shadow = mix(0.2, 1.0, step(depth, occluder));
+//        visibility += (env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
+////        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
+////      }
+//    }
+//  }w
+//  visibility *= 1.0 / 8.0;
 
-
-        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-        float depth = lightPos.z - bias;
-        float occluder = unpackRGBA(env);
-
-        float shadow = mix(0.2, 1.0, step(depth, occluder));
-        visibility += (env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
-//        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
-      }
-    }
-  }
-  visibility *= 1.0 / 8.0;
-
-  vec3 shadowedColor = (1.-visibility) * color.rgb;
+  vec3 shadowedColor = (1.) * color.rgb;
 
 
 
