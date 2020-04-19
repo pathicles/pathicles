@@ -302,9 +302,9 @@ function drawBackgroundCommand(regl, { stageGrid }) {
   })
 }
 
-var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aUV;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\nuniform vec4 uLight;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\nuniform vec3 eye;\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vNormalOrig;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\n\nvarying float vColorCorrection;\n\nvec3 hemisphere_light(\n  vec3 normal,\n  vec3 sky,\n  vec3 ground,\n  vec3 lightDirection,\n  mat4 modelMatrix,\n  mat4 viewMatrix,\n  vec3 viewPosition,\n  float shininess,\n  float specularity\n) {\n  vec3 direction = normalize((\n  modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float weight = 0.5 * dot(\n  normal\n  , direction\n  ) + 0.5;\n\n  vec3 diffuse = mix(ground, sky, weight);\n\n  vec3 specDirection = normalize((\n  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float skyWeight = 0.5 * dot(\n  normal\n  , normalize(specDirection + viewPosition)\n  ) + 0.5;\n\n  float gndWeight = 0.5 * dot(\n  normal\n  , normalize(viewPosition - specDirection)\n  ) + 0.5;\n\n  vec3 specular = specularity * diffuse * (\n  max(pow(skyWeight, shininess), 0.0) +\n  max(pow(gndWeight, shininess), 0.0)\n  ) * weight;\n\n  return diffuse + specular;\n}\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  vNormalOrig = aNormal;\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  float shadowProjectionScale = 1.;\n  #ifdef shadow\n  scale = 1.;\n  shadowProjectionScale = .1;\n  #endif\n\n  vec3 scaledPosition = vec3(\n    scale * aPosition.x,\n    aPosition.y * shadowProjectionScale,\n    scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  vUv = aUV;\n\n  #ifdef lighting\n    vDiffuseColor = get_color(aParticle).rgb;\n    float maxDistance = 4.;\n    vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;\n  #endif\n\n  #ifdef shadow\n    vPosition.y = stageGrid_y + 0.01 * abs(sin(aStep));\n    vDiffuseColor = shadowColor;\n//    if (aPosition.y < 0.) toBeDiscarded = 1.;\n  #endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n}\n\n"; // eslint-disable-line
+var vert$1 = "precision highp float;\n#define GLSLIFY 1\nfloat inverse(float m) {\n  return 1.0 / m;\n}\n\nmat2 inverse(mat2 m) {\n  return mat2(m[1][1],-m[0][1],\n             -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);\n}\n\nmat3 inverse(mat3 m) {\n  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];\n  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];\n  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];\n\n  float b01 = a22 * a11 - a12 * a21;\n  float b11 = -a22 * a10 + a12 * a20;\n  float b21 = a21 * a10 - a11 * a20;\n\n  float det = a00 * b01 + a01 * b11 + a02 * b21;\n\n  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),\n              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),\n              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;\n}\n\nmat4 inverse(mat4 m) {\n  float\n      a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],\n      a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],\n      a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],\n      a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],\n\n      b00 = a00 * a11 - a01 * a10,\n      b01 = a00 * a12 - a02 * a10,\n      b02 = a00 * a13 - a03 * a10,\n      b03 = a01 * a12 - a02 * a11,\n      b04 = a01 * a13 - a03 * a11,\n      b05 = a02 * a13 - a03 * a12,\n      b06 = a20 * a31 - a21 * a30,\n      b07 = a20 * a32 - a22 * a30,\n      b08 = a20 * a33 - a23 * a30,\n      b09 = a21 * a32 - a22 * a31,\n      b10 = a21 * a33 - a23 * a31,\n      b11 = a22 * a33 - a23 * a32,\n\n      det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;\n\n  return mat4(\n      a11 * b11 - a12 * b10 + a13 * b09,\n      a02 * b10 - a01 * b11 - a03 * b09,\n      a31 * b05 - a32 * b04 + a33 * b03,\n      a22 * b04 - a21 * b05 - a23 * b03,\n      a12 * b08 - a10 * b11 - a13 * b07,\n      a00 * b11 - a02 * b08 + a03 * b07,\n      a32 * b02 - a30 * b05 - a33 * b01,\n      a20 * b05 - a22 * b02 + a23 * b01,\n      a10 * b10 - a11 * b08 + a13 * b06,\n      a01 * b08 - a00 * b10 - a03 * b06,\n      a30 * b04 - a31 * b02 + a33 * b00,\n      a21 * b02 - a20 * b04 - a23 * b00,\n      a11 * b07 - a10 * b09 - a12 * b06,\n      a00 * b09 - a01 * b07 + a02 * b06,\n      a31 * b01 - a30 * b03 - a32 * b00,\n      a20 * b03 - a21 * b01 + a22 * b00) / det;\n}\n\nfloat transpose(float m) {\n  return m;\n}\n\nmat2 transpose(mat2 m) {\n  return mat2(m[0][0], m[1][0],\n              m[0][1], m[1][1]);\n}\n\nmat3 transpose(mat3 m) {\n  return mat3(m[0][0], m[1][0], m[2][0],\n              m[0][1], m[1][1], m[2][1],\n              m[0][2], m[1][2], m[2][2]);\n}\n\nmat4 transpose(mat4 m) {\n  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],\n              m[0][1], m[1][1], m[2][1], m[3][1],\n              m[0][2], m[1][2], m[2][2], m[3][2],\n              m[0][3], m[1][3], m[2][3], m[3][3]);\n}\n\nmat4 lookAt(vec3 eye, vec3 at, vec3 up) {\n  vec3 zaxis = normalize(eye - at);\n  vec3 xaxis = normalize(cross(zaxis, up));\n  vec3 yaxis = cross(xaxis, zaxis);\n  zaxis *= -1.;\n  return mat4(\n  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),\n  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),\n  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),\n  vec4(0, 0, 0, 1)\n  );\n}\n\nattribute vec3 aPosition;\nattribute vec3 aNormal;\nattribute vec2 aUV;\nattribute float aParticle;\nattribute float aColorCorrection;\nattribute float aStep;\n\nuniform float particleCount;\nuniform float bufferLength;\nuniform float stepCount;\n\nuniform float dt;\nuniform vec2 viewRange;\n\nuniform float pathicleWidth;\nuniform float pathicleGap;\nuniform float stageGrid_y;\nuniform float stageGrid_size;\nuniform vec3 shadowColor;\nuniform vec4 uLight;\n\nuniform sampler2D utParticleColorAndType;\nuniform sampler2D utPositionBuffer;\nuniform sampler2D utVelocityBuffer;\nuniform mat4 projection, view, model;\nuniform vec3 eye;\n\nuniform mat4 shadowViewMatrix_top;\nuniform mat4 shadowViewMatrix;\nuniform mat4 shadowProjectionMatrix;\nvarying vec4 vLightNDC;\n// Matrix to shift range from -1->1 to 0->1\nconst mat4 depthScaleMatrix = mat4(\n0.5, 0, 0, 0,\n0, 0.5, 0, 0,\n0, 0, 0.5, 0,\n0.5, 0.5, 0.5, 1\n);\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vNormalOrig;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\n\nvarying float vColorCorrection;\n\nvec3 hemisphere_light(\n  vec3 normal,\n  vec3 sky,\n  vec3 ground,\n  vec3 lightDirection,\n  mat4 modelMatrix,\n  mat4 viewMatrix,\n  vec3 viewPosition,\n  float shininess,\n  float specularity\n) {\n  vec3 direction = normalize((\n  modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float weight = 0.5 * dot(\n  normal\n  , direction\n  ) + 0.5;\n\n  vec3 diffuse = mix(ground, sky, weight);\n\n  vec3 specDirection = normalize((\n  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)\n  ).xyz);\n\n  float skyWeight = 0.5 * dot(\n  normal\n  , normalize(specDirection + viewPosition)\n  ) + 0.5;\n\n  float gndWeight = 0.5 * dot(\n  normal\n  , normalize(viewPosition - specDirection)\n  ) + 0.5;\n\n  vec3 specular = specularity * diffuse * (\n  max(pow(skyWeight, shininess), 0.0) +\n  max(pow(gndWeight, shininess), 0.0)\n  ) * weight;\n\n  return diffuse + specular;\n}\n\nvec4 get_color(float p) {\n  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);\n  return texture2D(utParticleColorAndType, coords);\n}\nvec4 get_position(float p, float b) {\n  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);\n  return texture2D(utPositionBuffer, coords);\n}\nfloat calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {\n\n  float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;\n  float beyondProgressLower = (currentFourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;\n  float beyondProgressUpper =  (currentFourPosition.w / dt > viewRange[1] * stepCount) ? 1.0 : 0.0;\n  float outsideGrid = (currentFourPosition.x > stageGrid_size || currentFourPosition.x < -stageGrid_size\n  || currentFourPosition.y > stageGrid_size || currentFourPosition.y < -stageGrid_size\n  || currentFourPosition.z > stageGrid_size || currentFourPosition.z < -stageGrid_size) ? 1.0 : 0.0;\n\n  return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;\n\n}\n\nvoid main () {\n\n  vNormalOrig = aNormal;\n\n  float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;\n  vec4 previousFourPosition = get_position(aParticle, previousBufferHead);\n  vec4 currentFourPosition = get_position(aParticle, aStep);\n\n  mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));\n\n  float scale = 1.;\n  float shadowProjectionScale = 1.;\n  #ifdef shadow\n  scale = 1.;\n  shadowProjectionScale = .1;\n  #endif\n\n  vec3 scaledPosition = vec3(\n    scale * aPosition.x,\n    aPosition.y * shadowProjectionScale,\n    scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));\n\n  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz\n  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));\n\n  vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);\n\n  vUv = aUV;\n\n#ifdef lighting\n\n  vDiffuseColor = get_color(aParticle).rgb;\n  float maxDistance = 4.;\n  vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;\n  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);\n#endif\n\n#ifdef shadow\n    vPosition.y = stageGrid_y + 0.01 * abs(sin(aStep));\n    vDiffuseColor = shadowColor;\n//    if (aPosition.y < 0.) toBeDiscarded = 1.;\n#endif\n\n  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n\n  gl_Position = projection * view * model * vec4(vPosition, 1.0);\n}\n\n"; // eslint-disable-line
 
-var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vNormalOrig;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.7;\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n//  vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));\n\n//  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n//  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n//  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(vDiffuseColor, .2/vPosition.z/vPosition.z); //vec4(lightingColor,\n  #endif\n  #ifdef lighting\n\n  float ambientLightAmount = .5;\n  float diffuseLightAmount = .5;\n\n  vec3 ambient = ambientLightAmount * vDiffuseColor;\n\n  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +\n                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;\n\n  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition)) , .5, 2. );\n//  vec3 diffuse2 = 0.01 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;\n\n  vec3 combinedDiffuse = clamp(diffuse * cosTheta2 , vec3(0.), vec3(1.));\n\n  //  gl_FragColor =  vec4(  (1. - vColorCorrection) * vDiffuseColor + .1 * vAmbientColor, 1./vPosition.z/vPosition.z); //vec4(lightingColor, opacity);\n  float gamma = 1.5;\n  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);\n  #endif\n\n}\n\n"; // eslint-disable-line
+var frag$1 = "precision highp float;\n#define GLSLIFY 1\n\nvarying float toBeDiscarded;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 vNormalOrig;\nvarying vec2 vUv;\nvarying vec3 vAmbientColor;\nvarying vec3 vDiffuseColor;\nvarying float vColorCorrection;\n\nuniform vec3 lightPosition;\nuniform float ambientIntensity;\nuniform float stageGrid_size;\nuniform vec3 eye;\n\n#ifdef lighting\nvarying vec4 vLightNDC;\nuniform samplerCube shadowCube;\n#endif\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.7;\n\nvec4 packRGBA (float v) {\n  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);\n  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;\n  return pack;\n}\nfloat unpackRGBA (vec4 v) {\n  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));\n}\n\nvoid main () {\n\n  if (toBeDiscarded > .0) discard;\n\n  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;\n//  vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));\n\n//  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;\n//  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;\n//  vec3 lightingColor = 3. * ambientColor;\n\n  float opacity = 1.;\n  #ifdef shadow\n  gl_FragColor = vec4(vDiffuseColor, .2/vPosition.z/vPosition.z); //vec4(lightingColor,\n  #endif\n\n#ifdef shadowCube\n\n   gl_FragColor = packRGBA(gl_FragCoord.z);\n\n#endif\n\n#ifdef lighting\n\n  float ambientLightAmount = .9;\n  float diffuseLightAmount = .5;\n\n  vec3 ambient = ambientLightAmount * vDiffuseColor;\n  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +\n                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;\n\n  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition)) , .5, 2. );\n//  vec3 diffuse2 = 0.01 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;\n  vec3 combinedDiffuse = clamp(diffuse * cosTheta2 , vec3(0.), vec3(1.));\n\n//  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);\n\n  vec3 texCoord = (vPosition - lightPosition);\n  float visibility = 0.0;\n   //do soft shadows:\n  for (int x = 0; x < 2; x++) {\n    for (int y = 0; y < 2; y++) {\n      for (int z = 0; z < 2; z++) {\n        float bias = 0.3;\n        vec4 env = textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1));\n        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;\n        float depth = lightPos.z - bias;\n        float occluder = unpackRGBA(textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1)));\n\n        float shadow = mix(0.2, 1.0, step(depth, occluder));\n        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;\n      }\n    }\n  }\n  visibility *= 1.0 / 8.0;\n\n//  visibility = 1.0;\n\n  gl_FragColor =  vec4( visibility * (1. - 0.* vColorCorrection) * ( ambient), 1.);\n\n#endif  // lighting\n\n}\n\n"; // eslint-disable-line
 
 var fromTranslation_1 = fromTranslation;
 function fromTranslation(out, v) {
@@ -327,9 +327,776 @@ function fromTranslation(out, v) {
   return out
 }
 
-function drawModelCommands(regl, { variables, model, view }) {
+var create_1 = create;
+function create() {
+    var out = new Float32Array(16);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+}
+
+var clone_1 = clone;
+function clone(a) {
+    var out = new Float32Array(16);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var copy_1 = copy;
+function copy(out, a) {
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var transpose_1 = transpose;
+function transpose(out, a) {
+    if (out === a) {
+        var a01 = a[1], a02 = a[2], a03 = a[3],
+            a12 = a[6], a13 = a[7],
+            a23 = a[11];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a01;
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a02;
+        out[9] = a12;
+        out[11] = a[14];
+        out[12] = a03;
+        out[13] = a13;
+        out[14] = a23;
+    } else {
+        out[0] = a[0];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a[1];
+        out[5] = a[5];
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a[2];
+        out[9] = a[6];
+        out[10] = a[10];
+        out[11] = a[14];
+        out[12] = a[3];
+        out[13] = a[7];
+        out[14] = a[11];
+        out[15] = a[15];
+    }
+    return out;
+}
+
+var invert_1 = invert;
+function invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+    if (!det) {
+        return null;
+    }
+    det = 1.0 / det;
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    return out;
+}
+
+var adjoint_1 = adjoint;
+function adjoint(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+    out[0]  =  (a11 * (a22 * a33 - a23 * a32) - a21 * (a12 * a33 - a13 * a32) + a31 * (a12 * a23 - a13 * a22));
+    out[1]  = -(a01 * (a22 * a33 - a23 * a32) - a21 * (a02 * a33 - a03 * a32) + a31 * (a02 * a23 - a03 * a22));
+    out[2]  =  (a01 * (a12 * a33 - a13 * a32) - a11 * (a02 * a33 - a03 * a32) + a31 * (a02 * a13 - a03 * a12));
+    out[3]  = -(a01 * (a12 * a23 - a13 * a22) - a11 * (a02 * a23 - a03 * a22) + a21 * (a02 * a13 - a03 * a12));
+    out[4]  = -(a10 * (a22 * a33 - a23 * a32) - a20 * (a12 * a33 - a13 * a32) + a30 * (a12 * a23 - a13 * a22));
+    out[5]  =  (a00 * (a22 * a33 - a23 * a32) - a20 * (a02 * a33 - a03 * a32) + a30 * (a02 * a23 - a03 * a22));
+    out[6]  = -(a00 * (a12 * a33 - a13 * a32) - a10 * (a02 * a33 - a03 * a32) + a30 * (a02 * a13 - a03 * a12));
+    out[7]  =  (a00 * (a12 * a23 - a13 * a22) - a10 * (a02 * a23 - a03 * a22) + a20 * (a02 * a13 - a03 * a12));
+    out[8]  =  (a10 * (a21 * a33 - a23 * a31) - a20 * (a11 * a33 - a13 * a31) + a30 * (a11 * a23 - a13 * a21));
+    out[9]  = -(a00 * (a21 * a33 - a23 * a31) - a20 * (a01 * a33 - a03 * a31) + a30 * (a01 * a23 - a03 * a21));
+    out[10] =  (a00 * (a11 * a33 - a13 * a31) - a10 * (a01 * a33 - a03 * a31) + a30 * (a01 * a13 - a03 * a11));
+    out[11] = -(a00 * (a11 * a23 - a13 * a21) - a10 * (a01 * a23 - a03 * a21) + a20 * (a01 * a13 - a03 * a11));
+    out[12] = -(a10 * (a21 * a32 - a22 * a31) - a20 * (a11 * a32 - a12 * a31) + a30 * (a11 * a22 - a12 * a21));
+    out[13] =  (a00 * (a21 * a32 - a22 * a31) - a20 * (a01 * a32 - a02 * a31) + a30 * (a01 * a22 - a02 * a21));
+    out[14] = -(a00 * (a11 * a32 - a12 * a31) - a10 * (a01 * a32 - a02 * a31) + a30 * (a01 * a12 - a02 * a11));
+    out[15] =  (a00 * (a11 * a22 - a12 * a21) - a10 * (a01 * a22 - a02 * a21) + a20 * (a01 * a12 - a02 * a11));
+    return out;
+}
+
+var determinant_1 = determinant;
+function determinant(a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32;
+    return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+}
+
+var multiply_1 = multiply;
+function multiply(out, a, b) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+    out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
+    out[4] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[5] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[6] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[7] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
+    out[8] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[9] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[10] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[11] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
+    out[12] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    return out;
+}
+
+var translate_1 = translate;
+function translate(out, a, v) {
+    var x = v[0], y = v[1], z = v[2],
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23;
+    if (a === out) {
+        out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
+        out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
+        out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
+        out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
+    } else {
+        a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+        a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+        a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+        out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
+        out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
+        out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
+        out[12] = a00 * x + a10 * y + a20 * z + a[12];
+        out[13] = a01 * x + a11 * y + a21 * z + a[13];
+        out[14] = a02 * x + a12 * y + a22 * z + a[14];
+        out[15] = a03 * x + a13 * y + a23 * z + a[15];
+    }
+    return out;
+}
+
+var scale_1 = scale;
+function scale(out, a, v) {
+    var x = v[0], y = v[1], z = v[2];
+    out[0] = a[0] * x;
+    out[1] = a[1] * x;
+    out[2] = a[2] * x;
+    out[3] = a[3] * x;
+    out[4] = a[4] * y;
+    out[5] = a[5] * y;
+    out[6] = a[6] * y;
+    out[7] = a[7] * y;
+    out[8] = a[8] * z;
+    out[9] = a[9] * z;
+    out[10] = a[10] * z;
+    out[11] = a[11] * z;
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+}
+
+var rotate_1 = rotate;
+function rotate(out, a, rad, axis) {
+    var x = axis[0], y = axis[1], z = axis[2],
+        len = Math.sqrt(x * x + y * y + z * z),
+        s, c, t,
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23,
+        b00, b01, b02,
+        b10, b11, b12,
+        b20, b21, b22;
+    if (Math.abs(len) < 0.000001) { return null; }
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+    a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+    a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+    a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+    b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s; b11 = y * y * t + c; b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s; b21 = y * z * t - x * s; b22 = z * z * t + c;
+    out[0] = a00 * b00 + a10 * b01 + a20 * b02;
+    out[1] = a01 * b00 + a11 * b01 + a21 * b02;
+    out[2] = a02 * b00 + a12 * b01 + a22 * b02;
+    out[3] = a03 * b00 + a13 * b01 + a23 * b02;
+    out[4] = a00 * b10 + a10 * b11 + a20 * b12;
+    out[5] = a01 * b10 + a11 * b11 + a21 * b12;
+    out[6] = a02 * b10 + a12 * b11 + a22 * b12;
+    out[7] = a03 * b10 + a13 * b11 + a23 * b12;
+    out[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    out[9] = a01 * b20 + a11 * b21 + a21 * b22;
+    out[10] = a02 * b20 + a12 * b21 + a22 * b22;
+    out[11] = a03 * b20 + a13 * b21 + a23 * b22;
+    if (a !== out) {
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    return out;
+}
+
+var rotateX_1 = rotateX;
+function rotateX(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7],
+        a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+    if (a !== out) {
+        out[0]  = a[0];
+        out[1]  = a[1];
+        out[2]  = a[2];
+        out[3]  = a[3];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    out[4] = a10 * c + a20 * s;
+    out[5] = a11 * c + a21 * s;
+    out[6] = a12 * c + a22 * s;
+    out[7] = a13 * c + a23 * s;
+    out[8] = a20 * c - a10 * s;
+    out[9] = a21 * c - a11 * s;
+    out[10] = a22 * c - a12 * s;
+    out[11] = a23 * c - a13 * s;
+    return out;
+}
+
+var rotateY_1 = rotateY;
+function rotateY(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3],
+        a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+    if (a !== out) {
+        out[4]  = a[4];
+        out[5]  = a[5];
+        out[6]  = a[6];
+        out[7]  = a[7];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    out[0] = a00 * c - a20 * s;
+    out[1] = a01 * c - a21 * s;
+    out[2] = a02 * c - a22 * s;
+    out[3] = a03 * c - a23 * s;
+    out[8] = a00 * s + a20 * c;
+    out[9] = a01 * s + a21 * c;
+    out[10] = a02 * s + a22 * c;
+    out[11] = a03 * s + a23 * c;
+    return out;
+}
+
+var rotateZ_1 = rotateZ;
+function rotateZ(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3],
+        a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+    if (a !== out) {
+        out[8]  = a[8];
+        out[9]  = a[9];
+        out[10] = a[10];
+        out[11] = a[11];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    out[0] = a00 * c + a10 * s;
+    out[1] = a01 * c + a11 * s;
+    out[2] = a02 * c + a12 * s;
+    out[3] = a03 * c + a13 * s;
+    out[4] = a10 * c - a00 * s;
+    out[5] = a11 * c - a01 * s;
+    out[6] = a12 * c - a02 * s;
+    out[7] = a13 * c - a03 * s;
+    return out;
+}
+
+var fromRotation_1 = fromRotation;
+function fromRotation(out, rad, axis) {
+  var s, c, t;
+  var x = axis[0];
+  var y = axis[1];
+  var z = axis[2];
+  var len = Math.sqrt(x * x + y * y + z * z);
+  if (Math.abs(len) < 0.000001) {
+    return null
+  }
+  len = 1 / len;
+  x *= len;
+  y *= len;
+  z *= len;
+  s = Math.sin(rad);
+  c = Math.cos(rad);
+  t = 1 - c;
+  out[0] = x * x * t + c;
+  out[1] = y * x * t + z * s;
+  out[2] = z * x * t - y * s;
+  out[3] = 0;
+  out[4] = x * y * t - z * s;
+  out[5] = y * y * t + c;
+  out[6] = z * y * t + x * s;
+  out[7] = 0;
+  out[8] = x * z * t + y * s;
+  out[9] = y * z * t - x * s;
+  out[10] = z * z * t + c;
+  out[11] = 0;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 0;
+  out[15] = 1;
+  return out
+}
+
+var fromRotationTranslation_1 = fromRotationTranslation;
+function fromRotationTranslation(out, q, v) {
+    var x = q[0], y = q[1], z = q[2], w = q[3],
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
+        xx = x * x2,
+        xy = x * y2,
+        xz = x * z2,
+        yy = y * y2,
+        yz = y * z2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
+    out[0] = 1 - (yy + zz);
+    out[1] = xy + wz;
+    out[2] = xz - wy;
+    out[3] = 0;
+    out[4] = xy - wz;
+    out[5] = 1 - (xx + zz);
+    out[6] = yz + wx;
+    out[7] = 0;
+    out[8] = xz + wy;
+    out[9] = yz - wx;
+    out[10] = 1 - (xx + yy);
+    out[11] = 0;
+    out[12] = v[0];
+    out[13] = v[1];
+    out[14] = v[2];
+    out[15] = 1;
+    return out;
+}
+
+var fromScaling_1 = fromScaling;
+function fromScaling(out, v) {
+  out[0] = v[0];
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = v[1];
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[10] = v[2];
+  out[11] = 0;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 0;
+  out[15] = 1;
+  return out
+}
+
+var fromXRotation_1 = fromXRotation;
+function fromXRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = c;
+    out[6] = s;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = -s;
+    out[10] = c;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out
+}
+
+var fromYRotation_1 = fromYRotation;
+function fromYRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad);
+    out[0] = c;
+    out[1] = 0;
+    out[2] = -s;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = s;
+    out[9] = 0;
+    out[10] = c;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out
+}
+
+var fromZRotation_1 = fromZRotation;
+function fromZRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad);
+    out[0] = c;
+    out[1] = s;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = -s;
+    out[5] = c;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out
+}
+
+var fromQuat_1 = fromQuat;
+function fromQuat(out, q) {
+    var x = q[0], y = q[1], z = q[2], w = q[3],
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
+        xx = x * x2,
+        yx = y * x2,
+        yy = y * y2,
+        zx = z * x2,
+        zy = z * y2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
+    out[0] = 1 - yy - zz;
+    out[1] = yx + wz;
+    out[2] = zx - wy;
+    out[3] = 0;
+    out[4] = yx - wz;
+    out[5] = 1 - xx - zz;
+    out[6] = zy + wx;
+    out[7] = 0;
+    out[8] = zx + wy;
+    out[9] = zy - wx;
+    out[10] = 1 - xx - yy;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+}
+
+var frustum_1 = frustum;
+function frustum(out, left, right, bottom, top, near, far) {
+    var rl = 1 / (right - left),
+        tb = 1 / (top - bottom),
+        nf = 1 / (near - far);
+    out[0] = (near * 2) * rl;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = (near * 2) * tb;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = (right + left) * rl;
+    out[9] = (top + bottom) * tb;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (far * near * 2) * nf;
+    out[15] = 0;
+    return out;
+}
+
+var perspectiveFromFieldOfView_1 = perspectiveFromFieldOfView;
+function perspectiveFromFieldOfView(out, fov, near, far) {
+    var upTan = Math.tan(fov.upDegrees * Math.PI/180.0),
+        downTan = Math.tan(fov.downDegrees * Math.PI/180.0),
+        leftTan = Math.tan(fov.leftDegrees * Math.PI/180.0),
+        rightTan = Math.tan(fov.rightDegrees * Math.PI/180.0),
+        xScale = 2.0 / (leftTan + rightTan),
+        yScale = 2.0 / (upTan + downTan);
+    out[0] = xScale;
+    out[1] = 0.0;
+    out[2] = 0.0;
+    out[3] = 0.0;
+    out[4] = 0.0;
+    out[5] = yScale;
+    out[6] = 0.0;
+    out[7] = 0.0;
+    out[8] = -((leftTan - rightTan) * xScale * 0.5);
+    out[9] = ((upTan - downTan) * yScale * 0.5);
+    out[10] = far / (near - far);
+    out[11] = -1.0;
+    out[12] = 0.0;
+    out[13] = 0.0;
+    out[14] = (far * near) / (near - far);
+    out[15] = 0.0;
+    return out;
+}
+
+var ortho_1 = ortho;
+function ortho(out, left, right, bottom, top, near, far) {
+    var lr = 1 / (left - right),
+        bt = 1 / (bottom - top),
+        nf = 1 / (near - far);
+    out[0] = -2 * lr;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = -2 * bt;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 2 * nf;
+    out[11] = 0;
+    out[12] = (left + right) * lr;
+    out[13] = (top + bottom) * bt;
+    out[14] = (far + near) * nf;
+    out[15] = 1;
+    return out;
+}
+
+var str_1 = str;
+function str(a) {
+    return 'mat4(' + a[0] + ', ' + a[1] + ', ' + a[2] + ', ' + a[3] + ', ' +
+                    a[4] + ', ' + a[5] + ', ' + a[6] + ', ' + a[7] + ', ' +
+                    a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' +
+                    a[12] + ', ' + a[13] + ', ' + a[14] + ', ' + a[15] + ')';
+}
+
+var glMat4 = {
+  create: create_1
+  , clone: clone_1
+  , copy: copy_1
+  , identity: identity_1
+  , transpose: transpose_1
+  , invert: invert_1
+  , adjoint: adjoint_1
+  , determinant: determinant_1
+  , multiply: multiply_1
+  , translate: translate_1
+  , scale: scale_1
+  , rotate: rotate_1
+  , rotateX: rotateX_1
+  , rotateY: rotateY_1
+  , rotateZ: rotateZ_1
+  , fromRotation: fromRotation_1
+  , fromRotationTranslation: fromRotationTranslation_1
+  , fromScaling: fromScaling_1
+  , fromTranslation: fromTranslation_1
+  , fromXRotation: fromXRotation_1
+  , fromYRotation: fromYRotation_1
+  , fromZRotation: fromZRotation_1
+  , fromQuat: fromQuat_1
+  , frustum: frustum_1
+  , perspective: perspective_1
+  , perspectiveFromFieldOfView: perspectiveFromFieldOfView_1
+  , ortho: ortho_1
+  , lookAt: lookAt_1
+  , str: str_1
+};
+var glMat4_4 = glMat4.identity;
+var glMat4_25 = glMat4.perspective;
+var glMat4_28 = glMat4.lookAt;
+
+var shadowBuilder = lightPosition => ({
+  shadowViewMatrix_x: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0] + 1.0, lightPosition[1], lightPosition[2]],
+    [0.0, -1.0, 0.0]
+  ),
+  shadowViewMatrix_x_: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0] - 1.0, lightPosition[1], lightPosition[2]],
+    [0.0, -1.0, 0.0]
+  ),
+  shadowViewMatrix_y: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0], lightPosition[1] + 1.0, lightPosition[2]],
+    [0.0, 0.0, 1.0]
+  ),
+  shadowViewMatrix_y_: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0], lightPosition[1] - 1.0, lightPosition[2]],
+    [0.0, 0.0, -1.0]
+  ),
+  shadowViewMatrix_z: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0], lightPosition[1], lightPosition[2] + 1.0],
+    [0.0, -1.0, 0.0]
+  ),
+  shadowViewMatrix_z_: glMat4_28(
+    [],
+    lightPosition,
+    [lightPosition[0], lightPosition[1], lightPosition[2] - 1.0],
+    [0.0, -1.0, 0.0]
+  ),
+  shadowProjectionMatrix: glMat4_25([], Math.PI / 2.0, 1.0, 0.25, 70.0)
+});
+
+function drawModelCommands(regl, { variables, model, view }, cubeShadowFbo) {
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     primitiveCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1);
+  const shadow = shadowBuilder(view.lightPosition);
   const geometry = createGeometry({
     pathicleWidth: view.pathicleWidth,
     pathicleRelativeHeight: view.pathicleRelativeHeight
@@ -337,27 +1104,15 @@ function drawModelCommands(regl, { variables, model, view }) {
   Math.clip = function(number, min, max) {
     return Math.max(min, Math.min(number, max))
   };
-  let modelMatrix = identity_1([]);
-  const command = mode =>
-    regl({
-      blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [1, 1, 1, 1]
-      },
-      cull: {
-        enable: true,
-        face: 'back'
-      },
+  let modelMatrix = glMat4_4([]);
+  const command = mode => {
+    const framebuffer = {
+      framebuffer: function(context, props, batchId) {
+        return cubeShadowFbo.faces[batchId]
+      }
+    };
+    return regl({
+      depth: true,
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -383,7 +1138,7 @@ function drawModelCommands(regl, { variables, model, view }) {
                 const n = Math.sqrt(model.particleCount);
                 const p = i % model.particleCount;
                 const y = (p % Math.sqrt(model.particleCount)) - n / 2;
-                return 1;
+                return 1
               })
           ),
           divisor: 1
@@ -399,7 +1154,27 @@ function drawModelCommands(regl, { variables, model, view }) {
       },
       vert: [`#define ${mode} 1`, vert$1].join('\n'),
       frag: [`#define ${mode} 1`, frag$1].join('\n'),
+      ...(mode === 'shadowCube' && framebuffer),
       uniforms: {
+        ...(mode === 'shadowCube' && {
+          shadowViewMatrix: function(context, props, batchId) {
+            switch (batchId) {
+              case 0:
+                return shadow.shadowViewMatrix_x
+              case 1:
+                return shadow.shadowViewMatrix_x_
+              case 2:
+                return shadow.shadowViewMatrix_y
+              case 3:
+                return shadow.shadowViewMatrix_y_
+              case 4:
+                return shadow.shadowViewMatrix_z
+              case 5:
+                return shadow.shadowViewMatrix_z_
+            }
+          }
+        }),
+        ...(mode === 'lighting' && { shadowCube: cubeShadowFbo }),
         uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
@@ -407,6 +1182,9 @@ function drawModelCommands(regl, { variables, model, view }) {
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
+        lightPosition: view.lightPosition,
+        shadowProjectionMatrix: shadow.shadowProjectionMatrix,
+        shadowViewMatrix_top: shadow.shadowViewMatrix_y_,
         stageGrid_y: view.stageGrid.y,
         shadowColor: view.shadowColor,
         stageGrid_size: view.stageGrid.size,
@@ -418,10 +1196,12 @@ function drawModelCommands(regl, { variables, model, view }) {
           ])
         }
       }
-    });
+    })
+  };
   return {
     lighting: command('lighting'),
-    shadow: command('shadow')
+    shadow: command('shadow'),
+    shadowCube: command('shadowCube')
   }
 }
 
@@ -11997,13 +12777,17 @@ function createPlane(sx, sy, nx, ny, options) {
   }
 }
 
-var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n#define FOG_DENSITY 0.1\nfloat fogFactorExp2(\n  const float dist,\n  const float density\n) {\n  const float LOG2 = -1.442695;\n  float d = density * dist;\n  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);\n}\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec4 fogColor = vec4(1.0);\n\nfloat grid(vec2 st, float res, float width) {\n  vec2 grid =  fract(st*res) / width;\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main() {\n\n  float resolution = 1.;\n  vec2 grid_st = vUv * uResolution * resolution;\n  vec3 color = vec3(.9);\n  color -= vec3(.75) * grid(grid_st, 1. / resolution, 2.);\n  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);\n\n  float fogDistance = length(vPosition - eye); //gl_FragCoord.z / gl_FragCoord.w;\n  float fogAmount = fogFactorExp2(fogDistance, FOG_DENSITY);\n\n  vec4 color4 = vec4(color, .5);\n\n  gl_FragColor = mix(color4,\n        fogColor,\n        fogAmount);\n\n//  gl_FragColor = vec4(color.rgb, 1.);\n\n}\n"; // eslint-disable-line
+var frag$2 = "precision mediump float;\n#extension GL_OES_standard_derivatives : enable\n#define GLSLIFY 1\n#define FOG_DENSITY 0.1\nfloat fogFactorExp2(\n  const float dist,\n  const float density\n) {\n  const float LOG2 = -1.442695;\n  float d = density * dist;\n  return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);\n}\n\nuniform vec2 uResolution;\nuniform vec3 eye;\nuniform sampler2D uTex;\nuniform float ambientIntensity;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nconst vec3 fogColor = vec3(1.0);\nconst float FogDensity = 0.3;\n\nvarying vec4 vLightNDC;\nuniform samplerCube shadowCube;\nuniform vec3 lightPosition;\n\nfloat unpackRGBA (vec4 v) {\n  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));\n}\n\nfloat grid(vec2 st, float res, float width) {\n  vec2 grid =  fract(st*res) / width;\n  grid /= fwidth(st);\n  return 1. - (step(res, grid.x) * step(res, grid.y));\n}\n\nvoid main() {\n\n  float resolution = 10.;\n  vec2 grid_st = vUv * uResolution * resolution;\n  vec3 color = vec3(.8);\n  color -= vec3(.75) * grid(grid_st, 1. / resolution, 3.);\n  color -= vec3(.5) * grid(grid_st, 10. / resolution, 1.);\n\n  vec3 texCoord = (vPosition - lightPosition);\n  float visibility = 0.0;\n  //do soft shadows:\n  for (int x = 0; x < 2; x++) {\n    for (int y = 0; y < 2; y++) {\n      for (int z = 0; z < 2; z++) {\n        float bias = 0.3;\n        vec4 env = textureCube(shadowCube, texCoord + vec3(x,y,z) * vec3(0.1));\n\n        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;\n        float depth = lightPos.z - bias;\n        float occluder = unpackRGBA(env);\n\n        float shadow = mix(0.2, 1.0, step(depth, occluder));\n        visibility += (env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;\n//        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;\n      }\n    }\n  }\n  visibility *= 1.0 / 8.0;\n\n  vec3 shadowedColor = (1.-visibility) * color.rgb;\n\n  float fogDistance = length(eye - vPosition);\n\n  gl_FragColor = vec4(mix(shadowedColor, fogColor, exp(- fogDistance * FogDensity)), exp(- fogDistance * FogDensity));\n//  gl_FragColor = vec4(color.rgb, 1.);\n\n}\n"; // eslint-disable-line
 
-var vert$3 = "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\n\nvoid main () {\n  vUv = uv / 1.;\n  vPosition = position + uOffset;\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n"; // eslint-disable-line
+var vert$2 = "precision mediump float;\n#define GLSLIFY 1\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n//\nuniform vec3 uOffset;\nuniform mat4 projection;\nuniform mat4 view;\n//\nvarying vec2 vUv;\nvarying vec3 vPosition;\n\nuniform mat4 shadowViewMatrix_top;\nuniform mat4 shadowViewMatrix;\nuniform mat4 shadowProjectionMatrix;\nvarying vec4 vLightNDC;\n// Matrix to shift range from -1->1 to 0->1\nconst mat4 depthScaleMatrix = mat4(\n0.5, 0, 0, 0,\n0, 0.5, 0, 0,\n0, 0, 0.5, 0,\n0.5, 0.5, 0.5, 1\n);\n\nvoid main () {\n  vUv = uv / 1.;\n  vPosition = position + uOffset;\n\n  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top  * vec4(vPosition, 1.0);\n\n  gl_Position = projection * view * vec4(vPosition, 1.);\n}\n"; // eslint-disable-line
 
-function drawStageCommands(regl, { stageGrid }) {
-  const stage = createPlane(stageGrid.size, stageGrid.size);
-  const command = () => {
+function drawStageCommands(regl, view, cubeShadowFbo) {
+  const stage = createPlane(
+    view.stageGrid.size,
+    view.stageGrid.size
+  );
+  const shadow = shadowBuilder(view.lightPosition);
+  const command = mode => {
     return regl({
       blend: {
         enable: true,
@@ -12031,8 +12815,12 @@ function drawStageCommands(regl, { stageGrid }) {
         uv: stage.uvs
       },
       uniforms: {
-        uOffset: [0, stageGrid.y - 0, 0],
-        uResolution: [stageGrid.size, stageGrid.size]
+        uOffset: [0, view.stageGrid.y - 0, 0],
+        uResolution: [view.stageGrid.size, view.stageGrid.size],
+        shadowCube: cubeShadowFbo,
+        lightPosition: view.lightPosition,
+        shadowProjectionMatrix: shadow.shadowProjectionMatrix,
+        shadowViewMatrix_top: shadow.shadowViewMatrix_y_
       },
       vert: vert$3,
       frag: frag$2
@@ -12043,7 +12831,13 @@ function drawStageCommands(regl, { stageGrid }) {
   }
 }
 
+const CUBE_MAP_SIZE = 1024;
 function boxesViewSimple(regl, { variables, model, config }) {
+  const cubeShadowFbo = regl.framebufferCube({
+    radius: CUBE_MAP_SIZE,
+    colorFormat: 'rgba',
+    colorType: 'uint8'
+  });
   const uniforms = {
     bufferLength: model.bufferLength,
     particleCount: model.particleCount,
@@ -12053,31 +12847,79 @@ function boxesViewSimple(regl, { variables, model, config }) {
     viewRange: regl.prop('viewRange'),
     ambient: (ctx, props) => new Array(3).fill(props.ambientIntensity),
     pointLightPosition: config.view.lights[0].position,
+    lightPos: config.view.lightPosition,
     dt: 2 * model.halfDeltaTOverC,
-    rgbGamma: config.view.rgbGamma
+    rgbGamma: config.view.rgbGamma,
+    cubeShadowFbo
   };
   const setParams = regl({
     uniforms: uniforms
   });
-  const drawModel = drawModelCommands(regl, {
-    variables,
-    model,
-    view: config.view
-  });
-  const drawStage = drawStageCommands(regl, config.view);
+  const drawModel = drawModelCommands(
+    regl,
+    {
+      variables,
+      model,
+      view: config.view
+    },
+    cubeShadowFbo
+  );
+  const drawStage = drawStageCommands(regl, config.view, cubeShadowFbo);
   const drawBackground = drawBackgroundCommand(regl, config.view);
   function drawDiffuse(props) {
     setParams(config.view, () => {
       drawBackground();
       config.view.isStageVisible && drawStage.lighting(props);
-      config.view.isShadowEnabled && drawModel.shadow(props);
+      drawModel.shadowCube(props);
       drawModel.lighting(props);
     });
+  }
+  const texelSize = 1;
+  function drawShadowCubeFbo() {
+    const command = regl({
+      vert: `
+      precision mediump float;
+      attribute vec2 position;
+      varying vec2 uv;
+      void main () {
+        uv = position;
+        gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+      }`,
+      frag: `
+      precision mediump float;
+      uniform samplerCube texture;
+      varying vec2 uv;
+      float unpackRGBA (vec4 v) {
+        return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+      }
+      void main () {
+        vec3 texCoord = vec3(uv.xy, 1.);
+        vec4 texel = vec4(0.,0.,0., unpackRGBA(textureCube(texture, texCoord)));
+        gl_FragColor = texel;
+      }`,
+      attributes: { position: [2, 0, 0, 2, -2, -2] },
+      uniforms: {
+        texture: cubeShadowFbo
+      },
+      viewport: {
+        x: (_, __, batchId) => {
+        },
+        y: 0,
+        width: CUBE_MAP_SIZE * texelSize,
+        height: CUBE_MAP_SIZE * texelSize
+      },
+      depth: {
+        enable: false
+      },
+      count: 3
+    });
+    return command()
   }
   const destroy = () => {};
   return {
     destroy,
-    drawDiffuse
+    drawDiffuse,
+    drawShadowCubeFbo
   }
 }
 
@@ -12147,7 +12989,7 @@ var set;
 try {
   set = Set;
 } catch (_) {}
-function clone(src) {
+function clone$1(src) {
   if (!src || typeof src !== 'object' || typeof src === 'function') {
     return src;
   }
@@ -12161,7 +13003,7 @@ function clone(src) {
     return new RegExp(src);
   }
   if (Array.isArray(src)) {
-    return src.map(clone);
+    return src.map(clone$1);
   }
   if (map && src instanceof map) {
     return new Map(Array.from(src.entries()));
@@ -12172,13 +13014,13 @@ function clone(src) {
   if (src instanceof Object) {
     var obj = {};
     for (var key in src) {
-      obj[key] = clone(src[key]);
+      obj[key] = clone$1(src[key]);
     }
     return obj;
   }
   return src;
 }
-var nanoclone = clone;
+var nanoclone = clone$1;
 var types = [{
   name: "primitive",
   is: function (el) {
@@ -12332,6 +13174,7 @@ var defaultConfig = {
     }
   },
   view: {
+    lightPosition: [0, 3, 0],
     ssaoEnabled: false,
     stageGrid: {
       resolution: 256,
@@ -12386,7 +13229,7 @@ var defaultConfig = {
       far: 50,
       near: 0.0001,
       minDistance: 0.1,
-      maxDistance: 5
+      maxDistance: 10
     }
   },
   dumpData: false
@@ -12781,7 +13624,7 @@ var set$1;
 try {
   set$1 = Set;
 } catch (_) {}
-function clone$1 (src) {
+function clone$2 (src) {
   if (!src || typeof src !== 'object' || typeof src === 'function') {
     return src
   }
@@ -12795,7 +13638,7 @@ function clone$1 (src) {
     return new RegExp(src)
   }
   if (Array.isArray(src)) {
-    return src.map(clone$1)
+    return src.map(clone$2)
   }
   if (map$1 && src instanceof map$1) {
     return new Map(Array.from(src.entries()))
@@ -12806,13 +13649,13 @@ function clone$1 (src) {
   if (src instanceof Object) {
     var obj = {};
     for (var key in src) {
-      obj[key] = clone$1(src[key]);
+      obj[key] = clone$2(src[key]);
     }
     return obj
   }
   return src
 }
-var nanoclone$1 = clone$1;
+var nanoclone$1 = clone$2;
 
 var types$1 = [
   {
