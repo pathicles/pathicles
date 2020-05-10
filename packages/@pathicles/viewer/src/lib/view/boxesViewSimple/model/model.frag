@@ -5,8 +5,8 @@ varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
-varying vec3 vAmbientColor;
-varying vec3 vDiffuseColor;
+varying vec4 vAmbientColor;
+varying vec4 vDiffuseColor;
 varying float vColorCorrection;
 
 uniform vec3 lightPosition;
@@ -19,10 +19,10 @@ uniform vec3 eye;
 #ifdef lighting
 varying vec4 vLightNDC;
 uniform samplerCube cubeShadow;
+uniform sampler2D shadowMap;
 #endif
 
 
-#define FOG_DENSITY 0.01
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
 const vec4 fogColor = vec4(1.0);
@@ -52,7 +52,7 @@ void main () {
 
   float opacity = 1.;
   #ifdef shadow
-  gl_FragColor = vec4(vDiffuseColor, .2/vPosition.z/vPosition.z); //vec4(lightingColor,
+  gl_FragColor = vec4(vDiffuseColor.rgb, .2/vPosition.z/vPosition.z); //vec4(lightingColor,
   #endif
 
 
@@ -63,58 +63,110 @@ void main () {
 
 
 #ifdef shadowMap
-  gl_FragColor = packRGBA(gl_FragCoord.z);
+  gl_FragColor = packRGBA(gl_FragCoord.z) + vec4(0.1);
 #endif
 
 
 
 #ifdef lighting
 
-  float ambientLightAmount = .5;
-  float diffuseLightAmount = .5;
+  float ambientLightAmount = .75;
+  float diffuseLightAmount = 1.5;
+
+  // set the specular term to black
+  vec4 spec = vec4(0.0);
 
 
-  vec3 ambient = ambientLightAmount * vDiffuseColor;
-  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +
-                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;
+  // normalize both input vectors
+  vec3 n = normalize(vNormal);
+  vec3 e = normalize(eye);
+  vec3 lightDirection = normalize(lightPosition);
 
-  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition)) , .5, 2. );
-//  vec3 diffuse2 = 0.01 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;
-  vec3 combinedDiffuse = clamp(diffuse * cosTheta2 , vec3(0.), vec3(1.));
+  vec4 specular = vec4(1.);
+  float shininess = .5;
 
-
-//  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
-
-
-
-  vec3 texCoord = (vPosition - lightPosition);
-  float visibility = 0.0;
-   //do soft shadows:
-  for (int x = 0; x < 2; x++) {
-    for (int y = 0; y < 2; y++) {
-      for (int z = 0; z < 2; z++) {
-        float bias = 0.3;
-        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
-        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-        float depth = lightPos.z - bias;
-        float occluder = unpackRGBA(textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1)));
-
-        float shadow = mix(0.2, 1.0, step(depth, occluder));
-        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
-      }
-    }
+  float intensity = max(dot(n,lightDirection), 1.0);
+  if (intensity > 0.0) {
+    // compute the half vector
+    vec3 h = normalize(lightDirection + e);
+    // compute the specular term into spec
+    float intSpec = max(dot(h,n), 0.0);
+    spec = specular * pow(intSpec,shininess);
   }
-  visibility *= 1.0 / 8.0;
 
-  visibility = 1.0;
+  vec4 color;
 
-  vec4 shadowedColor = vec4(visibility * (1. - 1.* vColorCorrection) * ( combinedDiffuse + ambient), 1.0);
+//  color = (1. - vColorCorrection)  * max(intensity * vDiffuseColor + 0.*spec, vAmbientColor);
 
 
-  float fogDistance = length(eye - vPosition);
-  float fogAmount = fog_exp2(fogDistance, FOG_DENSITY);
+  color  = (1. - 1. * vColorCorrection) * ( 1.*vDiffuseColor + vAmbientColor);
 
-  gl_FragColor = mix(shadowedColor, fogColor, fogAmount);
+//  color = .5 * (1. - vColorCorrection) * vDiffuseColor + vAmbientColor;
+//  vec3 ambient = ambientLightAmount * vDiffuseColor;
+//  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +
+//                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;
+//
+/*  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition*20.)) , .9, 1.1 );
+  vec3 diffuse2 = 0.02 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;
+  vec4 combinedDiffuse = clamp(vDiffuseColor * cosTheta2 , vec4(0.), vec4(1.));*/
+//
+//
+////  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
+
+  //color = (1. - 1.* vColorCorrection) * ( vDiffuseColor);
+
+
+  vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+
+  float bias = 0.001;
+  float depth = lightPos.z - bias;
+  float occluder = unpackRGBA(texture2D(shadowMap, lightPos.xy));
+
+  // Compare actual depth from light to the occluded depth rendered in the depth map
+  // If the occluded depth is smaller, we must be in shadow
+  float shadow = mix(0.2, 1.0, step(depth, occluder));
+
+//
+//  vec3 texCoord = (vPosition - lightPosition);
+//  float visibility = 0.0;
+//   //do soft shadows:
+//  for (int x = 0; x < 2; x++) {
+//    for (int y = 0; y < 2; y++) {
+//      for (int z = 0; z < 2; z++) {
+//        float bias = 0.3;
+////        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
+//        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+//        float depth = lightPos.z - bias;
+//
+//        float occluder = unpackRGBA(texture2D(shadowMap,texCoord));
+//
+//        float shadow = mix(0.2, 1.0, step(depth, occluder));
+//        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
+//      }
+//    }
+//  }
+//  visibility *= 1.0 / 8.0;
+//
+//  visibility = 1.0;
+
+  shadow = 1.;
+
+  vec4 shadowedColor = shadow * color;
+
+
+
+
+
+
+  const float FOG_DENSITY = .9;
+  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .5);
+  float fogDistance = length( vPosition);
+  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
+
+  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
+
+  gl_FragColor = vec4(faggedColor.rgb,  1.-fogAmount);
+
 
 #endif  // lighting
 

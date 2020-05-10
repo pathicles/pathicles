@@ -8,7 +8,7 @@ export default class SimulationFSM {
       prerender = false,
       stepCount = -1,
       stepsPerTick = 1,
-      looping = false,
+      loops = 0,
       mode = 'stepwise',
       simulate = false
     }
@@ -21,14 +21,18 @@ export default class SimulationFSM {
         ? this._simulation.constants.model.bufferLength - 1
         : stepCount
     this._stepsPerTick = stepsPerTick
-    this._looping = looping
+    this._runCount = 0
+    this._loopCount = 0
+    this._loopCountMax = loops
+    this._isLooping = loops > 0
     this._mode = mode // framewise / stepwise
 
     this.fsm = { state: 'initial' } // initial / active / paused / restart
   }
 
   toggleLooping() {
-    this._looping = !this._looping
+    this._loopCount = 0
+    this._isLooping = !this._isLooping
   }
 
   toggleMode() {
@@ -40,6 +44,9 @@ export default class SimulationFSM {
       this.fsm = { state: 'paused' }
     } else if (this.fsm.state === 'paused') {
       this.fsm = { state: 'active' }
+      if (this._isLooping) {
+        this._loopCount = 1
+      }
     }
 
     log('toggleActivity() for this.fsm.state: ' + this.fsm.state)
@@ -52,6 +59,9 @@ export default class SimulationFSM {
         'PathiclesRunner.start can be called in state initial only'
       )
     }
+
+    this._runCount = 1
+    this._loopCount = 1
 
     if (this._prerender) {
       log('start.prerender')
@@ -75,7 +85,7 @@ export default class SimulationFSM {
 
     if (this.fsm.state === 'active') {
       if (this._simulation.variables.tick.value > this._stepCount - 1) {
-        if (this._looping) {
+        if (this._isLooping && this._loopCount <= this._loopCountMax) {
           this.fsm.state = 'restart'
         } else {
           this.fsm.state = 'paused'
@@ -91,6 +101,7 @@ export default class SimulationFSM {
         }
       }
     } else if (this.fsm.state === 'restart') {
+      this._loopCount++
       this._simulation.reset({})
       this._simulation.push({})
       this.fsm.state = this.fsm.state.replace(/restart/, 'active')

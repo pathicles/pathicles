@@ -7,7 +7,6 @@ export const freeElectron = {
       phi: (2 * Math.PI) / (360 / 15),
       distance: 2,
 
-      fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
       // rotationDecayTime: 0,
@@ -22,7 +21,7 @@ export const freeElectron = {
 
   runner: {
     prerender: true,
-    looping: true,
+    loops: 5,
 
     mode: 'framewise',
     stepsPerTick: 1,

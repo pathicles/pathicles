@@ -1,5 +1,5 @@
 // render point-light shadows into a cubemap
-import { perspective, lookAt } from 'gl-mat4'
+import { perspective, ortho, lookAt } from 'gl-mat4'
 
 export const SIZE = 1024
 export const TEXEL_SIZE = 1
@@ -29,6 +29,9 @@ export class Shadow {
       0.25,
       70.0
     )
+
+    // this.shadowProjectionMatrix = ortho([], -1, 1, -1, 1, 0.001, 100)
+    console.log(this.shadowProjectionMatrix)
   }
 
   drawFbo() {
@@ -51,7 +54,8 @@ export class Shadow {
       }
       void main () {
 
-        vec4 texel = vec4(unpackRGBA(texture2D(texture, uv)));
+        // vec4 texel = vec4(unpackRGBA(texture2D(texture, uv)));
+        vec4 texel = texture2D(texture, uv);
         gl_FragColor = texel; //vec4(uv,uv);
       }`,
 
@@ -62,15 +66,13 @@ export class Shadow {
       },
 
       viewport: {
-        x: (_, __, batchId) => {
-          batchId * SIZE * TEXEL_SIZE
-        },
+        x: 0,
         y: 0,
         width: SIZE * TEXEL_SIZE,
         height: SIZE * TEXEL_SIZE
       },
       depth: {
-        enable: false
+        enable: true
       },
 
       count: 3

@@ -5,6 +5,10 @@ import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
 
+function clip(value, min, max) {
+  return Math.min(Math.max(value, min), max)
+}
+
 export default function(regl, { variables, model, view }, shadow, cubeShadow) {
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
@@ -23,24 +27,24 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
   const command = mode => {
     return regl({
       depth: true,
-      // blend: {
-      //   enable: true,
-      //   func: {
-      //     srcRGB: 'src alpha',
-      //     srcAlpha: 1,
-      //     dstRGB: 'one minus src alpha',
-      //     dstAlpha: 1
-      //   },
-      //   equation: {
-      //     rgb: 'add',
-      //     alpha: 'add'
-      //   },
-      //   color: [1, 1, 1, 1]
-      // },
-      // cull: {
-      //   enable: true,
-      //   face: 'back'
-      // },
+      blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [1, 1, 1, 1]
+      },
+      cull: {
+        enable: true,
+        face: 'back'
+      },
       primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
@@ -73,7 +77,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
                 // eslint-disable-next-line no-unused-vars
                 const r = (y ** 2 + x ** 2) / n ** 2
 
-                return 1 //Math.clip(1.25 * Math.pow(Math.cos(2 * r), 4, 0, 1))
+                return clip(1.25 * Math.pow(Math.cos(2 * r), 2), 0.25, 0.5)
               })
           ),
           divisor: 1
@@ -134,6 +138,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
           return props.viewRange || [0, 1]
         },
         lightPosition: view.lightPosition,
+        shadowMap: shadow.fbo,
         shadowProjectionMatrix: cubeShadow.shadowProjectionMatrix,
         shadowViewMatrix_top: cubeShadow.shadowViewMatrix_y_,
         stageGrid_y: view.stageGrid.y,

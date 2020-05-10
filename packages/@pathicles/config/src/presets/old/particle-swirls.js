@@ -10,7 +10,7 @@ export default {
   camera: {},
   runner: {
     prerender: false,
-    looping: false,
+    loops: 0,
     mode: 'framewise',
     stepsPerTick: 2,
     stepCount: 1024

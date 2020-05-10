@@ -7,7 +7,6 @@ export const freePhoton = {
       phi: (2 * Math.PI) / (360 / 15),
       distance: 1,
 
-      fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
       // rotationDecayTime: 0,
@@ -22,7 +21,7 @@ export const freePhoton = {
 
   runner: {
     prerender: true,
-    looping: false,
+    loops: 0,
 
     mode: 'framewise',
     stepsPerTick: 2,

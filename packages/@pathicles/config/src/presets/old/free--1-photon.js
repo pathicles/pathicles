@@ -7,7 +7,7 @@ export default {
   gamma: 10,
   runner: {
     prerender: false,
-    looping: false,
+    loops: 0,
     mode: 'framewise',
     stepsPerTick: 1,
     stepCount: 10

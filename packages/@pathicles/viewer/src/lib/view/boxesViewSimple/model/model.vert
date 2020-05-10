@@ -32,7 +32,7 @@ uniform float pathicleWidth;
 uniform float pathicleGap;
 uniform float stageGrid_y;
 uniform float stageGrid_size;
-uniform vec3 shadowColor;
+uniform vec4 shadowColor;
 uniform vec4 uLight;
 
 uniform sampler2D utParticleColorAndType;
@@ -60,8 +60,8 @@ varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
-varying vec3 vAmbientColor;
-varying vec3 vDiffuseColor;
+varying vec4 vAmbientColor;
+varying vec4 vDiffuseColor;
 
 varying float vColorCorrection;
 
@@ -163,9 +163,10 @@ void main () {
 
 #ifdef lighting
 
-  vDiffuseColor = get_color(aParticle).rgb;
+  vDiffuseColor = get_color(aParticle);
+  vAmbientColor = get_color(aParticle);
   float maxDistance = 4.;
-  vColorCorrection += vNormalOrig.z * vNormalOrig.z * .5;
+  vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
   vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);
 #endif
 
@@ -176,9 +177,13 @@ void main () {
 #endif
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
-  gl_Position = projection * view * model * vec4(vPosition, 1.0);
 
+#ifdef shadowMap
+  gl_Position = shadowProjectionMatrix * shadowViewMatrix * model * vec4(vPosition, 1.0);
+#endif
 
+#ifdef lighting
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
+#endif
 }
 

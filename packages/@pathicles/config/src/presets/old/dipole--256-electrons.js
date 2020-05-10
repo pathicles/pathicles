@@ -10,7 +10,7 @@ export default {
   dipole_minZ: -1,
   dipole_maxZ: 1,
   runner: {
-    looping: false,
+    loops: 0,
     stepCount: 128
   },
   model: {

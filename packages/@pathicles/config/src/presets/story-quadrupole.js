@@ -4,40 +4,38 @@ export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [-1, 1, 0],
-      theta: (2 * Math.PI) / (360 / 75),
-      phi: (2 * Math.PI) / (360 / 5),
-      distance: 5
+      position: [5, 2, 2],
+      target: [0, 2, 0]
     }
   },
   model: {
-    tickDurationOverC: 0.1,
+    tickDurationOverC: 0.2,
     emitter: {
       particleType: 'PROTON ',
       bunchShape: 'SQUARE_YZ',
       direction: [1, 0, 0],
-      position: [-10, 1, 0],
-      directionJitter: [0.0, 0.0, 0],
-      positionJitter: [0.1, 0.1, 0],
+      position: [-10, 2, 0],
+      directionJitter: [0, 0.2, 0],
+      positionJitter: [0, 0, 0.1],
 
-      gamma: 7
+      gamma: 3
     },
 
     lattice: {
       elements: {
         q1: {
           type: LatticeElementTypes.QUAD,
-          strength: -.5,
-          l: 5
+          strength: 0.5,
+          l: 2.5
         },
         q2: {
           type: LatticeElementTypes.QUAD,
-          strength: .5,
-          l: 5
+          strength: -0.5,
+          l: 2.5
         },
         l1: {
           type: LatticeElementTypes.DRIF,
-          l: 5
+          l: 10
         }
       },
       beamline: ['l1', 'q1', 'q2', 'l1'],

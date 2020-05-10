@@ -5,8 +5,26 @@ import interactionEvents from 'normalized-interaction-events'
 import { invert } from 'gl-mat4'
 
 export default function(options, regl) {
+  const { position, target } = options
+  const p = [
+    -target[0] + position[0],
+    -target[1] + position[1],
+    -target[2] + position[2]
+  ]
+
+  const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
+  const phi = Math.atan2(p[1], p[0])
+  const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
+
+  // console.log({
+  //   p: p.join(),
+  //   distance,
+  //   phi: phi * 57.295,
+  //   theta: theta * 57.295
+  // })
+
   const aCamera = camera({
-    ...options,
+    ...{ ...options, distance, phi, theta, center: target },
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   })
   initializeCameraControls(aCamera, regl._gl.canvas, {

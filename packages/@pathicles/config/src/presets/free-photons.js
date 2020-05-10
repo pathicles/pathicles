@@ -7,7 +7,6 @@ export const freePhotons = {
       phi: Math.PI / 8,
       distance: 1.5,
 
-      fovY: Math.PI / 3,
       dTheta: 0.001,
       autorotate: false,
       // rotationDecayTime: 0,
@@ -22,7 +21,7 @@ export const freePhotons = {
 
   runner: {
     prerender: true,
-    looping: true,
+    loops: 5,
 
     mode: 'framewise',
     stepsPerTick: 1,

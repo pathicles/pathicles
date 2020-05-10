@@ -4,8 +4,9 @@
 </template>
 
 <script>
+import PathiclesStory from './../components/PathiclesStory'
 export default {
-  // kujh
+  components: { 'pathicles-story': PathiclesStory },
   data() {
     return {
       story: {
@@ -22,8 +23,8 @@ export default {
               preset: 'story-loop',
               data: 'story-electric.json',
               camera: {
-                position: [-2, 0, 2],
-                target: [2.5, 0, -2.5]
+                position: [-1, 1.5, 1],
+                target: [2, 1.5, -2]
               }
             }
           },
@@ -38,8 +39,8 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.json',
               camera: {
-                position: [-5, 0, 0],
-                target: [0, 0, 0]
+                position: [-2, 1.5, 0],
+                target: [0, 1.5, 0]
               }
             }
           },
@@ -55,8 +56,8 @@ export default {
               preset: 'story-dipole',
               data: 'story-dipole.json',
               camera: {
-                position: [0, 0, -10],
-                target: [0, 0, 0]
+                position: [2, 1.5, 2],
+                target: [0, 1.5, 0]
               }
             }
           },
@@ -71,8 +72,8 @@ export default {
               preset: 'story-quadrupole',
               data: 'story-quadrupole.json',
               camera: {
-                position: [10, 0, -1],
-                target: [0, 0, -1]
+                position: [2, 1.5, 2],
+                target: [0, 1.5, 0]
               }
             }
           },

@@ -28,7 +28,7 @@ export default {
     }
   },
   runner: {
-    // looping: false,
+    // loops: 0,
     // stepCount: 512
   },
   model: {

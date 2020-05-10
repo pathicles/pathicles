@@ -40,7 +40,7 @@ export default function(regl, view, shadow) {
       uniforms: {
         uOffset: [0, view.stageGrid.y - 0, 0],
         uResolution: [view.stageGrid.size, view.stageGrid.size],
-        shadow: shadow.fbo,
+        shadowMap: shadow.fbo,
         lightPosition: view.lightPosition,
         shadowProjectionMatrix: shadow.shadowProjectionMatrix,
         shadowViewMatrix: shadow.shadowViewMatrix

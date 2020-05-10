@@ -5,9 +5,8 @@
     select(v-model="presetName" v-on:change="onChange($event)")
       option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
     .canvas-container(
-      ref="container"
-      :style="cssStyles")
-      canvas(ref="canvas" :style="cssStyles" :width="canvasWidth" :height="canvasHeight")
+      ref="container")
+      canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
       <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
@@ -57,7 +56,7 @@ export default {
     scrollHeight() {
       return this.scrollFactor * 100 + 'vh'
     },
-    cssStyles() {
+    canvasStyles() {
       return {
         width: this.screenWidth + 'px',
         height: this.screenHeight + 'px'

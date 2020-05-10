@@ -17,7 +17,7 @@ export default {
   quadrupole_2_maxZ: 2,
   quadrupole_2_rotated: true,
   runner: {
-    // looping: false,
+    // loops: 0,
     stepCount: 256
   },
   view: {

@@ -21,7 +21,7 @@ const outputFolderPath = path.join(__dirname, '..', 'images')
 let presets = ['story-electric', 'story-quadrupole', 'story-dipole']
 // presets = ['story-quadrupole']
 
-const queryString = '?debug=false&print=true'
+const queryString = '&debug=false&print=true'
 
 ;(async () => {
   const browser = await screenshots.launch({
@@ -33,27 +33,17 @@ const queryString = '?debug=false&print=true'
   for (let i = 0; i < presets.length; i++) {
     const page = await browser.newPage()
     const preset = presets[i]
-    await page.setViewport({ width: 1500, height: 1500, deviceScaleFactor: 1 })
-    await page.goto(urlBase + preset + queryString)
+    await page.setViewport({ width: 750, height: 750, deviceScaleFactor: 2 })
+    await page.goto(urlBase + '?presetName=' + preset + queryString)
     await page.waitFor(1000)
 
     await page.screenshot({
       path: path.join(outputFolderPath, preset + '.jpg')
     })
-    await page.screenshot({
-      path: path.join(outputFolderPath, preset + '.png')
-    })
 
     const data = await page.evaluate(() => {
-      // eslint-disable-next-line no-undef
-      //
-      //
-      //
-      //
       const data = window.pathicles.simulation.dump()
       return data
-      // console.log(data)
-      // return window.data
     })
     if (data.data) {
       // const encoded = binarySchema.encode(data)

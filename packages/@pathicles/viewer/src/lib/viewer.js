@@ -1,7 +1,7 @@
 /* eslint-env browser  */
 
 import guidedCameraFactory from './guidedCameraFactory'
-import { boxesViewSimple } from './view/boxesViewSimple/'
+import { boxesViewSimple } from './view/boxesViewSimple'
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
 
@@ -23,7 +23,9 @@ export class ReglViewerInstance {
       extensions: [
         'angle_instanced_arrays',
         'oes_texture_float',
-        'OES_standard_derivatives'
+        'OES_standard_derivatives',
+        'OES_texture_half_float',
+        'WEBGL_depth_texture'
       ],
 
       onDone: (err, regl) => {
@@ -121,8 +123,8 @@ export class ReglViewerInstance {
           //     ? (this.loopTick - 768) / 256 + 0.5
           //     : 0.5
           if (this.loopTick >= 128) {
-            this.modelTranslateX = (Math.random() - 0.5) * 1
-            this.modelTranslateY = (Math.random() - 0.5) * 0.5
+            this.modelTranslateX = (Math.random() - 0.5) * .1
+            this.modelTranslateY = (Math.random() - 0.5) * 0.1
           }
           this.loopTick = this.loopTick < 128 ? this.loopTick + 1 : 0
           activeSceneProgress =
@@ -151,7 +153,7 @@ export class ReglViewerInstance {
           },
           () => {
             regl.clear({
-              color: [0, 0, 0, 1],
+              color: [1, 1, 1, 1],
               depth: 1
             })
 

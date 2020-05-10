@@ -4,20 +4,19 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      center: [0, 1, 0],
-      theta: (2 * Math.PI) / (360 / 90),
-      phi: (2 * Math.PI) / (360 / 5),
-      distance: 5
+      // center: [-2, 1, 0],
+
+      position: [1, 2, 6],
+      target: [1, 2, 0]
     }
   },
 
   model: {
     emitter: {
-      boundingBox: -1,
-      particleType: 'ELECTRON',
+      particleType: 'ELECTRON ELECTRON',
       bunchShape: 'DISC',
-      direction: [0, 0.3, -1],
-      position: [0, -1.5, 0],
+      direction: [0, 0.4, -1],
+      position: [1, -1.5, 0],
       directionJitter: [0.05, 0.0, 0.05],
       positionJitter: [0.5, 0.5, 0.1],
       gamma: 2
@@ -29,13 +28,17 @@ export const storyDipole = {
 
     lattice: {
       elements: {
-        l0: {
+        l: {
+          type: LatticeElementTypes.DRIF,
+          l: 0
+        },
+        d: {
           type: LatticeElementTypes.SBEN,
           l: 20,
           strength: 0.002
         }
       },
-      beamline: ['l0'],
+      beamline: ['l', 'd'],
       origin: {
         phi: 0,
         position: [0, 0, -10]

@@ -28,17 +28,17 @@ export default {
   simulateHalfFloat: false,
 
   runner: {
-    prerender: true,
-    looping: false,
+    prerender: false,
+    loops: 1,
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 256
+    stepCount: 128
   },
 
   model: {
     bufferLength: 128,
-    tickDurationOverC: 0.1,
+    tickDurationOverC: 0.2,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -69,7 +69,7 @@ export default {
 
   // view
   view: {
-    lightPosition: [0, 3, 0],
+    lightPosition: [0, 2, 0],
 
     ssaoEnabled: false,
 
@@ -83,7 +83,7 @@ export default {
 
     sky: [0.9, 1, 0, 1],
 
-    shadowColor: [0.8, 0.8, 0.8],
+    shadowColor: [0.8, 0.8, 0.8, 1.0],
     ambientIntensity: 0.6,
     diffuse: 0,
     //drawBoundingBox: true,
@@ -96,9 +96,9 @@ export default {
     isShadowEnabled: true,
     isLatticeVisible: true,
 
-    pathicleRelativeGap: 1,
+    pathicleRelativeGap: 2,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.003,
 
     roughness: 0.7,
 
@@ -126,18 +126,16 @@ export default {
     ],
 
     camera: {
-      center: [0, 0, 0],
-      theta: Math.PI / 2,
-      phi: 0,
-      distance: 3,
+      position: [-2, 2, -2],
+      target: [0, 2, 0],
 
-      fovY: Math.PI / 2.5,
+      fovY: (2 * Math.PI) / (360 / 70),
       dTheta: 0.01,
       autorotate: true,
       // rotationDecayTime: 0,
       rotateAboutCenter: true,
       zoomAboutCursor: false,
-      zoomDecayTime: .1,
+      zoomDecayTime: 0.1,
       // panDecayTime: 0,
       far: 50,
       near: 0.0001,
