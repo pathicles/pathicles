@@ -9,6 +9,8 @@ export default function(regl, view, shadow) {
     view.stageGrid.size
   )
 
+  console.log("stage")
+
   // eslint-disable-next-line no-unused-vars
   const command = mode => {
     return regl({

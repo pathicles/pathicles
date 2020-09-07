@@ -69,6 +69,8 @@ export default {
   data: () => {
     return {
       screenWidth: 600,
+      canvasWidth: 600,
+      canvasHeight: 600,
       screenHeight: 600,
       storyHeight: 500,
       progress: 0,
@@ -156,7 +158,7 @@ export default {
         width: this.screenWidth + 'px',
         height: this.screenHeight + 'px'
       }
-    },
+    }
   },
   destroyed() {
     if (typeof window !== 'undefined' && window.document) {

@@ -5,6 +5,8 @@ import { CubeShadow } from './model/CubeShadow'
 import { Shadow } from './model/Shadow'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
+
+  console.log(config)
   const cubeShadow = new CubeShadow(regl, config.view.lightPosition)
   const shadow = new Shadow(regl, config.view.lightPosition)
 
@@ -42,8 +44,8 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
   function drawDiffuse(props) {
     setParams(config.view, () => {
-      //drawBackground()
-      // drawModel.cubeShadow(props)
+      // drawBackground()
+      // drawModel.cubeShsadow(props)
 
       regl.clear({
         color: [1, 1, 1, 1],
@@ -52,7 +54,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       })
       //drawModel.shadowMap(props)
 
-      // config.view.isShadowEnabled && drawModel.shadow(props)
+      //config.view.isShadowEnabled && drawModel.shadow(props)
 
       drawModel.lighting(props)
 

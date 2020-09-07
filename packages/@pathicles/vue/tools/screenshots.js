@@ -59,9 +59,17 @@ const queryString = '&debug=false&print=true'
       // )
       // // const blob = fs.readFileSync(path.join(__dirname, '..', 'src', 'data', preset + '.blob'))
 
+      let reducedData = {
+        tick: data.tick,
+        data: {
+          position: data.data.position.map(d => Math.round(d * 100) / 100),
+          particleTypes: data.data.particleTypes
+        }
+      }
+
       fs.writeFileSync(
         path.join(__dirname, '..', 'src', 'data', preset + '.json'),
-        JSON.stringify(data)
+        JSON.stringify(reducedData)
       )
     }
   }

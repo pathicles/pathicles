@@ -4,8 +4,7 @@
   .pathicles(ref="scrollContainer")
     select(v-model="presetName" v-on:change="onChange($event)")
       option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
-    .canvas-container(
-      ref="container")
+    .canvas-container(ref="container")
       canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
       <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
@@ -113,7 +112,7 @@ export default {
           Object.keys(params)
             .map(key => {
               return (
-                encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+                encodeURIComponent(key) + '=' + encodeURIComponwent(params[key])
               )
             })
             .join('&')

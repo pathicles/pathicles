@@ -21,7 +21,8 @@
   },
   "devDependencies": {
     "@vue/cli-service": "^4.2.3",
-    "binary-loader": "^0.0.1"
+    "binary-loader": "^0.0.1",
+    "@babel/node": "7.10.5"
   },
   "browserslist": [
     "last 1 chrome version"

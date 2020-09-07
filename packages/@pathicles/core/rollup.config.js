@@ -14,9 +14,9 @@ export default {
     file: pkg.module
   },
   plugins: [
-    progress({
-      clearLine: false // default: true
-    }),
+    // progress({
+    //   clearLine: false // default: true
+    // }),
     nodeResolve(),
     commonjs({
       // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
