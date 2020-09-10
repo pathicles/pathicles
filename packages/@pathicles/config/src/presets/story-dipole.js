@@ -2,24 +2,25 @@ import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/
 
 export const storyDipole = {
   name: 'story-dipole',
-  view: {
-    camera: {
-      // center: [-2, 1, 0],
-
-      position: [1, 2, 6],
-      target: [1, 2, 0]
-    }
-  },
+  // view: {
+  //   camera: {
+  //     // center: [-2, 1, 0],
+  //
+  //     position: [1, 2, 6],
+  //     target: [1, 2, 0]
+  //   }
+  // },
 
   model: {
     emitter: {
       particleType: 'ELECTRON ELECTRON',
-      bunchShape: 'DISC',
-      direction: [0, 0.4, -1],
+      bunchShape: 'SQUARE',
+      direction: [0, 0.25, -1],
       position: [1, -1.5, 0],
+      particleSeparation: 0.1,
       directionJitter: [0.05, 0.0, 0.05],
-      positionJitter: [0.5, 0.5, 0.1],
-      gamma: 2
+      positionJitter: [0.01, 0.01, 0.01],
+      gamma: 1.7
     },
     interactions: {
       magneticField: [0, 0, 0],

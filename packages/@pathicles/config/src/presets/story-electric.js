@@ -4,14 +4,14 @@ export const storyElectric = {
     camera: {
       // position: [-0.1, 1.7, 1],
       // target: [-0.1, 1.7, 0],
-      position: [0, 3, 0],
-      target: [0, 0, 0]
+      position: [2, 2, 0],
+      target: [0, 2, 0]
     }
   },
 
   model: {
     emitter: {
-      particleType: 'ELECTRON PROTON  PHOTON',
+      particleType: 'ELECTRON PROTON PHOTON',
       bunchShape: 'SQUARE',
       position: [0, 2, -10],
       direction: [0, 0, 1],

@@ -4,7 +4,7 @@ export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      position: [5, 2, 2],
+      position: [5, 2, 5],
       target: [0, 2, 0]
     }
   },

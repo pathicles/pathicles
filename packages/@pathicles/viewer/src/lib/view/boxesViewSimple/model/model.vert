@@ -15,8 +15,12 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
 }
 
 attribute vec3 aPosition;
+
+#ifndef wireframe
 attribute vec3 aNormal;
 attribute vec2 aUV;
+#endif
+
 attribute float aParticle;
 attribute float aColorCorrection;
 attribute float aStep;
@@ -30,6 +34,7 @@ uniform vec2 viewRange;
 
 uniform float pathicleWidth;
 uniform float pathicleGap;
+uniform float pathicleHeight;
 uniform float stageGrid_y;
 uniform float stageGrid_size;
 uniform vec4 shadowColor;
@@ -56,12 +61,19 @@ const mat4 depthScaleMatrix = mat4(
 
 
 varying float toBeDiscarded;
+varying float boxLength;
+varying vec3 vScale;
 varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
 varying vec4 vAmbientColor;
 varying vec4 vDiffuseColor;
+
+#ifdef wireframe
+attribute vec2 barycentric;
+varying vec2 b;
+#endif
 
 varying float vColorCorrection;
 
@@ -132,7 +144,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition
 
 void main () {
 
-  vNormalOrig = aNormal;
+
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
@@ -147,26 +159,32 @@ void main () {
   shadowProjectionScale = .1;
   #endif
 
+  vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+
+  boxLength = vScale.z;
+
   vec3 scaledPosition = vec3(
-    scale * aPosition.x,
+     aPosition.x,
     aPosition.y * shadowProjectionScale,
-    scale * aPosition.z * (length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap));
+     aPosition.z ) * vScale;
 
   vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
   + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
 
+
+#ifndef wireframe
+  vNormalOrig = aNormal;
   vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);
 
-
-
   vUv = aUV;
+#endif
 
 #ifdef lighting
 
   vDiffuseColor = get_color(aParticle);
   vAmbientColor = get_color(aParticle);
   float maxDistance = 4.;
-  vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
+  //vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
   vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);
 #endif
 
@@ -183,6 +201,12 @@ void main () {
 #endif
 
 #ifdef lighting
+  gl_Position = projection * view * model * vec4(vPosition, 1.0);
+#endif
+
+
+#ifdef wireframe
+  b = barycentric;
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
 #endif
 }

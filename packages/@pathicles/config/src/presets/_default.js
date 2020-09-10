@@ -33,12 +33,12 @@ export default {
 
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 128
+    stepCount: 127
   },
 
   model: {
     bufferLength: 128,
-    tickDurationOverC: 0.2,
+    tickDurationOverC: .2,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -46,7 +46,7 @@ export default {
       randomize: false,
 
       // "row", "column", "cross", "square", "disc"
-      bunchShape: 'disc',
+      bunchShape: 'square',
       particleCount: 128,
       particleSeparation: 0.1,
       gamma: 0,
@@ -93,23 +93,22 @@ export default {
     rgbGamma: 1,
 
     isStageVisible: true,
-    isShadowEnabled: true,
-    isLatticeVisible: true,
+    isShadowEnabled: false,
+    isLatticeVisible: false,
 
     pathicleRelativeGap: 2,
-    pathicleRelativeHeight: 5,
+    pathicleRelativeHeight: 10,
     pathicleWidth: 0.003,
 
     roughness: 0.7,
-
     specular: 1,
     ssaoBlurPower: 2,
     ssaoBlurRadius: 0.1,
     ssaoPower: 1,
     ssaoSampleCount: 32,
 
-    showTextures: false,
-    texelSize: 2,
+    showTextures: true,
+    texelSize: 1,
     viewRange: [0, 1],
 
     lights: [
@@ -126,10 +125,10 @@ export default {
     ],
 
     camera: {
-      position: [-2, 2, -2],
-      target: [0, 2, 0],
+      position: [1, 1, 0],
+      target: [0, 1, 0],
 
-      fovY: (2 * Math.PI) / (360 / 70),
+      fovY: (2 * Math.PI) / (360 / 60),
       dTheta: 0.01,
       autorotate: true,
       // rotationDecayTime: 0,

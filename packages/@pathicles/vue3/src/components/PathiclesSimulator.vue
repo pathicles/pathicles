@@ -1,15 +1,16 @@
 /* eslint-env browser */
 
 <template lang="pug">
-  .pathicles(ref="scrollContainer")
-    select(v-model="presetName" v-on:change="onChange($event)")
-      option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
-    .canvas-container(ref="container")
-      canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-      <!--      dat-gui(:model="configModel" @change="onChange")-->
+.pathicles(ref="scrollContainer")
+  select(v-model="presetName" v-on:change="onChange($event)")
+    option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
+  .canvas-container(ref="container")
+    canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+    <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>
+
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
 // import DatGUI from './DatGUI'
@@ -40,8 +41,8 @@ export default {
   },
   data: () => {
     return {
-      screenWidth: 600,
-      screenHeight: 600,
+      screenWidth: 10,
+      screenHeight: 10,
       progress: 0.5,
       cameraMode: 'free',
       viewRange: [0, 1],
@@ -77,10 +78,15 @@ export default {
 
       this.config = loadConfig(this.presetName)
 
+      if (parsedUrl.searchParams.get('prerender')) {
+        this.config.runner.prerender = true
+      }
+
       this._gui = this.initGui(loadConfig(this.presetName))
       this.screenWidth = window.innerWidth
       this.screenHeight = window.innerHeight
-
+    }
+    this.$nextTick(() => {
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
         config: this.config,
@@ -92,8 +98,6 @@ export default {
           cameraMode: this.cameraMode
         }
       })
-    }
-    this.$nextTick(() => {
       this.scrollyHeight = this.$refs.scrollContainer.clientHeight
     })
   },
@@ -118,6 +122,7 @@ export default {
             .join('&')
       )
       this.config = loadConfig(this.presetName)
+      console.log(this.config)
       this.reglInstance.loadConfig(this.config)
     },
     update(configModel) {

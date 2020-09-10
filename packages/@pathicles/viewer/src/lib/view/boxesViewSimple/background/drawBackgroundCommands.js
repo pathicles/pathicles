@@ -5,9 +5,11 @@ import frag from './background.frag'
 import vert from './background.vert'
 
 export default function(regl, { stageGrid }) {
-  const stage = createCube(stageGrid.size, stageGrid.size * 10, stageGrid.size)
+  // const stage = createCube(stageGrid.size, stageGrid.size * 10, stageGrid.size)
+  const stage = createCube(1, 1, 1)
 
-  let model = fromTranslation([], [0, -stageGrid.size * 5, 0])
+  // let model = fromTranslation([], [0, -stageGrid.size * 5, 0])
+  let model = fromTranslation([], [0, 0, 0])
 
   return regl({
     primitive: 'triangles',

@@ -16,12 +16,12 @@
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "@pathicles/viewer": "^0.1.0",
-    "dat.gui": "^0.7.7",
+
     "js-binary": "^1.2.0"
   },
   "devDependencies": {
     "@vue/cli-service": "^4.2.3",
-    "binary-loader": "^0.0.1",
+
     "@babel/node": "7.10.5"
   },
   "browserslist": [

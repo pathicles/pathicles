@@ -10,13 +10,18 @@ function clip(value, min, max) {
 }
 
 export default function(regl, { variables, model, view }, shadow, cubeShadow) {
+
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
 
-  const geometry = createGeometry({
-    pathicleWidth: view.pathicleWidth,
-    pathicleRelativeHeight: view.pathicleRelativeHeight
-  })
+  // const geometry = createGeometry({
+  //   pathicleWidth: view.pathicleWidth,
+  //   pathicleRelativeHeight: view.pathicleRelativeHeight
+  // })
+  const geometry = createCube()
+
+  // const debleeder = [0.1, .99]
+  // geometry.uvs = geometry.uvs.map(([u, v]) => [debleeder[u], debleeder[v]])
 
   Math.clip = function(number, min, max) {
     return Math.max(min, Math.min(number, max))
@@ -24,38 +29,38 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
 
   let modelMatrix = identity([])
 
+
   const command = mode => {
+
     return regl({
       depth: true,
       blend: {
         enable: true,
         func: {
           srcRGB: 'src alpha',
-          srcAlpha: 1,
+          srcAlpha: 'src alpha',
           dstRGB: 'one minus src alpha',
-          dstAlpha: 1
+          dstAlpha: 'one minus src alpha'
         },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
+        // equation: {
+        //   rgb: 'add',
+        //   alpha: 'add'
+        // },
         color: [1, 1, 1, 1]
       },
       cull: {
-        enable: true,
-        face: 'back'
+        enable: false,
+        face: 'front'
       },
-      primitive: 'triangles',
+      // primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
         model.particleCount *
         Math.min(variables.tick.value, model.bufferLength),
-
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
         aUV: geometry.uvs,
-
         aParticle: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
@@ -65,6 +70,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
           divisor: 1
         },
         aColorCorrection: {
+
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
               .fill(0)
@@ -130,6 +136,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
           }
         }),
         ...(mode === 'lighting' && { cubeShadow: cubeShadow.fbo }),
+        uResolution: [1, 1],
         uLight: [1, 1, 0, 1],
         ambientIntensity: view.ambientIntensity,
         utParticleColorAndType: () => variables.particleColorsAndTypes,
@@ -144,6 +151,8 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
         stageGrid_y: view.stageGrid.y,
         shadowColor: view.shadowColor,
         stageGrid_size: view.stageGrid.size,
+        pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
+        pathicleWidth: view.pathicleWidth,
         model: (ctx, props) => {
           return fromTranslation(modelMatrix, [
             props.modelTranslateX || 0,
@@ -157,6 +166,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
 
   return {
     lighting: command('lighting'),
+    // wireframe: command('wireframe'),
     shadow: command('shadow'),
     shadowMap: command('shadowMap'),
     cubeShadow: command('cubeShadow')

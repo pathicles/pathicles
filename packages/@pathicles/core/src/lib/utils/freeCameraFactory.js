@@ -2,7 +2,7 @@
 import camera from 'inertial-turntable-camera'
 
 import interactionEvents from 'normalized-interaction-events'
-import { invert } from 'gl-mat4'
+import invert from 'gl-mat4/invert'
 
 export default function(options, regl) {
   const { position, target } = options
@@ -15,13 +15,6 @@ export default function(options, regl) {
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
   const phi = Math.atan2(p[1], p[0])
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
-
-  // console.log({
-  //   p: p.join(),
-  //   distance,
-  //   phi: phi * 57.295,
-  //   theta: theta * 57.295
-  // })
 
   const aCamera = camera({
     ...{ ...options, distance, phi, theta, center: target },

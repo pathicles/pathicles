@@ -1,4 +1,4 @@
-import Debug from 'debug'
+const Debug = require('debug')
 
 const log = Debug('pathicles:log')
 const error = Debug('pathicles:error')

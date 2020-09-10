@@ -21,7 +21,7 @@ const outputFolderPath = path.join(__dirname, '..', 'images')
 let presets = ['story-electric', 'story-quadrupole', 'story-dipole']
 // presets = ['story-quadrupole']
 
-const queryString = '&debug=false&print=true'
+const queryString = '&debug=false&print=true&prerender=true'
 
 ;(async () => {
   const browser = await screenshots.launch({
@@ -62,7 +62,7 @@ const queryString = '&debug=false&print=true'
       let reducedData = {
         tick: data.tick,
         data: {
-          position: data.data.position.map(d => Math.round(d * 100) / 100),
+          position: data.data.position.map(d => Math.round(d * 100)),
           particleTypes: data.data.particleTypes
         }
       }

@@ -31,7 +31,6 @@ export class Shadow {
     )
 
     // this.shadowProjectionMatrix = ortho([], -1, 1, -1, 1, 0.001, 100)
-    console.log(this.shadowProjectionMatrix)
   }
 
   drawFbo() {

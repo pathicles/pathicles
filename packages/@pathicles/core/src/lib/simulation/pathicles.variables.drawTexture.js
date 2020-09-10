@@ -2,7 +2,7 @@
 
 export default function drawVariableTexture(
   regl,
-  { variables, texelSize = 1, y0 = 5 }
+  { variables, texelSize = 1, y0 = 0 }
 ) {
   return regl({
     vert: `

@@ -23,7 +23,7 @@
   "scripts": {
     "build:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
-    "dev:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/vue dev",
+    "dev:pathicles": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config  dev",
     "devw:pathicles": "yarn wsrun --parallel dev",
     "lint-fix": "yarn workspaces run lint-fix",
     "prettier-packages": "prettier-package-json --write; lerna exec -- prettier-package-json --write",

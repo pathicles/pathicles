@@ -2,7 +2,7 @@
 
 import saveCanvas from './saveCanvas'
 
-import debug from 'debug'
+//import debug from 'debug'
 
 export default function keyControl(app) {
   document.addEventListener('keydown', onDocumentKeyDown, false)
@@ -20,11 +20,11 @@ export default function keyControl(app) {
 
       if (app.camera) {
         const cameraConfig = app.camera.toConfig()
-        debug.log(JSON.stringify({ camera: cameraConfig }, null, 2))
+        //debug.log(JSON.stringify({ camera: cameraConfig }, null, 2))
       }
     } else if (keyCode === 68) {
       // d for dump
-      console.log(JSON.stringify(app.simulation.dump(), null, 2))
+      console.log(app.simulation.dump())
     } else if (keyCode === 77) {
       // m for mode
       app.pathiclesRunner.toggleMode()

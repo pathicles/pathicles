@@ -97,7 +97,7 @@ export class Simulation {
       particleCount: this.model.particleCount,
       bufferLength: this.model.bufferLength,
       texelSize: configuration.view.texelSize,
-      x0: configuration.view.texelSize,
+      x0: 100,
       y0: configuration.view.texelSize
     })
 

@@ -32,6 +32,7 @@ export default class SimulationFSM {
 
   toggleLooping() {
     this._loopCount = 0
+    this._loopCountMax = 10
     this._isLooping = !this._isLooping
   }
 

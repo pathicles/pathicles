@@ -8,9 +8,10 @@ import { boxesViewSimple } from '@pathicles/viewer'
 import keyControl from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
 
-import REGL from 'regl'
+import createRegl from 'regl'
 
 import * as Debug from 'debug'
+
 const log = new Debug('pathicles:log')
 
 export class ReglSimulatorInstance {
@@ -21,14 +22,14 @@ export class ReglSimulatorInstance {
 
     this.control = control
 
-    REGL({
+    createRegl({
       canvas,
       profile: this.config.profile,
       attributes: {
         preserveDrawingBuffer: false,
         antialiasing: true
       },
-      pixelRatio,
+      pixelRatio: 2,
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
@@ -53,24 +54,25 @@ export class ReglSimulatorInstance {
       },
       extensions: simulate
         ? [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'OES_texture_half_float',
-            'WEBGL_depth_texture'
-          ]
+          'angle_instanced_arrays',
+          'oes_texture_float',
+          'OES_standard_derivatives',
+          'OES_texture_half_float',
+          'WEBGL_depth_texture'
+        ]
         : [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'WEBGL_depth_texture'
-          ]
+          'angle_instanced_arrays',
+          'oes_texture_float',
+          'OES_standard_derivatives',
+          'WEBGL_depth_texture'
+        ]
     })
   }
 
   destroy() {
     this.regl.destroy()
   }
+
   loadConfig(config) {
     this.stop(this.regl)
     this.config = config
@@ -140,7 +142,7 @@ export class ReglSimulatorInstance {
             this.view.drawDiffuse({ viewRange: [0, 1] })
 
             if (this.config.view.showTextures) {
-              this.view.shadow.drawFbo()
+              //this.view.shadow.drawFbo()
               this.simulation.drawVariableTexture({ variableName: 'position' })
               this.simulation.drawVariableTexture({ variableName: 'velocity' })
             }
@@ -152,6 +154,7 @@ export class ReglSimulatorInstance {
     }
     this.loop = mainloop()
   }
+
   stop() {
     this.loop.cancel()
   }
