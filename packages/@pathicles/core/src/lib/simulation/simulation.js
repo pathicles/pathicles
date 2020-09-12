@@ -1,5 +1,4 @@
 'use strict'
-'use strict'
 
 import initialize from './pathicles.initialize'
 import pushBoris from './pusher/pathicles.push--boris'
@@ -21,6 +20,9 @@ export class Simulation {
     this.RTTFloatType = configuration.simulateHalfFloat
       ? 'half float'
       : support.RTTFloatType
+
+    console.log(support)
+    console.log(this.RTTFloatType)
 
     const {
       particleCount,

@@ -18,7 +18,7 @@ export default function({ scenes, camera }, regl) {
 
   guidedCamera.toConfig = () => guidedCamera
 
-  const fov = .8; //camera.fovY
+  const fov = camera.fovY
 
   const setCameraUniforms = regl({
     uniforms: {

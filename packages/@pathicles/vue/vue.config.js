@@ -2,6 +2,8 @@ module.exports = {
   productionSourceMap: false,
   lintOnSave: false,
   devServer: {
+    hot: false,
+    liveReload: false,
     inline: true,
     overlay: {
       warnings: true,

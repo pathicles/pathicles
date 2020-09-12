@@ -1,6 +1,6 @@
 import * as createPlane from './plane'
 
-import frag from './stage.frag'
+import frag from './stage2.frag'
 import vert from './stage.vert'
 
 export default function(regl, view, shadow) {

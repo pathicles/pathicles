@@ -5,7 +5,7 @@ import { boxesViewSimple } from './view/boxesViewSimple'
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
 
-import REGL from 'regl/dist/regl.unchecked.js'
+import REGL from 'regl/dist/regl.js'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {

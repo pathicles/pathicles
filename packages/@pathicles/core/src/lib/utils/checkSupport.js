@@ -24,11 +24,11 @@ function getExt(gl, name, msg) {
 }
 
 //test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
-function  test_canRTT(glContext, internalFormat, pixelType) {
-  var testFbo = glContext.createFramebuffer()
+function test_canRTT(glContext, internalFormat, pixelType) {
+  const testFbo = glContext.createFramebuffer()
   glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
 
-  var testTexture = glContext.createTexture()
+  const testTexture = glContext.createTexture()
   glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
   glContext.texImage2D(
     glContext.TEXTURE_2D,
@@ -49,14 +49,14 @@ function  test_canRTT(glContext, internalFormat, pixelType) {
     testTexture,
     0
   )
-  var fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
+  const fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
 
   return fbStatus === glContext.FRAMEBUFFER_COMPLETE
 }
 
 function getRTTFloatType(glContext) {
-  if (
 
+  if (
     glContext.getExtension('WEBGL_color_buffer_float') &&
     glContext.getExtension('OES_texture_float') &&
     test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
@@ -70,13 +70,14 @@ function getRTTFloatType(glContext) {
   ) {
     return 'half float'
   }
-  return null
+  return 'half float'
 }
 
 export function checkSupport() {
   // Get A WebGL context
   const support = {}
   try {
+
     const canvas = document.createElement('canvas')
     if (
       !!window.WebGLRenderingContext &&
@@ -88,7 +89,6 @@ export function checkSupport() {
       PerformanceLogger.start('getRTTFloatType')
 
       support.RTTFloatType = getRTTFloatType(glContext)
-
       PerformanceLogger.stop()
       //
       // console.log(gl)

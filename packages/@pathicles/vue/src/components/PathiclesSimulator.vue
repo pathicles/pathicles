@@ -71,6 +71,8 @@ export default {
 
   mounted() {
     if (typeof window !== 'undefined' && window.document) {
+
+      //console.log((new Date()).getMilliseconds(), 'xxx')
       const parsedUrl = new URL(window.location.href)
       if (parsedUrl.searchParams.get('presetName') !== null)
         this.presetName = parsedUrl.searchParams.get('presetName')
@@ -80,6 +82,7 @@ export default {
       this._gui = this.initGui(loadConfig(this.presetName))
       this.screenWidth = window.innerWidth
       this.screenHeight = window.innerHeight
+
 
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
@@ -108,14 +111,14 @@ export default {
         {},
         null,
         this.$route.path +
-          '?' +
-          Object.keys(params)
-            .map(key => {
-              return (
-                encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-              )
-            })
-            .join('&')
+        '?' +
+        Object.keys(params)
+          .map(key => {
+            return (
+              encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+            )
+          })
+          .join('&')
       )
       this.config = loadConfig(this.presetName)
       this.reglInstance.loadConfig(this.config)
@@ -134,7 +137,8 @@ export default {
       this.reglInstance.loadConfig(this.config)
     },
 
-    initGui(config) {}
+    initGui(config) {
+    }
   }
 }
 </script>
@@ -159,6 +163,7 @@ export default {
     top 0
     left 0
     z-index 1000
+
     canvas
       image-rendering crisp-edges
 </style>

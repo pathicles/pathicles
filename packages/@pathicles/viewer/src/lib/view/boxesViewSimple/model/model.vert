@@ -16,10 +16,8 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
 
 attribute vec3 aPosition;
 
-#ifndef wireframe
 attribute vec3 aNormal;
 attribute vec2 aUV;
-#endif
 
 attribute float aParticle;
 attribute float aColorCorrection;
@@ -70,10 +68,7 @@ varying vec2 vUv;
 varying vec4 vAmbientColor;
 varying vec4 vDiffuseColor;
 
-#ifdef wireframe
-attribute vec2 barycentric;
-varying vec2 b;
-#endif
+
 
 varying float vColorCorrection;
 
@@ -172,19 +167,19 @@ void main () {
   + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
 
 
-#ifndef wireframe
   vNormalOrig = aNormal;
   vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);
 
   vUv = aUV;
-#endif
 
 #ifdef lighting
 
   vDiffuseColor = get_color(aParticle);
   vAmbientColor = get_color(aParticle);
-  float maxDistance = 4.;
-  //vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
+  //  float maxDistance = 4.;
+  //  vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
+  vColorCorrection =  aStep/bufferLength * .5;
+  vColorCorrection =  sin(aParticle)*.1;
   vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);
 #endif
 
@@ -204,10 +199,5 @@ void main () {
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
 #endif
 
-
-#ifdef wireframe
-  b = barycentric;
-  gl_Position = projection * view * model * vec4(vPosition, 1.0);
-#endif
 }
 

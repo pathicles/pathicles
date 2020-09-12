@@ -15,7 +15,7 @@ export default function(options, regl) {
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
   const phi = Math.atan2(p[1], p[0])
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
-
+  console.log(regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight)
   const aCamera = camera({
     ...{ ...options, distance, phi, theta, center: target },
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
@@ -36,7 +36,10 @@ export default function(options, regl) {
 
   const setCameraUniforms = regl({
     uniforms: {
-      projection: (ctx, camera) => camera.state.projection,
+      projection: (ctx, camera) => {
+        camera.resize(ctx.viewportWidth / ctx.viewportHeight)
+        return camera.state.projection
+      },
       iProj: (ctx, camera) => invert([], camera.state.projection),
       view: (ctx, camera) => camera.state.view,
       eye: (ctx, camera) => camera.state.eye

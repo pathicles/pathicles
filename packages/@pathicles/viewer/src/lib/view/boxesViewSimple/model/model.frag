@@ -44,6 +44,42 @@ float edger(vec2 uv, vec3 boxScale, float edgeWidth) {
   return clamp(edgeX, 0., 1.);
 }
 
+float edgerFeathered(vec2 uv, vec3 boxScale, float edgeWidth) {
+
+  float feather = .1;
+
+  float edgeXY =  smoothstep(edgeWidth, edgeWidth+feather, uv.x*boxScale.z) * smoothstep(edgeWidth, edgeWidth+feather, (1.-uv.x)*boxScale.z);
+  float edgeXZ =  smoothstep(edgeWidth, edgeWidth+feather, uv.y*boxScale.y) * smoothstep(edgeWidth, edgeWidth+feather, (1.-uv.y)*boxScale.y);
+  float edgeX = (1.-(edgeXY*edgeXZ))*abs(vNormalOrig.x);
+
+  //  float edgeYX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
+  //  float edgeYZ =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
+  //  float edgeY = (1.-(edgeYX*edgeYZ))*abs(vNormalOrig.y);
+  //
+  //  float edgeZX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
+  //  float edgeZY =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
+  //  float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
+
+  return clamp(edgeX, 0., 1.);
+}
+
+
+float edgerHard(vec2 uv, vec3 boxScale, float edgeWidth) {
+  float edgeXY =  step(edgeWidth*(1.+uv.x*boxScale.z), uv.x*boxScale.z) * step(edgeWidth, (1.-uv.x)*boxScale.z);
+  float edgeXZ =  step(edgeWidth*(0.5+uv.x/2.), uv.y*boxScale.y) * step(edgeWidth*(0.5+uv.x/2.), (1.-uv.y)*boxScale.y);
+  float edgeX = (1.-(edgeXZ))*abs(vNormalOrig.x);
+
+//  float edgeYX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
+//  float edgeYZ =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
+//  float edgeY = (1.-(edgeYX*edgeYZ))*abs(vNormalOrig.y);
+//
+//  float edgeZX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
+//  float edgeZY =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
+//  float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
+
+  return clamp(edgeX, 0., 1.);
+}
+
 
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
@@ -177,10 +213,15 @@ void main () {
   //  visibility = 1.0;
 
   shadow = 1.;
-  vec4 shadowedColor = shadow * (color + vec4(edger(vUv, vScale, pathicleWidth) * vec3(.2), 1.));
+
+
+  vec4 shadowedColor = shadow * color;
+  shadowedColor +=  smoothstep(10.,1.,length(vPosition-eye))  * color * vec4(edger(vUv, vScale, pathicleWidth*2.) * vec3(.7), 1.);
+
+
 
   const float FOG_DENSITY = .9;
-  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .5);
+  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
   float fogDistance = length(vPosition);
   float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
 
