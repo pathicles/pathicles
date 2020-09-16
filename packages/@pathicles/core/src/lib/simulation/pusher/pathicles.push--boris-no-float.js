@@ -1,7 +1,7 @@
 import { getters, latticeChunk, particleDataChunk } from '../../utils/utils'
 
-export default function(regl, { variables, model }) {
-  const pushFactory = variableName =>
+export default function (regl, { variables, model }) {
+  const pushFactory = (variableName) =>
     regl({
       framebuffer: (context, props) =>
         variables[variableName][props.pathiclesTick % 2],

@@ -204,21 +204,21 @@ describe('five elements', () => {
     ])
   })
   it('five elements', () => {
-    expect(lattice.beamline.map(e => e.type)).toEqual([
+    expect(lattice.beamline.map((e) => e.type)).toEqual([
       'DRIF',
       'QUAD',
       'SBEN',
       'DRIF',
       'QUAD'
     ])
-    expect(lattice.transformations.map(e => e.phi)).toEqual([
+    expect(lattice.transformations.map((e) => e.phi)).toEqual([
       0,
       0,
       Math.PI / 4,
       Math.PI / 2,
       Math.PI / 2
     ])
-    expect(lattice.transformations.map(e => e.translation)).toEqual([
+    expect(lattice.transformations.map((e) => e.translation)).toEqual([
       [0, 0, 0.25],
       [0, 0, 0.75],
       [-0.5, 0, 1.5],

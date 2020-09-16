@@ -1,8 +1,8 @@
 import { getters } from './getters.gsls.js'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
 
-export default function(regl, { variables, model }) {
-  const pushFactory = variableName =>
+export default function (regl, { variables, model }) {
+  const pushFactory = (variableName) =>
     regl({
       framebuffer: (context, props) =>
         variables[variableName][props.pathiclesTick % 2],

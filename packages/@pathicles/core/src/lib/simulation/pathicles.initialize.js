@@ -1,7 +1,7 @@
 import { createParticleCollection } from './variables'
 import { boundedRandom, random } from '../utils/random'
 
-export default function(
+export default function (
   bufferLength,
   {
     randomize,
@@ -14,19 +14,19 @@ export default function(
     directionJitter,
     positionJitter,
     gamma
-  },
-  boundingBoxSize = -1
+  }
 ) {
+  // boundingBoxSize = -1
   let fourPositions = new Float32Array(particleCount * bufferLength * 4)
   let fourVelocities = new Float32Array(particleCount * bufferLength * 4)
-  let fourMomenta = new Float32Array(particleCount * bufferLength * 4)
+  // let fourMomenta = new Float32Array(particleCount * bufferLength * 4)
   let particleTypes = new Array(particleCount)
 
   if (randomize) {
     for (let p = 0; p < particleCount; p++) {
-      fourPositions[p * 4] = boundedRandom() * 0 //boundingBoxSize
-      fourPositions[p * 4 + 1] = boundedRandom() * 0 //boundingBoxSize
-      fourPositions[p * 4 + 2] = boundedRandom() * 0 //boundingBoxSize
+      fourPositions[p * 4] = boundedRandom() * 0.1 //boundingBoxSize
+      fourPositions[p * 4 + 1] = boundedRandom() * 0.1 //boundingBoxSize
+      fourPositions[p * 4 + 2] = boundedRandom() * 0.1 //boundingBoxSize
       fourPositions[p * 4 + 3] = 0
       fourVelocities[p * 4] = boundedRandom()
       fourVelocities[p * 4 + 1] = boundedRandom()
@@ -63,14 +63,14 @@ export default function(
         // ...particleCollection.fourVelocities
       ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
     )
-    fourMomenta = new Float32Array(
-      [
-        ...particleCollection.fourMomenta
-        // ...particleCollection.fourVelocities,
-        // ...particleCollection.fourVelocities,
-        // ...particleCollection.fourVelocities
-      ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
-    )
+    // fourMomenta = new Float32Array(
+    //   [
+    //     ...particleCollection.fourMomenta
+    //     // ...particleCollection.fourVelocities,
+    //     // ...particleCollection.fourVelocities,
+    //     // ...particleCollection.fourVelocities
+    //   ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
+    // )
 
     particleTypes = particleCollection.particleTypes
   }

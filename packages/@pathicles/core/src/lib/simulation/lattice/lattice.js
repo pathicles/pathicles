@@ -32,7 +32,7 @@ export class Lattice {
     }
 
     let local_z = 0
-    this.beamline = latticeDescriptor.beamline.map(elementKey => {
+    this.beamline = latticeDescriptor.beamline.map((elementKey) => {
       if (!latticeDescriptor.elements[elementKey]) {
         throw new Error(`element ${elementKey} not defined`)
       }
@@ -111,7 +111,7 @@ export class Lattice {
   get startEnds() {
     let phi = this.origin.phi
     let [x, y, z] = this.origin.position
-    return this.beamline.map(element => {
+    return this.beamline.map((element) => {
       const start = [x, y, z]
       const phi_half = element.angle ? phi + element.angle / 2 : phi
       const end = [
@@ -134,7 +134,7 @@ export class Lattice {
     let phi = this.origin.phi
     let [x, y, z] = this.origin.position
     //y = -1
-    return this.beamline.map(element => {
+    return this.beamline.map((element) => {
       const start = [x, y, z]
       const phi_half = element.angle ? phi + element.angle / 2 : phi
       const end = [
@@ -156,7 +156,7 @@ export class Lattice {
   }
 
   get colors() {
-    return this.beamline.map(element => {
+    return this.beamline.map((element) => {
       if (element.type === LatticeElementTypes.QUAD && element.k1 < 0)
         return colors['QUAD1']
       return colors[element.type]

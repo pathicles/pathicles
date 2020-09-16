@@ -19,7 +19,7 @@ export function createBuffers(regl, particleCount, bufferLength, RTTFloatType) {
 }
 
 export function loadBuffers(buffers, data, RTTFloatType) {
-  ;[0, 1].forEach(b =>
+  ;[0, 1].forEach((b) =>
     buffers[b].color[0].subimage({
       width: buffers[b].width,
       height: buffers[b].height,
@@ -70,7 +70,7 @@ function convert_floatToInt16(val) {
 //(see https://en.wikipedia.org/wiki/Half-precision_floating-point_format for the encoding)
 function convert_arrayToUInt16Array(arr) {
   var arr16 = new Uint16Array(arr.length)
-  arr.forEach(function(val, ind) {
+  arr.forEach(function (val, ind) {
     arr16[ind] = convert_floatToInt16(val)
   })
   return arr16

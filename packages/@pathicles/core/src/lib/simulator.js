@@ -16,6 +16,7 @@ export class ReglSimulatorInstance {
 
     this.control = control
 
+    // eslint-disable-next-line no-undef
     createREGL({
       canvas,
       profile: this.config.profile,
@@ -23,7 +24,7 @@ export class ReglSimulatorInstance {
         preserveDrawingBuffer: false,
         antialiasing: true
       },
-      pixelRatio: 2,
+      pixelRatio,
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {

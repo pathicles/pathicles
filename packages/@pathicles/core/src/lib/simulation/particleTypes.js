@@ -36,7 +36,7 @@ const PROTON = {
 }
 
 const LIST = [PHOTON, ELECTRON, POSITRON, PROTON]
-const BY_NAME_MAP = new Map(LIST.map(i => [i.name, i]))
+const BY_NAME_MAP = new Map(LIST.map((i) => [i.name, i]))
 
 export default {
   PHOTON,
@@ -45,6 +45,6 @@ export default {
   PROTON,
 
   byNameMap: BY_NAME_MAP,
-  byName: name => BY_NAME_MAP.get(name),
-  idByName: name => LIST.indexOf(BY_NAME_MAP.get(name))
+  byName: (name) => BY_NAME_MAP.get(name),
+  idByName: (name) => LIST.indexOf(BY_NAME_MAP.get(name))
 }

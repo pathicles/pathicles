@@ -10,19 +10,19 @@ const {
 describe('particleTypesArrayFromDescriptor', () => {
   it('"PROTON"', () => {
     const types = particleTypesArrayFromDescriptor('PROTON')
-    expect(types.map(t => t.name)).toEqual(['PROTON'])
+    expect(types.map((t) => t.name)).toEqual(['PROTON'])
   })
 
   it('"PROTON, 3"', () => {
     const types = particleTypesArrayFromDescriptor('PROTON', 3)
-    expect(types.map(t => t.name)).toEqual(['PROTON', 'PROTON', 'PROTON'])
+    expect(types.map((t) => t.name)).toEqual(['PROTON', 'PROTON', 'PROTON'])
   })
 
   it('"PROTON ELECTRON PHOTON PROTON"', () => {
     const types = particleTypesArrayFromDescriptor(
       'PROTON ELECTRON PHOTON PROTON'
     )
-    expect(types.map(t => t.name)).toEqual([
+    expect(types.map((t) => t.name)).toEqual([
       'PROTON',
       'ELECTRON',
       'PHOTON',
@@ -35,7 +35,7 @@ describe('particleTypesArrayFromDescriptor', () => {
       'PROTON ELECTRON PHOTON PROTON',
       10
     )
-    expect(types.map(t => t.name)).toEqual([
+    expect(types.map((t) => t.name)).toEqual([
       'PROTON',
       'ELECTRON',
       'PHOTON',

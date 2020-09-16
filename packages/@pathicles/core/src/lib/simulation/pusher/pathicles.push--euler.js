@@ -1,6 +1,6 @@
 import { particleTypeArrayDefintion } from './utils'
 
-export default function(regl, { variables, constants }) {
+export default function (regl, { variables, constants }) {
   const push = (variableName, pathiclesTick) =>
     regl({
       vert: `

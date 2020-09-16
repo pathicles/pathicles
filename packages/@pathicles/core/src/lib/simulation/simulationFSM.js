@@ -22,8 +22,6 @@ export default class SimulationFSM {
         ? this._simulation.constants.model.bufferLength - 1
         : stepCount
     this._stepsPerTick = stepsPerTick
-    this._runCount = 0
-    this._loopCount = 0
     this._loopCountMax = loops
     this._isLooping = loops > 0
     this._mode = mode // framewise / stepwise
@@ -82,9 +80,6 @@ export default class SimulationFSM {
   }
 
   next() {
-    // console.log(this.fsm.state, this._simulation.variables.tick.value)
-    const stateInitial = this.fsm.state
-
     if (this.fsm.state === 'active') {
       if (this._simulation.variables.tick.value > this._stepCount - 1) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
@@ -104,6 +99,7 @@ export default class SimulationFSM {
       }
     } else if (this.fsm.state === 'restart') {
       this._loopCount++
+      this._runCount++
       this._simulation.reset({})
       this._simulation.push({})
       this.fsm.state = this.fsm.state.replace(/restart/, 'active')

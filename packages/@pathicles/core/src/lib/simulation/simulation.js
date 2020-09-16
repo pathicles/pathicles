@@ -151,7 +151,7 @@ export class Simulation {
     }
     // const t0 = performance.now()
 
-    batchSizes.forEach((batchSize, i) => {
+    batchSizes.forEach((batchSize) => {
       this.push(batchSize)
 
       // window.prerendered =  readData(this._regl, {

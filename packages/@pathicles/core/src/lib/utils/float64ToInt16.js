@@ -82,7 +82,7 @@ export function float64ToInt16(float64Value) {
 
 export function float64ArrayToInt16Array(float64Array) {
   var int16Array = new Uint16Array(float64Array.length)
-  float64Array.forEach(function(float64Value, ind) {
+  float64Array.forEach(function (float64Value, ind) {
     int16Array[ind] = float64ToInt16(float64Value)
   })
   return int16Array

@@ -20,7 +20,7 @@ export function particleTypesArrayFromDescriptor(
   const particleTypesArray = particleTypeDescriptor
     .trim()
     .split(/\s+/)
-    .map(d => {
+    .map((d) => {
       return ParticleTypes.byName(d)
     })
 
@@ -28,21 +28,17 @@ export function particleTypesArrayFromDescriptor(
     return particleTypesArray
   }
 
-  const filledParticleTypesArray = Array(n)
+  return Array(n)
     .fill(0)
     .map((x, p) => {
-      const particleType = particleTypesArray[p % particleTypesArray.length]
-      return particleType
+      return particleTypesArray[p % particleTypesArray.length]
     })
-
-  return filledParticleTypesArray
 }
 
 export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
-  const jitteredPosition = position.map(
+  return position.map(
     (d, i) => d + Math.floor(boundedRandom() * jitter[i] * 100) / 100
   )
-  return jitteredPosition
 }
 
 export function jitterDirection({
@@ -192,7 +188,7 @@ export function createParticleCollection({
         jitter: positionJitter
       })
       return [
-        localPositions[p * 3 + 0] + jitteredPosition[0],
+        localPositions[p * 3] + jitteredPosition[0],
         localPositions[p * 3 + 1] + jitteredPosition[1],
         localPositions[p * 3 + 2] + jitteredPosition[2],
         0
@@ -206,7 +202,7 @@ export function createParticleCollection({
       direction,
       directionJitter,
       localPosition: [
-        localPositions[p * 3 + 0],
+        localPositions[p * 3],
         localPositions[p * 3 + 1],
         localPositions[p * 3 + 2]
       ]
@@ -235,6 +231,6 @@ export function createParticleCollection({
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
     fourMomenta,
-    particleTypes: particles.map(p => p.id)
+    particleTypes: particles.map((p) => p.id)
   }
 }

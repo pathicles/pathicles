@@ -24,7 +24,6 @@
     "build": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "dev": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/app   dev",
-    "devw:pathicles": "yarn wsrun --parallel dev",
     "lint-fix": "yarn workspaces run lint-fix",
     "prettier-packages": "npx prettier-package-json --write; lerna exec -- prettier-package-json --write",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits",
@@ -41,10 +40,6 @@
     "puppeteer": "^2.1.1"
   },
   "dependencies": {
-    "chalk": "^4.0.0",
-    "d3": "^5.15.0",
-    "debug": "^4.1.1",
-    "loglevel": "^1.6.7",
     "regl": "^1.7.0",
     "tornis": "^0.3.3"
   },
