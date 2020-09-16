@@ -29,7 +29,7 @@ export default {
 
   runner: {
     prerender: false,
-    loops: 1,
+    loops: 50,
 
     mode: 'framewise',
     stepsPerTick: 4,
@@ -38,7 +38,7 @@ export default {
 
   model: {
     bufferLength: 128,
-    tickDurationOverC: .2,
+    tickDurationOverC: 0.1,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -74,9 +74,8 @@ export default {
     ssaoEnabled: false,
 
     stageGrid: {
-      resolution: 256,
       y: 0,
-      size: 50,
+      size: 20,
       dark: 1,
       light: 0.8
     },
@@ -98,7 +97,7 @@ export default {
 
     pathicleRelativeGap: 2,
     pathicleRelativeHeight: 10,
-    pathicleWidth: 0.003,
+    pathicleWidth: 0.002,
 
     roughness: 0.7,
     specular: 1,
@@ -128,7 +127,7 @@ export default {
       position: [1, 1, 0],
       target: [0, 1, 0],
 
-      fovY: (2 * Math.PI) / (360 / 60),
+      fovY: (2 * Math.PI) / (360 / 50),
       dTheta: 0.01,
       autorotate: true,
       // rotationDecayTime: 0,
@@ -140,7 +139,7 @@ export default {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 10
+      maxDistance: 20
     }
   },
 

@@ -2,17 +2,14 @@
 /* eslint-env browser */
 
 import bspline from 'b-spline'
-import * as presets from '@pathicles/config'
+import { config } from '@pathicles/config'
 import createVariableTexture from './createVariableTexture'
-import nanomerge from 'nanomerge'
 
-export default function(regl, scenes, stateVars, onStateChange) {
+export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
     scene.presetName = scene.preset
-    scene.preset =
-      nanomerge(presets[scene.preset], presets.defaultConfig) ||
-      presets.defaultConfig
+    scene.preset = config(scene.preset)
 
     scene.particleCount = scene.preset.model.emitter.particleCount
     scene.bufferLength = scene.preset.model.bufferLength || 128
@@ -34,11 +31,11 @@ export default function(regl, scenes, stateVars, onStateChange) {
           min: 'nearest',
           mag: 'nearest',
           format: 'rgba',
-          data: new Float32Array(data.position.map(d => d / 1))
+          data: new Float32Array(data.position.map((d) => d / 1))
         })
         scene.particleColorsAndTypes({
           data: data.particleTypes
-            .map(p => presets.defaultConfig.colors[p].concat(p))
+            .map((p) => presets.defaultConfig.colors[p].concat(p))
             .flat(),
           shape: [scene.particleCount, 1, 4],
           type: 'float'
@@ -79,11 +76,11 @@ export default function(regl, scenes, stateVars, onStateChange) {
     t = scene._t1
     if (scene.cameraSploints)
       if (scene.cameraSploints.position) {
-        scene.cameraPositionBSpline = t =>
+        scene.cameraPositionBSpline = (t) =>
           bspline(t, 2, scene.cameraSploints.position)
 
         if (scene.cameraSploints.target) {
-          scene.cameraTargetBSpline = t =>
+          scene.cameraTargetBSpline = (t) =>
             bspline(t, 2, scene.cameraSploints.target)
         }
       }
@@ -100,7 +97,7 @@ export default function(regl, scenes, stateVars, onStateChange) {
     if (t > 1) t = 1
     const sceneIdx = (
       scenes.find(
-        scene => scene._t0_normalized <= t && t <= scene._t1_normalized
+        (scene) => scene._t0_normalized <= t && t <= scene._t1_normalized
       ) || { _s: 0 }
     )._s
 
@@ -132,7 +129,7 @@ export default function(regl, scenes, stateVars, onStateChange) {
   computeState(currentPosition)
 
   const self = {
-    setPosition: function(t) {
+    setPosition: function (t) {
       currentPosition = t
       const hasChanges = computeState(t)
       if (hasChanges) {
@@ -140,10 +137,10 @@ export default function(regl, scenes, stateVars, onStateChange) {
       }
       return self
     },
-    getPosition: function() {
+    getPosition: function () {
       return currentPosition
     },
-    getState: function() {
+    getState: function () {
       return state
     }
   }

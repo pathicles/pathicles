@@ -5,15 +5,13 @@ import { boxesViewSimple } from './view/boxesViewSimple'
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
 
-import REGL from 'regl/dist/regl.js'
-
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
     this.config = defaultConfig
 
     this.control = control
 
-    REGL({
+    createREGL({
       canvas,
       attributes: {
         preserveDrawingBuffer: true,
@@ -68,7 +66,7 @@ export class ReglViewerInstance {
         sceneId: 0,
         viewRange: [0, 0]
       },
-      state => {
+      (state) => {
         if (state.scene.position) this.variables.position = state.scene.position
         if (state.scene.particleColorsAndTypes) {
           this.variables.particleColorsAndTypes =
@@ -123,7 +121,7 @@ export class ReglViewerInstance {
           //     ? (this.loopTick - 768) / 256 + 0.5
           //     : 0.5
           if (this.loopTick >= 128) {
-            this.modelTranslateX = (Math.random() - 0.5) * .1
+            this.modelTranslateX = (Math.random() - 0.5) * 0.1
             this.modelTranslateY = (Math.random() - 0.5) * 0.1
           }
           this.loopTick = this.loopTick < 128 ? this.loopTick + 1 : 0

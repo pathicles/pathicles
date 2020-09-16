@@ -8,12 +8,6 @@ import { boxesViewSimple } from '@pathicles/viewer'
 import keyControl from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
 
-import createRegl from 'regl'
-
-import * as Debug from 'debug'
-
-const log = new Debug('pathicles:log')
-
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
     keyControl(this)
@@ -22,7 +16,7 @@ export class ReglSimulatorInstance {
 
     this.control = control
 
-    createRegl({
+    createREGL({
       canvas,
       profile: this.config.profile,
       attributes: {
@@ -49,23 +43,22 @@ export class ReglSimulatorInstance {
         } catch (e) {
           // alert(e)
           console.error(e)
-          log(e)
         }
       },
       extensions: simulate
         ? [
-          'angle_instanced_arrays',
-          'oes_texture_float',
-          'OES_standard_derivatives',
-          'OES_texture_half_float',
-          'WEBGL_depth_texture'
-        ]
+            'angle_instanced_arrays',
+            'oes_texture_float',
+            'OES_standard_derivatives',
+            'OES_texture_half_float',
+            'WEBGL_depth_texture'
+          ]
         : [
-          'angle_instanced_arrays',
-          'oes_texture_float',
-          'OES_standard_derivatives',
-          'WEBGL_depth_texture'
-        ]
+            'angle_instanced_arrays',
+            'oes_texture_float',
+            'OES_standard_derivatives',
+            'WEBGL_depth_texture'
+          ]
     })
   }
 
@@ -120,7 +113,6 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    log('run')
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
       return regl.frame(() => {

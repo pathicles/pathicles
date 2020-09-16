@@ -2,15 +2,17 @@ import * as createPlane from './plane'
 
 import frag from './stage2.frag'
 import vert from './stage.vert'
+import createCube from 'primitive-cube'
 
-export default function(regl, view, shadow) {
-  const stage = createPlane.createPlane(
-    view.stageGrid.size,
-    view.stageGrid.size
-  )
+export default function (regl, view, shadow) {
+  // const stage = createPlane.createPlane(
+  //   view.stageGrid.size,
+  //   view.stageGrid.size
+  // )
+  const stage = createCube(view.stageGrid.size)
 
   // eslint-disable-next-line no-unused-vars
-  const command = mode => {
+  const command = (mode) => {
     return regl({
       blend: {
         enable: true,
@@ -24,7 +26,7 @@ export default function(regl, view, shadow) {
           rgb: 'add',
           alpha: 'add'
         },
-        color: [0, 1, 0, 1]
+        color: [0, 0, 0, 1]
       },
       cull: {
         enable: true,
@@ -34,8 +36,7 @@ export default function(regl, view, shadow) {
       primitive: 'triangles',
       elements: stage.cells,
       attributes: {
-        position: stage.positions,
-        uv: stage.uvs
+        position: stage.positions
       },
       uniforms: {
         uOffset: [0, view.stageGrid.y - 0, 0],

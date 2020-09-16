@@ -1,10 +1,11 @@
 /* eslint-env browser */
+
 import camera from 'inertial-turntable-camera'
 
 import interactionEvents from 'normalized-interaction-events'
 import invert from 'gl-mat4/invert'
 
-export default function(options, regl) {
+export default function (options, regl) {
   const { position, target } = options
   const p = [
     -target[0] + position[0],
@@ -15,13 +16,13 @@ export default function(options, regl) {
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
   const phi = Math.atan2(p[1], p[0])
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
-  console.log(regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight)
+
   const aCamera = camera({
     ...{ ...options, distance, phi, theta, center: target },
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   })
   initializeCameraControls(aCamera, regl._gl.canvas, {
-    minDistance: options.minDistance || 1,
+    minDistance: options.minDistance || 0.1,
     maxDistance: options.maxDistance || 20
   })
 
@@ -55,7 +56,7 @@ function initializeCameraControls(
 ) {
   const arrow = { left: 37, up: 38, right: 39, down: 40 }
   const delta = -0.01
-  window.addEventListener('keydown', function(event) {
+  window.addEventListener('keydown', function (event) {
     // event.preventDefault()
     switch (event.keyCode) {
       case arrow.left:
@@ -76,7 +77,7 @@ function initializeCameraControls(
   const radiansPerHalfScreenWidth = Math.PI * 0.5
 
   interactionEvents(canvas)
-    .on('wheel', function(ev) {
+    .on('wheel', function (ev) {
       if (!ev.active) return
       camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
       camera.params.distance = Math.max(
@@ -84,7 +85,7 @@ function initializeCameraControls(
         Math.min(maxDistance, camera.params.distance)
       )
     })
-    .on('mousemove', function(ev) {
+    .on('mousemove', function (ev) {
       if (!ev.active || ev.buttons !== 1) return
 
       if (ev.mods.shift) {
@@ -103,21 +104,11 @@ function initializeCameraControls(
         // if (camera.params.phi > 0.5) camera.params.phi = 0.5
       }
     })
-    .on('touchmove', function(ev) {
+    .on('touchmove', function (ev) {
       if (!ev.active) return
       camera.rotate(
         -ev.dx * radiansPerHalfScreenWidth,
         -ev.dy * radiansPerHalfScreenWidth
       )
     })
-  // .on("pinchmove", function(ev) {
-  //
-  //   if (!ev.active) return
-  //   camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
-  //   //   camera.zoom(ev.x, ev.y, 1 - ev.zoomx)
-  //   //   camera.pan(ev.dx, ev.dy)
-  //   // })
-  //   // .on("touchstart", ev => ev.originalEvent.preventDefault())
-  //   // .on("pinchstart", ev => ev.originalEvent.preventDefault())
-  // }
 }

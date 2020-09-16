@@ -21,9 +21,6 @@ export class Simulation {
       ? 'half float'
       : support.RTTFloatType
 
-    console.log(support)
-    console.log(this.RTTFloatType)
-
     const {
       particleCount,
       bufferLength,
@@ -51,13 +48,15 @@ export class Simulation {
       referencePoint: [0, 0, 0],
       pingPong: 0,
       particleColorsAndTypes: regl.texture({
-        data: particleTypes.map(p => configuration.colors[p].concat(p)).flat(),
+        data: particleTypes
+          .map((p) => configuration.colors[p].concat(p))
+          .flat(),
         shape: [particleCount, 1, 4],
         type: 'float'
       }),
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
-          .map(p => [
+          .map((p) => [
             configuration.charge[p],
             configuration.mass[p],
             configuration.chargeMassRatio[p],

@@ -218,16 +218,16 @@ void main () {
   vec4 shadowedColor = shadow * color;
   shadowedColor +=  smoothstep(10.,1.,length(vPosition-eye))  * color * vec4(edger(vUv, vScale, pathicleWidth*2.) * vec3(.7), 1.);
 
+  gl_FragColor =vec4(shadowedColor.rgb, 1.);
 
-
-  const float FOG_DENSITY = .9;
-  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
-  float fogDistance = length(vPosition);
-  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
-
-  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
-
-  gl_FragColor = vec4(faggedColor.rgb, 1.-fogAmount);
+//  const float FOG_DENSITY = .9;
+//  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
+//  float fogDistance = length(vPosition);
+//  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
+//
+//  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
+//
+//  gl_FragColor = vec4(faggedColor.rgb, 1.-fogAmount);
 
 
 

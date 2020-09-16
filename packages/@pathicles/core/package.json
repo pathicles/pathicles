@@ -1,9 +1,9 @@
 {
   "private": true,
   "name": "@pathicles/core",
-  "version": "0.1.0",
-  "module": "dist/pathicles-core.esm.js",
+  "version": "0.0.0",
   "type": "module",
+  "module": "dist/pathicles-core.esm.js",
   "scripts": {
     "build": "rollup --config ",
     "dev": "rollup --config -w",
@@ -14,10 +14,9 @@
     "devPort": 9002
   },
   "dependencies": {
-    "byte-data": "^19.0.1",
-    "ieee754-buffer": "^2.0.0",
     "@petamoriken/float16": "^1.1.1",
     "angle-normals": "^1.0.0",
+    "byte-data": "^19.0.1",
     "debug": "^4.2.0",
     "defaults": "^1.0.3",
     "detect-it": "^3.0.5",
@@ -38,6 +37,7 @@
     "glsl-random": "0.0.5",
     "glsl-specular-phong": "^1.0.0",
     "glsl-transpose": "^1.0.0",
+    "ieee754-buffer": "^2.0.0",
     "inertial-turntable-camera": "^2.0.4",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",

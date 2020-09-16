@@ -9,8 +9,6 @@ precision highp float;
 
 
 attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
 //
 uniform vec3 uOffset;
 uniform mat4 projection;
@@ -33,8 +31,9 @@ const mat4 depthScaleMatrix = mat4(
 );
 
 void main () {
-  vUv = uv / 1.;
+  //  vUv = uv / 1.;
   vPosition = position + uOffset;
+
 
   vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix  * vec4(vPosition, 1.0);
 

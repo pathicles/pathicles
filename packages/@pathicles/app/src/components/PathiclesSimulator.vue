@@ -1,31 +1,22 @@
 /* eslint-env browser */
 
 <template lang="pug">
-  div
-    <!--    select(v-model="preset")-->
-    <!--      option(v-for="preset of presets" :value="preset") {{preset.name}}-->
-    .pathicles__scroll-container(ref="scrollContainer" :key="presetName"
-      :style="{height: scrollHeight}")
-      .pathicles__container(
-        ref="container"
-        :style="cssStyles")
-        canvas(ref="canvas" :style="cssStyles" :width="canvasWidth" :height="canvasHeight")
-        <!--    .legend-->
-        <!--      dl-->
-        <!--        dt Particle type-->
-        <!--        dl electrons-->
-        <!--        dt electric field-->
-        <!--        dl 0-->
-        <!--        dt magnetic field-->
-        <!--        dl 0-->
+.pathicles(ref="scrollContainer")
+  select(v-model="presetName" v-on:change="onChange($event)")
+    option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
+  .canvas-container(ref="container")
+    canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+    <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>
-import { ReglSimulatorInstance } from '@pathicles/core'
-import { config } from '@pathicles/config'
 
+import { ReglSimulatorInstance } from '@pathicles/core'
+import { config as loadConfig, presets } from '@pathicles/config'
+// import DatGUI from './DatGUI'
 export default {
   name: 'PathiclesSimulator',
+  // components: { 'dat-gui': DatGUI },
   props: {
     maxScreenWidth: {
       type: Number,
@@ -50,19 +41,22 @@ export default {
   },
   data: () => {
     return {
-      screenWidth: 600,
-      screenHeight: 600,
+      screenWidth: 10,
+      screenHeight: 10,
       progress: 0.5,
       cameraMode: 'free',
       viewRange: [0, 1],
-      presetName: 'storyElectric'
+      presets,
+      presetName: 'story-electric',
+      config: {},
+      configModel: {}
     }
   },
   computed: {
     scrollHeight() {
       return this.scrollFactor * 100 + 'vh'
     },
-    cssStyles() {
+    canvasStyles() {
       return {
         width: this.screenWidth + 'px',
         height: this.screenHeight + 'px'
@@ -78,12 +72,24 @@ export default {
 
   mounted() {
     if (typeof window !== 'undefined' && window.document) {
+      const parsedUrl = new URL(window.location.href)
+      if (parsedUrl.searchParams.get('presetName') !== null)
+        this.presetName = parsedUrl.searchParams.get('presetName')
+
+      this.config = loadConfig(this.presetName)
+
+      if (parsedUrl.searchParams.get('prerender')) {
+        this.config.runner.prerender = true
+      }
+
+      this._gui = this.initGui(loadConfig(this.presetName))
       this.screenWidth = window.innerWidth
       this.screenHeight = window.innerHeight
-
+    }
+    this.$nextTick(() => {
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
-        config: config(this.$route.params.preset || this.presetName),
+        config: this.config,
         pixelRatio: this.pixelRatio,
         simulate: true,
         control: {
@@ -92,73 +98,72 @@ export default {
           cameraMode: this.cameraMode
         }
       })
-    }
-    this.$nextTick(() => {
       this.scrollyHeight = this.$refs.scrollContainer.clientHeight
     })
-  },
-  destroyed() {
-    if (typeof window !== 'undefined' && window.document) {
-      this.reglInstance.destroy()
-    }
   },
 
   methods: {
     handleResize() {
       this.scrollyHeight = document.documentElement.clientHeight
-    }
+    },
+    onChange() {
+      const params = { presetName: this.presetName }
+      history.pushState(
+        {},
+        null,
+        this.$route.path +
+          '?' +
+          Object.keys(params)
+            .map(key => {
+              return (
+                encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+              )
+            })
+            .join('&')
+      )
+      this.config = loadConfig(this.presetName)
+      console.log(this.config)
+      this.reglInstance.loadConfig(this.config)
+    },
+    update(configModel) {
+      this.config.model.interactions.electricField = [
+        0,
+        0,
+        parseFloat(configModel.electricField_z)
+      ]
+      this.config.model.interactions.magneticField = [
+        0,
+        parseFloat(configModel.magneticField_y),
+        0
+      ]
+      this.reglInstance.loadConfig(this.config)
+    },
+
+    initGui(config) {}
   }
 }
 </script>
 
 <style lang="stylus">
-
-select
+.pathicles
   position absolute
-  z-index 10000
-  top 0
-
-body
-  margin 0
-
-.pathicles__control-container
-  height: 100vh
-  overflow scroll
-  position: fixed
   top 0
   left 0
-  z-index 1000
+  bottom 0
+  right 0
+  overflow hidden
 
-.legend
-  position fixed
-  dl {
-    display: flex;
-    flex-flow: column;
-    border: solid #333;
-    border-width: 1px 1px 0 0;
-  }
-  dt {
-  flex-basis: 20%;
-  padding: 2px 4px;
-  background: #333;
-  text-align: right;
-  color: #fff;
-  }
-  dd {
-  flex-basis: 70%;
-  flex-grow: 1;
-  margin: 0;
-  padding: 2px 4px;
-  border-bottom: 1px solid #333;
-  }
+  select
+    position absolute
+    z-index 10000
+    top 0
 
-
-.pathicles__container
-  position: fixed
-  top: 50%
-  left: 50%
-  transform: translate(-50%, -50%) scale(1);
-
-  canvas
-    image-rendering crisp-edges
+  .canvas-container
+    height: 100vh
+    position absolute
+    top 0
+    left 0
+    z-index 1000
+    canvas
+      image-rendering crisp-edges
 </style>

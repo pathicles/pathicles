@@ -1,6 +1,6 @@
 {
   "name": "@pathicles/config",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
   "scripts": {
@@ -9,8 +9,5 @@
     "lint-fix": "eslint --fix src",
     "prepare": "yarn build",
     "test": "jest"
-  },
-  "dependencies": {
-    "nanomerge": "^0.2.0"
   }
 }

@@ -1,11 +1,14 @@
-<template lang="pug">
-  div
-    pathicles-story(:story="story")
+<template>
+  <div>
+    <pathicles-story :story="story" />
+  </div>
 </template>
 
 <script>
-import PathiclesStory from './../components/PathiclesStory'
+import PathiclesStory from './PathiclesStory'
+
 export default {
+  name: 'StoryView',
   components: { 'pathicles-story': PathiclesStory },
   data() {
     return {

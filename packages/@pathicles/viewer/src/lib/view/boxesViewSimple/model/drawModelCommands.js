@@ -9,8 +9,7 @@ function clip(value, min, max) {
   return Math.min(Math.max(value, min), max)
 }
 
-export default function(regl, { variables, model, view }, shadow, cubeShadow) {
-
+export default function (regl, { variables, model, view }, shadow, cubeShadow) {
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
 
@@ -23,15 +22,13 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
   // const debleeder = [0.1, .99]
   // geometry.uvs = geometry.uvs.map(([u, v]) => [debleeder[u], debleeder[v]])
 
-  Math.clip = function(number, min, max) {
+  Math.clip = function (number, min, max) {
     return Math.max(min, Math.min(number, max))
   }
 
   let modelMatrix = identity([])
 
-
-  const command = mode => {
-
+  const command = (mode) => {
     return regl({
       depth: true,
       blend: {
@@ -70,7 +67,6 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
           divisor: 1
         },
         aColorCorrection: {
-
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
               .fill(0)
@@ -103,7 +99,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
       frag: [`#define ${mode} 1`, frag].join('\n'),
 
       ...(mode === 'cubeShadow' && {
-        framebuffer: function(context, props, batchId) {
+        framebuffer: function (context, props, batchId) {
           return cubeShadow.fbo.faces[batchId]
         }
       }),
@@ -116,7 +112,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
           shadowProjectionMatrix: shadow.shadowProjectionMatrix
         }),
         ...(mode === 'cubeShadow' && {
-          shadowViewMatrix: function(context, props, batchId) {
+          shadowViewMatrix: function (context, props, batchId) {
             switch (batchId) {
               case 0: // +x
                 return cubeShadow.shadowViewMatrix_x
@@ -150,7 +146,7 @@ export default function(regl, { variables, model, view }, shadow, cubeShadow) {
         shadowViewMatrix_top: cubeShadow.shadowViewMatrix_y_,
         stageGrid_y: view.stageGrid.y,
         shadowColor: view.shadowColor,
-        stageGrid_size: view.stageGrid.size,
+        stageGrid_size: view.stageGrid.size / 2,
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
         pathicleWidth: view.pathicleWidth,
         model: (ctx, props) => {

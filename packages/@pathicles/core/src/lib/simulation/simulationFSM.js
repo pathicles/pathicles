@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
-import { log, error, PerformanceLogger } from '../utils/logger'
+import PerformanceLogger from '../utils/PerformanceLogger'
+
 export default class SimulationFSM {
   constructor(
     simulation,
@@ -50,12 +51,12 @@ export default class SimulationFSM {
       }
     }
 
-    log('toggleActivity() for this.fsm.state: ' + this.fsm.state)
+    // log('toggleActivity() for this.fsm.state: ' + this.fsm.state)
   }
 
   start() {
     if (this.fsm.state !== 'initial') {
-      error('PathiclesRunner.start can be called in state initial only')
+      console.error('PathiclesRunner.start can be called in state initial only')
       throw new Error(
         'PathiclesRunner.start can be called in state initial only'
       )
@@ -65,7 +66,7 @@ export default class SimulationFSM {
     this._loopCount = 1
 
     if (this._prerender) {
-      log('start.prerender')
+      // log('start.prerender')
 
       PerformanceLogger.start('prerender')
       if (this.simulate) {
@@ -108,14 +109,14 @@ export default class SimulationFSM {
       this.fsm.state = this.fsm.state.replace(/restart/, 'active')
     }
 
-    if (stateInitial !== this.fsm.state) {
-      log(
-        stateInitial +
-          ' ==> ' +
-          this.fsm.state +
-          ' // ' +
-          this._simulation.variables.tick.value
-      )
-    }
+    // if (stateInitial !== this.fsm.state) {
+    //   log(
+    //     stateInitial +
+    //       ' ==> ' +
+    //       this.fsm.state +
+    //       ' // ' +
+    //       this._simulation.variables.tick.value
+    //   )
+    // }
   }
 }

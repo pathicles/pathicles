@@ -1,11 +1,11 @@
 export const random = {
   name: 'random',
-  // view: {
-  //   camera: {
-  //     position: [2, 10, 0],
-  //     target: [0, 0, 0]
-  //   }
-  // },
+  view: {
+    camera: {
+      position: [10, 1, 0],
+      target: [0, 1, 0]
+    }
+  },
 
   model: {
     boundingBoxSize: 2,

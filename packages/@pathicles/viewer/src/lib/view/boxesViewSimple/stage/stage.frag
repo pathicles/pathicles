@@ -1,7 +1,6 @@
 precision mediump float;
 #extension GL_OES_standard_derivatives : enable
-#define SQRT2 1.41421356
-#define PI 3.14159
+
 
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 #pragma glslify: fog_exp = require(glsl-fog/exp)
@@ -42,15 +41,11 @@ void main() {
   float resolution = 10.;
   vec2 grid_st = vUv * uResolution * resolution;
   vec4 color = vec4(1., 1., 1., .0);
-  color -= vec4(vec3(.95) * grid(grid_st, 1. / resolution, 2.), -.2);
-  color -= vec4(vec3(.5) * grid(grid_st, 5. / resolution, .5), -.2);
+  color -= vec4(vec3(.75) * grid(grid_st, 1. / resolution, 2.), -.2);
+  color -= vec4(vec3(.5) * grid(grid_st, 10. / resolution, 1.), -.2);
 
   vec3 texCoord = (vPosition - lightPosition);
   float visibility = 0.0;
-
-  float differentialLength=length(vec2(dFdx(vPosition),dFdy(vPosition)));
-  differentialLength*=SQRT2;
-  float result=isPointOnLine(vPosition,differentialLength);
 
 //  vec3 tex = texture2D(shadow, vUv).rgb;
 //  vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
@@ -98,6 +93,7 @@ void main() {
 
   vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
   gl_FragColor = vec4(faggedColor.rgb, shadowedColor.w * (1.-fogAmount));
+
 
 
 }
