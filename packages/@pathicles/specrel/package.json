@@ -1,5 +1,6 @@
 {
   "name": "@pathicles/specrel",
+  "license": "MIT Licence",
   "version": "0.1.0",
   "module": "dist/pathicles-specrel.esm.js",
   "main": "dist/pathicles-specrel.min.js",

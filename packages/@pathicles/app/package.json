@@ -1,25 +1,26 @@
 {
   "name": "@pathicles/app",
+  "license": "MIT Licence",
   "version": "0.0.0",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port $npm_package_config_devPort",
+    "lint-fix": "eslint --fix src"
+  },
   "config": {
     "devPort": 9303
-  },
-  "scripts": {
-    "dev": "vite --port $npm_package_config_devPort",
-    "build": "vite build",
-    "lint-fix": "eslint --fix src"
   },
   "dependencies": {
     "@pathicles/config": "^0.0.0",
     "@pathicles/core": "^0.0.0",
-    "vue-router": "^4.0.0-beta.10",
     "@pathicles/viewer": "^0.0.0",
-    "vue": "^3.0.0-rc.13"
+    "vue": "^3.0.0-rc.13",
+    "vue-router": "^4.0.0-beta.10"
   },
   "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.0-rc.13",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.0.0",
-    "vite": "^1.0.0-rc.4",
-    "@vue/compiler-sfc": "^3.0.0-rc.13"
+    "vite": "^1.0.0-rc.4"
   }
 }
