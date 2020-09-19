@@ -6,7 +6,7 @@ export const storyDipole = {
     camera: {
       // center: [-2, 1, 0],
 
-      position: [0,20, 0],
+      position: [0, 20, 0],
       target: [0, 0, 0]
     }
   },

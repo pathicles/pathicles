@@ -15,13 +15,13 @@ export default function keyControl(app) {
     if (keyCode === 65) {
       // a for autorotate
       app.config.view.camera.autorotate = !app.config.view.camera.autorotate
-    } else if (keyCode === 67) {
-      // c for camera
-
-      if (app.camera) {
-        const cameraConfig = app.camera.toConfig()
-        //debug.log(JSON.stringify({ camera: cameraConfig }, null, 2))
-      }
+      // } else if (keyCode === 67) {
+      //   // c for camera
+      //
+      //   if (app.camera) {
+      //     const cameraConfig = app.camera.toConfig()
+      //     //debug.log(JSON.stringify({ camera: cameraConfig }, null, 2))
+      //   }
     } else if (keyCode === 68) {
       // d for dump
       console.log(app.simulation.dump())

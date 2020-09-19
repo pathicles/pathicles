@@ -5,7 +5,7 @@ import lookAt from 'gl-mat4/lookAt'
 import perspective from 'gl-mat4/perspective'
 
 // eslint-disable-next-line no-unused-vars
-export default function({ scenes, camera }, regl) {
+export default function ({ scenes, camera }, regl) {
   const guidedCamera = {
     mView: new Float32Array(16),
     mProj: new Float32Array(16),
@@ -58,7 +58,7 @@ export default function({ scenes, camera }, regl) {
         )
         return guidedCamera.mView
       },
-      projection: context => {
+      projection: (context) => {
         const aspectRatio = context.viewportWidth / context.viewportHeight
 
         lookAt(

@@ -1,5 +1,3 @@
-import * as createPlane from './plane'
-
 import frag from './stage2.frag'
 import vert from './stage.vert'
 import createCube from 'primitive-cube'
@@ -12,7 +10,7 @@ export default function (regl, view, shadow) {
   const stage = createCube(view.stageGrid.size)
 
   // eslint-disable-next-line no-unused-vars
-  const command = (mode) => {
+  const command = () => {
     return regl({
       blend: {
         enable: true,
@@ -39,7 +37,7 @@ export default function (regl, view, shadow) {
         position: stage.positions
       },
       uniforms: {
-        uOffset: [0, view.stageGrid.y - 0, 0],
+        uOffset: [0, view.stageGrid.y, 0],
         uResolution: [view.stageGrid.size, view.stageGrid.size],
         shadowMap: shadow.fbo,
         lightPosition: view.lightPosition,

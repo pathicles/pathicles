@@ -8,9 +8,9 @@ import { defaultConfig } from '@pathicles/config'
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
     this.config = defaultConfig
-
     this.control = control
 
+    // eslint-disable-next-line no-undef
     createREGL({
       canvas,
       attributes: {

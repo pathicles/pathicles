@@ -1,12 +1,11 @@
 // render point-light shadows into a cubemap
 import { perspective, lookAt } from 'gl-mat4'
 
-export default function(regl, { lightPosition }, shadowFbo) {
-
+export default function (regl, { lightPosition }, shadowFbo) {
   return regl({
     uniforms: {
       projection: perspective([], Math.PI / 2.0, 1.0, 0.25, 70.0),
-      view: function(context, props, batchId) {
+      view: function (context, props, batchId) {
         switch (batchId) {
           case 0: // +x
             return lookAt(
@@ -75,7 +74,7 @@ export default function(regl, { lightPosition }, shadowFbo) {
     gl_Position = projection * view * p;
   }`,
 
-    framebuffer: function(context, props, batchId) {
+    framebuffer: function (context, props, batchId) {
       return shadowFbo.faces[batchId]
     }
   })

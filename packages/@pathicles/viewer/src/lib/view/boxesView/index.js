@@ -9,7 +9,7 @@ import ssaoSupport from './ssao/ssao'
 import fxaaSupport from './fxaa/fxaa'
 // eslint-disable-next-line
 
-export default function(regl, { variables, model, config }) {
+export default function (regl, { variables, model, config }) {
   const uniforms = {
     //model
     bufferLength: model.bufferLength,
@@ -173,7 +173,7 @@ export default function(regl, { variables, model, config }) {
               ? ssao.ssaoBlurBuffer
               : ssao.ssaoBuffer,
 
-          referencePoint: ctx => ctx.referencePoint
+          referencePoint: (ctx) => ctx.referencePoint
         })
       })
       fxaa({
@@ -187,7 +187,7 @@ export default function(regl, { variables, model, config }) {
   }
 
   const destroy = () => {
-    Object.keys(buffers).forEach(key => {
+    Object.keys(buffers).forEach((key) => {
       buffers[key].destroy()
     })
   }

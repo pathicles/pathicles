@@ -1,4 +1,5 @@
 // render point-light shadows into a cubemap
+// eslint-disable-next-line no-unused-vars
 import { perspective, ortho, lookAt } from 'gl-mat4'
 
 export const SIZE = 1024

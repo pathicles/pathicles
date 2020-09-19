@@ -13,7 +13,6 @@ export class ReglSimulatorInstance {
     keyControl(this)
     this.config = config
     this.simulate = simulate
-
     this.control = control
 
     // eslint-disable-next-line no-undef
@@ -64,6 +63,7 @@ export class ReglSimulatorInstance {
   }
 
   destroy() {
+    console.log('destroy')
     this.regl.destroy()
   }
 
@@ -119,6 +119,9 @@ export class ReglSimulatorInstance {
       return regl.frame(() => {
         // PerformanceLogger.start('mainloop')
 
+        if (this.config.view.camera.autorotate) {
+          this.cameras['free'].rotate(this.config.view.camera.dTheta, 0)
+        }
         if (this.simulate) this.pathiclesRunner.next()
 
         // this.setCameraUniforms(this.camera, () => {

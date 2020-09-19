@@ -1,7 +1,7 @@
 let merge = (...theArgs) => {
   let target = {}
   // Merge the object into the target object
-  let merger = obj => {
+  let merger = (obj) => {
     for (let prop in obj) {
       // eslint-disable-next-line no-prototype-builtins
       if (obj.hasOwnProperty(prop)) {
@@ -44,7 +44,7 @@ const presets = {
   [gyrotest_1_electron.name]: gyrotest_1_electron
 }
 
-const config = presetName => {
+const config = (presetName) => {
   return merge(true, defaultConfig, presets[presetName]) || defaultConfig
 }
 

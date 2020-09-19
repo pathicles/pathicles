@@ -1,4 +1,3 @@
-
 export default function showCubeBuffer(regl, buffer, { x0 = 5, y0 = 5 }) {
   return regl({
     frag: `

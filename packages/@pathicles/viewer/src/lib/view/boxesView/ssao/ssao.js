@@ -3,7 +3,7 @@ import length from 'gl-vec3/length'
 import normalize from 'gl-vec3/normalize'
 import normalize2 from 'gl-vec2/normalize'
 
-export default function(regl) {
+export default function (regl) {
   const sampleCount = 32
   const rotationCount = 4
 
@@ -108,7 +108,7 @@ export default function(regl) {
         // iProj: ctx => {
         //   console.log(ctx)
         //   invert([], ctx.projection)},
-        hRotBuf: ctx => [
+        hRotBuf: (ctx) => [
           1.0 / ctx.framebufferWidth,
           1.0 / ctx.framebufferHeight
         ]
@@ -133,7 +133,7 @@ export default function(regl) {
     },
     uniforms: {
       ssaoBuffer: regl.prop('ssaoBuffer'),
-      h: ctx => [1.0 / ctx.framebufferWidth, 1.0 / ctx.framebufferHeight]
+      h: (ctx) => [1.0 / ctx.framebufferWidth, 1.0 / ctx.framebufferHeight]
     },
     depth: { enable: false },
     count: 3

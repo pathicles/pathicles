@@ -23,7 +23,9 @@
   "scripts": {
     "build": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
-    "dev": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config --scope @pathicles/app   dev",
+    "dev": "yarn run dev-libs && yarn run dev-app",
+    "dev-libs": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config dev",
+    "dev-app": "yarn workspace @pathicles/app run dev",
     "lint-fix": "yarn workspaces run lint-fix",
     "prettier-packages": "npx prettier-package-json --write; lerna exec -- prettier-package-json --write",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits",

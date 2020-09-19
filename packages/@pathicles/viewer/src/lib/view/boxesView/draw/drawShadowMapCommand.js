@@ -1,10 +1,10 @@
 import mat4 from 'gl-mat4'
 
-export default function(regl, { lightPosition, shadowBufferCube }) {
+export default function (regl, { lightPosition, shadowBufferCube }) {
   return regl({
     uniforms: {
       projection: mat4.perspective([], (2 * Math.PI) / 4.0, 1.0, 0.01, 5.0),
-      view: function(context, props, batchId) {
+      view: function (context, props, batchId) {
         switch (batchId) {
           case 0: // +x
             return mat4.lookAt(
@@ -77,7 +77,7 @@ export default function(regl, { lightPosition, shadowBufferCube }) {
     gl_FragColor = vec4(vec3(distance(vPosition, pointLightPosition)), 1.0);
   }`,
 
-    framebuffer: function(context, props, batchId) {
+    framebuffer: function (context, props, batchId) {
       return shadowBufferCube.faces[batchId]
     }
   })

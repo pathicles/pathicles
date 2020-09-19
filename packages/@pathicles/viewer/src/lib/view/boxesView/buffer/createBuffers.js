@@ -1,4 +1,4 @@
-export default function(regl) {
+export default function (regl) {
   return {
     depthNormalBuffer: regl.framebuffer({
       width: regl._gl.canvas.width,

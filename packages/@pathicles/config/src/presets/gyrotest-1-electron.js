@@ -7,8 +7,7 @@ export default {
       center: [0.5, 0, 0],
       theta: (2 * Math.PI) / (360 / 45),
       phi: (2 * Math.PI) / (360 / 15),
-      distance: .5
-
+      distance: 0.5
     }
   },
 
@@ -19,7 +18,7 @@ export default {
 
   model: {
     bufferLength: 27,
-    tickDurationOverC: .1,
+    tickDurationOverC: 0.1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',

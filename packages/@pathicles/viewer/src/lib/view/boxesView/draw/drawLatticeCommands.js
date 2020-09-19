@@ -1,12 +1,12 @@
 import createCube from 'primitive-cube'
 import { identity } from 'gl-mat4'
 
-export default function(regl, { lattice }) {
+export default function (regl, { lattice }) {
   const cube = createCube(1)
 
   const transformations = lattice.transformations
 
-  const command = mode =>
+  const command = (mode) =>
     regl({
       primitive: 'triangles',
       elements: cube.cells,
@@ -108,15 +108,15 @@ export default function(regl, { lattice }) {
           divisor: 1
         },
         aTranslation: {
-          buffer: regl.buffer(transformations.map(t => t.translation)),
+          buffer: regl.buffer(transformations.map((t) => t.translation)),
           divisor: 1
         },
         aPhi: {
-          buffer: regl.buffer(lattice.transformations.map(t => -t.phi)),
+          buffer: regl.buffer(lattice.transformations.map((t) => -t.phi)),
           divisor: 1
         },
         aScale: {
-          buffer: regl.buffer(lattice.transformations.map(t => t.scale)),
+          buffer: regl.buffer(lattice.transformations.map((t) => t.scale)),
           divisor: 1
         },
         aVertexColorCorrection: [

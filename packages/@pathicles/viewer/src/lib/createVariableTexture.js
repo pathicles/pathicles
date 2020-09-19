@@ -1,4 +1,4 @@
-export default function(regl, particleCount, bufferLength) {
+export default function (regl, particleCount, bufferLength) {
   return regl.texture({
     width: particleCount,
     height: bufferLength,

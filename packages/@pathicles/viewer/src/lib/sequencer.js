@@ -35,7 +35,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
         })
         scene.particleColorsAndTypes({
           data: data.particleTypes
-            .map((p) => presets.defaultConfig.colors[p].concat(p))
+            .map((p) => scene.preset.colors[p].concat(p))
             .flat(),
           shape: [scene.particleCount, 1, 4],
           type: 'float'

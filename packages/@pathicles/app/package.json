@@ -6,19 +6,20 @@
   },
   "scripts": {
     "dev": "vite --port $npm_package_config_devPort",
-    "build": "vite build"
+    "build": "vite build",
+    "lint-fix": "eslint --fix src"
   },
   "dependencies": {
     "@pathicles/config": "^0.0.0",
     "@pathicles/core": "^0.0.0",
-    "vue-router": "^4.0.0-beta.9",
+    "vue-router": "^4.0.0-beta.10",
     "@pathicles/viewer": "^0.0.0",
-    "vue": "^3.0.0-rc.10"
+    "vue": "^3.0.0-rc.13"
   },
   "devDependencies": {
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.0.0",
     "vite": "^1.0.0-rc.4",
-    "@vue/compiler-sfc": "^3.0.0-rc.11"
+    "@vue/compiler-sfc": "^3.0.0-rc.13"
   }
 }

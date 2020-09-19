@@ -203,7 +203,7 @@ describe('five elements', () => {
       }
     ])
   })
-  it('five elements', () => {
+  it('five other elements', () => {
     expect(lattice.beamline.map((e) => e.type)).toEqual([
       'DRIF',
       'QUAD',

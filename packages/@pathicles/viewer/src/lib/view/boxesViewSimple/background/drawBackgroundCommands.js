@@ -4,7 +4,7 @@ import { fromTranslation } from 'gl-mat4'
 import frag from './background.frag'
 import vert from './background.vert'
 
-export default function(regl, { stageGrid }) {
+export default function (regl, { stageGrid }) {
   // const stage = createCube(stageGrid.size, stageGrid.size * 10, stageGrid.size)
   const stage = createCube(1, 1, 1)
 
@@ -24,7 +24,7 @@ export default function(regl, { stageGrid }) {
     },
     uniforms: {
       uResolution: [stageGrid.size, stageGrid.size],
-      uSunPosition: context => [
+      uSunPosition: (context) => [
         context.viewportHeight / 2,
         (context.viewportWidth / 4) * 3
       ],

@@ -10,9 +10,6 @@ function clip(value, min, max) {
 }
 
 export default function (regl, { variables, model, view }, shadow, cubeShadow) {
-  const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
-    createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
-
   // const geometry = createGeometry({
   //   pathicleWidth: view.pathicleWidth,
   //   pathicleRelativeHeight: view.pathicleRelativeHeight

@@ -7,12 +7,12 @@ const complex = vectorizeText('Beschleunigung', {
   font: 'Arial'
 })
 
-complex.positions.forEach(position => position.push(0))
+complex.positions.forEach((position) => position.push(0))
 
 import vert from './text.vert'
 import frag from './text.frag'
 
-export default function(regl) {
+export default function (regl) {
   const command = () =>
     regl({
       primitive: 'triangles',

@@ -29,7 +29,7 @@ export default {
 
   runner: {
     prerender: false,
-    loops: 50,
+    loops: 5,
 
     mode: 'framewise',
     stepsPerTick: 4,
@@ -128,8 +128,8 @@ export default {
       target: [0, 1, 0],
 
       fovY: (2 * Math.PI) / (360 / 50),
-      dTheta: 0.01,
-      autorotate: true,
+      dTheta: 0.001,
+      autorotate: false,
       // rotationDecayTime: 0,
       rotateAboutCenter: true,
       zoomAboutCursor: false,

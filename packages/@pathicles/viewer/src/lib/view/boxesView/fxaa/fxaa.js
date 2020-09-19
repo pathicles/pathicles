@@ -1,7 +1,7 @@
 import vert from './fxaa.vert.glsl'
 import frag from './fxaa.frag.glsl'
 
-export default function(regl, buffer) {
+export default function (regl, buffer) {
   return regl({
     vert,
     frag,

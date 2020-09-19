@@ -27,11 +27,11 @@ const defaultFragment = /* glsl */ `
     }
 `
 
-export default function(regl, { lightPosition }, fbo) {
+export default function (regl, { lightPosition }, fbo) {
   return regl({
     uniforms: {
       projection: perspective([], Math.PI / 2.0, 1.0, 0.25, 70.0),
-      view: function(context, props, batchId) {
+      view: function (context, props, batchId) {
         switch (batchId) {
           case 0: // +x
             return lookAt(
@@ -84,7 +84,7 @@ export default function(regl, { lightPosition }, fbo) {
     frag: defaultFragment,
     vert: defaultVertex,
 
-    framebuffer: function(context, props, batchId) {
+    framebuffer: function (context, props, batchId) {
       return fbo.faces[batchId]
     }
   })

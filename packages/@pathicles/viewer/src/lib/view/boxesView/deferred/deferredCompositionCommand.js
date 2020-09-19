@@ -1,6 +1,6 @@
 import deferredFrag from './deferredCompositionCommand.frag.glsl'
 
-export default function(regl) {
+export default function (regl) {
   return regl({
     vert: `
       precision mediump float;

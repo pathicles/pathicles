@@ -10,7 +10,7 @@ import {
 import normals from 'angle-normals'
 import createCube from 'primitive-cube'
 
-export default function(regl, { variables, model, view }) {
+export default function (regl, { variables, model, view }) {
   const createGeometry = ({ pathicleWidth, pathicleRelativeHeight }) =>
     createCube(pathicleWidth, pathicleWidth * pathicleRelativeHeight, 1)
 
@@ -21,7 +21,7 @@ export default function(regl, { variables, model, view }) {
   console.log(geometry)
   const scaleFactor = 1.00001
 
-  const command = mode =>
+  const command = (mode) =>
     regl({
       primitive: 'triangles',
       elements: geometry.cells,

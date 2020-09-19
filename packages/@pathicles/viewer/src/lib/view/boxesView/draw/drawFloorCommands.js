@@ -1,14 +1,14 @@
 import createCube from 'primitive-cube'
 import mat4 from 'gl-mat4'
 
-export default function(regl, stageGrid) {
+export default function (regl, stageGrid) {
   const cube = createCube(stageGrid.size, stageGrid.size, stageGrid.size)
 
   const stageGridOffsets = createOffsets(stageGrid)
 
   const texData = createTexture(stageGrid)
 
-  const command = mode =>
+  const command = (mode) =>
     regl({
       primitive: 'triangles',
       elements: cube.cells,
