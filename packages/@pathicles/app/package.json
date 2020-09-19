@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/app",
   "license": "MIT Licence",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "build": "vite build",
     "dev": "vite --port $npm_package_config_devPort",
@@ -11,9 +11,9 @@
     "devPort": 9303
   },
   "dependencies": {
-    "@pathicles/config": "^0.0.0",
-    "@pathicles/core": "^0.0.0",
-    "@pathicles/viewer": "^0.0.0",
+    "@pathicles/config": "^0.1.0",
+    "@pathicles/core": "^0.1.0",
+    "@pathicles/viewer": "^0.1.0",
     "vue": "^3.0.0-rc.13",
     "vue-router": "^4.0.0-beta.10"
   },
