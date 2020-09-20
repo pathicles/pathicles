@@ -1,6 +1,6 @@
 {
   "name": "@pathicles/viewer",
-  "license": "MIT Licence",
+  "license": "MIT",
   "version": "0.1.0",
   "module": "dist/pathicles-viewer.esm.js",
   "scripts": {

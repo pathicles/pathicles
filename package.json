@@ -2,7 +2,7 @@
   "private": true,
   "name": "pathicles",
   "description": "monorepo pathicles",
-  "license": "MIT Licence",
+  "license": "MIT",
   "author": "drkrthj <post@dirk-rathje.de>",
   "repository": {
     "type": "git",

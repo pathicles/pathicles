@@ -1,6 +1,6 @@
 {
   "name": "@pathicles/config",
-  "license": "MIT Licence",
+  "license": "MIT",
   "version": "0.1.0",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
