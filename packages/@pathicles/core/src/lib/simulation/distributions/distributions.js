@@ -1,5 +1,3 @@
-'use strict'
-
 export function rowDistribution({ n = 0, d = 0 }) {
   const dOffset = (d * (n - 1)) / 2
 

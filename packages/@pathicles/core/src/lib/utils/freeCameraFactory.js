@@ -17,10 +17,15 @@ export default function (options, regl) {
   const phi = Math.atan2(p[1], p[0])
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
 
-  const aCamera = camera({
-    ...{ ...options, distance, phi, theta, center: target },
+  const cameraOptions = Object.assign({}, options, {
+    distance,
+    phi,
+    theta,
+    center: target,
     aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
   })
+
+  const aCamera = camera(cameraOptions)
   initializeCameraControls(aCamera, regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
     maxDistance: options.maxDistance || 20

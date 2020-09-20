@@ -1,4 +1,5 @@
 # VS Code
+.yarn
 sw.*
 .history
 .trash_
@@ -84,3 +85,4 @@ typings/
 /packages/@pathicles/viewer/dist/pathicles-viewer.cjs.js
 /packages/@pathicles/app/src_/data/
 /packages/@pathicles/core/dist/pathicles-core.esm.js
+/packages/@pathicles/viewer/stats.html

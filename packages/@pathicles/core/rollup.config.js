@@ -6,6 +6,7 @@ import bundleSize from 'rollup-plugin-bundle-size'
 import { join } from 'path'
 import cleanup from 'rollup-plugin-cleanup'
 import progress from 'rollup-plugin-progress'
+import buble from '@rollup/plugin-buble'
 
 export default {
   input: join('src', 'index.js'),
@@ -14,9 +15,10 @@ export default {
     file: pkg.module
   },
   plugins: [
-    // progress({
-    //   clearLine: false // default: true
-    // }),
+    progress({
+      clearLine: true // default: true
+    }),
+    buble({ objectAssign: 'Object.assign' }),
     nodeResolve(),
     commonjs({
       // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
