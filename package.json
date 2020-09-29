@@ -18,11 +18,13 @@
     "packages/@pathicles/app"
   ],
   "scripts": {
-    "build": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
+    "dev:docs": "npx vitepress dev packages/@pathicles/docs/src",
+    "build:docs": "npx vitepress build packages/@pathicles/docs/src",
+    "build": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "dev": "yarn run dev-libs; yarn run dev-app",
     "dev:app": "yarn workspace @pathicles/app run dev",
-    "dev:libs": "lerna run --parallel --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config dev",
+    "dev:libs": "lerna run --parallel --scope @pathicles/core --scope @pathicles/viewer --scope @pathicles/config dev",
     "lint-fix": "yarn workspaces run lint-fix",
     "prettier-packages": "npx prettier-package-json --write; lerna exec -- npx prettier-package-json --write",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits",
@@ -35,15 +37,15 @@
     }
   },
   "devDependencies": {
+    "vitepress": "^0.6.0",
     "conventional-changelog-cli": "2.0.31",
     "dotenv": "^8.2.0",
     "flatted": "^2.0.1",
+    "npm-run-all": "^4.1.5",
     "fs-extra-plus": "0.5.15",
-    "jest": "^25.1.0",
-    "jest-cli": "^25.1.0",
     "lerna": "^3.20.2",
     "lint-staged": "9.5.0",
     "pkg-up": "^3.1.0",
-    "prettier": "^2.1.2"
+    "wsrun": "^5.2.2"
   }
 }
