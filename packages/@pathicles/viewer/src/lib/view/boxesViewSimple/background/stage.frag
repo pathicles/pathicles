@@ -6,8 +6,6 @@ precision highp float;
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
 
-
-
 #define SQRT2 1.41421356
 #define PI 3.14159
 

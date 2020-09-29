@@ -1,4 +1,4 @@
-// import drawBackgroundCommand from './background/drawBackgroundCommands'
+import drawBackgroundCommand from './background/drawBackgroundCommands'
 // import drawBoxCommand from './box/drawBoxCommands'
 import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
@@ -39,11 +39,12 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     cubeShadow
   )
   const drawStage = drawStageCommands(regl, config.view, shadow, cubeShadow)
-  // const drawBackground = drawBackgroundCommand(regl, config.view)
+  const drawBackground = drawBackgroundCommand(regl, config.view)
   // const drawBox = drawBoxCommand(regl, config.view)
 
   function drawDiffuse(props) {
     setParams(config.view, () => {
+      drawBackground.lighting()
       // drawBox()
       // drawModel.cubeShadow(props)
 

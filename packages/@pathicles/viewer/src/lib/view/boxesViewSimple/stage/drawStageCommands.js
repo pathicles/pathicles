@@ -1,14 +1,9 @@
-import frag from './stage2.frag'
+import frag from './stage.frag'
 import vert from './stage.vert'
-import createCube from 'primitive-cube'
+import { createPlane } from './plane'
 
 export default function (regl, view, shadow) {
-  // const stage = createPlane.createPlane(
-  //   view.stageGrid.size,
-  //   view.stageGrid.size
-  // )
-  const stage = createCube(view.stageGrid.size)
-
+  const stage = createPlane(view.stageGrid.size - 1, view.stageGrid.size - 1)
   // eslint-disable-next-line no-unused-vars
   const command = () => {
     return regl({

@@ -1,36 +1,48 @@
+import frag from './stage.frag'
+import vert from './stage.vert'
 import createCube from 'primitive-cube'
-import { fromTranslation } from 'gl-mat4'
 
-import frag from './background.frag'
-import vert from './background.vert'
+export default function (regl, view) {
+  const stage = createCube(view.stageGrid.size)
 
-export default function (regl, { stageGrid }) {
-  // const stage = createCube(stageGrid.size, stageGrid.size * 10, stageGrid.size)
-  const stage = createCube(1, 1, 1)
+  // eslint-disable-next-line no-unused-vars
+  const command = () => {
+    return regl({
+      blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 1]
+      },
+      cull: {
+        enable: true,
+        face: 'front'
+      },
+      depth: false,
+      primitive: 'triangles',
+      elements: stage.cells,
+      attributes: {
+        position: stage.positions
+      },
+      uniforms: {
+        uOffset: [0, view.stageGrid.y, 0],
+        uResolution: [view.stageGrid.size, view.stageGrid.size],
+        lightPosition: view.lightPosition
+      },
+      vert,
+      frag
+    })
+  }
 
-  // let model = fromTranslation([], [0, -stageGrid.size * 5, 0])
-  let model = fromTranslation([], [0, 0, 0])
-
-  return regl({
-    primitive: 'triangles',
-    elements: stage.cells,
-    cull: {
-      enable: true,
-      face: 'front'
-    },
-    attributes: {
-      aPosition: stage.positions,
-      uv: stage.uvs
-    },
-    uniforms: {
-      uResolution: [stageGrid.size, stageGrid.size],
-      uSunPosition: (context) => [
-        context.viewportHeight / 2,
-        (context.viewportWidth / 4) * 3
-      ],
-      model
-    },
-    vert,
-    frag
-  })
+  return {
+    lighting: command('lighting')
+  }
 }
