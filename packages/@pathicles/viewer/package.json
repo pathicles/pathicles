@@ -7,7 +7,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint-fix": "eslint --fix src",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "publish": "yarn publish --access=public"
   },
   "config": {
     "devPort": 9002
