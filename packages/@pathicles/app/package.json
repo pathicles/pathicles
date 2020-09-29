@@ -6,8 +6,8 @@
     "build": "vite build",
     "dev": "vite --port $(node -p 'require(\"./package.json\").config.devPort')",
     "lint-fix": "eslint --fix src",
-    "prerender": "node ./tools/prerender.js",
-    "publish": "yarn publish --access=public"
+    "publish": "yarn publish --access=public",
+    "prerender": "node ./tools/prerender.js"
   },
   "config": {
     "devPort": 9303

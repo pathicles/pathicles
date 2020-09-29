@@ -9,8 +9,8 @@
     "dev": "rollup --config -w",
     "lint-fix": "eslint --fix src",
     "prepare": "yarn build",
-    "test": "jest",
-    "publish": "npm publish --access=public"
+    "publish": "npm publish --access=public",
+    "test": "jest"
   },
   "dependencies": {
     "@pathicles/core": "^0.1.0"
