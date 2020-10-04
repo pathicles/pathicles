@@ -1,22 +1,21 @@
 /* eslint-env browser */
 
 <template lang="pug">
-.pathicles(ref="scrollContainer")
-  select(v-model="presetName" v-on:change="onChange($event)")
-    option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
+.pathicles.pathicles-simulator(ref="scrollContainer")
+  .configurator
+    select(v-model="presetName" v-on:change="onChange($event)")
+      option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
   .canvas-container(ref="container")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>
-
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
 // import DatGUI from './DatGUI'
 export default {
   name: 'PathiclesSimulator',
-  // components: { 'dat-gui': DatGUI },
   props: {
     maxScreenWidth: {
       type: Number,
@@ -26,23 +25,15 @@ export default {
       type: Number,
       default: 600
     },
-    scrollFactor: {
-      type: Number,
-      default: 1
-    },
     maxPixelRatio: {
-      type: Number,
-      default: 2
-    },
-    pixelRatio: {
       type: Number,
       default: 2
     }
   },
   data: () => {
     return {
-      screenWidth: 10,
-      screenHeight: 10,
+      screenWidth: 500,
+      screenHeight: 500,
       progress: 0.5,
       cameraMode: 'free',
       viewRange: [0, 1],
@@ -53,8 +44,8 @@ export default {
     }
   },
   computed: {
-    scrollHeight() {
-      return this.scrollFactor * 100 + 'vh'
+    pixelRatio() {
+      return !window || Math.min(this.maxPixelRatio, window.devicePixelRatio)
     },
     canvasStyles() {
       return {
@@ -71,21 +62,20 @@ export default {
   },
 
   mounted() {
-    if (typeof window !== 'undefined' && window.document) {
-      const parsedUrl = new URL(window.location.href)
-      if (parsedUrl.searchParams.get('presetName') !== null)
-        this.presetName = parsedUrl.searchParams.get('presetName')
+    const parsedUrl = new URL(window.location.href)
+    if (parsedUrl.searchParams.get('presetName') !== null)
+      this.presetName = parsedUrl.searchParams.get('presetName')
 
-      this.config = loadConfig(this.presetName)
+    this.config = loadConfig(this.presetName)
 
-      if (parsedUrl.searchParams.get('prerender')) {
-        this.config.runner.prerender = true
-      }
-
-      this._gui = this.initGui(loadConfig(this.presetName))
-      this.screenWidth = window.innerWidth
-      this.screenHeight = window.innerHeight
+    if (parsedUrl.searchParams.get('prerender')) {
+      this.config.runner.prerender = true
     }
+
+    //this._gui = this.initGui(loadConfig(this.presetName))
+    this.screenWidth = window.innerWidth
+    this.screenHeight = window.innerHeight
+
     this.$nextTick(() => {
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
@@ -98,7 +88,7 @@ export default {
           cameraMode: this.cameraMode
         }
       })
-      this.scrollyHeight = this.$refs.scrollContainer.clientHeight
+      //this.scrollyHeight = this.$refs.scrollContainer.clientHeight
     })
   },
 
@@ -114,7 +104,7 @@ export default {
         this.$route.path +
           '?' +
           Object.keys(params)
-            .map(key => {
+            .map((key) => {
               return (
                 encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
               )
@@ -145,18 +135,29 @@ export default {
 </script>
 
 <style lang="stylus">
+
+.pathicles-simulator
+  touch-action pinch-zoom
+
 .pathicles
-  position absolute
+
+  position fixed
   top 0
   left 0
   bottom 0
   right 0
   overflow hidden
 
+  .configurator
+    padding 1em
+
   select
-    position absolute
+    position fixed
     z-index 10000
     top 0
+    left 1em
+    right 1em
+    font-size 16px
 
   .canvas-container
     height: 100vh
@@ -164,6 +165,7 @@ export default {
     top 0
     left 0
     z-index 1000
+
     canvas
       image-rendering crisp-edges
 </style>
