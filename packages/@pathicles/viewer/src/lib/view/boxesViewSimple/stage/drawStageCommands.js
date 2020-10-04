@@ -3,7 +3,7 @@ import vert from './stage.vert'
 import { createPlane } from './plane'
 
 export default function (regl, view, shadow) {
-  const stage = createPlane(view.stageGrid.size - 1, view.stageGrid.size - 1)
+  const stage = createPlane(view.stageGrid.size, view.stageGrid.size)
   // eslint-disable-next-line no-unused-vars
   const command = () => {
     return regl({

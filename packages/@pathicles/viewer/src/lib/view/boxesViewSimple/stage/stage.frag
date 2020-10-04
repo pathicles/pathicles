@@ -11,9 +11,9 @@ precision highp float;
 #define SQRT2 1.41421356
 #define PI 3.14159
 
-vec3 mainColor = vec3(0.);
-vec3 lineColor = vec3(.2, 1., .2);
-vec4 gridControl = vec4(.1, 10., .5, .0);
+vec3 mainColor = vec3(.7, .7, .7);
+vec3 lineColor = vec3(.2, .2, .2);
+vec4 gridControl = vec4(.1, 10., .5, .99);
 vec3 gridOffset = vec3(0., 0., 0.);
 varying vec3 vPosition;
 varying vec3 vNormal;
