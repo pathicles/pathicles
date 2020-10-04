@@ -2,7 +2,6 @@
 
 const imagemin = require('imagemin')
 const imageminJpegtran = require('imagemin-jpegtran')
-const fs = require('fs')
 
 ;(async () => {
   const files = await imagemin(['./../prerendered/*.{jpg}'], {

@@ -8,8 +8,6 @@ export default function readData(regl, { variables, model }) {
     data[key] = [
       new Float32Array(model.particleCount * model.bufferLength * 4),
       new Float32Array(model.particleCount * model.bufferLength * 4)
-      // new Float32Array(model.particleCount * model.bufferLength * 4),
-      // new Float32Array(model.particleCount * model.bufferLength * 4)
     ]
   })
 

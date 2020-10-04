@@ -6,7 +6,7 @@
     "build": "vite build",
     "dev": "vite --port $(node -p 'require(\"./package.json\").config.devPort')",
     "lint-fix": "eslint --fix src",
-    "publish": "yarn publish --access=public",
+    "publish": "yarn publish --access=public"
   },
   "config": {
     "devPort": 9303
@@ -21,9 +21,9 @@
     "vue-router": "^4.0.0-beta.12"
   },
   "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.0",
     "fs-extra-plus": "^0.5.19",
     "jimp": "^0.16.1",
-    "@vue/compiler-sfc": "^3.0.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "puppeteer": "^5.3.1",
