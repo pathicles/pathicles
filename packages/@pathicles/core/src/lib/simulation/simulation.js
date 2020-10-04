@@ -111,12 +111,14 @@ export class Simulation {
         this._logStore.push({ tick: this.variables.tick.value, data: data })
       }
     }
-
     this.dump = () => {
-      return readData(this._regl, {
-        variables: this.variables,
-        model: this.model
-      })
+      return {
+        configuration: this.configuration,
+        ...readData(this._regl, {
+          variables: this.variables,
+          model: this.model
+        })
+      }
     }
   }
 

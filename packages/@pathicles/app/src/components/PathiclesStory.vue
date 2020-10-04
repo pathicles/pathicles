@@ -51,9 +51,12 @@ const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
 
 import { ReglViewerInstance } from '@pathicles/viewer'
 
-import storyDipole from '@pathicles/config/src/data/story-dipole.json'
-import storyElectric from '@pathicles/config/src/data/story-electric.json'
-import storyQuadrupole from '@pathicles/config/src/data/story-quadrupole.json'
+const storyDipole = () =>
+  import('@pathicles/prerendered/files/story-dipole.json')
+const storyElectric = () =>
+  import('@pathicles/prerendered/files/story-electric.json')
+const storyQuadrupole = () =>
+  import('@pathicles/prerendered/files/story-quadrupole.json')
 
 export default {
   name: 'PathiclesStory',
@@ -74,11 +77,12 @@ export default {
               preset: 'story-loop',
               data: 'story-electric.js',
               camera: {
-                position: [-1, 1.5, 1],
-                target: [2, 1.5, -2]
+                position: [-2, 1.5, 2],
+                target: [0, 1.5, 0]
               }
             }
           },
+
           {
             type: 'caption',
             title: 'Beschleunigung<br><strong>macht&nbsp;schneller</strong>.',
@@ -159,92 +163,83 @@ export default {
       cameraMode: 'guided',
       viewRange: [0, 0],
       activeScene: 0,
-      pixelRatio: 2
+      maxPixelRatio: 2
     }
   },
 
   mounted() {
-    if (typeof window !== 'undefined' && window.document) {
-      this.pixelRatio = Math.min(this.pixelRatio, window.devicePixelRatio)
+    this.story.scenes.forEach((scene) => {
+      scene.duration =
+        scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
+    })
+    this.story.scenes.duration = this.story.scenes.reduce(
+      (acc, scene) => acc + scene.duration,
+      0
+    )
 
-      this.story.scenes.forEach((scene) => {
-        scene.duration =
-          scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
-      })
-      this.story.scenes.duration = this.story.scenes.reduce(
-        (acc, scene) => acc + scene.duration,
-        0
-      )
-      this.story.scenes.forEach((scene, s) => {
-        if (scene.pathicles) {
-          if (scene.pathicles.data) {
-            if (scene.pathicles.data === 'story-quadrupole.js')
-              scene.data = () =>
-                new Promise((resolutionFunc) => {
-                  resolutionFunc(storyQuadrupole)
-                })
-            else if (scene.pathicles.data === 'story-dipole.js')
-              scene.data = () =>
-                new Promise((resolutionFunc) => {
-                  resolutionFunc(storyDipole)
-                })
-            else
-              scene.data = () =>
-                new Promise((resolutionFunc) => {
-                  resolutionFunc(storyElectric)
-                })
-          }
-        }
-        scene.cameraSploints = {
-          position: scene.pathicles.camera
-            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.position)
-            : [
-                ...[0, 1].map(
-                  () => this.story.scenes[s - 1].pathicles.camera.position
-                ),
-                ...[2, 3].map(
-                  () => this.story.scenes[s + 1].pathicles.camera.position
-                )
-              ],
-          target: scene.pathicles.camera
-            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.target)
-            : [
-                ...[0, 1].map(
-                  () => this.story.scenes[s - 1].pathicles.camera.target
-                ),
-                ...[2, 3].map(
-                  () => this.story.scenes[s + 1].pathicles.camera.target
-                )
-              ]
-        }
-      })
+    this.story.scenes.forEach((scene, s) => {
+      if (scene.pathicles && scene.pathicles.data) {
+        if (scene.pathicles.data === 'story-quadrupole.js')
+          scene.data = () => storyQuadrupole().then((r) => r)
+        else if (scene.pathicles.data === 'story-dipole.js')
+          scene.data = () => storyDipole().then((r) => r)
+        else scene.data = () => storyElectric().then((r) => r)
+      }
+      scene.cameraSploints = {
+        position: scene.pathicles.camera
+          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.position)
+          : [
+              ...[0, 1].map(
+                () => this.story.scenes[s - 1].pathicles.camera.position
+              ),
+              ...[2, 3].map(
+                () => this.story.scenes[s + 1].pathicles.camera.position
+              )
+            ],
+        target: scene.pathicles.camera
+          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.target)
+          : [
+              ...[0, 1].map(
+                () => this.story.scenes[s - 1].pathicles.camera.target
+              ),
+              ...[2, 3].map(
+                () => this.story.scenes[s + 1].pathicles.camera.target
+              )
+            ]
+      }
+    })
 
-      watchViewport(this.handleViewportChange)
+    watchViewport(this.handleViewportChange)
 
-      this.reglInstance = new ReglViewerInstance({
-        canvas: this.$refs.canvas,
-        pixelRatio: this.pixelRatio,
-        control: {
-          viewRange: this.viewRange,
-          cameraMode: this.cameraMode,
-          scenes: this.story.scenes
-        }
-      })
-      this.$nextTick(() => {
-        this.storyHeight = this.$refs.scrollContainer.clientHeight
-      })
-    }
+    this.reglInstance = new ReglViewerInstance({
+      canvas: this.$refs.canvas,
+      pixelRatio: this.pixelRatio,
+      control: {
+        viewRange: this.viewRange,
+        cameraMode: this.cameraMode,
+        scenes: this.story.scenes
+      }
+    })
+    this.$nextTick(() => {
+      this.storyHeight = this.$refs.scrollContainer.clientHeight
+    })
   },
 
   computed: {
-    viewportState() {
-      return getViewportState()
+    pixelRatio() {
+      return !window || Math.min(this.maxPixelRatio, window.devicePixelRatio)
     },
     canvasStyles() {
       return {
         width: this.screenWidth + 'px',
         height: this.screenHeight + 'px'
       }
+    },
+    canvasWidth() {
+      return this.screenWidth * this.pixelRatio
+    },
+    canvasHeight() {
+      return this.screenHeight * this.pixelRatio
     }
   },
   unmounted() {
@@ -257,25 +252,12 @@ export default {
   methods: {
     handleViewportChange({ size, scroll }) {
       if (size.changed) {
-        this.canvasWidth =
-          this.$refs.canvasContainer.clientWidth * this.pixelRatio
-        this.canvasHeight =
-          this.$refs.canvasContainer.clientHeight * this.pixelRatio
         this.screenWidth = window.innerWidth
         this.screenHeight = window.innerHeight
         this.storyHeight = this.$refs.scrollContainer.clientHeight
       }
 
       if (scroll.changed) {
-        // const bcr_1 = document
-        //   .getElementById('scrolly-story__scene-content-wrapper--1')
-        //   .getBoundingClientRect()
-        //
-        // console.log(bcr_1.bottom, scroll.top, bcr_1.bottom <= scroll.top)
-        //
-        // this.progress = clamp(
-        //   (scroll.top + 0 * this.screenHeight) / this.storyHeight
-        // )
         this.progress = clamp(
           (scroll.top + this.screenHeight) / this.storyHeight
         )
@@ -309,6 +291,132 @@ export default {
 </script>
 
 <style lang="stylus">
+
+
+.pathicles-story__container
+
+  .debug
+    position fixed
+    top 0
+    left 0
+    z-index 1000000
+
+  .canvas-container
+    z-index 1000
+    pointer-events none
+    position fixed
+    width 100vw
+    height 100vh
+
+  .scene
+    position relative
+    padding-right: var(--page__padding__x)
+    padding-left var(--page__padding__x)
+
+  .scene-content-wrapper
+    z-index 10000
+    padding var(--page__padding__x)
+    padding-bottom $bl(1)
+    padding-top $bl(2)
+    position absolute
+    top 0
+    left 0
+    right var(--ui__sidebar__width)
+    background-color rgba(white, .8)
+    display flex
+    min-height 40vh
+    width calc(100vw - var(--ui__sidebar__width))
+
+.layout--sidebar-hidden
+  .scene-content-wrapper
+    right 0
+    width 100vw
+
+#scrolly-story__scene--0, #scrolly-story__scene--4
+  .scene-content-wrapper
+    top initial
+    bottom 0
+
+[data-status="future"] .scene-content-wrapper
+  display none
+
+[data-status="past"] .scene-content-wrapper
+  display none
+
+
+#scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
+  &[data-status="present"] .scene-content-wrapper
+    position fixed
+    bottom 0
+    top initial
+
+.pathicles-story__container
+
+
+  .title, .subtitle
+    font-size: var(--baty__font-size--header-md)
+    line-height: $bl(1.25)
+    .pathicles
+      strong
+        $bold()
+      $pathicles-span(header-md)
+
+  .title
+    span.pathicles
+      background-color var(--kfb__blue)
+      color white
+
+    &[data-index]:before
+      content attr(data-index)
+      position: absolute
+      z-index 2000
+      color white
+      margin-left $bl(-.75)
+      $regular()
+
+      //+mq--gte-md()
+      margin-left $bl(-1)
+
+  .body
+    p
+      $baselined-typography(body-md)
+      max-width 60ch
+
+      .photon, .electron, .proton
+
+        display inline-block
+        padding 0 5px
+
+
+      .proton
+        background-color var(--kfb__red)
+        color white
+      .photon
+        background-color var(--kfb__yellow)
+
+      .electron
+        background-color var(--kfb__blue)
+        color white
+
+  .options
+
+    flex-direction column
+
+    section.md-section_open
+      margin-bottom $bl(1)
+
+    //+mq--gte-md()
+    flex-direction row
+
+    .option
+      flex 1
+      padding-right: $bl(.5)
+  canvas
+    image-rendering crisp-edges
+
+.layout--PathiclesStory
+  .navbar__item--next
+    opacity 0
 
 .pathicles-story__container
 

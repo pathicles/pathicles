@@ -1,9 +1,7 @@
 /* eslint-env browser */
 
 <template>
-  <div id="app">
-    <router-view :key="$route.fullPath"></router-view>
-  </div>
+  <router-view :key="$route.fullPath" :class="{ prerender }"></router-view>
 </template>
 
 <script>
@@ -13,13 +11,24 @@ export default {
     printMode: function () {
       const parsedUrl = new URL(window.location.href)
       return parsedUrl.searchParams.get('print') !== null
+    },
+    prerender: function () {
+      const parsedUrl = new URL(window.location.href)
+      return parsedUrl.searchParams.get('prerender') !== null
     }
   }
 }
 </script>
 
 <style lang="stylus">
-body
+//html
+//  -webkit-text-size-adjust: none;
+//  touch-action pan-y; /*prevent user scaling*/
+body, #app
   margin 0
   padding 0
+
+.prerender
+  select
+    display none
 </style>

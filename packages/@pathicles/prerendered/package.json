@@ -1,0 +1,13 @@
+{
+  "name": "@pathicles/prerendered",
+  "license": "MIT",
+  "version": "0.1.0",
+  "script": {
+    "prerender": "node ../prerendered/tools/prerender.js"
+
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
