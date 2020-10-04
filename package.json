@@ -13,6 +13,7 @@
   },
   "workspaces": [
     "packages/@pathicles/core",
+    "packages/@pathicles/prerendered",
     "packages/@pathicles/config",
     "packages/@pathicles/viewer",
     "packages/@pathicles/app"
@@ -37,6 +38,7 @@
     }
   },
   "devDependencies": {
+    "jest": "^26.4.2",
     "conventional-changelog-cli": "2.0.31",
     "dotenv": "^8.2.0",
     "flatted": "^2.0.1",

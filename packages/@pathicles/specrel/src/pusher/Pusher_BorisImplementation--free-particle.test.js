@@ -4,7 +4,6 @@ const { performance } = require('perf_hooks')
 import { bigNumberMath, format6, speedOfLight__ms_1 } from '../Specrel'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
-import prettyjson from 'prettyjson'
 import { ParticleSystem } from '../ParticleSystem'
 
 describe('Boris Pusher for system of 1 photon ', () => {
@@ -120,12 +119,16 @@ function simulate(presetName) {
   const configuration = config(presetName)
   const particleSystem = ParticleSystem.load(configuration)
 
-  console.log(prettyjson.render(configuration))
+  //console.log(prettyjson.render(configuration))
+
+  // console.log('A')
 
   const dt__s = bigNumberMath.divide(
     bigNumberMath.bignumber(configuration.model.tickDurationOverC),
     speedOfLight__ms_1
   )
+
+  // console.log('B')
 
   const borisPusher = new Pusher_BorisImplementation({
     system: particleSystem,

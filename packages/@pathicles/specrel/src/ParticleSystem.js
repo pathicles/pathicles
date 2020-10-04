@@ -6,14 +6,14 @@ import {
 } from './ForceField'
 import ParticleCollection from './ParticleCollection'
 import ParticleTypes from './ParticleTypes'
-import * as d3 from 'd3'
+import { extent } from 'd3-array'
 
 export class ParticleSystem {
   constructor(particleCollection) {
     if (!particleCollection) {
       throw 'The constructor of class System has a wmandatory argument'
     }
-    this._particleCollectionHistory = new Array()
+    this._particleCollectionHistory = []
 
     this.particleCollection = particleCollection
 
@@ -92,7 +92,7 @@ export class ParticleSystem {
     const B__T = [0, 0, 0]
     const E__Vm_1 = [0, 0, 0]
 
-    this.fields.forEach(field => {
+    this.fields.forEach((field) => {
       const value = field.value(location__m)
 
       if (value[FieldTypes.MAGNETIC]) {
@@ -109,20 +109,20 @@ export class ParticleSystem {
 
     return {
       B__T,
-      B: B__T.map(value => bigNumberMath.unit(value, 'T')),
+      B: B__T.map((value) => bigNumberMath.unit(value, 'T')),
       E__Vm_1,
-      E: E__Vm_1.map(value => bigNumberMath.unit(value, 'V / m'))
+      E: E__Vm_1.map((value) => bigNumberMath.unit(value, 'V / m'))
     }
   }
 
   getBoundingBox() {
     const particleData = this.particleData
 
-    const [xMin, xMax] = d3.extent(particleData.map(p => p.x__m))
+    const [xMin, xMax] = extent(particleData.map((p) => p.x__m))
     const xWidth = xMax - xMin
-    const [yMin, yMax] = d3.extent(particleData.map(p => p.y__m))
+    const [yMin, yMax] = extent(particleData.map((p) => p.y__m))
     const yWidth = yMax - yMin
-    const [zMin, zMax] = d3.extent(particleData.map(p => p.z__m))
+    const [zMin, zMax] = extent(particleData.map((p) => p.z__m))
     const zWidth = zMax - zMin
 
     return {
@@ -160,8 +160,8 @@ export class ParticleSystem {
   }
 
   positionsToString() {
-    const particlePositions = this._particleCollectionHistory.map((step, s) => {
-      return step.particles.map((particle, p) => {
+    const particlePositions = this._particleCollectionHistory.map((step) => {
+      return step.particles.map((particle) => {
         return format6(particle._position__m)
       })
     })
@@ -170,7 +170,7 @@ export class ParticleSystem {
   }
 }
 
-ParticleSystem.load = function({
+ParticleSystem.load = function ({
   particleCount = 1,
   particleType = 'ELECTRON',
   bunchShape = 'SQUARE',
@@ -187,7 +187,7 @@ ParticleSystem.load = function({
     particleTypeDistribution: particleType
       .trim()
       .split(/\s+/)
-      .map(d => {
+      .map((d) => {
         return ParticleTypes.byName(d)
       })
   })

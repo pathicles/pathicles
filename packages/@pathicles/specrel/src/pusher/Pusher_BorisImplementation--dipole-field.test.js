@@ -2,11 +2,7 @@ import { config } from '@pathicles/config'
 
 import { performance } from 'perf_hooks'
 
-import {
-  bigNumberMath,
-  format6,
-  speedOfLight__ms_1
-} from '../Specrel'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from '../Specrel'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'
@@ -58,7 +54,7 @@ function simulate(presetName, overwrite = {}) {
 
   const { boundingBox, steps } = borisPusher.toData()
 
-  const report = {
+  return {
     meta: {
       name: configuration.name,
       precision: 'arbitrary',
@@ -73,12 +69,10 @@ function simulate(presetName, overwrite = {}) {
     expected: {
       gyroRadius: particleSystem.particles[0]
         .gyroRadius(configuration.dipole_strength)
-        .map(d => d.toNumber('m')),
+        .map((d) => d.toNumber('m')),
       gyroPeriod: particleSystem.particles[0]
         .gyroPeriod(configuration.dipole_strength)
         .toNumber('s')
     }
   }
-
-  return report
 }

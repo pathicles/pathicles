@@ -36,6 +36,8 @@ class Particle {
       ]
     }
     this._particleType = particleType
+
+    console.log(this)
   }
 
   get particleType() {
@@ -67,7 +69,7 @@ class Particle {
   }
 
   get position() {
-    return this._position__m.map(d => bigNumberMath.unit(d, 'm'))
+    return this._position__m.map((d) => bigNumberMath.unit(d, 'm'))
   }
 
   set position(position__m) {
@@ -75,7 +77,7 @@ class Particle {
   }
 
   get momentum() {
-    return this._momentum__eVc_1.map(d => bigNumberMath.unit(d, 'eV / c'))
+    return this._momentum__eVc_1.map((d) => bigNumberMath.unit(d, 'eV / c'))
   }
 
   get momentumSquare__eV2c_2() {
@@ -108,7 +110,7 @@ class Particle {
     if (this.beta.equals(1)) {
       return this.direction
     }
-    return this._momentum__eVc_1.map(p =>
+    return this._momentum__eVc_1.map((p) =>
       bigNumberMath.divide(
         p,
         bigNumberMath.multiply(this._mass__eVc_2, this.gamma)
@@ -117,13 +119,13 @@ class Particle {
   }
 
   get velocity__ms_1() {
-    return this.velocity__c.map(v =>
+    return this.velocity__c.map((v) =>
       bigNumberMath.multiply(v, speedOfLight__ms_1)
     )
   }
 
   get velocity() {
-    return this.velocity__c.map(v =>
+    return this.velocity__c.map((v) =>
       bigNumberMath.multiply(v, speedOfLight__ms_1)
     )
   }
@@ -133,10 +135,7 @@ class Particle {
   }
 
   get energy__eV() {
-    return this._mass__eVc_2
-      .pow(2)
-      .add(this.momentumSquare__eV2c_2)
-      .sqrt()
+    return this._mass__eVc_2.pow(2).add(this.momentumSquare__eV2c_2).sqrt()
   }
 
   get energy() {
@@ -152,10 +151,7 @@ class Particle {
   }
 
   get beta() {
-    return bigNumberMath
-      .bignumber(1)
-      .minus(this.gamma.pow(-2))
-      .sqrt()
+    return bigNumberMath.bignumber(1).minus(this.gamma.pow(-2)).sqrt()
   }
 
   get gamma() {
@@ -232,7 +228,7 @@ class Particle {
       throw 'direction must bew Array of length 3'
     }
 
-    const bigmathDirection = direction.map(x => bigNumberMath.bignumber(x))
+    const bigmathDirection = direction.map((x) => bigNumberMath.bignumber(x))
 
     //  special case massless particles (photons)
     if (this.particleType.mass__eVc_2 === 0) {
@@ -256,14 +252,14 @@ class Particle {
         newMomentumLength
       )
 
-      this._momentum__eVc_1 = newMomentum.map(p => p.to('eV / c').toNumeric())
+      this._momentum__eVc_1 = newMomentum.map((p) => p.to('eV / c').toNumeric())
     }
   }
 
   setMomentumFromVelocity(velocity) {
     const momentum = bigNumberMath.multiply(this.mass, this.gamma, velocity)
 
-    this._momentum__eVc_1 = momentum.map(p => p.to('eV / c').toNumeric())
+    this._momentum__eVc_1 = momentum.map((p) => p.to('eV / c').toNumeric())
   }
 
   setMomentumFromBeta(beta, direction) {
@@ -333,11 +329,11 @@ class Particle {
   toString() {
     return (
       'position: (' +
-      this.position.map(a => a.toNumber()).join(', ') +
+      this.position.map((a) => a.toNumber()).join(', ') +
       '); momentum: (' +
-      this.momentum.map(a => a.toNumber()).join(', ') +
+      this.momentum.map((a) => a.toNumber()).join(', ') +
       '); velocity: (' +
-      this.velocity__c.map(a => a.toNumber()).join(', ') +
+      this.velocity__c.map((a) => a.toNumber()).join(', ') +
       ')'
     )
   }
@@ -345,8 +341,8 @@ class Particle {
   getVariableData() {
     return {
       particleType: this.particleType.name,
-      position__m: this.position.map(a => a.toNumber()),
-      velocity__c: this.velocity__c.map(a => a.toNumber()),
+      position__m: this.position.map((a) => a.toNumber()),
+      velocity__c: this.velocity__c.map((a) => a.toNumber()),
       gamma: this.gamma.toNumber()
     }
   }
