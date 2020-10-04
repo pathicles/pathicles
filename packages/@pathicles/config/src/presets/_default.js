@@ -23,13 +23,12 @@ export default {
     9.57883323113770929296814695637e7
   ],
 
-  usePostProcessing: false,
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
 
   runner: {
     prerender: false,
-    loops: 5,
+    loops: 1,
 
     mode: 'framewise',
     stepsPerTick: 4,
@@ -38,7 +37,7 @@ export default {
 
   model: {
     bufferLength: 128,
-    tickDurationOverC: 0.1,
+    tickDurationOverC: 0.5,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -48,7 +47,7 @@ export default {
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'square',
       particleCount: 128,
-      particleSeparation: 0.1,
+      particleSeparation: 0.15,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -106,7 +105,7 @@ export default {
     ssaoPower: 1,
     ssaoSampleCount: 32,
 
-    showTextures: true,
+    showTextures: false,
     texelSize: 1,
     viewRange: [0, 1],
 
