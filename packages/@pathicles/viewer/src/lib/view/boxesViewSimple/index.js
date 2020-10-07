@@ -44,9 +44,12 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   // const drawBackground = drawBackgroundCommand(regl, config.view)
   // const drawBox = drawBoxCommand(regl, config.view)
 
+  const drawAxis = drawAxisCommand(regl, 1)
+  const drawVignette = drawVignetteCommandBuilder(regl)
+
   function drawDiffuse(props) {
     setParams(config.view, () => {
-      //drawBackground.lighting()
+      // drawBackground.lighting()
       // drawBox()
       // drawModel.cubeShadow(props)
 
@@ -62,9 +65,8 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       drawAxis([{ axis: [1, 0, 0] }, { axis: [0, 1, 0] }, { axis: [0, 0, 1] }])
 
       drawModel.lighting(props)
-      // drawModel.wireframe(props)
-
       config.view.isStageVisible && drawStage.lighting(props)
+      drawVignette.lighting(props)
     })
   }
 
