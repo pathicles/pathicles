@@ -4,6 +4,8 @@ import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
 import { CubeShadow } from './model/CubeShadow'
 import { Shadow } from './model/Shadow'
+import { drawAxisCommand } from './axis'
+import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
   const cubeShadow = new CubeShadow(regl, config.view.lightPosition)
