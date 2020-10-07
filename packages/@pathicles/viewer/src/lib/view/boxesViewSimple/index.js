@@ -57,6 +57,8 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
       //config.view.isShadowEnabled && drawModel.shadow(props)
 
+      drawAxis([{ axis: [1, 0, 0] }, { axis: [0, 1, 0] }, { axis: [0, 0, 1] }])
+
       drawModel.lighting(props)
       // drawModel.wireframe(props)
 
