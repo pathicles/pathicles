@@ -47,7 +47,7 @@
     "regl-camera": "^2.1.1"
   },
   "peerDependencies": {
-    "regl": "^1.7.0"
+    "regl": "^2.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^5.2.1",
