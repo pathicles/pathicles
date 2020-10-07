@@ -21,25 +21,25 @@ export const freePhotons = {
 
   runner: {
     prerender: true,
-    loops: 5,
+    loops: 1,
 
     mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 11
+    stepsPerTick: 8,
+    stepCount: 200
   },
 
   model: {
-    bufferLength: 11,
+    bufferLength: 200,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 64,
+      particleCount: 484,
       particleType: 'PHOTON',
-      bunchShape: 'DISC',
+      bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, 1, -10],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 10
+      gamma: 1
     },
 
     interactions: {

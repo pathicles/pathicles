@@ -14,7 +14,7 @@ export default {
   },
 
   runner: {
-    stepsPerTick: 1,
+    stepsPerTick: 8,
     stepCount: 83
   },
 
@@ -26,7 +26,7 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [-1, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.55

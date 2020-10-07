@@ -105,7 +105,7 @@ export default {
     ssaoPower: 1,
     ssaoSampleCount: 32,
 
-    showTextures: false,
+    showTextures: true,
     texelSize: 1,
     viewRange: [0, 1],
 
@@ -138,7 +138,7 @@ export default {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 20
+      maxDistance: 10
     }
   },
 

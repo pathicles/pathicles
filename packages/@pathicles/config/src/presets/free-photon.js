@@ -2,29 +2,17 @@ export const freePhoton = {
   name: 'free-photon',
   view: {
     camera: {
-      center: [0, -1, 0.5],
-      theta: (2 * Math.PI) / (360 / 45),
-      phi: (2 * Math.PI) / (360 / 15),
-      distance: 1,
-
-      dTheta: 0.001,
-      autorotate: false,
-      // rotationDecayTime: 0,
-      rotateAboutCenter: true,
-      zoomAboutCursor: false,
-      zoomDecayTime: 1,
-      // panDecayTime: 0,
-      far: 50,
-      near: 0.0001
+      position: [1.5, 0.2, 1.5],
+      target: [0, 0, 0]
     }
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
 
     mode: 'framewise',
-    stepsPerTick: 2,
+    stepsPerTick: 1,
     stepCount: 11
   },
 
@@ -36,7 +24,7 @@ export const freePhoton = {
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, -1, 0],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 0

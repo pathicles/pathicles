@@ -4,7 +4,7 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      position: [3, 1.5, 3],
+      position: [0, 1.5, 7],
       target: [0, 1.5, 0]
     }
   },
