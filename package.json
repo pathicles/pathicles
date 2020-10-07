@@ -19,7 +19,8 @@
     "packages/@pathicles/app"
   ],
   "scripts": {
-    "build": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
+    "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
+    "build:app": "yarn workspace @pathicles/app run build",
     "build:docs": "npx vitepress build packages/@pathicles/docs/src",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "dev": "yarn run dev-libs; yarn run dev-app",
