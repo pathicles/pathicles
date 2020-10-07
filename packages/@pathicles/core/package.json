@@ -11,7 +11,6 @@
     "test:unit": "jest"
   },
   "dependencies": {
-    "lethargy": "^1.0.9",
     "angle-normals": "^1.0.0",
     "byte-data": "^19.0.1",
     "detect-it": "^3.0.5",
@@ -37,6 +36,7 @@
     "glsl-transpose": "^1.0.0",
     "ieee754-buffer": "^2.0.0",
     "inertial-turntable-camera": "^2.0.4",
+    "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "norm.js": "^0.1.3",

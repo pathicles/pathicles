@@ -12,10 +12,10 @@
     "devPort": 9303
   },
   "dependencies": {
-    "lethargy": "^1.0.9",
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "@pathicles/viewer": "^0.1.0",
+    "lethargy": "^1.0.9",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
     "vue": "^3.0.0",

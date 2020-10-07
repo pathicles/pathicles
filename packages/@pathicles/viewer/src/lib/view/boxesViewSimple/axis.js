@@ -3,7 +3,6 @@ import { rotationTo } from 'gl-quat'
 
 export function drawAxisCommand(regl, d) {
   const model = new Float32Array(16)
-  const positions = new Float32Array(3 * 6)
   return regl({
     frag: `
       precision highp float;
