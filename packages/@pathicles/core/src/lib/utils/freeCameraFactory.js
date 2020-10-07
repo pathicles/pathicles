@@ -4,6 +4,7 @@ import camera from 'inertial-turntable-camera'
 
 import interactionEvents from 'normalized-interaction-events'
 import invert from 'gl-mat4/invert'
+import { Lethargy } from './Lethargy.js'
 
 export default function (options, regl) {
   const { position, target } = options
@@ -13,11 +14,23 @@ export default function (options, regl) {
     -target[2] + position[2]
   ]
 
+  //
+  // var lethargy
+  // if (typeof Lethargy !== 'undefined' && Lethargy !== null) {
+  //   lethargy = new Lethargy()
+  // }
+
+  // p[0] = ((p[0] > 0 ? p[0] : 2 * Math.PI + p[0]) * 360) / (2 * Math.PI)
+  // console.log(p)
+
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
-  const phi = Math.atan2(p[1], p[0])
+  let phi = Math.atan2(p[1], p[0])
+  phi += phi < 0 ? Math.PI : 0
+  console.log(phi)
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
 
   const cameraOptions = Object.assign({}, options, {
+    zoomDecayTime: 100,
     distance,
     phi,
     theta,
@@ -28,7 +41,7 @@ export default function (options, regl) {
   const aCamera = camera(cameraOptions)
   initializeCameraControls(aCamera, regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
-    maxDistance: options.maxDistance || 20
+    maxDistance: options.maxDistance || 10
   })
 
   aCamera.toConfig = () => {
@@ -59,6 +72,7 @@ function initializeCameraControls(
   canvas,
   { minDistance, maxDistance }
 ) {
+  const lethargy = new Lethargy()
   const arrow = { left: 37, up: 38, right: 39, down: 40 }
   const delta = -0.01
   window.addEventListener('keydown', function (event) {
@@ -83,12 +97,19 @@ function initializeCameraControls(
 
   interactionEvents(canvas)
     .on('wheel', function (ev) {
+      // e.preventDefault()
+      // e.stopPropagation()
+
       if (!ev.active) return
-      camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
-      camera.params.distance = Math.max(
-        minDistance,
-        Math.min(maxDistance, camera.params.distance)
-      )
+      if (lethargy.check(ev) !== false) {
+        if (camera.params.distance <= maxDistance)
+          camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
+        camera.params.distance = Math.max(
+          minDistance,
+          Math.min(maxDistance, camera.params.distance)
+        )
+      }
+      // console.log(camera.params.distance )
     })
     .on('mousemove', function (ev) {
       if (!ev.active || ev.buttons !== 1) return

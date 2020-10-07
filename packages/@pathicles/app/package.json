@@ -12,6 +12,7 @@
     "devPort": 9303
   },
   "dependencies": {
+    "lethargy": "^1.0.9",
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "@pathicles/viewer": "^0.1.0",

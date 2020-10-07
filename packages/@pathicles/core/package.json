@@ -11,6 +11,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "lethargy": "^1.0.9",
     "angle-normals": "^1.0.0",
     "byte-data": "^19.0.1",
     "detect-it": "^3.0.5",
