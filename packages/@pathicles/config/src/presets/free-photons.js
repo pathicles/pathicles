@@ -2,20 +2,8 @@ export const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0, 0.5],
-      theta: Math.PI / 4,
-      phi: Math.PI / 8,
-      distance: 1.5,
-
-      dTheta: 0.001,
-      autorotate: false,
-      // rotationDecayTime: 0,
-      rotateAboutCenter: true,
-      zoomAboutCursor: false,
-      zoomDecayTime: 1,
-      // panDecayTime: 0,
-      far: 50,
-      near: 0.0001
+      position: [2.5, 0.2, 2.5],
+      target: [0, 0, 0]
     }
   },
 

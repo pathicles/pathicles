@@ -2,7 +2,7 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      position: [1.5, 0.2, 1.5],
+      position: [2.5, 0.2, 2.5],
       target: [0, 0, 0]
     }
   },

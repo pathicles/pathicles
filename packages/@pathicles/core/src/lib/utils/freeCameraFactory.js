@@ -26,7 +26,6 @@ export default function (options, regl) {
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
   let phi = Math.atan2(p[1], p[0])
   phi += phi < 0 ? Math.PI : 0
-  console.log(phi)
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
 
   const cameraOptions = Object.assign({}, options, {

@@ -34,6 +34,31 @@ export default function (
       fourVelocities[p * 4 + 3] = 0
       particleTypes[p] = Math.floor(random() * 4)
     }
+    fourPositions = new Float32Array(
+      [
+        ...fourPositions,
+        ...fourPositions,
+        ...fourPositions,
+        ...fourPositions
+      ].concat(
+        new Array(
+          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
+        ).fill(0)
+      )
+    )
+
+    fourVelocities = new Float32Array(
+      [
+        ...fourVelocities,
+        ...fourVelocities,
+        ...fourVelocities,
+        ...fourVelocities
+      ].concat(
+        new Array(
+          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
+        ).fill(0)
+      )
+    )
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
@@ -48,6 +73,9 @@ export default function (
     })
     fourPositions = new Float32Array(
       [
+        ...particleCollection.fourPositions,
+        ...particleCollection.fourPositions,
+        ...particleCollection.fourPositions,
         ...particleCollection.fourPositions
         // ...particleCollection.fourPositions,
         // ...particleCollection.fourPositions,

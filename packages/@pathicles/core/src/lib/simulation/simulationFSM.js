@@ -80,6 +80,7 @@ export default class SimulationFSM {
   }
 
   next() {
+    //const stateInitial = this.fsm.state
     if (this.fsm.state === 'active') {
       if (this._simulation.variables.tick.value > this._stepCount - 1) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
@@ -105,8 +106,8 @@ export default class SimulationFSM {
       this.fsm.state = this.fsm.state.replace(/restart/, 'active')
     }
 
-    // if (stateInitial !== this.fsm.state) {
-    //   log(
+    // if (true || stateInitial !== this.fsm.state) {
+    //   console.log(
     //     stateInitial +
     //       ' ==> ' +
     //       this.fsm.state +

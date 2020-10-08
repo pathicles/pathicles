@@ -125,7 +125,7 @@ export default function (regl, { variables, model }) {
           float nextTime = previousTime + 2. * halfDeltaTOverC;
 
           return (particleData.particleType < .1)
-            ? vec4(previousPosition + 2. * previousMomentum.xyz  * halfDeltaTOverC, nextTime)
+            ? vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime)
             : vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime);
         }
 
@@ -133,7 +133,9 @@ export default function (regl, { variables, model }) {
         vec4 push_velocity(float p, float bufferHead, float previousBufferHead) {
 
           ParticleData particleData = getParticleData(p);
-          if (particleData.particleType < .1) { return get_velocity(p, previousBufferHead);}
+          vec3 momentum;
+
+
 
           vec4 previous4Position = get_position(p, previousBufferHead);
           vec4 previous4Velocity = get_velocity(p, previousBufferHead);
@@ -144,8 +146,18 @@ export default function (regl, { variables, model }) {
           vec3 E = getE(intermediatePosition);
           vec3 B = getB(intermediatePosition);
 
+          momentum = previousVelocity;
+          if (particleData.particleType < .1) {
 
-          vec3 momentum = previousVelocity;
+
+          } else {
+
+
+
+
+
+
+
           float chargeMassRatio = particleData.chargeMassRatio;
           float charge = particleData.charge;
           float mass = particleData.mass;
@@ -156,6 +168,8 @@ export default function (regl, { variables, model }) {
           vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
           momentum += cross(w_, s_);
           momentum +=  halfDeltaTOverC * chargeMassRatio * E;
+
+          }
 
           if (boundingBoxSize > 0.) {
             vec3 reflect = step(vec3(-boundingBoxSize), intermediatePosition) - step(vec3(boundingBoxSize), intermediatePosition);

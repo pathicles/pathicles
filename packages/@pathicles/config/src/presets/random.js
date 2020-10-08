@@ -2,44 +2,29 @@ export const random = {
   name: 'random',
   view: {
     camera: {
-      position: [10, 1, 0],
-      target: [0, 1, 0]
+      position: [5, 1, -5],
+      target: [0, 0.2, 0]
     }
+  },
+
+  runner: {
+    prerender: false,
+    loops: 10,
+
+    mode: 'framewise',
+    stepsPerTick: 8,
+    stepCount: 128
   },
 
   model: {
     boundingBoxSize: 2,
+    bufferLength: 64,
+    tickDurationOverC: 0.1,
     emitter: {
       randomize: true,
-      // position: [0, 0, 0],
-      // direction: [0, 0, 0],
-      // particleSeparation: 0.1,
-      // directionJitter: [0, 0, 0],
-      // emitterDirectionJitter: [0, 0, 0],
-      gamma: 100,
+      gamma: 2,
+      particleCount: 512,
       particleType: 'PHOTON ELECTRON PROTON'
     }
-
-    // lattice: {
-    //   elements: {
-    //     l2: {
-    //       type: 'DRIF',
-    //       l: 5
-    //     },
-    //     bm: {
-    //       type: 'SBEN',
-    //       angle: 0.78539816,
-    //       e1: 0.39269908,
-    //       e2: 0.39269908,
-    //       l: 1.8,
-    //       k1: -0.4
-    //     }
-    //   },
-    //   beamline: [], //'l2', 'bm', 'l2'],
-    //   origin: {
-    //     phi: -Math.PI,
-    //     position: [0, 1, 5]
-    //   }
-    // }
   }
 }
