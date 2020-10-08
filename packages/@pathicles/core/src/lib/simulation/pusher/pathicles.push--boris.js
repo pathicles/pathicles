@@ -46,7 +46,7 @@ export default function (regl, { variables, model }) {
         `,
       frag: `
         precision highp float;
-        #extension WEBGL_color_buffer_float : enable
+        //#extension WEBGL_color_buffer_float : enable
 
         const highp float c = 2.99792458e+8;
         uniform sampler2D utParticleColorAndType;
@@ -180,18 +180,19 @@ export default function (regl, { variables, model }) {
 
         void main () {
           initLatticeData();
-          float p, b;
+          float particleIndex, bufferIndex, rgbaFloatChannel;
 
-          p = floor(gl_FragCoord.x);
-          b = floor(gl_FragCoord.y);
+          particleIndex = floor(gl_FragCoord.x);
+          bufferIndex = floor(gl_FragCoord.y/4.);
+          rgbaFloatChannel = fract(gl_FragCoord.y/4.)*4.;
 
           float currentBufferHead = floor(mod(tick, bufferLength + 1.));
-          float previousBufferHead = (b == 0.) ? bufferLength : b - 1.;
+          float previousBufferHead = (bufferIndex == 0.) ? bufferLength : bufferIndex - 1.;
 
-          if (currentBufferHead == b) {
-            gl_FragColor = push_${variableName}(p, currentBufferHead, previousBufferHead);
+          if (currentBufferHead == bufferIndex) {
+            gl_FragColor = push_${variableName}(particleIndex, currentBufferHead, previousBufferHead);
           } else {
-            gl_FragColor = get_${variableName}(p, b);
+            gl_FragColor = get_${variableName}(particleIndex, bufferIndex);
           }
         }
         `

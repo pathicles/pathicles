@@ -1,14 +1,16 @@
+const channelsPerBuffer = 4
+
 export function createBuffers(regl, particleCount, bufferLength, RTTFloatType) {
   return [0, 1].map(() => {
     return regl.framebuffer({
-      height: bufferLength,
+      height: bufferLength * channelsPerBuffer,
       width: particleCount,
       format: 'rgba',
       colorType: RTTFloatType,
       depthStencil: false,
       color: regl.texture({
         width: particleCount,
-        height: bufferLength,
+        height: bufferLength * channelsPerBuffer,
         min: 'nearest',
         mag: 'nearest',
         format: 'rgba',

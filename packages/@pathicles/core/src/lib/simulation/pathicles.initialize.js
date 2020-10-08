@@ -1,6 +1,8 @@
 import { createParticleCollection } from './variables'
 import { boundedRandom, random } from '../utils/random'
 
+const channelsPerBuffer = 4
+
 export default function (
   bufferLength,
   {
@@ -77,19 +79,24 @@ export default function (
         ...particleCollection.fourPositions,
         ...particleCollection.fourPositions,
         ...particleCollection.fourPositions
-        // ...particleCollection.fourPositions,
-        // ...particleCollection.fourPositions,
-        // ...particleCollection.fourPositions
-      ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
+      ].concat(
+        new Array(
+          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
+        ).fill(0)
+      )
     )
 
     fourVelocities = new Float32Array(
       [
+        ...particleCollection.fourVelocities,
+        ...particleCollection.fourVelocities,
+        ...particleCollection.fourVelocities,
         ...particleCollection.fourVelocities
-        // ...particleCollection.fourVelocities,
-        // ...particleCollection.fourVelocities,
-        // ...particleCollection.fourVelocities
-      ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
+      ].concat(
+        new Array(
+          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
+        ).fill(0)
+      )
     )
     // fourMomenta = new Float32Array(
     //   [
