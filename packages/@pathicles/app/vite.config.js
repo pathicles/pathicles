@@ -6,7 +6,6 @@ const alias = {
 
 const config = {
   alias,
-  base: '/pathicles/',
   plugins: [
     // Voie(),
     // ViteComponents({
