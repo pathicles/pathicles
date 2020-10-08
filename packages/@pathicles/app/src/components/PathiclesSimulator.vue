@@ -112,7 +112,7 @@ export default {
             .join('&')
       )
       this.config = loadConfig(this.presetName)
-      console.log(this.config)
+      // console.log(this.config)
       this.reglInstance.loadConfig(this.config)
     },
     update(configModel) {
@@ -155,9 +155,11 @@ export default {
     position fixed
     z-index 10000
     top 0
-    left 1em
-    right 1em
+    left 0em
+    right 0em
+    padding 1em
     font-size 16px
+    width 100%
 
   .canvas-container
     height: 100vh
