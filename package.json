@@ -3,6 +3,7 @@
   "name": "pathicles",
   "description": "monorepo pathicles",
   "license": "MIT",
+  "homepage": "https://pathicles.github.io/pathicles/",
   "author": "drkrthj <post@dirk-rathje.de>",
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
     "packages/@pathicles/app"
   ],
   "scripts": {
+    "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
     "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "build:app": "yarn workspace @pathicles/app run build",
     "build:docs": "npx vitepress build packages/@pathicles/docs/src",
@@ -39,6 +41,7 @@
     }
   },
   "devDependencies": {
+    "gh-pages": "^3.1.0",
     "conventional-changelog-cli": "2.0.31",
     "dotenv": "^8.2.0",
     "flatted": "^2.0.1",
