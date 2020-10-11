@@ -52,14 +52,6 @@ float edgerFeathered(vec2 uv, vec3 boxScale, float edgeWidth) {
   float edgeXZ =  smoothstep(edgeWidth, edgeWidth+feather, uv.y*boxScale.y) * smoothstep(edgeWidth, edgeWidth+feather, (1.-uv.y)*boxScale.y);
   float edgeX = (1.-(edgeXY*edgeXZ))*abs(vNormalOrig.x);
 
-  //  float edgeYX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
-  //  float edgeYZ =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
-  //  float edgeY = (1.-(edgeYX*edgeYZ))*abs(vNormalOrig.y);
-  //
-  //  float edgeZX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
-  //  float edgeZY =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
-  //  float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
-
   return clamp(edgeX, 0., 1.);
 }
 
@@ -68,14 +60,6 @@ float edgerHard(vec2 uv, vec3 boxScale, float edgeWidth) {
   float edgeXY =  step(edgeWidth*(1.+uv.x*boxScale.z), uv.x*boxScale.z) * step(edgeWidth, (1.-uv.x)*boxScale.z);
   float edgeXZ =  step(edgeWidth*(0.5+uv.x/2.), uv.y*boxScale.y) * step(edgeWidth*(0.5+uv.x/2.), (1.-uv.y)*boxScale.y);
   float edgeX = (1.-(edgeXZ))*abs(vNormalOrig.x);
-
-//  float edgeYX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
-//  float edgeYZ =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
-//  float edgeY = (1.-(edgeYX*edgeYZ))*abs(vNormalOrig.y);
-//
-//  float edgeZX =  step(edgeWidth, uv.x*boxScale.x) * step(edgeWidth, (1.-uv.x)*boxScale.x);
-//  float edgeZY =  step(edgeWidth, uv.y*boxScale.z) * step(edgeWidth, (1.-uv.y)*boxScale.z);
-//  float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
 
   return clamp(edgeX, 0., 1.);
 }
@@ -187,47 +171,47 @@ void main () {
 
   // Compare actual depth from light to the occluded depth rendered in the depth map
   // If the occluded depth is smaller, we must be in shadow
-  float shadow = mix(0.2, 1.0, step(depth, occluder));
+  float shadow = mix(1.0, 0.8, step(depth, occluder));
 
   //
-  //  vec3 texCoord = (vPosition - lightPosition);
-  //  float visibility = 0.0;
-  //   //do soft shadows:
-  //  for (int x = 0; x < 2; x++) {
-  //    for (int y = 0; y < 2; y++) {
-  //      for (int z = 0; z < 2; z++) {
-  //        float bias = 0.3;
-  ////        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
-  //        vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-  //        float depth = lightPos.z - bias;
-  //
-  //        float occluder = unpackRGBA(texture2D(shadowMap,texCoord));
-  //
-  //        float shadow = mix(0.2, 1.0, step(depth, occluder));
-  //        visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
-  //      }
-  //    }
-  //  }
-  //  visibility *= 1.0 / 8.0;
-  //
-  //  visibility = 1.0;
+//    vec3 texCoord = (vPosition - lightPosition);
+//    float visibility = 0.0;
+//     //do soft shadows:
+//    for (int x = 0; x < 2; x++) {
+//      for (int y = 0; y < 2; y++) {
+//        for (int z = 0; z < 2; z++) {
+//          float bias = 0.3;
+//  //        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
+//          vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+//          float depth = lightPos.z - bias;
+//
+//          float occluder = unpackRGBA(texture2D(shadowMap,texCoord));
+//
+//          float shadow = mix(0.2, 1.0, step(depth, occluder));
+//          visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
+//        }
+//      }
+//    }
+//    visibility *= 1.0 / 8.0;
 
-  shadow = 1.;
+//    visibility = 1.0;
+//
+//  shadow = 1.-visibility;
 
 
   vec4 shadowedColor = shadow * color;
-  shadowedColor +=  smoothstep(10.,1.,length(vPosition-eye))  * color * vec4(edger(vUv, vScale, pathicleWidth*2.) * vec3(.7), 1.);
+  shadowedColor +=  smoothstep(10., 1., length(vPosition-eye))  * color * vec4(edger(vUv, vScale, pathicleWidth*2.) * vec3(.7), 1.);
 
   gl_FragColor =vec4(shadowedColor.rgb, 1.);
 
-//  const float FOG_DENSITY = .9;
-//  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
-//  float fogDistance = length(vPosition);
-//  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
-//
-//  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
-//
-//  gl_FragColor = vec4(faggedColor.rgb, 1.-fogAmount);
+  //  const float FOG_DENSITY = .9;
+  //  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
+  //  float fogDistance = length(vPosition);
+  //  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
+  //
+  //  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
+  //
+  //  gl_FragColor = vec4(faggedColor.rgb, 1.-fogAmount);
 
 
 

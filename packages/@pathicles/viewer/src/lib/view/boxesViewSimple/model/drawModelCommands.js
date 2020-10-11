@@ -10,10 +10,6 @@ function clip(value, min, max) {
 }
 
 export default function (regl, { variables, model, view }, shadow, cubeShadow) {
-  // const geometry = createGeometry({
-  //   pathicleWidth: view.pathicleWidth,
-  //   pathicleRelativeHeight: view.pathicleRelativeHeight
-  // })
   const geometry = createCube()
 
   // const debleeder = [0.1, .99]
@@ -28,6 +24,7 @@ export default function (regl, { variables, model, view }, shadow, cubeShadow) {
   const command = (mode) => {
     return regl({
       depth: true,
+      profile: true,
       blend: {
         enable: true,
         func: {

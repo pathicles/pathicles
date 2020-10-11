@@ -6,8 +6,8 @@ export default function readData(regl, { variables, model }) {
 
   variableNames.forEach((key) => {
     data[key] = [
-      new Float32Array(model.particleCount * model.bufferLength * 4),
-      new Float32Array(model.particleCount * model.bufferLength * 4)
+      new Float32Array(model.particleCount * model.bufferLength * 4 * 4),
+      new Float32Array(model.particleCount * model.bufferLength * 4 * 4)
     ]
   })
 
@@ -19,6 +19,7 @@ export default function readData(regl, { variables, model }) {
       regl.read({ data: data[variableName][1] })
     })
   })
+
   const precision = 1000
   return {
     tick: variables.tick.value,

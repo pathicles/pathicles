@@ -25,10 +25,11 @@ export default function (options, regl) {
 
   const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
   let phi = Math.atan2(p[1], p[0])
-  phi += phi < 0 ? Math.PI : 0
+  // phi += phi < 0 ? Math.PI : 0
   const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
-
+  console.log(options)
   const cameraOptions = Object.assign({}, options, {
+    fovY: options.fovY,
     zoomDecayTime: 100,
     distance,
     phi,
@@ -40,7 +41,7 @@ export default function (options, regl) {
   const aCamera = camera(cameraOptions)
   initializeCameraControls(aCamera, regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
-    maxDistance: options.maxDistance || 10
+    maxDistance: options.maxDistance || 50
   })
 
   aCamera.toConfig = () => {
@@ -72,25 +73,6 @@ function initializeCameraControls(
   { minDistance, maxDistance }
 ) {
   const lethargy = new Lethargy()
-  const arrow = { left: 37, up: 38, right: 39, down: 40 }
-  const delta = -0.01
-  window.addEventListener('keydown', function (event) {
-    // event.preventDefault()
-    switch (event.keyCode) {
-      case arrow.left:
-        camera.pan(-delta, 0)
-        break
-      case arrow.up:
-        camera.pan(0, +delta)
-        break
-      case arrow.right:
-        camera.pan(+delta, 0)
-        break
-      case arrow.down:
-        camera.pan(0, -delta)
-        break
-    }
-  })
 
   const radiansPerHalfScreenWidth = Math.PI * 0.5
 
@@ -100,15 +82,14 @@ function initializeCameraControls(
       // e.stopPropagation()
 
       if (!ev.active) return
-      if (lethargy.check(ev) !== false) {
+      if (true || lethargy.check(ev) !== false) {
         if (camera.params.distance <= maxDistance)
-          camera.zoom(ev.x, ev.y, Math.exp(-ev.dy) - 1.0)
+          camera.zoom(ev.x, ev.y, 0.2 * (Math.exp(-ev.dy) - 1.0))
         camera.params.distance = Math.max(
           minDistance,
           Math.min(maxDistance, camera.params.distance)
         )
       }
-      // console.log(camera.params.distance )
     })
     .on('mousemove', function (ev) {
       if (!ev.active || ev.buttons !== 1) return

@@ -1,7 +1,7 @@
 import * as mat4 from 'gl-mat4'
 import { rotationTo } from 'gl-quat'
 
-export function drawAxisCommand(regl, d) {
+export function drawAxesCommand(regl, d) {
   const model = new Float32Array(16)
   return regl({
     frag: `
@@ -24,7 +24,7 @@ export function drawAxisCommand(regl, d) {
       axis: regl.prop('axis'),
       model: function (context, props) {
         mat4.identity(model)
-        var angle = 0
+        let angle = 0
         // if (props.axis[0] > 0) {
         //   angle =
         //     Math.atan2(context.camera.state.eye[2], context.eye[1]) +
@@ -35,8 +35,8 @@ export function drawAxisCommand(regl, d) {
         //   angle = Math.atan2(context.eye[1], context.eye[0]) + Math.PI / 2
         // }
         mat4.rotate(model, model, angle, props.axis)
-        var tmpm = new Float32Array(16)
-        var q = [0, 0, 0, 0]
+        const tmpm = new Float32Array(16)
+        let q = [0, 0, 0, 0]
         rotationTo(q, [0, 1, 0], props.axis)
         mat4.fromQuat(tmpm, q)
         mat4.multiply(model, model, tmpm)

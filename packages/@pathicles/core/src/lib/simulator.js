@@ -7,6 +7,7 @@ import PerformanceLogger from './utils/PerformanceLogger'
 import { boxesViewSimple } from '@pathicles/viewer'
 import keyControl from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
+import createREGL from 'regl'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {

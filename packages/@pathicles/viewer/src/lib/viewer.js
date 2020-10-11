@@ -4,6 +4,9 @@ import guidedCameraFactory from './guidedCameraFactory'
 import { boxesViewSimple } from './view/boxesViewSimple'
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
+import createREGL from 'regl'
+// import drawVariableTexture from '@pathicles/core/src/lib/simulation/pathicles.variables.drawTexture'
+import { boundedRandom } from '@pathicles/core/src/lib/utils/random'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
@@ -56,6 +59,19 @@ export class ReglViewerInstance {
       model: this.model,
       config: this.config
     })
+
+    this.variables.initialData = {
+      particleCount: this.config.model.emitter.particleCount,
+      bufferLength: this.config.model.bufferLength
+    }
+    // this.drawVariableTexture = drawVariableTexture(regl, {
+    //   variables: this.variables,
+    //   particleCount: this.config.model.emitter.particleCount,
+    //   bufferLength: this.model.bufferLength,
+    //   texelSize: this.config.view.texelSize,
+    //   x0: 100,
+    //   y0: this.config.view.texelSize
+    // })
   }
 
   initStory() {
@@ -109,20 +125,16 @@ export class ReglViewerInstance {
           storyState.scene.pathicles &&
           storyState.scene.pathicles.preset === 'story-loop'
         ) {
-          // if (this.loopTick >= 1024) {
-          //   this.modelTranslateX = (Math.random() - 0.5) * 2
-          //   this.modelTranslateY = (Math.random() - 0.5) * 0.5
-          // }
-          // this.loopTick = this.loopTick < 1024 ? this.loopTick + 8 : 0
-          // activeSceneProgress =
-          //   this.loopTick < 128
-          //     ? this.loopTick / 256
-          //     : this.loopTick > 768
-          //     ? (this.loopTick - 768) / 256 + 0.5
-          //     : 0.5
+          this.loopTick = this.loopTick < 1024 ? this.loopTick + 1 : 0
+          activeSceneProgress =
+            this.loopTick < 128
+              ? this.loopTick / 256
+              : this.loopTick > 768
+              ? (this.loopTick - 768) / 256 + 0.5
+              : 0.5
           if (this.loopTick >= 128) {
-            this.modelTranslateX = (Math.random() - 0.5) * 0.1
-            this.modelTranslateY = (Math.random() - 0.5) * 0.1
+            this.modelTranslateX = boundedRandom() * 0.2
+            this.modelTranslateY = boundedRandom() * 0.2
           }
           this.loopTick = this.loopTick < 128 ? this.loopTick + 1 : 0
           activeSceneProgress =
@@ -160,6 +172,11 @@ export class ReglViewerInstance {
               modelTranslateY: this.modelTranslateY,
               viewRange
             })
+
+            // if (true || this.config.view.showTextures) {
+            //   //this.view.shadow.drawFbo()
+            //   drawVariableTexture({ variableName: 'position' })
+            // }
           }
         )
       })

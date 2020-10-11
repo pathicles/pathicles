@@ -33,7 +33,13 @@ const deviceScaleFactor = 2
 const port = process.env.npm_package_config_devPort
 
 const urlBase = 'http://localhost:' + port + '/simulator/'
-const outputFolderPath = path.join(__dirname, '..', '..', 'prerendered', 'dist')
+const outputFolderPath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'prerendered',
+  'files'
+)
 
 let presets = ['story-electric', 'story-quadrupole', 'story-dipole']
 

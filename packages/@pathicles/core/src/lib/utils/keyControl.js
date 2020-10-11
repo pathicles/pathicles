@@ -10,8 +10,22 @@ export default function keyControl(app) {
   function onDocumentKeyDown(event) {
     event.stopPropagation()
     // event.preventDefault()
-
-    const keyCode = event.which
+    const delta = 0.01
+    switch (event.code) {
+      case 'ArrowLeft':
+        app.camera.pan(-delta, 0)
+        break
+      case `ArrowUp`:
+        app.camera.pan(0, +delta)
+        break
+      case 'ArrowRight':
+        app.camera.pan(+delta, 0)
+        break
+      case 'ArrowDown':
+        app.camera.pan(0, -delta)
+        break
+    }
+    const keyCode = event.keyCode
     if (keyCode === 65) {
       // a for autorotate
       app.config.view.camera.autorotate = !app.config.view.camera.autorotate

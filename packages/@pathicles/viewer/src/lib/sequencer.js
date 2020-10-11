@@ -27,7 +27,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
         performance.mark('scene data')
         scene.position[0]({
           width: scene.particleCount,
-          height: scene.bufferLength,
+          height: scene.bufferLength * 4,
           min: 'nearest',
           mag: 'nearest',
           format: 'rgba',

@@ -4,7 +4,7 @@ import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
 import { CubeShadow } from './model/CubeShadow'
 import { Shadow } from './model/Shadow'
-import { drawAxisCommand } from './axis'
+import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
@@ -44,29 +44,36 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   // const drawBackground = drawBackgroundCommand(regl, config.view)
   // const drawBox = drawBoxCommand(regl, config.view)
 
-  const drawAxis = drawAxisCommand(regl, 1)
+  const drawAxis = drawAxesCommand(regl, 1)
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {
     setParams(config.view, () => {
       // drawBackground.lighting()
       // drawBox()
-      // drawModel.cubeShadow(props)
+      drawModel.cubeShadow(props)
 
       regl.clear({
         color: [1, 1, 1, 1],
         depth: 1,
         framebuffer: shadow.fbo
       })
-      //drawModel.shadowMap(props)
+      // drawModel.shadowMap(props)
 
-      //config.view.isShadowEnabled && drawModel.shadow(props)
+      config.view.isShadowEnabled && drawModel.shadow(props)
 
-      drawAxis([{ axis: [1, 0, 0] }, { axis: [0, 1, 0] }, { axis: [0, 0, 1] }])
+      config.view.showAxes &&
+        drawAxis([
+          { axis: [1, 0, 0] },
+          { axis: [0, 1, 0] },
+          { axis: [0, 0, 1] }
+        ])
 
       drawModel.lighting(props)
       config.view.isStageVisible && drawStage.lighting(props)
-      drawVignette.lighting(props)
+      config.view.showVignette && drawVignette.lighting(props)
+
+      // console.log(drawModel.lighting.stats)
     })
   }
 

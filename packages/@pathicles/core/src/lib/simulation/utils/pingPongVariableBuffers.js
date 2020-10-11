@@ -25,7 +25,8 @@ export function loadBuffers(buffers, data, RTTFloatType) {
     buffers[b].color[0].subimage({
       width: buffers[b].width,
       height: buffers[b].height,
-      data: RTTFloatType === 'float' ? data : convert_arrayToUInt16Array(data)
+      // data: RTTFloatType === 'float' ? data : convert_arrayToUInt16Array(data)
+      data
     })
   )
   return buffers
