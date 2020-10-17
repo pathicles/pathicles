@@ -30,7 +30,7 @@ const width = 750
 const height = 750
 const deviceScaleFactor = 2
 
-const port = process.env.npm_package_config_devPort
+const port = process.env.npm_package_config_devPort || 9303
 
 const urlBase = 'http://localhost:' + port + '/simulator/'
 const outputFolderPath = path.join(
