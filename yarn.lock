@@ -3769,6 +3769,17 @@ caniuse-lite@^1.0.30001135:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001144.tgz#bca0fffde12f97e1127a351fec3bfc1971aa3b3d"
   integrity sha512-4GQTEWNMnVZVOFG3BK0xvGeaDAtiPAbG2N8yuMXuXzx/c2Vd4XoMPO8+E918zeXn5IF0FRVtGShBfkfQea2wHQ==
 
+canvas-orbit-camera@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/canvas-orbit-camera/-/canvas-orbit-camera-1.0.2.tgz#11a199d4efd69a2f4954700a53a03d567aa397d8"
+  integrity sha1-EaGZ1O/Wmi9JVHAKU6A9Vnqjl9g=
+  dependencies:
+    key-pressed "0.0.1"
+    mouse-position "^1.0.0"
+    mouse-pressed "0.0.1"
+    orbit-camera "0.0.3"
+    scroll-speed "^1.0.0"
+
 capture-exit@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/capture-exit/-/capture-exit-2.0.0.tgz#fb953bfaebeb781f62898239dabb426d08a509a4"
@@ -5465,7 +5476,7 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-events@^1.0.2:
+events@^1.0.0, events@^1.0.1, events@^1.0.2:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
   integrity sha1-nr23Y1rQmccNzEwqH1AEKI6L2SQ=
@@ -6196,6 +6207,11 @@ gl-mat4@^1.1.4, gl-mat4@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.2.0.tgz#49d8a7636b70aa00819216635f4a3fd3f4669b26"
   integrity sha512-sT5C0pwB1/e9G9AvAoLsoaJtbMGjfd/jfxo8jMCKqYYEnjZuFvqV5rehqar0538EmssjdDeiEWnKyBSTw7quoA==
+
+gl-matrix@^2.2.0:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-2.8.1.tgz#1c7873448eac61d2cd25803a074e837bd42581a3"
+  integrity sha512-0YCjVpE3pS5XWlN3J4X7AiAx65+nqAI54LndtVFnQZB6G/FVLkZH8y8V6R3cIoOQR4pUdfwQGd1iwyoXHJ4Qfw==
 
 gl-matrix@^3.0.0:
   version "3.3.0"
@@ -8185,6 +8201,13 @@ jstransformer@1.0.0:
     is-promise "^2.0.0"
     promise "^7.0.1"
 
+key-pressed@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/key-pressed/-/key-pressed-0.0.1.tgz#d682fb4c7c1042929a5bc88636728ca71220debb"
+  integrity sha1-1oL7THwQQpKaW8iGNnKMpxIg3rs=
+  dependencies:
+    vkey "0.0.3"
+
 keygrip@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/keygrip/-/keygrip-1.1.0.tgz#871b1681d5e159c62a445b0c74b615e0917e7226"
@@ -9063,6 +9086,20 @@ mouse-event@^1.0.0:
   resolved "https://registry.yarnpkg.com/mouse-event/-/mouse-event-1.0.5.tgz#b3789edb7109997d5a932d1d01daa1543a501732"
   integrity sha1-s3ie23EJmX1aky0dAdqhVDpQFzI=
 
+mouse-position@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mouse-position/-/mouse-position-1.0.0.tgz#ff849391499d28d3977fc1639ae50d1f9aa87c99"
+  integrity sha1-/4STkUmdKNOXf8FjmuUNH5qofJk=
+  dependencies:
+    events "^1.0.1"
+
+mouse-pressed@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/mouse-pressed/-/mouse-pressed-0.0.1.tgz#1e62ae992d7966177e5ffc49c839128e1b27b7bb"
+  integrity sha1-HmKumS15Zhd+X/xJyDkSjhsnt7s=
+  dependencies:
+    events "^1.0.1"
+
 mouse-wheel@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mouse-wheel/-/mouse-wheel-1.2.0.tgz#6d2903b1ea8fb48e61f1b53b9036773f042cdb5c"
@@ -9618,6 +9655,13 @@ ora@^4.0.4:
     mute-stream "0.0.8"
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
+
+orbit-camera@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/orbit-camera/-/orbit-camera-0.0.3.tgz#4f949d1758fb967ec2a678fdfac4cbbdca57a06f"
+  integrity sha1-T5SdF1j7ln7Cpnj9+sTLvcpXoG8=
+  dependencies:
+    gl-matrix "^2.2.0"
 
 os-homedir@^1.0.0:
   version "1.0.2"
@@ -11327,6 +11371,14 @@ saxes@^5.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
+scroll-speed@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/scroll-speed/-/scroll-speed-1.0.0.tgz#dcfe409516e76175597b6060002b51ce72ee6ed7"
+  integrity sha1-3P5AlRbnYXVZe2BgACtRznLubtc=
+  dependencies:
+    events "^1.0.0"
+    wheel "0.0.0"
+
 section-matter@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/section-matter/-/section-matter-1.0.0.tgz#e9041953506780ec01d59f292a19c7b850b84167"
@@ -12604,6 +12656,21 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
+typeface-barlow-condensed@^0.0.71:
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/typeface-barlow-condensed/-/typeface-barlow-condensed-0.0.71.tgz#7f78946ecd483cb2db5e3f9c2514a37d255ef667"
+  integrity sha512-0dKb79eoD462P40ec3C8sRkfzfMMDUrWIanR4A5+KDLGrjegspQFts/KYWPQCUHZVuBlZPD81q3wstNnc7I6Hg==
+
+typeface-barlow-semi-condensed@^0.0.71:
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/typeface-barlow-semi-condensed/-/typeface-barlow-semi-condensed-0.0.71.tgz#b22b264ebd0e2c8bb2e8a5860a9d3a880cdfe71a"
+  integrity sha512-B4c7UF1DBrOyoEDE20XV5UgcCou+/oJhZMQ9p8Zaiv4eqto87VD1rafRnGl8qGIejuQuU068wbWmiWoS+IjphA==
+
+typeface-barlow@^0.0.71:
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/typeface-barlow/-/typeface-barlow-0.0.71.tgz#047396d800e19b33904ff820aec9e73d6f0c8e0d"
+  integrity sha512-dsDw7lOtAXUSe2kj6s9M2DVS5QMeIw+pOwd/Y3cgaMeB77mIIqWJOFIzEVqCGhrIDUpFbOCeo0kZxqGDZXM+sQ==
+
 typescript@^3.3.0:
   version "3.9.7"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
@@ -12946,6 +13013,11 @@ vitepress@^0.6.0:
     vite "^1.0.0-rc.4"
     vue "^3.0.0-rc.11"
 
+vkey@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/vkey/-/vkey-0.0.3.tgz#634dd7952eb2c11531bf1859f0e6d419478033df"
+  integrity sha1-Y03XlS6ywRUxvxhZ8ObUGUeAM98=
+
 void-elements@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
@@ -12994,7 +13066,7 @@ vue-eslint-parser@^7.0.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
-vue-router@^4.0.0-beta.12:
+vue-router@^4.0.0-beta.13:
   version "4.0.0-beta.13"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.0-beta.13.tgz#4611d09a9e44f231cc401ecc294a7f2dcb30e6a6"
   integrity sha512-dYv9qpHPaojQlfujViiTkPkf1Bf5RCFzkCkdVFc1cENzWJYAGJanpIHiyjyKoM4u7IDFBZMItci+U4ieaEWA8A==
@@ -13090,6 +13162,11 @@ whatwg-url@^8.0.0:
     lodash.sortby "^4.7.0"
     tr46 "^2.0.2"
     webidl-conversions "^6.1.0"
+
+wheel@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/wheel/-/wheel-0.0.0.tgz#04ff9be987175deb1edd4f2482e8b657f32a4165"
+  integrity sha1-BP+b6YcXXese3U8kgui2V/MqQWU=
 
 when@~3.6.x:
   version "3.6.4"
