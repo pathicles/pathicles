@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* eslint-env browser */ /* eslint-env browser */
 
 <template>
   <router-view :key="$route.fullPath" :class="{ prerender }"></router-view>
@@ -27,7 +27,7 @@ export default {
 body, #app
   margin 0
   padding 0
-
+  font-family: 'Barlow Semi Condensed', sans-serif;
 .prerender
   select
     display none

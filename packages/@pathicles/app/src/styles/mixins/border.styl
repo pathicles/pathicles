@@ -1,0 +1,28 @@
+
+$border-top($width = 1px, $color = rgba(black, 0.2), dbl = 0)
+  position relative
+
+  &:before
+    position absolute
+    top $bl(dbl)
+    left 0
+    //z-index 10000
+    display block
+    width 100%
+    height $width
+    background-color $color
+    content ' '
+
+$border-bottom($width = 1px, $color = rgba(black, 0.2), dbl = 0)
+  position relative
+
+  &:after
+    position absolute
+    bottom $bl(dbl)
+    left 0
+    //z-index 1000
+    display block
+    width 100%
+    height $width
+    background-color $color
+    content ' '

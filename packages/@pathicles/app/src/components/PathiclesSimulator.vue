@@ -136,11 +136,7 @@ export default {
 
 <style lang="stylus">
 
-.pathicles-simulator
-  touch-action pinch-zoom
-
 .pathicles
-
   position fixed
   top 0
   left 0
@@ -170,4 +166,7 @@ export default {
 
     canvas
       image-rendering crisp-edges
+
+  .pathicles-simulator
+    touch-action pinch-zoom
 </style>

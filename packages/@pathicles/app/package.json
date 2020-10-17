@@ -18,7 +18,11 @@
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0-beta.13"
+    "vue-router": "^4.0.0-beta.13",
+    "typeface-barlow": "^0.0.71",
+    "canvas-orbit-camera": "^1.0.2",
+    "typeface-barlow-condensed": "^0.0.71",
+    "typeface-barlow-semi-condensed": "^0.0.71"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.0",

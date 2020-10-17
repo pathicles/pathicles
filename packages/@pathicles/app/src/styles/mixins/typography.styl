@@ -1,0 +1,63 @@
+$round($value)
+  (round($value * 10000) / 10000)
+
+$set-baselined-typography($id = 'id', $font-size = 16px, $BASELINE-HEIGHT = 24px, $line-height = 1, $leading-top = 0, $leading-bottom = 0, $font--baseline = 0.5)
+  $relative-font-size = ($font-size / $BASELINE-HEIGHT)
+  $baseline-from-bottom = ($line-height - $relative-font-size) / 2 + ($relative-font-size * $font--baseline)
+  //the corrected baseline will be on the nearest gridline
+  $corrected-baseline = round($baseline-from-bottom)
+  //the difference between the original and the corrected baseline
+  $baseline-difference = $corrected-baseline - $baseline-from-bottom
+
+  if ($baseline-difference < 0)
+    //
+    $margin-top = $leading-top * $BASELINE-HEIGHT
+    //push the baseline down to the next gridline
+    $padding-top = - $baseline-difference * $BASELINE-HEIGHT
+    //add the remaining distance to reach the next gridline
+    $padding-bottom = (1 + $baseline-difference) * $BASELINE-HEIGHT
+    //add bottom leading and remove the 1 excess grid height that comes from pushing down
+    $margin-bottom = ($leading-bottom - 1) * $BASELINE-HEIGHT
+  else
+    //add top leading and remove the 1 excess grid height that comes from pulling up
+    $margin-top = ($leading-top - 1) * $BASELINE-HEIGHT
+    //pull the baseline up to the previous gridline
+    $padding-top = (1 - $baseline-difference) * $BASELINE-HEIGHT
+    //add the remaining distance to reach the next gridline
+    $padding-bottom = $baseline-difference * $BASELINE-HEIGHT
+    //add bottom leading
+    $margin-bottom = $leading-bottom * $BASELINE-HEIGHT
+
+  --baty__margin--{$id} $round($margin-top) 0 $round($margin-bottom) 0
+  --baty__padding--{$id} $round($padding-top) 0 $round($padding-bottom) 0
+  //--baty__margin-top--{$id} $round($margin-top)
+  //--baty__margin-bottom--{$id} $round($margin-bottom)
+  //--baty__padding-top--{$id} $round($padding-top)
+  //--baty__padding-bottom--{$id} $round($padding-bottom)
+  --baty__font-size--{$id} $round($relative-font-size * $BASELINE-HEIGHT)
+  --baty__line-height--{$id} $line-height * $BASELINE-HEIGHT
+
+$baselined-typography(id = 'ID')
+  font-size s('var(--baty__font-size--%s)', id)
+  line-height s('var(--baty__line-height--%s)', id)
+  margin s('var(--baty__margin--%s)', id)
+  padding s('var(--baty__padding--%s)', id)
+
+$bl(n)
+  return s('calc(%s * var(--baseline-height))', n)
+
+$ui__bl(n)
+  return s('calc(%s * var(--ui__line-height))', n)
+
+$light()
+  font-weight var(--font-weight--light)
+
+$regular()
+  font-weight var(--font-weight--regular)
+
+$bold()
+  font-weight var(--font-weight--bold)
+
+$caps()
+  text-transform uppercase
+

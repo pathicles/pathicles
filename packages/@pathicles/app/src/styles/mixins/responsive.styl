@@ -1,0 +1,65 @@
+
+$breakpoints = {
+  xs: 480px,
+  sm: 767px,
+  md: 991px,
+  lg: 1199px,
+  xl: 1000000px
+}
+
+map-get(obj, key)
+  return obj[key]
+
+mq--xs()
+  @media screen and (max-width: $breakpoints.xs)
+    {block}
+
+mq--sm()
+  @media print, screen and  (min-width: $breakpoints.xs + 1) and (max-width: $breakpoints.sm)
+    {block}
+
+mq--md()
+  @media print, screen and (min-width: $breakpoints.sm + 1) and (max-width: $breakpoints.md)
+    {block}
+
+mq--lg()
+  @media print, screen and (min-width: $breakpoints.md + 1) and (max-width: $breakpoints.lg)
+    {block}
+
+mq--xl()
+  @media print, screen and (min-width: $breakpoints.lg + 1)
+    {block}
+
+//and greater than
+mq--gte-sm()
+  @media print, screen and (min-width: $breakpoints.xs + 1)
+    {block}
+
+mq--gte-md()
+  @media print, screen and (min-width: $breakpoints.sm + 1)
+    {block}
+
+mq--gte-lg()
+  @media print, screen and (min-width: $breakpoints.md + 1)
+    {block}
+
+mq--gte-xl()
+  @media print, screen and (min-width: $breakpoints.lg + 1)
+    {block}
+
+//and less than
+mq--lte-xs()
+  @media (max-width: $breakpoints.xs)
+    {block}
+
+mq--lte-sm()
+  @media (max-width: $breakpoints.sm)
+    {block}
+
+mq--lte-md()
+  @media (max-width: $breakpoints.md)
+    {block}
+
+mq--lte-lg()
+  @media (max-width: $breakpoints.lg)
+    {block}
