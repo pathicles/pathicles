@@ -26,7 +26,6 @@
     "glsl-fog": "^0.0.1",
     "glsl-inverse": "^1.0.0",
     "glsl-look-at": "^1.0.0",
-    "glsl-solid-wireframe": "^1.0.1",
     "glsl-transpose": "^1.0.0",
     "js-binary": "^1.2.0",
     "primitive-cube": "^2.0.1",

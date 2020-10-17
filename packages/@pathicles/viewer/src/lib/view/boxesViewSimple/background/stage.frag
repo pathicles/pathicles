@@ -14,6 +14,7 @@ vec3 lineColor = vec3(.2, .2, .2);
 vec4 gridControl = vec4(.1, 10., .5, .5);
 vec3 gridOffset = vec3(0., 0., 0.);
 varying vec3 vPosition;
+uniform sampler2D shadowMap;
 varying vec3 vNormal;
 float getVisibility(float position) {
   float majorGridFrequency=gridControl.y;
@@ -50,6 +51,10 @@ float normalImpactOnAxis(float x) {
 }
 
 void main(void) {
+
+
+
+  return;
   float gridRatio=gridControl.x;
   vec3 gridPos=(vPosition+gridOffset.xyz)/gridRatio;
   float x=contributionOnAxis(gridPos.x);

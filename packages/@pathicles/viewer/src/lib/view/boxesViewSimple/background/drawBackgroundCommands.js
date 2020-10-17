@@ -9,7 +9,7 @@ export default function (regl, view) {
   const command = () => {
     return regl({
       blend: {
-        enable: true,
+        enable: false,
         func: {
           srcRGB: 'src alpha',
           srcAlpha: 1,

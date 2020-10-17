@@ -18,9 +18,13 @@ uniform mat4 view;
 void main()
 {
   vUv = uv;
-  vec4 worldPosition = model * vec4(aPosition*aScale+aOffset, 1.0);
+  vScale = aScale;
+//  vScale.x = .2;
+//  vScale.z = .2;
+  vec4 worldPosition = model * vec4(aPosition*vScale+aOffset, 1.0);
   vPosition = worldPosition.xyz;
   vNormal = aNormal;
-  vScale = aScale;
+
+
   gl_Position = projection * view * worldPosition;
 }

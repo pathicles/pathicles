@@ -5,11 +5,26 @@ precision highp float;
 
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
+//varying vec4 vLightNDC;
+uniform samplerCube cubeShadow;
+//uniform sampler2D shadowMap;
 
-
+varying float fogAmount;
 
 #define SQRT2 1.41421356
 #define PI 3.14159
+
+
+vec4 packRGBA (float v) {
+  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);
+  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+  return pack;
+}
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+}
+
+
 
 vec3 mainColor = vec3(.7, .7, .7);
 vec3 lineColor = vec3(.2, .2, .2);
@@ -52,6 +67,20 @@ float normalImpactOnAxis(float x) {
 }
 
 void main(void) {
+
+//  vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+
+//  float bias = 0.0001;
+//  float depth = lightPos.z - bias;
+//  float occluder = unpackRGBA(texture2D(shadowMap, lightPos.xy));
+//
+//  // Compare actual depth from light to the occluded depth rendered in the depth map
+//  // If the occluded depth is smaller, we must be in shadow
+//  float shadow = mix(.5, 1., step(depth, occluder));
+
+
+
+
   float gridRatio=gridControl.x;
   vec3 gridPos=(vPosition+gridOffset.xyz)/gridRatio;
   float x=contributionOnAxis(gridPos.x);
@@ -63,8 +92,8 @@ void main(void) {
   //  z*=normalImpactOnAxis(normal.z);
   float grid=clamp(x+y+z, 0., 1.);
   vec3 color=mix(mainColor, lineColor, grid);
-  float opacity=1.0;
-  opacity=clamp(grid, 0.08, gridControl.w*grid);
+  float opacity = clamp(grid, 0.2, gridControl.w*grid) * fogAmount;
   gl_FragColor=vec4(color.rgb, opacity);
+//  gl_FragColor=vec4(vec3(1.) * shadow, 1.);
 }
 
