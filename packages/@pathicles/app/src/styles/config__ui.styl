@@ -1,0 +1,30 @@
+$UI__FONT_SIZE ?= 1rem
+$UI__FONT_SIZE--SM ?= 0.875rem
+$UI__FONT_SIZE--XS ?= 0.75rem
+$UI__BASELINE__HEIGHT ?= 48px // $SCREEN__BASELINE-HEIGHT
+$UI__NAV_ITEM__HEIGHT ?= 1 * $UI__BASELINE__HEIGHT
+$UI__NAV_ITEM__ICON_WIDTH ?= 1 * $UI__BASELINE__HEIGHT
+$UI__SIDEBAR__Z_INDEX = 1000
+$UI__NAVBAR__Z_INDEX = 2000
+
+$CONFIG__UI()
+  :root
+    --ui__font-family inherit
+    --ui__font-size $UI__FONT_SIZE
+    --ui__font-size--sm $UI__FONT_SIZE--SM
+    --ui__font-size--xs $UI__FONT_SIZE--XS
+    --ui__baseline-height $UI__BASELINE__HEIGHT
+    --ui__sidebar__width 100vw
+    --ui__sidebar__width--compact 0
+    --ui__nav-item__height 1 * $UI__NAV_ITEM__HEIGHT
+    --ui__nav-item__icon__width 1 * $UI__NAV_ITEM__ICON_WIDTH
+    --ui__bib-filter__width 100vw
+    --ui__padding__x 0.5 * $UI__BASELINE__HEIGHT
+
+    +mq--gte-md()
+      --ui__bib-filter__width 6 * $UI__BASELINE__HEIGHT
+      --ui__sidebar__width 6 * $UI__BASELINE__HEIGHT
+      --ui__sidebar__width--compact 1 * $UI__NAV_ITEM__ICON_WIDTH
+
+    +mq--gte-xl()
+      --ui__bib-filter__width 6 * $UI__BASELINE__HEIGHT

@@ -68,13 +68,13 @@ export default {
 
   // view
   view: {
-    lightPosition: [0, 2, 0],
+    lightPosition: [0, 0, 0],
 
     ssaoEnabled: false,
 
     stageGrid: {
       y: 0,
-      size: 20,
+      size: 100,
       dark: 1,
       light: 0.8
     },
