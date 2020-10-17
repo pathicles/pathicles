@@ -47,7 +47,7 @@ export default {
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'square',
       particleCount: 128,
-      particleSeparation: 0.15,
+      particleSeparation: 0.075,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -105,6 +105,8 @@ export default {
     ssaoPower: 1,
     ssaoSampleCount: 32,
 
+    showAxes: false,
+    showVignette: false,
     showTextures: true,
     texelSize: 1,
     viewRange: [0, 1],
@@ -126,19 +128,19 @@ export default {
       position: [1, 1, 0],
       target: [0, 1, 0],
 
-      fovY: (2 * Math.PI) / (360 / 50),
+      fovY: (2 * Math.PI) / (360 / 35),
       dTheta: 0.001,
       autorotate: false,
       // rotationDecayTime: 0,
       rotateAboutCenter: true,
       zoomAboutCursor: false,
-      zoomDecayTime: 0.1,
+      zoomDecayTime: 1,
       // panDecayTime: 0,
-      far: 50,
+      far: 200,
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 10
+      maxDistance: 50
     }
   },
 

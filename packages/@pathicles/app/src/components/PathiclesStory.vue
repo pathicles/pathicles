@@ -77,8 +77,8 @@ export default {
               preset: 'story-loop',
               data: 'story-electric.js',
               camera: {
-                position: [-2, 1.5, 2],
-                target: [0, 1.5, 0]
+                position: [0, 1, 4],
+                target: [0, 1, 0]
               }
             }
           },
@@ -94,8 +94,8 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                position: [-2, 1.5, 0],
-                target: [0, 1.5, 0]
+                position: [-5, 1, 5],
+                target: [0, 1, 0]
               }
             }
           },
@@ -111,8 +111,8 @@ export default {
               preset: 'story-dipole',
               data: 'story-dipole.js',
               camera: {
-                position: [2, 1.5, 2],
-                target: [0, 1.5, 0]
+                position: [-7, 1, 0],
+                target: [0, 1, 0]
               }
             }
           },
@@ -127,8 +127,8 @@ export default {
               preset: 'story-quadrupole',
               data: 'story-quadrupole.js',
               camera: {
-                position: [2, 1.5, 2],
-                target: [0, 1.5, 0]
+                position: [6, 1, 4],
+                target: [0, 1, 0]
               }
             }
           },
@@ -153,8 +153,6 @@ export default {
   data: () => {
     return {
       screenWidth: 600,
-      canvasWidth: 600,
-      canvasHeight: 600,
       screenHeight: 600,
       storyHeight: 500,
       progress: 0,
@@ -292,6 +290,7 @@ export default {
 
 <style lang="stylus">
 
+@import '../styles/mixins/'
 
 .pathicles-story__container
 
@@ -327,217 +326,214 @@ export default {
     min-height 40vh
     width calc(100vw - var(--ui__sidebar__width))
 
-.layout--sidebar-hidden
-  .scene-content-wrapper
-    right 0
-    width 100vw
+  #scrolly-story__scene--0, #scrolly-story__scene--4
+    .scene-content-wrapper
+      top initial
+      bottom 0
 
-#scrolly-story__scene--0, #scrolly-story__scene--4
-  .scene-content-wrapper
-    top initial
-    bottom 0
+  [data-status="future"] .scene-content-wrapper
+    display none
 
-[data-status="future"] .scene-content-wrapper
-  display none
-
-[data-status="past"] .scene-content-wrapper
-  display none
+  [data-status="past"] .scene-content-wrapper
+    display none
 
 
-#scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
-  &[data-status="present"] .scene-content-wrapper
-    position fixed
-    bottom 0
-    top initial
+  #scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
+    &[data-status="present"] .scene-content-wrapper
+      position fixed
+      bottom 0
+      top initial
 
-.pathicles-story__container
+  .pathicles-story__container
 
+    .title, .subtitle
+      font-size: var(--baty__font-size--header-md)
+      line-height: $bl(1.25)
 
-  .title, .subtitle
-    font-size: var(--baty__font-size--header-md)
-    line-height: $bl(1.25)
-    .pathicles
-      strong
-        $bold()
-      $pathicles-span(header-md)
+      .pathicles
+        strong
+          $bold()
+        $pathicles-span(header-md)
 
-  .title
-    span.pathicles
-      background-color var(--kfb__blue)
-      color white
-
-    &[data-index]:before
-      content attr(data-index)
-      position: absolute
-      z-index 2000
-      color white
-      margin-left $bl(-.75)
-      $regular()
-
-      //+mq--gte-md()
-      margin-left $bl(-1)
-
-  .body
-    p
-      $baselined-typography(body-md)
-      max-width 60ch
-
-      .photon, .electron, .proton
-
-        display inline-block
-        padding 0 5px
-
-
-      .proton
-        background-color var(--kfb__red)
-        color white
-      .photon
-        background-color var(--kfb__yellow)
-
-      .electron
+    .title
+      span.pathicles
         background-color var(--kfb__blue)
         color white
 
-  .options
-
-    flex-direction column
-
-    section.md-section_open
-      margin-bottom $bl(1)
-
-    //+mq--gte-md()
-    flex-direction row
-
-    .option
-      flex 1
-      padding-right: $bl(.5)
-  canvas
-    image-rendering crisp-edges
-
-.layout--PathiclesStory
-  .navbar__item--next
-    opacity 0
-
-.pathicles-story__container
-
-  .debug
-    position fixed
-    top 0
-    left 0
-    z-index 1000000
-
-  .canvas-container
-    z-index 1000
-    pointer-events none
-    position fixed
-    width 100vw
-    height 100vh
-
-  .scene
-    position relative
-    padding-right: var(--page__padding__x)
-    padding-left var(--page__padding__x)
-
-  .scene-content-wrapper
-    z-index 10000
-    padding var(--page__padding__x)
-    padding-bottom $bl(1)
-    padding-top $bl(2)
-    position absolute
-    top 0
-    left 0
-    right var(--ui__sidebar__width)
-    background-color rgba(white, .8)
-    display flex
-    min-height 40vh
-    width calc(100vw - var(--ui__sidebar__width))
-
-.layout--sidebar-hidden
-  .scene-content-wrapper
-    right 0
-    width 100vw
-
-#scrolly-story__scene--0, #scrolly-story__scene--4
-  .scene-content-wrapper
-    top initial
-    bottom 0
-
-[data-status="future"] .scene-content-wrapper
-  display none
-
-[data-status="past"] .scene-content-wrapper
-  display none
-
-
-#scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
-  &[data-status="present"] .scene-content-wrapper
-    position fixed
-    bottom 0
-    top initial
-
-.pathicles-story__container
-
-
-  .title, .subtitle
-    font-size: var(--baty__font-size--header-md)
-    line-height: $bl(1.25)
-
-    .pathicles
-      strong
-        $bold()
-      $pathicles-span(header-md)
-
-  .title
-    span.pathicles
-      background-color var(--kfb__blue)
-      color white
-
-    &[data-index]:before
-      content attr(data-index)
-      position: absolute
-      z-index 2000
-      color white
-      $regular()
-      margin-left $bl(-1)
-
-  .body
-    p
-      $baselined-typography(body-md)
-      max-width 60ch
-
-      .photon, .electron, .proton
-
-        display inline-block
-        padding 0 5px
-
-
-      .proton
-        background-color var(--kfb__red)
+      &[data-index]:before
+        content attr(data-index)
+        position: absolute
+        z-index 2000
         color white
+        margin-left $bl(-.75)
+        $regular()
 
-      .photon
-        background-color var(--kfb__yellow)
+        +mq--gte-md()
+          margin-left $bl(-1)
 
-      .electron
+    .body
+      p
+        $baselined-typography(body-md)
+        max-width 60ch
+
+        .photon, .electron, .proton
+
+          display inline-block
+          padding 0 5px
+
+
+        .proton
+          background-color var(--kfb__red)
+          color white
+
+        .photon
+          background-color var(--kfb__yellow)
+
+        .electron
+          background-color var(--kfb__blue)
+          color white
+
+    .options
+
+      flex-direction column
+
+      section.md-section_open
+        margin-bottom $bl(1)
+
+      +mq--gte-md()
+        flex-direction row
+
+      .option
+        flex 1
+        padding-right: $bl(.5)
+
+    canvas
+      image-rendering crisp-edges
+
+  .layout--PathiclesStory
+    .navbar__item--next
+      opacity 0
+
+  .pathicles-story__container
+
+    .debug
+      position fixed
+      top 0
+      left 0
+      z-index 1000000
+
+    .canvas-container
+      z-index 1000
+      pointer-events none
+      position fixed
+      width 100vw
+      height 100vh
+
+    .scene
+      position relative
+      padding-right: var(--page__padding__x)
+      padding-left var(--page__padding__x)
+
+    .scene-content-wrapper
+      z-index 10000
+      padding var(--page__padding__x)
+      padding-bottom $bl(1)
+      padding-top $bl(2)
+      position absolute
+      top 0
+      left 0
+      right var(--ui__sidebar__width)
+      background-color rgba(white, .8)
+      display flex
+      min-height 40vh
+      width calc(100vw - var(--ui__sidebar__width))
+
+  .layout--sidebar-hidden
+    .scene-content-wrapper
+      right 0
+      width 100vw
+
+  #scrolly-story__scene--0, #scrolly-story__scene--4
+    .scene-content-wrapper
+      top initial
+      bottom 0
+
+  [data-status="future"] .scene-content-wrapper
+    display none
+
+  [data-status="past"] .scene-content-wrapper
+    display none
+
+
+  #scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
+    &[data-status="present"] .scene-content-wrapper
+      position fixed
+      bottom 0
+      top initial
+
+  .pathicles-story__container
+
+
+    .title, .subtitle
+      font-size: var(--baty__font-size--header-md)
+      line-height: $bl(1.25)
+
+      .pathicles
+        strong
+          $bold()
+        $pathicles-span(header-md)
+
+    .title
+      span.pathicles
         background-color var(--kfb__blue)
         color white
 
-  .options
+      &[data-index]:before
+        content attr(data-index)
+        position: absolute
+        z-index 2000
+        color white
+        $regular()
+        margin-left $bl(-1)
 
-    section.md-section_open
-      margin-bottom $bl(1)
+    .body
+      p
+        $baselined-typography(body-md)
+        max-width 60ch
 
-    //+mq--gte-md()
-    flex-direction row
+        .photon, .electron, .proton
 
-    .option
-      flex 1
-      padding-right: $bl(.5)
+          display inline-block
+          padding 0 5px
 
-  canvas
-    image-rendering crisp-edges
 
-.layout--PathiclesStory
-  .navbar__item--next
-    opacity 0
+        .proton
+          background-color var(--kfb__red)
+          color white
+
+        .photon
+          background-color var(--kfb__yellow)
+
+        .electron
+          background-color var(--kfb__blue)
+          color white
+
+    .options
+
+      section.md-section_open
+        margin-bottom $bl(1)
+
+      +mq--gte-md()
+        flex-direction row
+
+      .option
+        flex 1
+        padding-right: $bl(.5)
+
+    canvas
+      image-rendering crisp-edges
+
+  .layout--PathiclesStory
+    .navbar__item--next
+      opacity 0
 </style>
