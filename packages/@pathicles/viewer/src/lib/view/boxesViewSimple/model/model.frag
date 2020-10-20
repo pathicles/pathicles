@@ -2,7 +2,6 @@
 precision highp float;
 
 #pragma glslify: fog_exp2 = require(glsl-fog/exp2)
-#define texelSize 1.0 / float(2048)
 
 varying float toBeDiscarded;
 varying vec3 vPosition;
@@ -36,6 +35,34 @@ vec4 packRGBA (float v) {
 }
 float unpackRGBA (vec4 v) {
   return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
+}
+
+float decodeFloat (vec4 color) {
+  const vec4 bitShift = vec4(
+  1.0 / (256.0 * 256.0 * 256.0),
+  1.0 / (256.0 * 256.0),
+  1.0 / 256.0,
+  1
+  );
+  return dot(color, bitShift);
+}
+
+vec4 encodeFloat (float depth) {
+  const vec4 bitShift = vec4(
+  256 * 256 * 256,
+  256 * 256,
+  256,
+  1.0
+  );
+  const vec4 bitMask = vec4(
+  0,
+  1.0 / 256.0,
+  1.0 / 256.0,
+  1.0 / 256.0
+  );
+  vec4 comp = fract(depth * bitShift);
+  comp -= comp.xxyz * bitMask;
+  return comp;
 }
 
 float edger(vec2 uv, vec3 boxScale, float edgeWidth) {
@@ -77,14 +104,6 @@ float edgerHard(vec2 uv, vec3 boxScale, float edgeWidth) {
 
 
 
-float shadowSample(vec2 co, float z, float bias) {
-  float a = unpackRGBA(texture2D(shadowMap, co));
-  float b = z;
-  return step(b-bias, a);
-}
-
-
-
 
 void main () {
 
@@ -102,36 +121,16 @@ void main () {
   vec3 ambient = ambientLightAmount * edgedColor;
   vec3 diffuse = diffuseLightAmount * edgedColor * clamp(cosTheta, 0.0, 1.0);
 
-
-
-  float v = 1.0; // shadow value
-  vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
-  // counteract shadow acne.
-  float bias = max(maxBias * (1.0 - cosTheta), minBias);
-  bias = 0.;
-  float v0 = shadowSample(co + texelSize * vec2(0.0, 0.0), vShadowCoord.z, bias);
-  float v1 = shadowSample(co + texelSize * vec2(1.0, 0.0), vShadowCoord.z, bias) * 1.;
-  float v2 = shadowSample(co + texelSize * vec2(0.0, 1.0), vShadowCoord.z, bias) * 1.;
-  float v3 = shadowSample(co + texelSize * vec2(1.0, 1.0), vShadowCoord.z, bias) * 1.;
-  // PCF filtering
-  v = (v0 + v1 + v2 + v3) * (1.0 / 4.);
-  // if outside light frustum, render now shadow.
-  // If WebGL had GL_CLAMP_TO_BORDER we would not have to do this,
-  // but that is unfortunately not the case...
-  if(co.x < 0.0 || co.x > 1.0 || co.y < 0.0 || co.y > 1.0) {
-    v = 1.0;
-  }
-//  v = 1.0;
-  v = vColorCorrection;
+  float v = vColorCorrection;
 
 //  vec4 shadowedColor = shadow * color + color * vec4(edger(vUv, vScale,   mix(2.* pathicleWidth , 0.* pathicleWidth, smoothstep(0., 1., length(vPosition-eye)))) * vec3(.8), 1.);
 //  vec3 color = vec3(ambient + v * diffuse) + mix(5., 1., length(vPosition-eye)) * edger(vUv, vScale, 2. * pathicleWidth) * vec3(.5);
-  vec3 color = vec3(vColorCorrection * ambient + v * diffuse) + edger(vUv, vScale, .5*pathicleWidth)  * vec3(.75 * smoothstep(10., 0., length(vPosition-eye)));
-  //  const float FOG_DENSITY = .9;
-  //  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
-    float fogDistance = length(vPosition);
-    float fogAmount = smoothstep(8., 7., fogDistance);
-    gl_FragColor =vec4(color.rgb, fogAmount);
+    vec3 color = vec3(ambient * v + v * diffuse) + edger(vUv, vScale, 1. * pathicleWidth)  * (vec3(.5 * smoothstep(10., 0., length(vPosition-eye))) + .25 );
+    //  const float FOG_DENSITY = .9;
+    //  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
+      float fogDistance = length(vPosition);
+    float fogAmount = smoothstep(8., 7.9, fogDistance);
+    gl_FragColor =vec4(color.rgb * v, fogAmount);
 //    gl_FragColor =vec4(color, 1.);
 
 
@@ -143,7 +142,7 @@ void main () {
   gl_FragColor = vec4(vec3(vPosition.y), 1.0);
 
 //  gl_FragColor = packRGBA(vShadowCoord.x);
-  gl_FragColor = packRGBA(gl_FragCoord.z);
+  gl_FragColor = encodeFloat(gl_FragCoord.z);
 #endif
 
 

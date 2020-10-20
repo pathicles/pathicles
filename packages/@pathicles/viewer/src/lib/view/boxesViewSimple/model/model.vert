@@ -13,7 +13,6 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
   vec4(0, 0, 0, 1)
   );
 }
-#define texelSize 1.0 / float(2048)
 
 attribute vec3 aPosition;
 
@@ -62,6 +61,35 @@ varying float vColorCorrection;
 uniform sampler2D shadowMap;
 
 
+float decodeFloat (vec4 color) {
+  const vec4 bitShift = vec4(
+  1.0 / (256.0 * 256.0 * 256.0),
+  1.0 / (256.0 * 256.0),
+  1.0 / 256.0,
+  1
+  );
+  return dot(color, bitShift);
+}
+
+vec4 encodeFloat (float depth) {
+  const vec4 bitShift = vec4(
+  256 * 256 * 256,
+  256 * 256,
+  256,
+  1.0
+  );
+  const vec4 bitMask = vec4(
+  0,
+  1.0 / 256.0,
+  1.0 / 256.0,
+  1.0 / 256.0
+  );
+  vec4 comp = fract(depth * bitShift);
+  comp -= comp.xxyz * bitMask;
+  return comp;
+}
+
+
 vec4 packRGBA (float v) {
   vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
   pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
@@ -77,6 +105,8 @@ float shadowSample(vec2 co, float z, float bias) {
 }
 
 
+const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5,
+0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
 
 
 
@@ -112,7 +142,11 @@ void main () {
 
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz));
+
+//  #ifdef lighting
+//  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+//  #endif
 
   vec3 scaledPosition = aPosition * vScale;
 
@@ -130,35 +164,50 @@ void main () {
 
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
-  vShadowCoord = (shadowProjectionMatrix * shadowViewMatrix * vec4(vPosition, 1.0)).xyz;
-  gl_Position = projection * view *  vec4(vPosition, 1.0);
+  vShadowCoord = 1.*(shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
+  gl_Position = vec4(vShadowCoord, 1.0);
+
+
+
 
 
   #ifdef lighting
+
+
+  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
+
   vec3 lightDir = normalize(shadowDirection -1.*vPosition);
   float cosTheta = dot(vNormal, shadowDirection);
 
 
 
-  float v = 1.0; // shadow value
-  vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
-  // counteract shadow acne.
-  float bias = max(maxBias * (1.0 - cosTheta), minBias);
-  bias = 0.;
-  float v0 = shadowSample(co + texelSize * vec2(0.0, 0.0), vShadowCoord.z, bias);
-  float v1 = shadowSample(co + texelSize * vec2(1.0, 0.0), vShadowCoord.z, bias) * 1.;
-  float v2 = shadowSample(co + texelSize * vec2(0.0, 1.0), vShadowCoord.z, bias) * 1.;
-  float v3 = shadowSample(co + texelSize * vec2(1.0, 1.0), vShadowCoord.z, bias) * 1.;
-  // PCF filtering
-  v = (v0 + v1 + v2 + v3) * (1.0 / 4.);
-  // if outside light frustum, render now shadow.
-  // If WebGL had GL_CLAMP_TO_BORDER we would not have to do this,
-  // but that is unfortunately not the case...
-  if(co.x < 0.0 || co.x > 1.0 || co.y < 0.0 || co.y > 1.0) {
-    v = 1.0;
+  vec3 fragmentDepth = vShadowCoord.xyz;
+  float shadowAcneRemover = 0.00007;
+  fragmentDepth.z -= shadowAcneRemover;
+
+  float amountInLight = 0.0;
+
+  // Check whether or not the current fragment and the 8 fragments surrounding
+  // the current fragment are in the shadow. We then average out whether or not
+  // all of these fragments are in the shadow to determine the shadow contribution
+  // of the current fragment.
+  // So if 4 out of 9 fragments that we check are in the shadow then we'll say that
+  // this fragment is 4/9ths in the shadow so it'll be a little brighter than something
+  // that is 9/9ths in the shadow.
+  for (int x = -1; x <= 1; x++) {
+    for (int y = -1; y <= 1; y++) {
+      float texelDepth = decodeFloat(texture2D(shadowMap, fragmentDepth.xy + vec2(x, y) * texelSize));
+      if (fragmentDepth.z < texelDepth) {
+        amountInLight += 1.0;
+      }
+    }
   }
-  vColorCorrection = 1.-abs(sin(aParticle)) * .1;
-  #endif// lighting
+  amountInLight /= 9.0;
+
+  vColorCorrection = amountInLight;
+  vColorCorrection = 1.-abs(sin(aParticle)) * .2;
+
+#endif// lighting
 
 }
 

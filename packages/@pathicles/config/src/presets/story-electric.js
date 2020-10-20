@@ -11,7 +11,7 @@ export const storyElectric = {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
       bunchShape: 'SQUARE',
-      position: [0, 0.5, -10],
+      position: [0, 1.5, -10],
       direction: [0, 0, 1],
       directionJitter: [0, 0, 0],
       positionJitter: [0.1, 0.1, 0],

@@ -24,7 +24,7 @@ export const freePhoton = {
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0.1, 0],
+      position: [0, 0.2, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 0

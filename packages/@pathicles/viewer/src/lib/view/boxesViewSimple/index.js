@@ -11,7 +11,7 @@ import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 export function boxesViewSimple(regl, { variables, model, config }) {
   // const cubeShadow = new CubeShadow(regl, config.view.lightPosition)
   // const shadow = new Shadow(regl, [-0.39 * 5, -0.87 * 5, -0.29 * 5])
-  const shadow = new Shadow(regl, [0, 2, 0])
+  const shadow = new Shadow(regl, [0, 5, 0])
 
   const uniforms = {
     //model
@@ -51,17 +51,13 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
   function drawDiffuse(props) {
     setParams(config.view, () => {
-      // drawBackground.lighting()
-      // drawModel.cubeShadow(props)
-
-      // regl.clear({
-      //   color: [1, 0, 0, 1],
-      //   depth: 1,
-      //   framebuffer: shadow.fbo
-      // })
       // drawBox.shadow({})
+      regl.clear({
+        color: [1, 0, 0, 0],
+        depth: 1,
+        framebuffer: shadow.fbo
+      })
       drawModel.shadow({})
-
       // config.view.isShadowEnabled && drawModel.shadow(props)
       ;(true || config.view.showAxes) &&
         drawAxis([

@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-import { ortho, lookAt } from 'gl-mat4'
+import { ortho, perspective, lookAt } from 'gl-mat4'
 
-export const SIZE = 2048
+export const SHADOW_MAP_SIZE = 1024
 export const TEXEL_SIZE = 0.2
 
 export class Shadow {
@@ -9,8 +9,8 @@ export class Shadow {
     this.regl = regl
     this.fbo = regl.framebuffer({
       color: regl.texture({
-        width: SIZE,
-        height: SIZE,
+        width: SHADOW_MAP_SIZE,
+        height: SHADOW_MAP_SIZE,
         wrap: 'clamp'
         // type: 'float'
       }),
@@ -18,15 +18,31 @@ export class Shadow {
     })
 
     this.shadowDirection = shadowDirection
+    this.shadowMapSize = SHADOW_MAP_SIZE
 
     this.shadowViewMatrix = lookAt(
       [],
       shadowDirection,
       [0.0, 0.0, 0.0],
-      [0.0, 0.0, -1.0]
+      [0.0, 0.0, 1.0]
     )
-    this.shadowProjectionMatrix = ortho([], -10, 10, -10, 10, -10, 10)
-    this.shadowProjectionMatrix = ortho([], -5, 5, -5, 5, -20, 10)
+    // this.shadowProjectionMatrix = ortho([], -10, 10, -10, 10, -10, 10)
+    this.shadowProjectionMatrix = ortho([], -5, 5, -5, 5, -40.0, 30)
+    // this.shadowProjectionMatrix = perspective(
+    //   [],
+    //   Math.PI / 2.0,
+    //   1.0,
+    //   0.25,
+    //   70.0
+    // )
+    // this.shadowViewMatrix = lookAt([], [0, 1, 0], [0, 0, 0], [0, 0, 1])
+    // lookAt(
+    //   [],
+    //   shadowDirection,
+    //   [0, 0, 0],
+    //   // [shadowDirection[0], shadowDirection[1] - 1.0, shadowDirection[2]],
+    //   [0.0, 0.0, 1.0]
+    // )
   }
 
   get uniforms() {
@@ -74,8 +90,8 @@ export class Shadow {
       viewport: {
         x: 0,
         y: 0,
-        width: SIZE * TEXEL_SIZE,
-        height: SIZE * TEXEL_SIZE
+        width: SHADOW_MAP_SIZE * TEXEL_SIZE,
+        height: SHADOW_MAP_SIZE * TEXEL_SIZE
       },
       depth: {
         enable: true

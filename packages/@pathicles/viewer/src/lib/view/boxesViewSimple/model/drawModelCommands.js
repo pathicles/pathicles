@@ -88,8 +88,16 @@ export default function (regl, { variables, model, view }, shadow) {
         }
       },
 
-      vert: [`#define ${mode} 1`, vert].join('\n'),
-      frag: [`#define ${mode} 1`, frag].join('\n'),
+      vert: [
+        `#define ${mode} 1`,
+        `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
+        vert
+      ].join('\n'),
+      frag: [
+        `#define ${mode} 1`,
+        `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
+        frag
+      ].join('\n'),
 
       uniforms: {
         ...shadow.uniforms,
@@ -112,6 +120,7 @@ export default function (regl, { variables, model, view }, shadow) {
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
         pathicleWidth: view.pathicleWidth * 3,
         model: (ctx, props) => {
+          modelMatrix = identity([])
           return fromTranslation(modelMatrix, [
             props.modelTranslateX || 0,
             props.modelTranslateY || 0,

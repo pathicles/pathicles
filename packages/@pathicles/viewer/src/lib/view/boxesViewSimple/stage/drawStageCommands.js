@@ -37,8 +37,16 @@ export default function (regl, view, shadow) {
         // uResolution: [view.stageGrid.size, view.stageGrid.size],
         ...(mode === 'lighting' && { shadowMap: shadow.fbo })
       },
-      vert,
-      frag
+      vert: [
+        `#define ${mode} 1`,
+        `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
+        vert
+      ].join('\n'),
+      frag: [
+        `#define ${mode} 1`,
+        `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
+        frag
+      ].join('\n')
     })
   }
 
