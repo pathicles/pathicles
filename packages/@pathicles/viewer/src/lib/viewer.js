@@ -174,7 +174,7 @@ export class ReglViewerInstance {
             })
 
             // if (true || this.config.view.showTextures) {
-            //   //this.view.shadow.drawFbo()
+            // this.view.shadow.drawFbo()
             //   drawVariableTexture({ variableName: 'position' })
             // }
           }

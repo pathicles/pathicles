@@ -2,10 +2,10 @@ import frag from './stage.frag'
 import vert from './stage.vert'
 import { createPlane } from './plane'
 
-export default function (regl, view, cubeShadow) {
+export default function (regl, view, shadow) {
   const stage = createPlane(view.stageGrid.size, view.stageGrid.size)
   // eslint-disable-next-line no-unused-vars
-  const command = () => {
+  const command = (mode) => {
     return regl({
       blend: {
         enable: true,
@@ -22,7 +22,7 @@ export default function (regl, view, cubeShadow) {
         color: [0, 0, 0, 1]
       },
       cull: {
-        enable: false,
+        enable: true,
         face: 'front'
       },
       depth: true,
@@ -32,12 +32,10 @@ export default function (regl, view, cubeShadow) {
         position: stage.positions
       },
       uniforms: {
+        ...shadow.uniforms,
         uOffset: [0, view.stageGrid.y, 0],
-        uResolution: [view.stageGrid.size, view.stageGrid.size],
-        // shadowMap: shadow.fbo,
-        lightPosition: view.lightPosition
-        // shadowProjectionMatrix: shadow.shadowProjectionMatrix,
-        // shadowViewMatrix: shadow.shadowViewMatrix
+        // uResolution: [view.stageGrid.size, view.stageGrid.size],
+        ...(mode === 'lighting' && { shadowMap: shadow.fbo })
       },
       vert,
       frag

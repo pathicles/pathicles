@@ -1,37 +1,43 @@
-// render point-light shadows into a cubemap
 // eslint-disable-next-line no-unused-vars
-import { perspective, ortho, lookAt } from 'gl-mat4'
+import { ortho, lookAt } from 'gl-mat4'
 
-export const SIZE = 1024
-export const TEXEL_SIZE = 1
+export const SIZE = 2048
+export const TEXEL_SIZE = 0.2
 
 export class Shadow {
-  constructor(regl, lightPosition) {
+  constructor(regl, shadowDirection) {
     this.regl = regl
     this.fbo = regl.framebuffer({
-      radius: SIZE,
-      colorFormat: 'rgba',
-      colorType: 'uint8'
+      color: regl.texture({
+        width: SIZE,
+        height: SIZE,
+        wrap: 'clamp'
+        // type: 'float'
+      }),
+      depth: true
     })
 
-    this.lightPosition = lightPosition
+    this.shadowDirection = shadowDirection
 
     this.shadowViewMatrix = lookAt(
       [],
-      lightPosition,
-      [lightPosition[0] - 1.0, lightPosition[1], lightPosition[2]],
-      [0.0, -1.0, 0.0]
+      shadowDirection,
+      [0.0, 0.0, 0.0],
+      [0.0, 0.0, -1.0]
     )
+    this.shadowProjectionMatrix = ortho([], -10, 10, -10, 10, -10, 10)
+    this.shadowProjectionMatrix = ortho([], -5, 5, -5, 5, -20, 10)
+  }
 
-    this.shadowProjectionMatrix = perspective(
-      [],
-      Math.PI / 2.0,
-      1.0,
-      0.25,
-      70.0
-    )
+  get uniforms() {
+    return {
+      shadowProjectionMatrix: this.shadowProjectionMatrix,
+      shadowViewMatrix: this.shadowViewMatrix,
+      shadowDirection: this.shadowDirection,
 
-    // this.shadowProjectionMatrix = ortho([], -1, 1, -1, 1, 0.001, 100)
+      minBias: () => 0.001,
+      maxBias: () => 0.3
+    }
   }
 
   drawFbo() {

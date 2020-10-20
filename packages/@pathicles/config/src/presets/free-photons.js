@@ -20,7 +20,8 @@ export const freePhotons = {
     bufferLength: 200,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 484,
+      // particleCount: 484,
+      particleCount: 220,
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],

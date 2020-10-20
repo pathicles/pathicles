@@ -13,6 +13,7 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
   vec4(0, 0, 0, 1)
   );
 }
+#define texelSize 1.0 / float(2048)
 
 attribute vec3 aPosition;
 
@@ -33,10 +34,7 @@ uniform vec2 viewRange;
 uniform float pathicleWidth;
 uniform float pathicleGap;
 uniform float pathicleHeight;
-uniform float stageGrid_y;
 uniform float stageGrid_size;
-uniform vec4 shadowColor;
-uniform vec4 uLight;
 
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D utPositionBuffer;
@@ -45,76 +43,43 @@ uniform mat4 projection, view, model;
 uniform vec3 eye;
 
 
-uniform mat4 shadowViewMatrix_top;
-uniform mat4 shadowViewMatrix;
 uniform mat4 shadowProjectionMatrix;
-varying vec4 vLightNDC;
-// Matrix to shift range from -1->1 to 0->1
-const mat4 depthScaleMatrix = mat4(
-0.5, 0, 0, 0,
-0, 0.5, 0, 0,
-0, 0, 0.5, 0,
-0.5, 0.5, 0.5, 1
-);
+uniform mat4 shadowViewMatrix;
+uniform vec3 shadowDirection;
+uniform float minBias;
+uniform float maxBias;
 
 
 varying float toBeDiscarded;
-varying float boxLength;
 varying vec3 vScale;
 varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
-varying vec4 vAmbientColor;
-varying vec4 vDiffuseColor;
-
-
-
+varying vec3 vShadowCoord;
+varying vec4 vColor;
 varying float vColorCorrection;
+uniform sampler2D shadowMap;
 
-vec3 hemisphere_light(
-  vec3 normal,
-  vec3 sky,
-  vec3 ground,
-  vec3 lightDirection,
-  mat4 modelMatrix,
-  mat4 viewMatrix,
-  vec3 viewPosition,
-  float shininess,
-  float specularity
-) {
-  vec3 direction = normalize((
-  modelMatrix * vec4(lightDirection, 1.0)
-  ).xyz);
 
-  float weight = 0.5 * dot(
-  normal
-  , direction
-  ) + 0.5;
-
-  vec3 diffuse = mix(ground, sky, weight);
-
-  vec3 specDirection = normalize((
-  viewMatrix * modelMatrix * vec4(lightDirection, 1.0)
-  ).xyz);
-
-  float skyWeight = 0.5 * dot(
-  normal
-  , normalize(specDirection + viewPosition)
-  ) + 0.5;
-
-  float gndWeight = 0.5 * dot(
-  normal
-  , normalize(viewPosition - specDirection)
-  ) + 0.5;
-
-  vec3 specular = specularity * diffuse * (
-  max(pow(skyWeight, shininess), 0.0) +
-  max(pow(gndWeight, shininess), 0.0)
-  ) * weight;
-
-  return diffuse + specular;
+vec4 packRGBA (float v) {
+  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
+  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+  return pack;
 }
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
+}
+float shadowSample(vec2 co, float z, float bias) {
+  float a = unpackRGBA(texture2D(shadowMap, co));
+  float b = z;
+  return step(b-bias, a);
+}
+
+
+
+
+
 
 vec4 get_color(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
@@ -147,21 +112,9 @@ void main () {
 
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-  float scale = 1.;
-  float shadowProjectionScale = 1.;
-  #ifdef shadow
-  scale = 1.;
-  shadowProjectionScale = .1;
-  #endif
+  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
 
-  vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
-
-  boxLength = vScale.z;
-
-  vec3 scaledPosition = vec3(
-     aPosition.x,
-    aPosition.y * shadowProjectionScale,
-     aPosition.z ) * vScale;
+  vec3 scaledPosition = aPosition * vScale;
 
   vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
   + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
@@ -172,32 +125,40 @@ void main () {
 
   vUv = aUV;
 
-#ifdef lighting
 
-  vDiffuseColor = get_color(aParticle);
-  vAmbientColor = get_color(aParticle);
-  //  float maxDistance = 4.;
-  //  vColorCorrection += aColorCorrection + vNormalOrig.z * vNormalOrig.z * .5;
-  vColorCorrection =  aStep/bufferLength * .5;
-  vColorCorrection =  sin(aParticle)*.1;
-  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix_top * model * vec4(vPosition, 1.0);
-#endif
+  vColor = get_color(aParticle);
 
-#ifdef shadow
-    vPosition.y = stageGrid_y + 0.01 * abs(sin(aStep));
-    vDiffuseColor = shadowColor;
-//    if (aPosition.y < 0.) toBeDiscarded = 1.;
-#endif
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
+  vShadowCoord = (shadowProjectionMatrix * shadowViewMatrix * vec4(vPosition, 1.0)).xyz;
+  gl_Position = projection * view *  vec4(vPosition, 1.0);
 
-#ifdef shadowMap
-  gl_Position = shadowProjectionMatrix * shadowViewMatrix * model * vec4(vPosition, 1.0);
-#endif
 
-#ifdef lighting
-  gl_Position = projection * view * model * vec4(vPosition, 1.0);
-#endif
+  #ifdef lighting
+  vec3 lightDir = normalize(shadowDirection -1.*vPosition);
+  float cosTheta = dot(vNormal, shadowDirection);
+
+
+
+  float v = 1.0; // shadow value
+  vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
+  // counteract shadow acne.
+  float bias = max(maxBias * (1.0 - cosTheta), minBias);
+  bias = 0.;
+  float v0 = shadowSample(co + texelSize * vec2(0.0, 0.0), vShadowCoord.z, bias);
+  float v1 = shadowSample(co + texelSize * vec2(1.0, 0.0), vShadowCoord.z, bias) * 1.;
+  float v2 = shadowSample(co + texelSize * vec2(0.0, 1.0), vShadowCoord.z, bias) * 1.;
+  float v3 = shadowSample(co + texelSize * vec2(1.0, 1.0), vShadowCoord.z, bias) * 1.;
+  // PCF filtering
+  v = (v0 + v1 + v2 + v3) * (1.0 / 4.);
+  // if outside light frustum, render now shadow.
+  // If WebGL had GL_CLAMP_TO_BORDER we would not have to do this,
+  // but that is unfortunately not the case...
+  if(co.x < 0.0 || co.x > 1.0 || co.y < 0.0 || co.y > 1.0) {
+    v = 1.0;
+  }
+  vColorCorrection = 1.-abs(sin(aParticle)) * .1;
+  #endif// lighting
 
 }
 

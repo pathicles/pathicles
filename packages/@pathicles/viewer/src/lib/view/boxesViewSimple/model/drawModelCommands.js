@@ -9,7 +9,7 @@ function clip(value, min, max) {
   return Math.min(Math.max(value, min), max)
 }
 
-export default function (regl, { variables, model, view }, shadow, cubeShadow) {
+export default function (regl, { variables, model, view }, shadow) {
   const geometry = createCube()
 
   // const debleeder = [0.1, .99]
@@ -29,21 +29,20 @@ export default function (regl, { variables, model, view }, shadow, cubeShadow) {
         enable: true,
         func: {
           srcRGB: 'src alpha',
-          srcAlpha: 'src alpha',
+          srcAlpha: 1,
           dstRGB: 'one minus src alpha',
-          dstAlpha: 'one minus src alpha'
+          dstAlpha: 1
         },
-        // equation: {
-        //   rgb: 'add',
-        //   alpha: 'add'
-        // },
-        color: [1, 1, 1, 1]
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 1]
       },
       cull: {
-        enable: false,
-        face: 'front'
+        enable: true,
+        face: 'back'
       },
-      // primitive: 'triangles',
       elements: geometry.cells,
       instances: () =>
         model.particleCount *
@@ -92,57 +91,26 @@ export default function (regl, { variables, model, view }, shadow, cubeShadow) {
       vert: [`#define ${mode} 1`, vert].join('\n'),
       frag: [`#define ${mode} 1`, frag].join('\n'),
 
-      ...(mode === 'cubeShadow' && {
-        framebuffer: function (context, props, batchId) {
-          return cubeShadow.fbo.faces[batchId]
-        }
-      }),
-      ...(mode === 'shadowMap' && {
-        framebuffer: shadow.fbo
-      }),
       uniforms: {
-        ...(mode === 'shadowMap' && {
-          shadowViewMatrix: shadow.shadowViewMatrix,
-          shadowProjectionMatrix: shadow.shadowProjectionMatrix
+        ...shadow.uniforms,
+
+        ...(mode === 'shadow' && {
+          projection: shadow.shadowProjectionMatrix,
+          view: shadow.shadowViewMatrix
         }),
-        ...(mode === 'cubeShadow' && {
-          shadowViewMatrix: function (context, props, batchId) {
-            switch (batchId) {
-              case 0: // +x
-                return cubeShadow.shadowViewMatrix_x
-              case 1: // -x
-                return cubeShadow.shadowViewMatrix_x_
-              case 2: // +y
-                return cubeShadow.shadowViewMatrix_y
-              case 3: // -y
-                return cubeShadow.shadowViewMatrix_y_
-              case 4: // +z
-                return cubeShadow.shadowViewMatrix_z
-              case 5: // -z
-                return cubeShadow.shadowViewMatrix_z_
-              default:
-                break
-            }
-          }
-        }),
-        ...(mode === 'lighting' && { cubeShadow: cubeShadow.fbo }),
-        uResolution: [1, 1],
-        uLight: [1, 1, 0, 1],
-        ambientIntensity: view.ambientIntensity,
+
+        ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
+        // ambientLightAmount: 0.2,
+        // diffuseLightAmount: 0.8,
+
         utParticleColorAndType: () => variables.particleColorsAndTypes,
         utPositionBuffer: () => variables.position[0],
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
-        lightPosition: view.lightPosition,
-        shadowMap: shadow.fbo,
-        shadowProjectionMatrix: cubeShadow.shadowProjectionMatrix,
-        shadowViewMatrix_top: cubeShadow.shadowViewMatrix_y_,
-        stageGrid_y: view.stageGrid.y,
-        shadowColor: view.shadowColor,
         stageGrid_size: view.stageGrid.size / 2,
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
-        pathicleWidth: view.pathicleWidth,
+        pathicleWidth: view.pathicleWidth * 3,
         model: (ctx, props) => {
           return fromTranslation(modelMatrix, [
             props.modelTranslateX || 0,
@@ -150,15 +118,15 @@ export default function (regl, { variables, model, view }, shadow, cubeShadow) {
             0
           ])
         }
-      }
+      },
+      ...(mode === 'shadow' && {
+        framebuffer: shadow.fbo
+      })
     })
   }
 
   return {
     lighting: command('lighting'),
-    // wireframe: command('wireframe'),
-    shadow: command('shadow'),
-    shadowMap: command('shadowMap'),
-    cubeShadow: command('cubeShadow')
+    shadow: command('shadow')
   }
 }

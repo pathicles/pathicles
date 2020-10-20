@@ -1,6 +1,9 @@
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
+#pragma glslify: fog_exp2 = require(glsl-fog/exp2)
+#define texelSize 1.0 / float(2048)
+
 varying float toBeDiscarded;
 varying vec3 vPosition;
 varying vec3 vScale;
@@ -8,24 +11,32 @@ varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
 varying vec4 vAmbientColor;
-varying vec4 vDiffuseColor;
+varying vec4 vColor;
 varying float vColorCorrection;
 
-uniform vec3 lightPosition;
-uniform float ambientIntensity;
-uniform float stageGrid_size;
+uniform float ambientLightAmount;
+uniform float diffuseLightAmount;
+
 uniform float pathicleWidth;
 uniform vec3 eye;
 uniform vec2 uResolution;
 
-
-
-#ifdef lighting
-varying vec4 vLightNDC;
-uniform samplerCube cubeShadow;
+varying vec3 vShadowCoord;
+uniform vec3 shadowDirection;
 uniform sampler2D shadowMap;
-#endif
+uniform float minBias;
+uniform float maxBias;
 
+
+
+vec4 packRGBA (float v) {
+  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
+  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+  return pack;
+}
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
+}
 
 float edger(vec2 uv, vec3 boxScale, float edgeWidth) {
 
@@ -65,19 +76,13 @@ float edgerHard(vec2 uv, vec3 boxScale, float edgeWidth) {
 }
 
 
-#pragma glslify: fog_exp2 = require(glsl-fog/exp2)
 
-const vec4 fogColor = vec4(1.0);
-
-
-vec4 packRGBA (float v) {
-  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);
-  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
-  return pack;
+float shadowSample(vec2 co, float z, float bias) {
+  float a = unpackRGBA(texture2D(shadowMap, co));
+  float b = z;
+  return step(b-bias, a);
 }
-float unpackRGBA (vec4 v) {
-  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
-}
+
 
 
 
@@ -85,138 +90,63 @@ void main () {
 
   if (toBeDiscarded > .0) discard;
 
-  //if (length(vPosition.z) > stageGrid_size/2. - .5) discard;
-  //  vec3 hemisphereColor = hemisphere_light(vNormal, vec3(2., 2., 2.), vec3(.5,.5,.5), vec3(0.,1.,0.));
-
-  //  vec3 materialColor = (1. + vColorCorrection) * vDiffuseColor;
-  //  vec3 ambientColor = (ambientIntensity * vec3(1., 1., 1.) * materialColor).rgb;
-  //  vec3 lightingColor = 3. * ambientColor;
-  #ifdef shadow
-  gl_FragColor = vec4(vDiffuseColor.rgb, .2/vPosition.z/vPosition.z);//vec4(lightingColor,
-  #endif
 
 
+#ifdef lighting
 
-  #ifdef cubeShadow
-  gl_FragColor = packRGBA(gl_FragCoord.z);
-  #endif
+  vec3 edgedColor = vColor.rgb;
 
+  vec3 lightDir = normalize(shadowDirection - 0.*vPosition);
+  float cosTheta = dot(vNormal, shadowDirection);
 
-  #ifdef shadowMap
-  gl_FragColor = packRGBA(gl_FragCoord.z) + vec4(0.1);
-  #endif
+  vec3 ambient = ambientLightAmount * edgedColor;
+  vec3 diffuse = diffuseLightAmount * edgedColor * clamp(cosTheta, 0.0, 1.0);
 
 
 
-  #ifdef wireframe
-  float opacity = 1. - grid(b, .5);
-  gl_FragColor = vec4(1., 1., 1., .5*opacity);
-  #endif
-
-
-  #ifdef lighting
-
-
-  float ambientLightAmount = .75;
-  float diffuseLightAmount = .5;
-
-  // set the specular term to black
-  vec4 spec = vec4(0.0);
-
-
-  // normalize both input vectors
-  vec3 n = normalize(vNormal);
-  vec3 e = normalize(eye);
-  vec3 lightDirection = normalize(lightPosition);
-
-  vec4 specular = vec4(1.);
-  float shininess = .5;
-
-  float intensity = max(dot(n, lightDirection), 1.0);
-  if (intensity > 0.0) {
-    // compute the half vector
-    vec3 h = normalize(lightDirection + e);
-    // compute the specular term into spec
-    float intSpec = max(dot(h, n), 0.0);
-    spec = specular * pow(intSpec, shininess);
+  float v = 1.0; // shadow value
+  vec2 co = vShadowCoord.xy * 0.5 + 0.5;// go from range [-1,+1] to range [0,+1]
+  // counteract shadow acne.
+  float bias = max(maxBias * (1.0 - cosTheta), minBias);
+  bias = 0.;
+  float v0 = shadowSample(co + texelSize * vec2(0.0, 0.0), vShadowCoord.z, bias);
+  float v1 = shadowSample(co + texelSize * vec2(1.0, 0.0), vShadowCoord.z, bias) * 1.;
+  float v2 = shadowSample(co + texelSize * vec2(0.0, 1.0), vShadowCoord.z, bias) * 1.;
+  float v3 = shadowSample(co + texelSize * vec2(1.0, 1.0), vShadowCoord.z, bias) * 1.;
+  // PCF filtering
+  v = (v0 + v1 + v2 + v3) * (1.0 / 4.);
+  // if outside light frustum, render now shadow.
+  // If WebGL had GL_CLAMP_TO_BORDER we would not have to do this,
+  // but that is unfortunately not the case...
+  if(co.x < 0.0 || co.x > 1.0 || co.y < 0.0 || co.y > 1.0) {
+    v = 1.0;
   }
+//  v = 1.0;
+  v = vColorCorrection;
 
-  vec4 color;
-
-  //  color = (1. - vColorCorrection)  * max(intensity * vDiffuseColor + 0.*spec, vAmbientColor);
-
-
-  color  = (1. - 1. * vColorCorrection) * (1.*vDiffuseColor + 0.*vAmbientColor);
-
-  //  color = .5 * (1. - vColorCorrection) * vDiffuseColor + vAmbientColor;
-  //  vec3 ambient = ambientLightAmount * vDiffuseColor;
-  //  vec3 diffuse = diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(10., 10., 10.))) , 0.0, 1.0 ) +
-  //                  diffuseLightAmount * vDiffuseColor * clamp(dot(vNormal, normalize(vec3(-10., 10., -10.))) , 0.0, 1.0 ) ;
-  //
-  /*  float cosTheta2 = clamp(1. - 1. * cos(length(vPosition*20.)) , .9, 1.1 );
-    vec3 diffuse2 = 0.02 * vec3(1.) * clamp(cosTheta2 , 0.0, 1.0 ) ;
-    vec4 combinedDiffuse = clamp(vDiffuseColor * cosTheta2 , vec4(0.), vec4(1.));*/
-  //
-  //
-  ////  gl_FragColor =  vec4(pow( (1. - vColorCorrection) * (combinedDiffuse +  ambient), vec3(1.0/gamma)), 1.); //vec4(lightingColor, opacity);
-
-  //color = (1. - 1.* vColorCorrection) * ( vDiffuseColor);
-
-
-  vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-
-  float bias = 0.001;
-  float depth = lightPos.z - bias;
-  float occluder = unpackRGBA(texture2D(shadowMap, lightPos.xy));
-
-  // Compare actual depth from light to the occluded depth rendered in the depth map
-  // If the occluded depth is smaller, we must be in shadow
-  float shadow = mix(1.0, 0.8, step(depth, occluder));
-
-  //
-//    vec3 texCoord = (vPosition - lightPosition);
-//    float visibility = 0.0;
-//     //do soft shadows:
-//    for (int x = 0; x < 2; x++) {
-//      for (int y = 0; y < 2; y++) {
-//        for (int z = 0; z < 2; z++) {
-//          float bias = 0.3;
-//  //        vec4 env = textureCube(cubeShadow, texCoord + vec3(x,y,z) * vec3(0.1));
-//          vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-//          float depth = lightPos.z - bias;
-//
-//          float occluder = unpackRGBA(texture2D(shadowMap,texCoord));
-//
-//          float shadow = mix(0.2, 1.0, step(depth, occluder));
-//          visibility += shadow; //(env.x+bias) < (distance(vPosition, lightPos)) ? 0.0 : 1.0;
-//        }
-//      }
-//    }
-//    visibility *= 1.0 / 8.0;
-
-//    visibility = 1.0;
-//
-//  shadow = 1.-visibility;
-
-
-  vec4 shadowedColor = shadow * color;
-  shadowedColor +=  smoothstep(10., 1., length(vPosition-eye))  * color * vec4(edger(vUv, vScale, pathicleWidth*2.) * vec3(.7), 1.);
-
-  gl_FragColor =vec4(shadowedColor.rgb, 1.);
-
+//  vec4 shadowedColor = shadow * color + color * vec4(edger(vUv, vScale,   mix(2.* pathicleWidth , 0.* pathicleWidth, smoothstep(0., 1., length(vPosition-eye)))) * vec3(.8), 1.);
+//  vec3 color = vec3(ambient + v * diffuse) + mix(5., 1., length(vPosition-eye)) * edger(vUv, vScale, 2. * pathicleWidth) * vec3(.5);
+  vec3 color = vec3(vColorCorrection * ambient + v * diffuse) + edger(vUv, vScale, .5*pathicleWidth)  * vec3(.75 * smoothstep(10., 0., length(vPosition-eye)));
   //  const float FOG_DENSITY = .9;
   //  const vec4 FOG_COLOR = vec4(1.0, 1.0, 1.0, .8);
-  //  float fogDistance = length(vPosition);
-  //  float fogAmount = fogDistance > 9. ? fog_exp2(fogDistance - 9., FOG_DENSITY) : 0.;
-  //
-  //  vec4 faggedColor = mix(shadowedColor, FOG_COLOR, fogAmount);
-  //
-  //  gl_FragColor = vec4(faggedColor.rgb, 1.-fogAmount);
+    float fogDistance = length(vPosition);
+    float fogAmount = smoothstep(8., 7., fogDistance);
+    gl_FragColor =vec4(color.rgb, fogAmount);
+//    gl_FragColor =vec4(color, 1.);
+
+
+#endif// lighting
 
 
 
+#ifdef shadow
+  gl_FragColor = vec4(vec3(vPosition.y), 1.0);
 
-  #endif// lighting
+//  gl_FragColor = packRGBA(vShadowCoord.x);
+  gl_FragColor = packRGBA(gl_FragCoord.z);
+#endif
+
+
 
 }
 

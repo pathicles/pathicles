@@ -20,11 +20,11 @@ export const freePhoton = {
     bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 1,
+      particleCount: 20,
       particleType: 'PHOTON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0, 0],
+      position: [0, 0.1, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 0

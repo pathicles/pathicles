@@ -82,7 +82,8 @@ export default {
     sky: [0.9, 1, 0, 1],
 
     shadowColor: [0.8, 0.8, 0.8, 1.0],
-    ambientIntensity: 0.6,
+    ambientLightAmount: 0.8,
+    diffuseLightAmount: 0.2,
     diffuse: 0,
     //drawBoundingBox: true,
     exposure: 0.2,
