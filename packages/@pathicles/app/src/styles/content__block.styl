@@ -1,0 +1,126 @@
+@import './mixins/'
+
+section.md-section_open
+  margin-bottom $bl(2)
+
+* + section.md-section_open
+  margin-top $bl(0)
+
+h2, h3, h4, p, li
+  max-width var(--content__max-width)
+
+h1.md-heading_open
+  color red !important
+
+img
+  max-width 100%
+
+.md-paragraph_open, .md-heading_open
+  $baselined-typography(body-md)
+
+h2.md-heading_open
+  $baselined-typography(body-md)
+  $bold()
+  text-transform uppercase
+  font-style italic
+  font-family 'Barlow Semi Condensed'
+
+h3.md-heading_open
+  $baselined-typography(body-md)
+  $regular()
+  text-transform uppercase
+  font-style italic
+  font-family 'Barlow Semi Condensed'
+
+h4.md-heading_open
+  $baselined-typography(body-md)
+  text-transform none
+  font-style italic
+  font-family 'Barlow Semi Condensed'
+
+hr.md-hr
+  margin 0
+  padding 0
+  height $bl(1)
+  border 0
+
+.content, .md-section_open, .md-blockquote_open
+  > .md-bullet_list_open, > .md-ordered_list_open
+    $baselined-typography(body-md)
+    position relative
+    margin-left $bl(1)
+
+    .md-paragraph_open
+      margin 0
+      padding 0
+
+.md-blockquote_open
+  margin-right $bl(4)
+  margin-left $bl(1)
+  font-style italic
+
+  > .md-bullet_list_open, > .md-ordered_list_open
+    $baselined-typography(body-sm)
+
+.md-bullet_list_open li:before
+  position absolute
+  left calc(-1 * var(--baseline-height))
+  display inline-block
+  width $bl(1)
+  content '–'
+  text-align center
+  font-weight bold
+  font-size 0.8em
+  font-family Arial
+
+.md-ordered_list_open
+  counter-reset ol-counter
+
+  li
+    counter-increment ol-counter
+
+  li:before
+    position absolute
+    left calc(-1 * var(--baseline-height))
+    display inline-block
+    width $bl(0.5)
+    content counter(ol-counter)
+    text-align left
+    font-variant small-caps
+    $bold()
+    content counter(ol-counter, decimal)
+    opacity 0.8
+
+figcaption, .caption
+  $baselined-typography(caption-md)
+
+.small
+  $baselined-typography(body-sm)
+
+.large
+  $baselined-typography(body-md)
+  $bold()
+
+.center figcaption
+  text-align center
+
+.footnote-ref
+  position relative
+  top -5px
+  font-size var(--baty__font-size--body-xs)
+  opacity 0.5
+
+.footnote-backref
+  display none
+
+.footnote-item, .footnote-item p
+  display inline-block
+  margin 0 !important
+  padding 0 !important
+
+  span.inline
+    border none
+    background-color transparent
+
+.footnote-item p
+  background-color rgba(white, 0.8)

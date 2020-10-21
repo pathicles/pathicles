@@ -1,0 +1,94 @@
+// code
+$PAGE-NUMBER-DISPLAY ?= none
+$FONT-FAMILY--BODY ?= 'Barlow', sans-serif
+$FONT-BASELINE ?= 0.1
+$FONT_WEIGHT__BOLD ?= 600
+$FONT_WEIGHT__LIGHT ?= 300
+$FONT_WEIGHT__REGULAR ?= 400
+// SCREEN
+$SCREEN__BASELINE-HEIGHT ?= 22px
+$SCREEN__TEXT__FONT_SIZE__XSMALL ?= 10px
+$SCREEN__TEXT__FONT_SIZE__SMALL ?= 13px
+$SCREEN__TEXT__FONT_SIZE__REGULAR ?= 16px
+$SCREEN__TEXT__FONT_SIZE__LARGE ?= 18px
+$SCREEN__TEXT__FONT_SIZE__XLARGE ?= 30px
+$SCREEN__HEADER__FONT_SIZE__SMALL ?= 18px
+$SCREEN__HEADER__FONT_SIZE__REGULAR ?= 20px
+$SCREEN__HEADER__FONT_SIZE__LARGE ?= 34px
+$SCREEN__HEADER__FONT_SIZE__LARGE__MD ?= 42px
+$PRINT__BASELINE-HEIGHT ?= 14px // 14px $SCREEN2PRINT($SCREEN__BASELINE-HEIGHT)
+$SCALE = ($SCREEN__BASELINE-HEIGHT / 16px) // 14px = 10.5pt
+
+$SCREEN2PRINT(value)
+  (round((value / $SCALE * 10)) / 10)
+
+$PRINT__TEXT__FONT_SIZE__XSMALL ?= 6px // $SCREEN2PRINT($SCREEN__TEXT__FONT_SIZE__XSMALL)
+$PRINT__TEXT__FONT_SIZE__SMALL ?= 8px // $SCREEN2PRINT($SCREEN__TEXT__FONT_SIZE__SMALL)
+$PRINT__TEXT__FONT_SIZE__REGULAR ?= 10.5px // $SCREEN2PRINT($SCREEN__TEXT__FONT_SIZE__REGULAR)
+$PRINT__TEXT__FONT_SIZE__LARGE ?= 12px // $SCREEN2PRINT($SCREEN__TEXT__FONT_SIZE__LARGE)
+$PRINT__TEXT__FONT_SIZE__XLARGE ?= 19px // $SCREEN2PRINT($SCREEN__TEXT__FONT_SIZE__XLARGE)
+$PRINT__HEADER__FONT_SIZE__SMALL ?= 11px // $SCREEN2PRINT($SCREEN__HEADER__FONT_SIZE__SMALL)
+$PRINT__HEADER__FONT_SIZE__REGULAR ?= 13px // $SCREEN2PRINT($SCREEN__HEADER__FONT_SIZE__REGULAR)
+$PRINT__HEADER__FONT_SIZE__LARGE ?= 22px // $SCREEN2PRINT($SCREEN__HEADER__FONT_SIZE__LARGE)
+
+$VARIABLES__TYPOGRAPHY()
+  --scale $SCALE
+  --font-family--body $FONT-FAMILY--BODY, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
+  --font--baseline $FONT-BASELINE
+  --PAGE-NUMBER-DISPLAY $PAGE-NUMBER-DISPLAY
+  --print__baseline-height $PRINT__BASELINE-HEIGHT
+  --screen__baseline-height $SCREEN__BASELINE-HEIGHT
+  --font-weight--light $FONT_WEIGHT__LIGHT
+  --font-weight--regular $FONT_WEIGHT__REGULAR
+  --font-weight--bold $FONT_WEIGHT__BOLD
+
+$VARIABLES__TYPOGRAPHY--PRINT()
+  --baseline-height $PRINT__BASELINE-HEIGHT
+  $set-baselined-typography('body-xs', $PRINT__TEXT__FONT_SIZE__XSMALL, $PRINT__BASELINE-HEIGHT, 0.5, 0.5, 0, $FONT-BASELINE)
+  $set-baselined-typography('caption-md', $PRINT__TEXT__FONT_SIZE__SMALL, $PRINT__BASELINE-HEIGHT * 0.75, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-sm', $PRINT__TEXT__FONT_SIZE__SMALL, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-md', $PRINT__TEXT__FONT_SIZE__REGULAR, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-lg', $PRINT__TEXT__FONT_SIZE__LARGE, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-xl', $PRINT__TEXT__FONT_SIZE__XLARGE, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-sm', $PRINT__HEADER__FONT_SIZE__SMALL, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-md', $PRINT__HEADER__FONT_SIZE__REGULAR, $PRINT__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-lg', $PRINT__HEADER__FONT_SIZE__LARGE, $PRINT__BASELINE-HEIGHT * 2, 1, 0, 0, $FONT-BASELINE)
+  --baty__pathicles__padding--header-sm 0 0 0 0
+  --baty__pathicles__padding--header-md 0 0 0 0
+  --baty__pathicles__padding--header-lg 0 0 0 0
+
+$VARIABLES__TYPOGRAPHY--SCREEN()
+  --baseline-height $SCREEN__BASELINE-HEIGHT
+  $set-baselined-typography('caption-md', $SCREEN__TEXT__FONT_SIZE__SMALL, $SCREEN__BASELINE-HEIGHT * 0.75, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-xs', $SCREEN__TEXT__FONT_SIZE__XSMALL, $SCREEN__BASELINE-HEIGHT, 0.5, 0.5, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-sm', $SCREEN__TEXT__FONT_SIZE__SMALL, $SCREEN__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-md', $SCREEN__TEXT__FONT_SIZE__REGULAR, $SCREEN__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-lg', $SCREEN__TEXT__FONT_SIZE__LARGE, $SCREEN__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('body-xl', $SCREEN__TEXT__FONT_SIZE__XLARGE, $SCREEN__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-sm', $SCREEN__HEADER__FONT_SIZE__SMALL, $SCREEN__BASELINE-HEIGHT, 1, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-md', $SCREEN__HEADER__FONT_SIZE__REGULAR $SCREEN__BASELINE-HEIGHT, 2, 0, 0, $FONT-BASELINE)
+  $set-baselined-typography('header-lg', $SCREEN__HEADER__FONT_SIZE__LARGE, $SCREEN__BASELINE-HEIGHT * 2, 2, 0, 0, $FONT-BASELINE)
+  --baty__pathicles__padding--header-sm 0 0 0 0
+  --baty__pathicles__padding--header-md 0 0 0 0
+  --baty__pathicles__padding--header-lg 1px 1px 0 0
+
+$VARIABLES__TYPOGRAPHY--SCREEN--MD()
+
+$CONFIG__TYPOGRAPHY()
+  :root
+    $VARIABLES__TYPOGRAPHY()
+
+  @media screen
+    :root
+      $VARIABLES__TYPOGRAPHY--SCREEN()
+
+  @media print
+    :root
+      $VARIABLES__TYPOGRAPHY--PRINT()
+
+  [data-print-preview='true']
+    $VARIABLES__TYPOGRAPHY--PRINT()
+
+  [data-screen-preview='true']
+    @media print
+      $VARIABLES__TYPOGRAPHY--PRINT()

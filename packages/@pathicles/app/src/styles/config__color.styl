@@ -1,0 +1,62 @@
+.config-color
+  content '.config-color'
+
+$INTERACTION__COLOR--SPOT = #FFC82C
+$INTERACTION__COLOR--SPOT--LIGHT = #FFD200
+$INTERACTION__COLOR--ERROR = #ff0000
+$INTERACTION__COLOR--WAITING = #bbbbbb
+$INTERACTION__COLOR--PROCESSING = #ccc
+$INTERACTION__COLOR--SUCCESS = #55bb55
+$INTERACTION__COLOR--NEUTRAL = #eee
+$INTERACTION__COLOR--NEUTRAL--LIGHT = #f0f0f0
+$INTERACTION__COLOR--NEUTRAL--DARK = #ddd
+$COLOR__KFB__BLUE ?= #2174a8   // 0.129, 0.454, 0.659
+$kfb_gray ?= #757575
+$kfb_yellow ?= #edc500 // 0.847, 0.558, 0.000
+$kfb_gray_light ?= #eee
+$kfb_gray_dark ?= #666
+$kfb_red ?= #c53228 // 0.558341, 0.031896, 0.021219
+$kfb_green ?= #009900
+$COLOR__helmholtz = $COLOR__KFB__BLUE
+$COLOR__universities = $kfb_red
+$COLOR__others = $kfb_gray
+$COLOR__abroad = $kfb_yellow
+
+$CONFIG__COLOR()
+  :root
+    --kfb__blue $COLOR__KFB__BLUE
+    --kfb__gray $kfb_gray
+    --kfb__gray--light $kfb_gray_light
+    --kfb__green $kfb_green
+    --kfb__red $kfb_red
+    --kfb__yellow $kfb_yellow
+    --interaction__color--hover-on $INTERACTION__COLOR--NEUTRAL--LIGHT
+    --interaction__color--hover-off #f9f9f9
+    --interaction__color--error red
+    --interaction__color--spot $INTERACTION__COLOR--SPOT
+    --interaction__color--spot--light $INTERACTION__COLOR--SPOT--LIGHT
+    --interaction__color--success $INTERACTION__COLOR--SUCCESS
+    --interaction__color--processing $INTERACTION__COLOR--PROCESSING
+    --interaction__color--waiting $INTERACTION__COLOR--WAITING
+    --interaction__color--neutral $INTERACTION__COLOR--NEUTRAL
+    --interaction__color--neutral--light $INTERACTION__COLOR--NEUTRAL--LIGHT
+    --interaction__color--neutral--dark $INTERACTION__COLOR--NEUTRAL--DARK
+    --link-color rgb(100, 100, 100)
+    --link-color--sidebar rgba(255, 255, 255, 0.4)
+    --link-color--sidebar--active rgba(255, 255, 255, 0.9)
+    --link-color--sidebar--exact-active rgba(255, 255, 255, 1)
+    --page__background-color hsl(0, 0, 100%)
+    --text-color rgba(0, 0, 0, 0.8)
+    --text-color--sidebar rgba(255, 255, 255, 0.9)
+    --ui--dark__background-color hsla(0, 0, 25%, 0.98)
+    --ui--dark__background-color--light hsla(0, 0, 35%, 0.98)
+    --ui__background-color hsla(0, 0, 100%, 0.98)
+    --ui__element__background-color hsla(0, 0, 95%, 0.9)
+    --ui__element__background-color--dark hsla(0, 0, 85%, 0.9)
+    --ui__element__background-color--light hsla(0, 0, 100%, 0.9)
+    --ui__element__background-color--depth-1 hsla(0, 0, 100%, 0.9)
+    --ui__element__background-color--depth-2 hsla(0, 0, 100%, 0.9)
+    --ui__element__background-color--depth-3 hsla(0, 0, 95%, 0.9)
+    --ui__element__background-color--depth-4 hsla(0, 0, 90%, 0.9)
+    --ui__color hsl(0, 0, 0)
+    --ui__color--muted hsla(0, 0, 0, 0.8)

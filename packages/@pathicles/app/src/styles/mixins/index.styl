@@ -1,0 +1,49 @@
+@import '../config.styl'
+@import './responsive.styl'
+@import './border.styl'
+@import './interaction.styl'
+@import './typography.styl'
+
+
+$pathicles-span(id = "", $background-color = #e0e0e0)
+  $caps()
+  margin-left: -100%
+  padding: s('var(--baty__pathicles__padding--%s)', id)
+  padding-left 100%
+  padding-right $bl(.5)
+  box-decoration-break: clone
+  background-color $background-color
+
+$caps()
+  text-transform uppercase
+  letter-spacing .025em
+  font-style italic
+  word-spacing .1em
+
+
+
+$mm2Px(length_in_mm)
+  length_in_mm * 3.779528
+$pt2Px(length_in_pt) {
+  return unit(length_in_pt * 1.3281472327365, "px")
+}
+
+  //1cm = 96px/2.54
+  //1mm = 9.6px/2.54
+
+
+pixelize(value) { /* separate mixin, so it can be used elsewhere */
+  u = unit(value);
+
+  if (u is 'pt') {
+
+    return unit(value / 0.75, 'px');
+
+  } else if (u is 'mm') {
+
+    return unit(value * 3.7795, 'px');
+
+  } else {
+    return unit(value, u);
+  }
+}
