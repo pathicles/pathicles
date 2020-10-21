@@ -82,7 +82,7 @@ function initializeCameraControls(
       // e.stopPropagation()
 
       if (!ev.active) return
-      if (true || lethargy.check(ev) !== false) {
+      if (lethargy.check(ev) !== false) {
         if (camera.params.distance <= maxDistance)
           camera.zoom(ev.x, ev.y, 0.2 * (Math.exp(-ev.dy) - 1.0))
         camera.params.distance = Math.max(

@@ -188,7 +188,7 @@ export class ReglShadow {
 
     Mesh.prototype.draw = this.regl({
       uniforms: {
-        model: (_, props, batchId) => {
+        model: (_, props) => {
           let m = mat4.identity([])
 
           mat4.translate(m, m, props.translate)

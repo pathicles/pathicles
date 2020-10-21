@@ -1,4 +1,4 @@
-export default function(regl, view, shadow) {
+export default function (regl) {
   // eslint-disable-next-line no-unused-vars
   return regl({
     vert: `
@@ -100,9 +100,7 @@ export default function(regl, view, shadow) {
       // Define the shape of the arrowhead. This just the scale factor
       // for the ones and zeros above.
       uArrowheadShape: (ctx, props) => [
-        (props.arrowheadLength / ctx.framebufferHeight) *
-        ctx.pixelRatio *
-        2.0,
+        (props.arrowheadLength / ctx.framebufferHeight) * ctx.pixelRatio * 2.0,
         (props.arrowheadWidth / ctx.framebufferHeight) * ctx.pixelRatio
       ],
       // The aspect ratio affects computation of offsets for the screen-space
@@ -118,6 +116,4 @@ export default function(regl, view, shadow) {
     instances: (ctx, props) => props.vertexCount, // One instance per vertex
     count: 9 // Nine vertices per instance
   })
-}
-
 }

@@ -3,8 +3,8 @@
   "name": "pathicles",
   "description": "monorepo pathicles",
   "license": "MIT",
-  "homepage": "https://pathicles.github.io/pathicles/",
   "author": "drkrthj <post@dirk-rathje.de>",
+  "homepage": "https://pathicles.github.io/pathicles/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pathicles/pathicles.git"
@@ -20,11 +20,11 @@
     "packages/@pathicles/app"
   ],
   "scripts": {
-    "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
-    "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "build:app": "yarn workspace @pathicles/app run build",
     "build:docs": "npx vitepress build packages/@pathicles/docs/src",
+    "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
+    "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
     "dev": "yarn run dev-libs; yarn run dev-app",
     "dev:app": "yarn workspace @pathicles/app run dev",
     "dev:docs": "npx vitepress dev packages/@pathicles/docs/src",
@@ -41,11 +41,11 @@
     }
   },
   "devDependencies": {
-    "gh-pages": "^3.1.0",
     "conventional-changelog-cli": "2.0.31",
     "dotenv": "^8.2.0",
     "flatted": "^2.0.1",
     "fs-extra-plus": "0.5.15",
+    "gh-pages": "^3.1.0",
     "jest": "^26.4.2",
     "lerna": "^3.20.2",
     "lint-staged": "9.5.0",
