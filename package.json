@@ -23,9 +23,10 @@
     "build:app": "yarn workspace @pathicles/app run build",
     "build:docs": "npx vitepress build packages/@pathicles/docs/src",
     "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
+    "build": "yarn run build:libs; yarn run build:app",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
-    "dev": "yarn run dev-libs; yarn run dev-app",
+    "dev": "npm-run-all  --parallel  dev:libs dev:app",
     "dev:app": "yarn workspace @pathicles/app run dev",
     "dev:docs": "npx vitepress dev packages/@pathicles/docs/src",
     "dev:libs": "lerna run --parallel --scope @pathicles/core --scope @pathicles/viewer --scope @pathicles/config dev",
@@ -41,6 +42,7 @@
     }
   },
   "devDependencies": {
+    "npm-run-all": "^4.1.5",
     "conventional-changelog-cli": "2.0.31",
     "dotenv": "^8.2.0",
     "flatted": "^2.0.1",
