@@ -1,6 +1,7 @@
 precision highp float;
 
 attribute vec3 position;
+attribute vec2 uv;
 //
 uniform vec3 uOffset;
 uniform mat4 projection;
@@ -17,7 +18,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 
 void main () {
-  //  vUv = uv / 1.;
+  vUv = uv / 1.;
   vPosition = position + uOffset;
 
   vec4 worldPosition = vec4(position, 1.0);

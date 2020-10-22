@@ -31,14 +31,14 @@ float shadowSample(vec2 co, float z, float bias) {
 }
 
 
-vec4 packRGBA (float v) {
-  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);
-  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
-  return pack;
-}
-float unpackRGBA (vec4 v) {
-  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
-}
+//vec4 packRGBA (float v) {
+//  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);
+//  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+//  return pack;
+//}
+//float unpackRGBA (vec4 v) {
+//  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+//}
 
 
 

@@ -90,19 +90,19 @@ vec4 encodeFloat (float depth) {
 }
 
 
-vec4 packRGBA (float v) {
-  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
-  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
-  return pack;
-}
-float unpackRGBA (vec4 v) {
-  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
-}
-float shadowSample(vec2 co, float z, float bias) {
-  float a = unpackRGBA(texture2D(shadowMap, co));
-  float b = z;
-  return step(b-bias, a);
-}
+//vec4 packRGBA (float v) {
+//  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
+//  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+//  return pack;
+//}
+//float unpackRGBA (vec4 v) {
+//  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
+//}
+//float shadowSample(vec2 co, float z, float bias) {
+//  float a = unpackRGBA(texture2D(shadowMap, co));
+//  float b = z;
+//  return step(b-bias, a);
+//}
 
 
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5,
@@ -116,7 +116,7 @@ vec4 get_color(float p) {
   return texture2D(utParticleColorAndType, coords);
 }
 vec4 get_position(float p, float b) {
-  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
+  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength) ;
   return texture2D(utPositionBuffer, coords);
 }
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {
@@ -142,11 +142,17 @@ void main () {
 
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz));
 
-//  #ifdef lighting
-//  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
-//  #endif
+  #ifdef lighting
+
+  vScale = vec3(pathicleWidth/2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+
+  #endif
+  #ifdef shadow
+
+  vScale = vec3(pathicleWidth*4., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz));
+
+  #endif
 
   vec3 scaledPosition = aPosition * vScale;
 
@@ -159,13 +165,11 @@ void main () {
 
   vUv = aUV;
 
-
   vColor = get_color(aParticle);
-
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
   vShadowCoord = 1.*(shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
-  gl_Position = vec4(vShadowCoord, 1.0);
+  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 
 
 
@@ -184,16 +188,7 @@ void main () {
   vec3 fragmentDepth = vShadowCoord.xyz;
   float shadowAcneRemover = 0.00007;
   fragmentDepth.z -= shadowAcneRemover;
-
   float amountInLight = 0.0;
-
-  // Check whether or not the current fragment and the 8 fragments surrounding
-  // the current fragment are in the shadow. We then average out whether or not
-  // all of these fragments are in the shadow to determine the shadow contribution
-  // of the current fragment.
-  // So if 4 out of 9 fragments that we check are in the shadow then we'll say that
-  // this fragment is 4/9ths in the shadow so it'll be a little brighter than something
-  // that is 9/9ths in the shadow.
   for (int x = -1; x <= 1; x++) {
     for (int y = -1; y <= 1; y++) {
       float texelDepth = decodeFloat(texture2D(shadowMap, fragmentDepth.xy + vec2(x, y) * texelSize));
@@ -205,7 +200,7 @@ void main () {
   amountInLight /= 9.0;
 
   vColorCorrection = amountInLight;
-  vColorCorrection = 1.-abs(sin(aParticle)) * .2;
+  vColorCorrection = aColorCorrection; //1.-abs(sin(aParticle)) * .2;
 
 #endif// lighting
 

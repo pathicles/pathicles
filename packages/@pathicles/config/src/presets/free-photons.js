@@ -23,7 +23,7 @@ export const freePhotons = {
       // particleCount: 484,
       particleCount: 220,
       particleType: 'PHOTON',
-      bunchShape: 'SQUARE',
+      bunchShape: 'DISC',
       direction: [0, 0, 1],
       position: [0, 1, -10],
       directionJitter: [0, 0, 0],

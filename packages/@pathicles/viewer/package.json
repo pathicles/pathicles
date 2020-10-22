@@ -14,6 +14,7 @@
     "devPort": 9002
   },
   "dependencies": {
+    "glsl-hash-blur": "^1.0.3",
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "b-spline": "^2.0.1",

@@ -21,6 +21,31 @@ export default function (regl, { variables, model, view }, shadow) {
 
   let modelMatrix = identity([])
 
+  const colorCorrection = Array(model.particleCount)
+    .fill(0)
+    .map((_, i) => {
+      const d = Math.sqrt(
+        Math.pow(
+          variables.initialData.fourPositions[i * 4] -
+            variables.initialData.emitterPosition[0],
+          2
+        ) +
+          Math.pow(
+            variables.initialData.fourPositions[i * 4 + 1] -
+              variables.initialData.emitterPosition[1],
+            2
+          ) +
+          Math.pow(
+            variables.initialData.fourPositions[i * 4 + 2] -
+              variables.initialData.emitterPosition[2],
+            2
+          )
+      )
+
+      return Math.min(-0.1 + d * 3, 1.0)
+    })
+
+  // console.log([...colorCorrection].sort())
   const command = (mode) => {
     return regl({
       depth: true,
@@ -59,31 +84,16 @@ export default function (regl, { variables, model, view }, shadow) {
           ),
           divisor: 1
         },
-        aColorCorrection: {
-          buffer: regl.buffer(
-            Array(model.particleCount * model.bufferLength)
-              .fill(0)
-              .map((_, i) => {
-                const n = Math.sqrt(model.particleCount)
-                const p = i % model.particleCount
-                const x = Math.floor(p / n) - n / 2
-                const y = (p % Math.sqrt(model.particleCount)) - n / 2
-
-                // eslint-disable-next-line no-unused-vars
-                const r = (y ** 2 + x ** 2) / n ** 2
-
-                return clip(1.25 * Math.pow(Math.cos(2 * r), 2), 0.25, 0.5)
-              })
-          ),
-          divisor: 1
-        },
-
         aStep: {
           buffer: regl.buffer(
             Array(model.particleCount * model.bufferLength)
               .fill(0)
               .map((_, i) => Math.floor(i / model.particleCount))
           ),
+          divisor: 1
+        },
+        aColorCorrection: {
+          buffer: regl.buffer(Array(model.bufferLength).fill(colorCorrection)),
           divisor: 1
         }
       },
@@ -108,8 +118,6 @@ export default function (regl, { variables, model, view }, shadow) {
         }),
 
         ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
-        // ambientLightAmount: 0.2,
-        // diffuseLightAmount: 0.8,
 
         utParticleColorAndType: () => variables.particleColorsAndTypes,
         utPositionBuffer: () => variables.position[0],

@@ -115,6 +115,7 @@ export default function (
     bufferLength: bufferLength,
     fourPositions,
     fourVelocities,
-    particleTypes
+    particleTypes,
+    emitterPosition: position
   }
 }

@@ -2,7 +2,7 @@
 import { ortho, perspective, lookAt } from 'gl-mat4'
 
 export const SHADOW_MAP_SIZE = 1024
-export const TEXEL_SIZE = 0.2
+export const TEXEL_SIZE = 0.1
 
 export class Shadow {
   constructor(regl, shadowDirection) {
@@ -11,10 +11,13 @@ export class Shadow {
       color: regl.texture({
         width: SHADOW_MAP_SIZE,
         height: SHADOW_MAP_SIZE,
+        // mag: 'nearest'
+        // mag: 'linear'
         wrap: 'clamp'
+
         // type: 'float'
       }),
-      depth: true
+      depth: false
     })
 
     this.shadowDirection = shadowDirection
@@ -26,8 +29,9 @@ export class Shadow {
       [0.0, 0.0, 0.0],
       [0.0, 0.0, 1.0]
     )
+    const SIZE = 10
     // this.shadowProjectionMatrix = ortho([], -10, 10, -10, 10, -10, 10)
-    this.shadowProjectionMatrix = ortho([], -5, 5, -5, 5, -40.0, 30)
+    this.shadowProjectionMatrix = ortho([], -SIZE, SIZE, -SIZE, SIZE, -40.0, 30)
     // this.shadowProjectionMatrix = perspective(
     //   [],
     //   Math.PI / 2.0,
@@ -71,6 +75,15 @@ export class Shadow {
       precision mediump float;
       uniform sampler2D texture;
       varying vec2 uv;
+      float decodeFloat (vec4 color) {
+        const vec4 bitShift = vec4(
+        1.0 / (256.0 * 256.0 * 256.0),
+        1.0 / (256.0 * 256.0),
+        1.0 / 256.0,
+        1
+        );
+        return dot(color, bitShift);
+      }
       float unpackRGBA (vec4 v) {
         return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
       }
@@ -78,7 +91,11 @@ export class Shadow {
 
         // vec4 texel = vec4(unpackRGBA(texture2D(texture, uv)));
         vec4 texel = texture2D(texture, uv);
+        float depth = decodeFloat(texel);
+        // texel = vec4(decodeFloat(texel));
+
         gl_FragColor = texel; //vec4(uv,uv);
+        gl_FragColor = vec4(vec3(depth), 1.);
       }`,
 
       attributes: { position: [2, 0, 0, 2, -2, -2] },
@@ -94,7 +111,7 @@ export class Shadow {
         height: SHADOW_MAP_SIZE * TEXEL_SIZE
       },
       depth: {
-        enable: true
+        enable: false
       },
 
       count: 3

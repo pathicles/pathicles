@@ -139,9 +139,9 @@ export class ReglSimulatorInstance {
             this.view.drawDiffuse({ viewRange: [0, 1] })
 
             if (this.config.view.showTextures) {
-              this.view.shadow.drawFbo()
               this.simulation.drawVariableTexture({ variableName: 'position' })
               this.simulation.drawVariableTexture({ variableName: 'velocity' })
+              this.view.shadow.drawFbo()
             }
           }
         )

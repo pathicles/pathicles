@@ -8,7 +8,9 @@ import {
   rowDistribution,
   squareDistributionXY,
   squareDistributionXZ,
-  squareDistributionYZ
+  spiralDistributionXY,
+  squareDistributionYZ,
+  spiralDistributionYZ
 } from './distributions/distributions'
 import norm from 'norm.js'
 import { boundedRandom } from '../utils/random'
@@ -135,7 +137,9 @@ export function createParticleCollection({
       'DISC_YZ',
       'COLUMN',
       'SQUARE_YZ',
-      'SQUARE_HORIZONTAL'
+      'SQUARE_HORIZONTAL',
+      'SPIRAL_XY',
+      'SPIRAL_YZ'
     ].indexOf(bunchShape) === -1
   ) {
     throw new Error('unknown distribution type')
@@ -175,6 +179,14 @@ export function createParticleCollection({
       ? columnDistribution({
           n: particleCount,
           d: particleSeparation
+        })
+      : bunchShape === 'SPIRAL_XY'
+      ? spiralDistributionXY({
+          n: particleCount
+        })
+      : bunchShape === 'SPIRAL_YZ'
+      ? spiralDistributionYZ({
+          n: particleCount
         })
       : columnDistribution({
           n: particleCount,

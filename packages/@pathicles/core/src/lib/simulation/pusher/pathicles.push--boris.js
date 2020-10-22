@@ -105,8 +105,8 @@ export default function (regl, { variables, model }) {
             B += vec3(0., ble.strength, 0.);
           } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
           B += (ble.strength > 0.) ?
-              ble.strength * vec3(0, position.z, position.y - 2.)
-              : abs(ble.strength) * vec3(0, -position.z, -(position.y- 2.));
+              ble.strength * vec3(0, position.z, position.y - 1.5)
+              : abs(ble.strength) * vec3(0, -position.z, -(position.y- 1.5));
               }
            return B;
         }
@@ -149,14 +149,7 @@ export default function (regl, { variables, model }) {
           momentum = previousVelocity;
           if (particleData.particleType < .1) {
 
-
           } else {
-
-
-
-
-
-
 
           float chargeMassRatio = particleData.chargeMassRatio;
           float charge = particleData.charge;

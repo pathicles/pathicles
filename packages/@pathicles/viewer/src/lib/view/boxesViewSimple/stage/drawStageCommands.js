@@ -29,10 +29,17 @@ export default function (regl, view, shadow) {
       primitive: 'triangles',
       elements: stage.cells,
       attributes: {
-        position: stage.positions
+        position: stage.positions,
+        uv: stage.uvs
       },
       uniforms: {
         ...shadow.uniforms,
+
+        ...(mode === 'shadow' && {
+          projection: shadow.shadowProjectionMatrix,
+          view: shadow.shadowViewMatrix
+        }),
+
         uOffset: [0, view.stageGrid.y, 0],
         // uResolution: [view.stageGrid.size, view.stageGrid.size],
         ...(mode === 'lighting' && { shadowMap: shadow.fbo })
@@ -46,11 +53,15 @@ export default function (regl, view, shadow) {
         `#define ${mode} 1`,
         `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
         frag
-      ].join('\n')
+      ].join('\n'),
+      ...(mode === 'shadow' && {
+        framebuffer: shadow.fbo
+      })
     })
   }
 
   return {
-    lighting: command('lighting')
+    lighting: command('lighting'),
+    shadow: command('shadow')
   }
 }

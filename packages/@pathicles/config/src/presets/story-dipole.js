@@ -4,8 +4,8 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      position: [0, 1, 5],
-      target: [0, 1, 0]
+      position: [3, 1, 3],
+      target: [0, 1.5, 0]
     }
   },
 
@@ -13,14 +13,12 @@ export const storyDipole = {
     tickDurationOverC: 0.2,
     emitter: {
       particleType: 'ELECTRON ELECTRON',
-      bunchShape: 'SQUARE',
-      //particleCount: 1,
+      bunchShape: 'SPIRAL_XY',
+      position: [0, 1.5, -10],
       direction: [0, 0, 1],
-      position: [1, 1, 0],
-      // particleSeparation: 0.1,
-      directionJitter: [0.1, 0.1, 0.0],
-      positionJitter: [0.1, 0.1, 0.0],
-      gamma: 1.05
+      directionJitter: [0, 0, 0],
+      positionJitter: [0.0, 0.05, 0],
+      gamma: 10.05
     },
     interactions: {
       magneticField: [0, 0, 0],
@@ -36,7 +34,7 @@ export const storyDipole = {
         d: {
           type: LatticeElementTypes.SBEN,
           l: 1,
-          strength: -0.0005
+          strength: -0.004
         }
       },
       beamline: ['l', 'd', 'l'],

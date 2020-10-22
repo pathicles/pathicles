@@ -6541,6 +6541,13 @@ glsl-fxaa@^3.0.0:
   resolved "https://registry.yarnpkg.com/glsl-fxaa/-/glsl-fxaa-3.0.0.tgz#f432228fba9d2a8a7240943c593d20c3176f3b93"
   integrity sha1-9DIij7qdKopyQJQ8WT0gwxdvO5M=
 
+glsl-hash-blur@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/glsl-hash-blur/-/glsl-hash-blur-1.0.3.tgz#85ce037f744de15e6fda9e38dbcd93504b7647c4"
+  integrity sha1-hc4Df3RN4V5v2p44282TUEt2R8Q=
+  dependencies:
+    glsl-random "0.0.5"
+
 glsl-hemisphere-light@^0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/glsl-hemisphere-light/-/glsl-hemisphere-light-0.0.0.tgz#4ecc9086b61c8f5bdf4828d9020872e3d729206e"

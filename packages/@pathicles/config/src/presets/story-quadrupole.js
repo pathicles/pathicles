@@ -11,12 +11,14 @@ export const storyQuadrupole = {
   model: {
     tickDurationOverC: 0.15,
     emitter: {
-      particleType: 'PROTON ',
-      bunchShape: 'SQUARE_YZ',
+      particleType: 'PROTON',
+      bunchShape: 'SPIRAL_YZ',
+      // particleCount: 81,
       direction: [1, 0, 0],
-      position: [-10, 2, 0],
-      directionJitter: [0.2, 0.2, 0],
-      positionJitter: [0, 0.1, 0.2],
+      position: [-10, 1.5, 0],
+      // directionJitter: [0.2, 0.2, 0],
+      directionJitter: [0, 0, 0],
+      positionJitter: [0, 0.05, 0.05],
 
       gamma: 3.5
     },

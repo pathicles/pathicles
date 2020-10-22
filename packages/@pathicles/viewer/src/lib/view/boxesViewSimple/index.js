@@ -15,12 +15,9 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     particleCount: model.particleCount,
     stepCount: model.stepCount || model.bufferLength,
     pathicleGap: config.view.pathicleRelativeGap * config.view.pathicleWidth,
-    // pathicleWidth: config.view.pathicleWidth * 5,
     viewRange: regl.prop('viewRange'),
     ambientLightAmount: config.view.ambientLightAmount,
     diffuseLightAmount: config.view.diffuseLightAmount,
-    // pointLightPosition: config.view.lights[0].position,
-    // lightPos: config.view.lightPosition,
     dt: 2 * model.halfDeltaTOverC,
     rgbGamma: config.view.rgbGamma
   }
@@ -39,8 +36,6 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     shadow
   )
   const drawStage = drawStageCommands(regl, config.view, shadow)
-  // const drawBackground = drawBackgroundCommand(regl, config.view)
-  // const drawBox = drawBoxCommands(regl, config.view, shadow)
 
   const drawAxis = drawAxesCommand(regl, 1)
   const drawVignette = drawVignetteCommandBuilder(regl)
@@ -62,7 +57,6 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
       config.view.isStageVisible && drawStage.lighting()
       drawModel.lighting(props)
-
       config.view.showVignette && drawVignette.lighting(props)
     })
   }

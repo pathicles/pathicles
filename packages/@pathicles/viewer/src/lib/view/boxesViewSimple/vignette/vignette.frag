@@ -31,5 +31,5 @@ uniform float smoothness;
 void main() {
   vec2 uv = gl_FragCoord.xy / screenSize;
   float v = vignette(uv, size, roundness, smoothness);
-  gl_FragColor = vec4(vec3(v), 1.-v);
+  gl_FragColor = vec4(vec3(v), 1.-2.*v);
 }

@@ -47,7 +47,7 @@ export default {
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'square',
       particleCount: 128,
-      particleSeparation: 0.075,
+      particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -79,11 +79,9 @@ export default {
       light: 0.8
     },
 
-    sky: [0.9, 1, 0, 1],
-
     shadowColor: [0.8, 0.8, 0.8, 1.0],
-    ambientLightAmount: 0.8,
-    diffuseLightAmount: 0.2,
+    ambientLightAmount: 0.5,
+    diffuseLightAmount: 0.5,
     diffuse: 0,
     //drawBoundingBox: true,
     exposure: 0.2,
@@ -92,12 +90,12 @@ export default {
     rgbGamma: 1,
 
     isStageVisible: true,
-    isShadowEnabled: false,
+    isShadowEnabled: true,
     isLatticeVisible: false,
 
     pathicleRelativeGap: 2,
-    pathicleRelativeHeight: 10,
-    pathicleWidth: 0.002,
+    pathicleRelativeHeight: 5,
+    pathicleWidth: 0.003,
 
     roughness: 0.7,
     specular: 1,
@@ -107,7 +105,7 @@ export default {
     ssaoSampleCount: 32,
 
     showAxes: false,
-    showVignette: false,
+    showVignette: true,
     showTextures: true,
     texelSize: 1,
     viewRange: [0, 1],
