@@ -50,6 +50,7 @@
     "regl": "^2.0.1"
   },
   "devDependencies": {
+    "gl": "^4.8.0",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-commonjs": "^11.0.2",
@@ -65,6 +66,8 @@
     "eslint-plugin-json": "^2.1.0",
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-vue": "^6.2.2",
+    "jest": "^26.6.1",
+    "@jest/globals": "^26.6.1",
     "prettier": "^2.1.2",
     "rollup": "^2.27.1",
     "rollup-plugin-bundle-size": "^1.0.3",

@@ -1,18 +1,14 @@
 /* eslint-env browser */
 
-import camera from 'inertial-turntable-camera'
+import camera from './inertial-turntable-camera.js'
 
 import interactionEvents from 'normalized-interaction-events'
-import invert from 'gl-mat4/invert'
+// import invert from 'gl-mat4/invert'
 import { Lethargy } from './Lethargy.js'
 
-export default function (options, regl) {
-  const { position, target } = options
-  const p = [
-    -target[0] + position[0],
-    -target[1] + position[1],
-    -target[2] + position[2]
-  ]
+export default function (regl, options) {
+  const { eye, center } = options
+  const d = [-center[0] + eye[0], -center[1] + eye[1], -center[2] + eye[2]]
 
   //
   // var lethargy
@@ -23,23 +19,41 @@ export default function (options, regl) {
   // p[0] = ((p[0] > 0 ? p[0] : 2 * Math.PI + p[0]) * 360) / (2 * Math.PI)
   // console.log(p)
 
-  const distance = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
-  let phi = Math.atan2(p[1], p[0])
-  // phi += phi < 0 ? Math.PI : 0
-  const theta = Math.atan2(Math.sqrt(p[0] * p[0] + p[1] * p[1]), p[2])
+  const distance = Math.sqrt(
+    Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2)
+  )
+  // let theta = Math.atan2(d[1], d[0])
+  // let phi = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
+  // let phi = (d[0] ? Math.atan2(d[2] / d[0]) : 0) || 0
+
+  let phi = Math.atan2(d[1], d[0])
+
   //console.log(options)
+  let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
+  theta -= d[0] < 0 ? Math.PI : 0
+
+  console.log({ phi, theta })
+
+  // if (d[1] < 0) phi = -phi // + Math.PI
   const cameraOptions = Object.assign({}, options, {
     fovY: options.fovY,
-    zoomDecayTime: 100,
+    zoomDecayTime: 0,
+    rotationDecayTime: 0,
+    panDecayTime: 0,
     distance,
+    // zoomAboutCursor: false,
+    // rotationCenter: center,
+    // phi: theta,
+    // theta: phi,
     phi,
     theta,
-    center: target,
-    aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
+    // up: [0, 0, 1],
+    center,
+    ...(options.aspectRatio && { aspectRatio: options.aspectRatio })
   })
 
   const aCamera = camera(cameraOptions)
-  initializeCameraControls(aCamera, regl._gl.canvas, {
+  initializeCameraControls(aCamera, regl && regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
     maxDistance: options.maxDistance || 50
   })
@@ -59,7 +73,7 @@ export default function (options, regl) {
         camera.resize(ctx.viewportWidth / ctx.viewportHeight)
         return camera.state.projection
       },
-      iProj: (ctx, camera) => invert([], camera.state.projection),
+      // iProj: (ctx, camera) => invert([], camera.state.projection),
       view: (ctx, camera) => camera.state.view,
       eye: (ctx, camera) => camera.state.eye
     }

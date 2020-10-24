@@ -31,7 +31,7 @@ export class Shadow {
     )
     const SIZE = 10
     // this.shadowProjectionMatrix = ortho([], -10, 10, -10, 10, -10, 10)
-    this.shadowProjectionMatrix = ortho([], -SIZE, SIZE, -SIZE, SIZE, -40.0, 30)
+    this.shadowProjectionMatrix = ortho([], -SIZE, SIZE, -SIZE, SIZE, 0.0, 10)
     // this.shadowProjectionMatrix = perspective(
     //   [],
     //   Math.PI / 2.0,

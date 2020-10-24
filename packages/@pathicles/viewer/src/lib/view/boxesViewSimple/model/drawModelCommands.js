@@ -21,7 +21,7 @@ export default function (regl, { variables, model, view }, shadow) {
 
   let modelMatrix = identity([])
 
-  const colorCorrection = Array(model.particleCount)
+  const initialParticleDistances = Array(model.particleCount)
     .fill(0)
     .map((_, i) => {
       const d = Math.sqrt(
@@ -42,8 +42,13 @@ export default function (regl, { variables, model, view }, shadow) {
           )
       )
 
-      return Math.min(-0.1 + d * 3, 1.0)
+      return d
     })
+
+  const maxParticleDistance = Math.max(...initialParticleDistances)
+  const colorCorrection = initialParticleDistances.map(
+    (d) => d / maxParticleDistance
+  )
 
   // console.log([...colorCorrection].sort())
   const command = (mode) => {

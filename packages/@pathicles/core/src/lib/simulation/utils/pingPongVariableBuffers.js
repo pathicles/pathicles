@@ -21,6 +21,7 @@ export function createBuffers(regl, particleCount, bufferLength, RTTFloatType) {
 }
 
 export function loadBuffers(buffers, data) {
+  // console.log(data)
   ;[0, 1].forEach((b) =>
     buffers[b].color[0].subimage({
       width: buffers[b].width,

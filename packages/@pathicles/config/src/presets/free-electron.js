@@ -2,8 +2,8 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      position: [2.5, 0.2, 2.5],
-      target: [0, 0, 0]
+      eye: [2.5, 0.2, 2.5],
+      center: [0, 0, 0]
     }
   },
 

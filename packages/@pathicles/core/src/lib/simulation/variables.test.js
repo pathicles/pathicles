@@ -1,5 +1,6 @@
-/* eslint-env jest */
 'use strict'
+
+import { describe, it, expect } from '@jest/globals'
 
 const {
   particleTypesArrayFromDescriptor,
@@ -148,11 +149,11 @@ describe('createParticleCollection()', () => {
         100,
         0,
         0,
-        0.9999499987499375,
+        99.99499987499375,
         100,
         0,
         0,
-        0.9999499987499375,
+        99.99499987499375,
         100
       ]
     })

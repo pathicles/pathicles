@@ -13,7 +13,7 @@
 <script>
 import { ReglShadow } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
-// import DatGUI from './DatGUI'
+// import DatGUI from './DatGUI'µ
 export default {
   name: 'PathiclesSimulator',
   props: {

@@ -7,7 +7,7 @@ import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
-  const shadow = new Shadow(regl, [0, 5, 0])
+  const shadow = new Shadow(regl, config.view.lightPosition)
 
   const uniforms = {
     //model
@@ -18,8 +18,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     viewRange: regl.prop('viewRange'),
     ambientLightAmount: config.view.ambientLightAmount,
     diffuseLightAmount: config.view.diffuseLightAmount,
-    dt: 2 * model.halfDeltaTOverC,
-    rgbGamma: config.view.rgbGamma
+    dt: 2 * model.halfDeltaTOverC
   }
 
   const setParams = regl({
@@ -37,7 +36,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   )
   const drawStage = drawStageCommands(regl, config.view, shadow)
 
-  const drawAxis = drawAxesCommand(regl, 1)
+  const drawAxis = drawAxesCommand(regl, 0.5)
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {

@@ -2,8 +2,8 @@ export const random = {
   name: 'random',
   view: {
     camera: {
-      position: [5, 1, -5],
-      target: [0, 0.2, 0]
+      eye: [5, 1, -5],
+      center: [0, 0.2, 0]
     }
   },
 

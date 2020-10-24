@@ -55,7 +55,7 @@ export function drawAxesCommand(regl, d) {
       axis: regl.prop('axis')
     },
     depth: {
-      enable: false
+      enable: true
     },
     count: 6,
     primitive: 'line strip'

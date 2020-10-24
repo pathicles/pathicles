@@ -145,13 +145,12 @@ void main () {
 
   #ifdef lighting
 
-  vScale = vec3(pathicleWidth/2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+  vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
 
   #endif
   #ifdef shadow
 
-  vScale = vec3(pathicleWidth*4., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz));
-
+  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
   #endif
 
   vec3 scaledPosition = aPosition * vScale;
@@ -180,24 +179,27 @@ void main () {
 
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 
-  vec3 lightDir = normalize(shadowDirection -1.*vPosition);
-  float cosTheta = dot(vNormal, shadowDirection);
+//  vec3 lightDir = normalize(shadowDirection -1.*vPosition);
+//  float cosTheta = dot(vNormal, shadowDirection);
 
 
 
-  vec3 fragmentDepth = vShadowCoord.xyz;
-  float shadowAcneRemover = 0.00007;
-  fragmentDepth.z -= shadowAcneRemover;
+//  vec3 fragmentDepth = vShadowCoord.xyz;
+//  float shadowAcneRemover = 0.00007;
+//  fragmentDepth.z -= shadowAcneRemover;
   float amountInLight = 0.0;
-  for (int x = -1; x <= 1; x++) {
-    for (int y = -1; y <= 1; y++) {
-      float texelDepth = decodeFloat(texture2D(shadowMap, fragmentDepth.xy + vec2(x, y) * texelSize));
-      if (fragmentDepth.z < texelDepth) {
-        amountInLight += 1.0;
-      }
-    }
-  }
-  amountInLight /= 9.0;
+//  int x = 0;
+//  int y = 0;
+//
+////  for (int x = -1; x <= 1; x++) {
+////    for (int y = -1; y <= 1; y++) {
+//      float texelDepth = decodeFloat(texture2D(shadowMap, vShadowCoord.xy + vec2(x, y) * texelSize));
+//      if (vShadowCoord.z < 0.26) {
+//        amountInLight += 1.0;
+////      }
+////    }
+//  }
+//  amountInLight /= 1.0;
 
   vColorCorrection = amountInLight;
   vColorCorrection = aColorCorrection; //1.-abs(sin(aParticle)) * .2;

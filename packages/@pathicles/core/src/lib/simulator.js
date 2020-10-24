@@ -5,13 +5,13 @@ import { Simulation } from './simulation/simulation'
 import SimulationFSM from './simulation/simulationFSM'
 import PerformanceLogger from './utils/PerformanceLogger'
 import { boxesViewSimple } from '@pathicles/viewer'
-import keyControl from './utils/keyControl'
+import { keyControlMount, keyControlUnmount } from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
 import createREGL from 'regl'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
-    keyControl(this)
+    keyControlMount(this)
     this.config = config
     this.simulate = simulate
     this.control = control
@@ -64,8 +64,10 @@ export class ReglSimulatorInstance {
   }
 
   destroy() {
-    console.log('destroy')
+    keyControlUnmount(this)
+    console.log(this.regl)
     this.regl.destroy()
+    console.log(this.regl)
   }
 
   loadConfig(config) {
@@ -84,8 +86,11 @@ export class ReglSimulatorInstance {
     this.cameras = []
     this.setCameraUniforms = []
     ;[this.cameras['free'], this.setCameraUniforms['free']] = freeCameraFactory(
-      { ...this.config.view.camera },
-      regl
+      regl,
+      {
+        ...this.config.view.camera,
+        aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
+      }
     )
 
     this.camera = this.cameras['free']
@@ -120,32 +125,42 @@ export class ReglSimulatorInstance {
       return regl.frame(() => {
         // PerformanceLogger.start('mainloop')
 
-        if (this.config.view.camera.autorotate) {
-          this.cameras['free'].rotate(this.config.view.camera.dTheta, 0)
+        if (true || this.config.view.camera.autorotate) {
+          this.cameras['free'].rotate(-this.config.view.camera.dTheta, 0)
+          if (this.cameras['free'].params.theta < 0) {
+            // console.log(this)
+          }
         }
         if (this.simulate) this.pathiclesRunner.next()
+        this.cameras['free'].tick({})
+        if (
+          this.cameras['free'].state.dirty ||
+          this.pathiclesRunner.fsm.state === 'active'
+        ) {
+          this.setCameraUniforms[this.control.cameraMode](
+            {
+              ...this.cameras[this.control.cameraMode]
+              // viewRange: this.control.viewRange
+              // scene: storyState.scene,
+              // scene_t: storyState.scene_t
+            },
+            () => {
+              this.cameras['free'].tick({})
 
-        // this.setCameraUniforms(this.camera, () => {
-        this.setCameraUniforms[this.control.cameraMode](
-          {
-            ...this.cameras[this.control.cameraMode]
-            // viewRange: this.control.viewRange
-            // scene: storyState.scene,
-            // scene_t: storyState.scene_t
-          },
-          () => {
-            this.cameras['free'].tick({})
+              this.view.drawDiffuse({ viewRange: [0, 1] })
 
-            this.view.drawDiffuse({ viewRange: [0, 1] })
-
-            if (this.config.view.showTextures) {
-              this.simulation.drawVariableTexture({ variableName: 'position' })
-              this.simulation.drawVariableTexture({ variableName: 'velocity' })
-              this.view.shadow.drawFbo()
+              if (this.config.view.showTextures) {
+                this.simulation.drawVariableTexture({
+                  variableName: 'position'
+                })
+                this.simulation.drawVariableTexture({
+                  variableName: 'velocity'
+                })
+                this.view.shadow.drawFbo()
+              }
             }
-          }
-        )
-
+          )
+        }
         // PerformanceLogger.stop()
       })
     }

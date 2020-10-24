@@ -46,7 +46,7 @@ export default {
 
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'square',
-      particleCount: 128,
+      particleCount: 256,
       particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
@@ -68,71 +68,58 @@ export default {
 
   // view
   view: {
-    lightPosition: [0, 0, 0],
+    lightPosition: [-1, 5, 1],
+    ambientLightAmount: 0.6,
+    diffuseLightAmount: 0.8,
 
-    ssaoEnabled: false,
+    // ssaoEnabled: false,
 
     stageGrid: {
       y: 0,
-      size: 100,
-      dark: 1,
-      light: 0.8
+      size: 100
+      // dark: 1,
+      // light: 0.8
     },
 
-    shadowColor: [0.8, 0.8, 0.8, 1.0],
-    ambientLightAmount: 0.5,
-    diffuseLightAmount: 0.5,
-    diffuse: 0,
-    //drawBoundingBox: true,
-    exposure: 0.2,
-    fresnel: 1.0,
-    fxaa: false,
     rgbGamma: 1,
 
     isStageVisible: true,
     isShadowEnabled: true,
     isLatticeVisible: false,
 
-    pathicleRelativeGap: 2,
-    pathicleRelativeHeight: 5,
-    pathicleWidth: 0.003,
+    pathicleRelativeGap: 4,
+    pathicleRelativeHeight: 8,
+    pathicleWidth: 0.001,
 
-    roughness: 0.7,
-    specular: 1,
-    ssaoBlurPower: 2,
-    ssaoBlurRadius: 0.1,
-    ssaoPower: 1,
-    ssaoSampleCount: 32,
-
-    showAxes: false,
+    showAxes: true,
     showVignette: true,
-    showTextures: true,
+    showTextures: false,
     texelSize: 1,
     viewRange: [0, 1],
 
-    lights: [
-      {
-        position: [0, 1, 0],
-        direction: [1, 1, 0],
-        color: new Array(3).fill(0)
-      },
-      {
-        position: [0, 1, 0],
-        direction: [-1, -1, 0],
-        color: new Array(3).fill(0)
-      }
-    ],
+    // lights: [
+    //   {
+    //     position: [0, 1, 0],
+    //     direction: [1, 1, 0],
+    //     color: new Array(3).fill(0)
+    //   },
+    //   {
+    //     position: [0, 1, 0],
+    //     direction: [-1, -1, 0],
+    //     color: new Array(3).fill(0)
+    //   }
+    // ],
 
     camera: {
-      position: [1, 1, 0],
-      target: [0, 1, 0],
+      eye: [1, 1, 0],
+      center: [0, 1, 0],
 
       fovY: (2 * Math.PI) / (360 / 35),
       dTheta: 0.001,
       autorotate: false,
       // rotationDecayTime: 0,
-      rotateAboutCenter: true,
-      zoomAboutCursor: false,
+      // rotateAboutCenter: true,
+      // zoomAboutCursor: false,
       zoomDecayTime: 1,
       // panDecayTime: 0,
       far: 200,

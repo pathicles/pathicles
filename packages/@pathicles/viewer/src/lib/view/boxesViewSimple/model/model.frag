@@ -1,7 +1,5 @@
-#extension GL_OES_standard_derivatives : enable
 precision highp float;
-
-#pragma glslify: fog_exp2 = require(glsl-fog/exp2)
+#extension GL_OES_standard_derivatives : enable
 
 varying float toBeDiscarded;
 varying vec3 vPosition;
@@ -26,16 +24,6 @@ uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
 
-
-//
-//vec4 packRGBA (float v) {
-//  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
-//  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
-//  return pack;
-//}
-//float unpackRGBA (vec4 v) {
-//  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
-//}
 
 float decodeFloat (vec4 color) {
   const vec4 bitShift = vec4(
@@ -79,7 +67,7 @@ float edger(vec2 uv, vec3 boxScale, float edgeWidth) {
   float edgeZY =  smoothstep(0., edgeWidth, uv.y*boxScale.z) * smoothstep(0., edgeWidth, (1.-uv.y)*boxScale.z);
   float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
 
-  return clamp(edgeX+edgeY+edgeZ, 0., 1.);
+  return clamp(edgeX+edgeY, 0., 1.);
 }
 //
 //float edgerFeathered(vec2 uv, vec3 boxScale, float edgeWidth) {
@@ -123,11 +111,12 @@ void main () {
 
   float v = vColorCorrection;
 
-  vec3 color = vec3(ambient * v + v * diffuse) + 1. * edger(vUv, vScale, .25 * pathicleWidth)  * (vec3(.0 * smoothstep(5., 0., length(vPosition-eye))) + .5 );
+  vec3 color = vec3(ambient * v + v * diffuse)
+    + 1. * edger(vUv, vScale, .5 * pathicleWidth)  * (vec3(.5 * smoothstep(5., 0., length(vPosition-eye))) + .0 );
 
   float fogDistance = length(vPosition);
-  float fogAmount = smoothstep(8., 7.9, fogDistance);
-  gl_FragColor =vec4(color.rgb * v, fogAmount);
+  float fogAmount = smoothstep(16., 15., fogDistance);
+  gl_FragColor =vec4(color.rgb, fogAmount);
 
 
 #endif// lighting

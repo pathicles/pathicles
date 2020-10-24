@@ -2,8 +2,8 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      position: [-3, 1.5, -3],
-      target: [0, 1.5, 0]
+      eye: [1, 1, 10],
+      center: [0, 1, 0]
     }
   },
 
@@ -11,7 +11,7 @@ export const storyElectric = {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
       bunchShape: 'SPIRAL_XY',
-      position: [0, 1.5, -10],
+      position: [0, 1.5, -20],
       direction: [0, 0, 1],
       directionJitter: [0, 0, 0],
       positionJitter: [0.0, 0.05, 0],

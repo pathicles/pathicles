@@ -32,6 +32,8 @@ export class Simulation {
       configuration.model.emitter
     ))
 
+    // console.log(fourPositions)
+
     this.variables = {
       initialData: this.initialData,
       position: loadBuffers(

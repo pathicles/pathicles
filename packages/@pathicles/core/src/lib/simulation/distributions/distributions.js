@@ -3,7 +3,7 @@ export function rowDistribution({ n = 0, d = 0 }) {
 
   return [...Array(n)]
     .fill(0)
-    .map((zero, i) => [0, 0, i * d - dOffset])
+    .map((zero, i) => [i * d - dOffset, 0, 0])
     .reduce((acc, val) => acc.concat(val), [])
 }
 

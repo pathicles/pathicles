@@ -64,52 +64,6 @@ export function betaFromGamma(gamma = 0) {
   return Math.sqrt(1 - 1 / Math.pow(gamma, 2))
 }
 
-// export function createVariableBuffers(
-//   regl,
-//   {
-//     particleCount = 3,
-//     bufferLength = 3
-//     // particleTypeDescriptor = 'PHOTON ELECTRON PROTON',
-//     // bunchShape = 'ROW',
-//     // particleSeparation = 0.1,
-//     // gamma,
-//     // direction = [0, 0, 1],
-//     // directionJitter = [0, 0, 0]
-//   }
-// ) {
-//   // const particleCollection = createParticleCollection({
-//   //   particleCount,
-//   //   particleTypeDescriptor,
-//   //   bunchShape,
-//   //   particleSeparation,
-//   //   gamma,
-//   //   direction,
-//   //   directionJitter
-//   // })
-//
-//   const positionsBufferBuffer = Array(2)
-//     .fill()
-//     .map(() =>
-//       regl.framebuffer({
-//         radius: particleCount * bufferLength,
-//         colorType: 'float'
-//       })
-//     )
-//   const velocitiesBufferBuffer = Array(2)
-//     .fill()
-//     .map(() =>
-//       regl.framebuffer({
-//         radius: particleCount * bufferLength,
-//         colorType: 'float'
-//       })
-//     )
-//
-//   return {
-//     positionsBufferBuffer,
-//     velocitiesBufferBuffer
-//   }
-// }
-
 export function createParticleCollection({
   particleCount = 3,
   particleTypeDescriptor = 'PHOTON ELECTRON PROTON',
@@ -242,7 +196,7 @@ export function createParticleCollection({
   return {
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
-    fourMomenta,
+    // fourMomenta,
     particleTypes: particles.map((p) => p.id)
   }
 }

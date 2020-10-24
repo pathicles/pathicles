@@ -2,8 +2,8 @@ export const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      position: [2.5, 0.2, 2.5],
-      target: [0, 0, 0]
+      eye: [-1.5, 1, -4.5],
+      center: [2, 1, 0]
     }
   },
 
@@ -23,7 +23,7 @@ export const freePhotons = {
       // particleCount: 484,
       particleCount: 220,
       particleType: 'PHOTON',
-      bunchShape: 'DISC',
+      bunchShape: 'SPIRAL_XY',
       direction: [0, 0, 1],
       position: [0, 1, -10],
       directionJitter: [0, 0, 0],

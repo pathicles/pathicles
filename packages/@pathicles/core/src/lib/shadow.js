@@ -3,7 +3,7 @@
 import { mat4 } from 'gl-matrix'
 import freeCameraFactory from './utils/freeCameraFactory'
 import PerformanceLogger from './utils/PerformanceLogger'
-import keyControl from './utils/keyControl'
+import { keyControlMount, keyControlUnmount } from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
 import createREGL from 'regl'
 import createCube from 'primitive-cube'
@@ -27,7 +27,7 @@ for (let ix = 0; ix < k; ix++) {
 
 export class ReglShadow {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
-    keyControl(this)
+    keyControlMount(this)
     this.config = config
     this.simulate = simulate
     this.control = control

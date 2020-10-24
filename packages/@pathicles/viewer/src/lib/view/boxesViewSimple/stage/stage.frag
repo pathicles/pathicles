@@ -218,7 +218,7 @@ float amountInLight = 0.0;
 //amountInLight /= 9.0;
 //  amountInLight = 0.;
 
- amountInLight =blur13(shadowMap, fragmentDepth.xy, vec2(2048,2048), vec2(1.,1.));
+ amountInLight = blur13(shadowMap, fragmentDepth.xy, vec2(2048,2048), vec2(2.,2.));
 
   if(fragmentDepth.x < 0. || fragmentDepth.x > 1.0 || fragmentDepth.y < 0. || fragmentDepth.y > 1.0) {
     amountInLight = 0.;
@@ -238,7 +238,7 @@ float gridRatio=gridControl.x;
   gl_FragColor=vec4(color.rgb, opacity);
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(30., 10., fogDistance);
-  gl_FragColor =vec4(color.rgb * (1.-.5*amountInLight), fogAmount);
+  gl_FragColor =vec4(color.rgb, fogAmount*opacity) + vec4(vec3(-.5*amountInLight), .25*opacity);
 //  gl_FragColor =vec4(vec2(pdisc(3.)), 0., 1.);
 //  gl_FragColor =vec4(vec3(amountInLight), 1.);
 //  gl_FragColor =vec4(amountInLight, 0., 0., 1.);
