@@ -25,6 +25,7 @@ export default {
 
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
+  renderToFloat: true,
 
   runner: {
     prerender: false,
@@ -68,15 +69,17 @@ export default {
 
   // view
   view: {
-    lightPosition: [-1, 5, 1],
-    ambientLightAmount: 0.6,
+    // lightPosition: [1, 5, 1],
+
+    lights: [{ position: [0, 10, 0], size: 10 }, { position: [-1, 5, -1] }],
+    ambientLightAmount: 0.3,
     diffuseLightAmount: 0.8,
 
     // ssaoEnabled: false,
 
     stageGrid: {
       y: 0,
-      size: 100
+      size: 20
       // dark: 1,
       // light: 0.8
     },
@@ -91,7 +94,7 @@ export default {
     pathicleRelativeHeight: 8,
     pathicleWidth: 0.001,
 
-    showAxes: true,
+    showAxes: false,
     showVignette: true,
     showTextures: false,
     texelSize: 1,
@@ -108,7 +111,7 @@ export default {
     //     direction: [-1, -1, 0],
     //     color: new Array(3).fill(0)
     //   }
-    // ],
+    // ],ª
 
     camera: {
       eye: [1, 1, 0],

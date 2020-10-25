@@ -13,22 +13,22 @@
 <script>
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
-import { getGPUTier } from 'detect-gpu'
+// import { getGPUTier } from 'detect-gpu'
 // import DatGUI from './DatGUI'
 export default {
   name: 'PathiclesSimulator',
   props: {
     maxScreenWidth: {
       type: Number,
-      default: 500
+      default: 1000
     },
     maxScreenHeight: {
       type: Number,
-      default: 500
+      default: 1000
     },
     maxPixelRatio: {
       type: Number,
-      default: 1.5
+      default: 2
     }
   },
   data: () => {
@@ -65,74 +65,43 @@ export default {
     },
     canvasHeight() {
       return this.height * this.pixelRatio
-    },
-    gpuTier() {
-      ;(async () => {
-        return await getGPUTier({
-          // benchmarksURL?: string; // (Default, "https://unpkg.com/detect-gpu@${PKG_VERSION}/dist/benchmarks") Provide location of where to access benchmark data
-          // failIfMajorPerformanceCaveat?: boolean; // (Default, false) Fail to detect if the WebGL implementation determines the performance would be dramatically lower than the equivalent OpenGL
-          // glContext?: WebGLRenderingContext | WebGL2RenderingContext; // (Default, undefined) Optionally pass in a WebGL context to avoid creating a temporary one internally
-          // desktopTiers?: number[]; // (Default, [0, 15, 30, 60]) Framerate per tier
-          // mobileTiers?: number[]; // (Default, [0, 15, 30, 60]) Framerate per tier
-          // override?: { // (Default, false) Override specific functionality, useful for development
-          //   renderer?: string; // Manually override reported GPU renderer string
-          //   isIpad?: boolean; // Manually report device as being an iPad
-          //   isMobile?: boolean; // Manually report device as being a mobile device
-          //   screenSize?: { width: number; height: number }; // Manually adjust reported screenSize
-          //   loadBenchmarks?: (file: string) => Promise<TModelEntry[] | undefined>; // Optionally modify method for loading benchmark data
-          // };
-        })
-
-        // Example output:
-        // {
-        //   "tier": 1,
-        //   "isMobile": false,
-        //   "type": "BENCHMARK",
-        //   "fps": 21,
-        //   "gpu": "intel iris graphics 6100"
-        // }
-      })()
     }
   },
   unmounted() {
     this.reglInstance.destroy()
-    console.log('unmounted.')
   },
   mounted() {
-    console.log('mount')
+    // getGPUTier().then((tier) => {
+    //   console.log(tier)
 
-    getGPUTier().then((tier) => {
-      console.log(tier)
+    const parsedUrl = new URL(window.location.href)
+    if (parsedUrl.searchParams.get('presetName') !== null)
+      this.presetName = parsedUrl.searchParams.get('presetName')
 
-      const parsedUrl = new URL(window.location.href)
-      if (parsedUrl.searchParams.get('presetName') !== null)
-        this.presetName = parsedUrl.searchParams.get('presetName')
+    this.config = loadConfig(this.presetName)
 
-      this.config = loadConfig(this.presetName)
+    if (parsedUrl.searchParams.get('prerender')) {
+      this.config.runner.prerender = true
+    }
 
-      if (parsedUrl.searchParams.get('prerender')) {
-        this.config.runner.prerender = true
-      }
+    this.screenWidth = window.innerWidth
+    this.screenHeight = window.innerHeight
 
-      //this._gui = this.initGui(loadConfig(this.presetName))
-      this.screenWidth = window.innerWidth
-      this.screenHeight = window.innerHeight
-
-      this.$nextTick(() => {
-        this.reglInstance = new ReglSimulatorInstance({
-          canvas: this.$refs.canvas,
-          config: this.config,
-          pixelRatio: this.pixelRatio,
-          simulate: true,
-          control: {
-            viewRange: this.viewRange,
-            progress: this.progress,
-            cameraMode: this.cameraMode
-          }
-        })
-        //this.scrollyHeight = this.$refs.scrollContainer.clientHeight
+    this.$nextTick(() => {
+      this.reglInstance = new ReglSimulatorInstance({
+        canvas: this.$refs.canvas,
+        config: this.config,
+        pixelRatio: this.pixelRatio,
+        simulate: true,
+        control: {
+          viewRange: this.viewRange,
+          progress: this.progress,
+          cameraMode: this.cameraMode
+        }
       })
+      //this.scrollyHeight = this.$refs.scrollContainer.clientHeight
     })
+    // })
   },
 
   methods: {

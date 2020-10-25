@@ -18,14 +18,12 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 
 void main () {
-  vUv = uv / 1.;
+  vUv = uv / 1.2 ;
   vPosition = position + uOffset;
 
   vec4 worldPosition = vec4(position, 1.0);
   vPosition = worldPosition.xyz;
-
-
-//  fogAmount = fog_exp2(fogDistance, FOG_DENSITY);
-  gl_Position = projection * view * vec4(vPosition, 1.);
   vShadowCoord = (texUnitConverter * shadowProjectionMatrix * shadowViewMatrix * worldPosition).xyz;
+
+  gl_Position = projection * view * vec4(vPosition, 1.);
 }

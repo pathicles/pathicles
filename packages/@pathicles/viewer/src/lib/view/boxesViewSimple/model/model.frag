@@ -24,72 +24,9 @@ uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
 
-
-float decodeFloat (vec4 color) {
-  const vec4 bitShift = vec4(
-  1.0 / (256.0 * 256.0 * 256.0),
-  1.0 / (256.0 * 256.0),
-  1.0 / 256.0,
-  1
-  );
-  return dot(color, bitShift);
-}
-
-vec4 encodeFloat (float depth) {
-  const vec4 bitShift = vec4(
-  256 * 256 * 256,
-  256 * 256,
-  256,
-  1.0
-  );
-  const vec4 bitMask = vec4(
-  0,
-  1.0 / 256.0,
-  1.0 / 256.0,
-  1.0 / 256.0
-  );
-  vec4 comp = fract(depth * bitShift);
-  comp -= comp.xxyz * bitMask;
-  return comp;
-}
-
-float edger(vec2 uv, vec3 boxScale, float edgeWidth) {
-
-  float edgeXY =  smoothstep(0., edgeWidth, uv.x*boxScale.z) * smoothstep(0., edgeWidth, (1.-uv.x)*boxScale.z);
-  float edgeXZ =  smoothstep(0., edgeWidth, uv.y*boxScale.y) * smoothstep(0., edgeWidth, (1.-uv.y)*boxScale.y);
-  float edgeX = (1.-(edgeXY*edgeXZ))*abs(vNormalOrig.x);
-
-  float edgeYX =  smoothstep(0., edgeWidth, uv.x*boxScale.x) * smoothstep(0., edgeWidth, (1.-uv.x)*boxScale.x);
-  float edgeYZ =  smoothstep(0., edgeWidth, uv.y*boxScale.z) * smoothstep(0., edgeWidth, (1.-uv.y)*boxScale.z);
-  float edgeY = (1.-(edgeYX*edgeYZ))*abs(vNormalOrig.y);
-
-  float edgeZX =  smoothstep(0., edgeWidth, uv.x*boxScale.x) * smoothstep(0., edgeWidth, (1.-uv.x)*boxScale.x);
-  float edgeZY =  smoothstep(0., edgeWidth, uv.y*boxScale.z) * smoothstep(0., edgeWidth, (1.-uv.y)*boxScale.z);
-  float edgeZ = (1.-(edgeZX*edgeZY))*abs(vNormalOrig.z);
-
-  return clamp(edgeX+edgeY, 0., 1.);
-}
-//
-//float edgerFeathered(vec2 uv, vec3 boxScale, float edgeWidth) {
-//
-//  float feather = .1;
-//
-//  float edgeXY =  smoothstep(edgeWidth, edgeWidth+feather, uv.x*boxScale.z) * smoothstep(edgeWidth, edgeWidth+feather, (1.-uv.x)*boxScale.z);
-//  float edgeXZ =  smoothstep(edgeWidth, edgeWidth+feather, uv.y*boxScale.y) * smoothstep(edgeWidth, edgeWidth+feather, (1.-uv.y)*boxScale.y);
-//  float edgeX = (1.-(edgeXY*edgeXZ))*abs(vNormalOrig.x);
-//
-//  return clamp(edgeX, 0., 1.);
-//}
-//
-//
-//float edgerHard(vec2 uv, vec3 boxScale, float edgeWidth) {
-//  float edgeXY =  step(edgeWidth*(1.+uv.x*boxScale.z), uv.x*boxScale.z) * step(edgeWidth, (1.-uv.x)*boxScale.z);
-//  float edgeXZ =  step(edgeWidth*(0.5+uv.x/2.), uv.y*boxScale.y) * step(edgeWidth*(0.5+uv.x/2.), (1.-uv.y)*boxScale.y);
-//  float edgeX = (1.-(edgeXZ))*abs(vNormalOrig.x);
-//
-//  return clamp(edgeX, 0., 1.);
-//}
-
+#pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
+#pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
+#pragma glslify: edger = require("@pathicles/core/src/lib/shaders/edger.glsl");
 
 
 
@@ -97,35 +34,29 @@ void main () {
 
   if (toBeDiscarded > .0) discard;
 
-
-
 #ifdef lighting
 
-  vec3 edgedColor = vColor.rgb;
-
   vec3 lightDir = normalize(shadowDirection - 1.*vPosition);
-  float cosTheta = dot(vNormal, shadowDirection);
+  float cosTheta =  clamp(1.*dot(vNormal, shadowDirection + vec3(1.,0.,1.)), 0., 1.) +  clamp(1.*dot(vNormal, shadowDirection + vec3(-1,0.,-1.)), 0., 1.);
 
-  vec3 ambient = ambientLightAmount * edgedColor;
-  vec3 diffuse = diffuseLightAmount * edgedColor * clamp(cosTheta, 0.0, 1.0);
+  vec3 ambient = ambientLightAmount * vColor.rgb;
+  vec3 diffuse = diffuseLightAmount * vColor.rgb * cosTheta;
 
   float v = vColorCorrection;
 
   vec3 color = vec3(ambient * v + v * diffuse)
-    + 1. * edger(vUv, vScale, .5 * pathicleWidth)  * (vec3(.5 * smoothstep(5., 0., length(vPosition-eye))) + .0 );
+    + edger(vUv, vScale, .5 * pathicleWidth, vNormalOrig)
+    * (vec3(.5 * smoothstep(5., 0., length(vPosition-eye))));
 
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(16., 15., fogDistance);
+
   gl_FragColor =vec4(color.rgb, fogAmount);
 
-
 #endif// lighting
-
-
-
 #ifdef shadow
 
-  gl_FragColor = encodeFloat(vShadowCoord.z);
+  gl_FragColor = vec4(vShadowCoord.z);
 #endif
 
 

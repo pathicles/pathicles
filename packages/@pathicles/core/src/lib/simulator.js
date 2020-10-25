@@ -65,9 +65,7 @@ export class ReglSimulatorInstance {
 
   destroy() {
     keyControlUnmount(this)
-    console.log(this.regl)
     this.regl.destroy()
-    console.log(this.regl)
   }
 
   loadConfig(config) {
@@ -123,13 +121,8 @@ export class ReglSimulatorInstance {
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
       return regl.frame(() => {
-        // PerformanceLogger.start('mainloop')
-
-        if (true || this.config.view.camera.autorotate) {
+        if (this.config.view.camera.autorotate) {
           this.cameras['free'].rotate(-this.config.view.camera.dTheta, 0)
-          if (this.cameras['free'].params.theta < 0) {
-            // console.log(this)
-          }
         }
         if (this.simulate) this.pathiclesRunner.next()
         this.cameras['free'].tick({})
@@ -139,8 +132,8 @@ export class ReglSimulatorInstance {
         ) {
           this.setCameraUniforms[this.control.cameraMode](
             {
-              ...this.cameras[this.control.cameraMode]
-              // viewRange: this.control.viewRange
+              ...this.cameras[this.control.cameraMode],
+              viewRange: this.control.viewRange
               // scene: storyState.scene,
               // scene_t: storyState.scene_t
             },

@@ -7,7 +7,7 @@ import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
-  const shadow = new Shadow(regl, config.view.lightPosition)
+  const shadow = new Shadow(regl, config.view.lights[0])
 
   const uniforms = {
     //model
@@ -43,16 +43,23 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     setParams(config.view, () => {
       regl.clear({
         color: [1, 0, 0, 0],
-        depth: 1,
+        // depth: 1,
         framebuffer: shadow.fbo
       })
+      regl.clear({
+        color: [1, 0, 0, 1],
+        // depth: 1,
+        framebuffer: shadow.fboBlurred
+      })
+
       config.view.isShadowEnabled && drawModel.shadow({})
-      config.view.showAxes &&
-        drawAxis([
-          { axis: [1, 0, 0] },
-          { axis: [0, 1, 0] },
-          { axis: [0, 0, 1] }
-        ])
+      config.view.isShadowEnabled && shadow.blur()({})
+      // config.view.showAxes &&
+      //   drawAxis([
+      //     { axis: [1, 0, 0] },
+      //     { axis: [0, 1, 0] },
+      //     { axis: [0, 0, 1] }
+      //   ])
 
       config.view.isStageVisible && drawStage.lighting()
       drawModel.lighting(props)

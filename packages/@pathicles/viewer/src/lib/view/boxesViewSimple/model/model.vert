@@ -59,55 +59,11 @@ varying vec3 vShadowCoord;
 varying vec4 vColor;
 varying float vColorCorrection;
 uniform sampler2D shadowMap;
+const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
 
 
-float decodeFloat (vec4 color) {
-  const vec4 bitShift = vec4(
-  1.0 / (256.0 * 256.0 * 256.0),
-  1.0 / (256.0 * 256.0),
-  1.0 / 256.0,
-  1
-  );
-  return dot(color, bitShift);
-}
-
-vec4 encodeFloat (float depth) {
-  const vec4 bitShift = vec4(
-  256 * 256 * 256,
-  256 * 256,
-  256,
-  1.0
-  );
-  const vec4 bitMask = vec4(
-  0,
-  1.0 / 256.0,
-  1.0 / 256.0,
-  1.0 / 256.0
-  );
-  vec4 comp = fract(depth * bitShift);
-  comp -= comp.xxyz * bitMask;
-  return comp;
-}
-
-
-//vec4 packRGBA (float v) {
-//  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v / 10.);
-//  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
-//  return pack;
-//}
-//float unpackRGBA (vec4 v) {
-//  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0))*10. ;
-//}
-//float shadowSample(vec2 co, float z, float bias) {
-//  float a = unpackRGBA(texture2D(shadowMap, co));
-//  float b = z;
-//  return step(b-bias, a);
-//}
-
-
-const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5,
-0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
-
+#pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
+#pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 
 
 
@@ -139,19 +95,16 @@ void main () {
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
   vec4 currentFourPosition = get_position(aParticle, aStep);
-
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
 
-  #ifdef lighting
-
+#ifdef lighting
   vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+#endif
 
-  #endif
-  #ifdef shadow
-
-  vScale = vec3(pathicleWidth*2., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
-  #endif
+#ifdef shadow
+  vScale = vec3(pathicleWidth*10., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+#endif
 
   vec3 scaledPosition = aPosition * vScale;
 
@@ -167,33 +120,20 @@ void main () {
   vColor = get_color(aParticle);
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
-  vShadowCoord = 1.*(shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
-  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
+
+  vShadowCoord = ( shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
 
 
 
+#ifdef lighting
 
-
-  #ifdef lighting
-
-
-  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
-
-//  vec3 lightDir = normalize(shadowDirection -1.*vPosition);
-//  float cosTheta = dot(vNormal, shadowDirection);
-
-
-
-//  vec3 fragmentDepth = vShadowCoord.xyz;
-//  float shadowAcneRemover = 0.00007;
-//  fragmentDepth.z -= shadowAcneRemover;
-  float amountInLight = 0.0;
-//  int x = 0;
-//  int y = 0;
+//  float amountInLight = 0.0;
+  int x = 0;
+  int y = 0;
 //
 ////  for (int x = -1; x <= 1; x++) {
 ////    for (int y = -1; y <= 1; y++) {
-//      float texelDepth = decodeFloat(texture2D(shadowMap, vShadowCoord.xy + vec2(x, y) * texelSize));
+  float texelDepth = decodeFloat(texture2D(shadowMap, vShadowCoord.xy + vec2(x, y) * texelSize));
 //      if (vShadowCoord.z < 0.26) {
 //        amountInLight += 1.0;
 ////      }
@@ -201,10 +141,15 @@ void main () {
 //  }
 //  amountInLight /= 1.0;
 
-  vColorCorrection = amountInLight;
-  vColorCorrection = aColorCorrection; //1.-abs(sin(aParticle)) * .2;
+//  vColorCorrection = amountInLight;
+  vColorCorrection = (texelDepth >  .5) ? 0. : 1.; //aColorCorrection; //1.-abs(sin(aParticle)) * .2;
+//  vColorCorrection = aColorCorrection;
+
 
 #endif// lighting
+
+
+  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 
 }
 

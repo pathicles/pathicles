@@ -1,50 +1,50 @@
 /* eslint-env browser */
 <template lang="pug">
-.pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
-  .debug.debug-only {{vp}}
-  .canvas-container(ref="canvasContainer")
-    canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-    <!--  .scene-backgrounds    -->
-    <!-- .scene-background(v-for='(scene, sceneIndex) in story.scenes'-->
-    <!--        :style="scene.image ? {'background-image': 'url(' + scene.image  + ')'} : {}" :class="'pathicles-story__scene-background--' + sceneIndex") &nbsp;-->
+  .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
+    .debug.debug-only {{vp}}
+    .canvas-container(ref="canvasContainer")
+      canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+      <!--  .scene-backgrounds    -->
+      <!-- .scene-background(v-for='(scene, sceneIndex) in story.scenes'-->
+      <!--        :style="scene.image ? {'background-image': 'url(' + scene.image  + ')'} : {}" :class="'pathicles-story__scene-background--' + sceneIndex") &nbsp;-->
 
-    <!--    .scene-captions-->
-    <!--      .scene-caption(-->
-    <!--        v-for='(scene, sceneIndex) in story.scenes'-->
-    <!--        :data-scene="sceneIndex")-->
-    <!--        .scene-caption-header-->
-    <!--          .scene-caption-title-->
-    <!--            span.pathicles(v-html='scene.caption_title')-->
-    <!--          .scene-caption-body-->
-    <!--            p(v-html='scene.body')-->
-  .scenes
-    .scene(
-      v-for='(scene, s) in story.scenes'
-      :id="'scrolly-story__scene--' + s"
-      :style="{height: scene.duration * 100 + 'vh'}"
-      :class="scene.type"
-      v-bind:key="'scene-' + s"
-      :data-scene="s"
-      :data-active="s === activeScene"
-      :data-status="(s === activeScene) ? 'present' : (s < activeScene) ? 'past' : 'future'")
-      .scene-content-wrapper.options(v-if="scene.type==='options'" )
-        <!--        .option(slot-key="option-1")-->
-        <!--        .option(slot-key="option-2")-->
-        <!--        .option(slot-key="option-3")-->
-      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity2: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
-        .scene-main
-          .title(:data-index="scene.scene_index")
-            span.pathicles(v-if="scene.title" v-html='scene.title')
-          .subtitle(v-if="scene.subtitle_1_1")
-            span.pathicles(v-html='scene.subtitle_1_1')
-          .subtitle(v-if="scene.subtitle_1_2")
-            span.pathicles(v-html='scene.subtitle_1_2')
-          .body
-            p(v-html='scene.body')
+      <!--    .scene-captions-->
+      <!--      .scene-caption(-->
+      <!--        v-for='(scene, sceneIndex) in story.scenes'-->
+      <!--        :data-scene="sceneIndex")-->
+      <!--        .scene-caption-header-->
+      <!--          .scene-caption-title-->
+      <!--            span.pathicles(v-html='scene.caption_title')-->
+      <!--          .scene-caption-body-->
+      <!--            p(v-html='scene.body')-->
+    .scenes
+      .scene(
+        v-for='(scene, s) in story.scenes'
+        :id="'scrolly-story__scene--' + s"
+        :style="{height: scene.duration * 100 + 'vh'}"
+        :class="scene.type"
+        v-bind:key="'scene-' + s"
+        :data-scene="s"
+        :data-active="s === activeScene"
+        :data-status="(s === activeScene) ? 'present' : (s < activeScene) ? 'past' : 'future'")
+        .scene-content-wrapper.options(v-if="scene.type==='options'" )
+          <!--        .option(slot-key="option-1")-->
+          <!--        .option(slot-key="option-2")-->
+          <!--        .option(slot-key="option-3")-->
+        .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity2: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
+          .scene-main
+            .title(:data-index="scene.scene_index")
+              span.pathicles(v-if="scene.title" v-html='scene.title')
+            .subtitle(v-if="scene.subtitle_1_1")
+              span.pathicles(v-html='scene.subtitle_1_1')
+            .subtitle(v-if="scene.subtitle_1_2")
+              span.pathicles(v-html='scene.subtitle_1_2')
+            .body
+              p(v-html='scene.body')
 </template>
 
 <script>
-import { watchViewport, unwatchViewport, getViewportState } from 'tornis'
+import { watchViewport, unwatchViewport } from 'tornis'
 
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
@@ -148,6 +148,18 @@ export default {
     scrollFactor: {
       type: Number,
       default: 1
+    },
+    maxScreenWidth: {
+      type: Number,
+      default: 1000
+    },
+    maxScreenHeight: {
+      type: Number,
+      default: 1000
+    },
+    maxPixelRatio: {
+      type: Number,
+      default: 2
     }
   },
   data: () => {
@@ -160,12 +172,14 @@ export default {
       vp: null,
       cameraMode: 'guided',
       viewRange: [0, 0],
-      activeScene: 0,
-      maxPixelRatio: 2
+      activeScene: 0
     }
   },
 
   mounted() {
+    this.screenWidth = window.innerWidth
+    this.screenHeight = window.innerHeight
+
     this.story.scenes.forEach((scene) => {
       scene.duration =
         scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
@@ -209,17 +223,17 @@ export default {
 
     watchViewport(this.handleViewportChange)
 
-    this.reglInstance = new ReglViewerInstance({
-      canvas: this.$refs.canvas,
-      pixelRatio: this.pixelRatio,
-      control: {
-        viewRange: this.viewRange,
-        cameraMode: this.cameraMode,
-        scenes: this.story.scenes
-      }
-    })
     this.$nextTick(() => {
       this.storyHeight = this.$refs.scrollContainer.clientHeight
+      this.reglInstance = new ReglViewerInstance({
+        canvas: this.$refs.canvas,
+        pixelRatio: this.pixelRatio,
+        control: {
+          viewRange: this.viewRange,
+          cameraMode: this.cameraMode,
+          scenes: this.story.scenes
+        }
+      })
     })
   },
 
@@ -227,17 +241,23 @@ export default {
     pixelRatio() {
       return !window || Math.min(this.maxPixelRatio, window.devicePixelRatio)
     },
+    width() {
+      return Math.min(this.screenWidth, this.maxScreenWidth)
+    },
+    height() {
+      return Math.min(this.screenHeight, this.maxScreenHeight)
+    },
     canvasStyles() {
       return {
-        width: this.screenWidth + 'px',
-        height: this.screenHeight + 'px'
+        width: this.width + 'px',
+        height: this.height + 'px'
       }
     },
     canvasWidth() {
-      return this.screenWidth * this.pixelRatio
+      return this.width * this.pixelRatio
     },
     canvasHeight() {
-      return this.screenHeight * this.pixelRatio
+      return this.height * this.pixelRatio
     }
   },
   unmounted() {

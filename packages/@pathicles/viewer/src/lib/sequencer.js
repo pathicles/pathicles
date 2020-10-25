@@ -11,7 +11,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.presetName = scene.preset
     scene.preset = config(scene.preset)
 
-    scene.particleCount = scene.preset.model.emitter.particleCount
+    scene.particleCount = 128 //scene.preset.model.emitter.particleCount
     scene.bufferLength = scene.preset.model.bufferLength || 128
     scene.position = [
       createVariableTexture(regl, scene.particleCount, scene.bufferLength)

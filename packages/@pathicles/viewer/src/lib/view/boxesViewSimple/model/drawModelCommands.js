@@ -5,44 +5,35 @@ import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
 
-function clip(value, min, max) {
-  return Math.min(Math.max(value, min), max)
-}
-
 export default function (regl, { variables, model, view }, shadow) {
   const geometry = createCube()
-
-  // const debleeder = [0.1, .99]
-  // geometry.uvs = geometry.uvs.map(([u, v]) => [debleeder[u], debleeder[v]])
-
-  Math.clip = function (number, min, max) {
-    return Math.max(min, Math.min(number, max))
-  }
 
   let modelMatrix = identity([])
 
   const initialParticleDistances = Array(model.particleCount)
     .fill(0)
     .map((_, i) => {
-      const d = Math.sqrt(
-        Math.pow(
-          variables.initialData.fourPositions[i * 4] -
-            variables.initialData.emitterPosition[0],
-          2
-        ) +
-          Math.pow(
-            variables.initialData.fourPositions[i * 4 + 1] -
-              variables.initialData.emitterPosition[1],
-            2
-          ) +
-          Math.pow(
-            variables.initialData.fourPositions[i * 4 + 2] -
-              variables.initialData.emitterPosition[2],
-            2
-          )
+      return (
+        (variables.initialData &&
+          Math.sqrt(
+            Math.pow(
+              variables.initialData.fourPositions[i * 4] -
+                variables.initialData.emitterPosition[0],
+              2
+            ) +
+              Math.pow(
+                variables.initialData.fourPositions[i * 4 + 1] -
+                  variables.initialData.emitterPosition[1],
+                2
+              ) +
+              Math.pow(
+                variables.initialData.fourPositions[i * 4 + 2] -
+                  variables.initialData.emitterPosition[2],
+                2
+              )
+          )) ||
+        0
       )
-
-      return d
     })
 
   const maxParticleDistance = Math.max(...initialParticleDistances)
@@ -50,7 +41,6 @@ export default function (regl, { variables, model, view }, shadow) {
     (d) => d / maxParticleDistance
   )
 
-  // console.log([...colorCorrection].sort())
   const command = (mode) => {
     return regl({
       depth: true,

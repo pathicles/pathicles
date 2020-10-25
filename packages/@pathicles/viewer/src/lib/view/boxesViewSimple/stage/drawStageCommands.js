@@ -42,7 +42,7 @@ export default function (regl, view, shadow) {
 
         uOffset: [0, view.stageGrid.y, 0],
         // uResolution: [view.stageGrid.size, view.stageGrid.size],
-        ...(mode === 'lighting' && { shadowMap: shadow.fbo })
+        ...(mode === 'lighting' && { shadowMap: shadow.fboBlurred })
       },
       vert: [
         `#define ${mode} 1`,

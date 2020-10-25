@@ -5,7 +5,7 @@ import saveCanvas from './saveCanvas'
 const onDocumentKeyDown = (app) => (event) => {
   event.stopPropagation()
   // event.preventDefault()
-  const delta = 0.01
+  const delta = -0.005
   if (event.shiftKey) {
     switch (event.code) {
       case 'ArrowLeft':

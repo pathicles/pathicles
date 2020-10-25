@@ -22,24 +22,18 @@ export default function (regl, options) {
   const distance = Math.sqrt(
     Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2)
   )
-  // let theta = Math.atan2(d[1], d[0])
-  // let phi = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
-  // let phi = (d[0] ? Math.atan2(d[2] / d[0]) : 0) || 0
 
   let phi = Math.atan2(d[1], d[0])
 
-  //console.log(options)
   let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
   theta -= d[0] < 0 ? Math.PI : 0
-
-  console.log({ phi, theta })
 
   // if (d[1] < 0) phi = -phi // + Math.PI
   const cameraOptions = Object.assign({}, options, {
     fovY: options.fovY,
     zoomDecayTime: 0,
-    rotationDecayTime: 0,
-    panDecayTime: 0,
+    rotationDecayTime: 50,
+    panDecayTime: 50,
     distance,
     // zoomAboutCursor: false,
     // rotationCenter: center,
