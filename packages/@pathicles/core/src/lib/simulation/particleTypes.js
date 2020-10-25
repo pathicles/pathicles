@@ -4,8 +4,8 @@ const PHOTON = {
   charge__qe: 0,
   chargeMassRatio__Ckg_1: 0,
   id: 0,
-  color: [0.92, 0.75, 0.0],
-  icolor: [237, 197, 0]
+  color: [0.92, 0.75, 0.0]
+  // icolor: [237, 197, 0]
 }
 const ELECTRON = {
   name: 'ELECTRON',
@@ -13,8 +13,8 @@ const ELECTRON = {
   chargeMassRatio__Ckg_1: -1.75882004556243e11,
   charge__qe: -1,
   id: 1,
-  color: [0.12, 0.45, 0.65],
-  icolor: [33, 116, 168]
+  color: [0.12, 0.45, 0.65]
+  // icolor: [33, 116, 168]
 }
 const POSITRON = {
   name: 'POSITRON',
@@ -22,8 +22,8 @@ const POSITRON = {
   chargeMassRatio__Ckg_1: 1.75882004556243e11,
   charge__qe: 1,
   id: 2,
-  color: [0.22, 0.9, 0.9],
-  icolor: [133, 116, 168]
+  color: [0.22, 0.9, 0.9]
+  // icolor: [133, 116, 168]
 }
 const PROTON = {
   name: 'PROTON',
@@ -31,8 +31,8 @@ const PROTON = {
   charge__qe: 1,
   chargeMassRatio__Ckg_1: 9.57883323113770929296814695637e7,
   id: 3,
-  color: [0.77, 0.2, 0.2],
-  icolor: [197, 50, 40]
+  color: [0.77, 0.2, 0.2]
+  // icolor: [197, 50, 40]
 }
 
 const LIST = [PHOTON, ELECTRON, POSITRON, PROTON]

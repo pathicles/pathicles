@@ -186,6 +186,10 @@ export default function (regl, { variables, model }) {
             gl_FragColor = push_${variableName}(particleIndex, currentBufferHead, previousBufferHead);
           } else {
             gl_FragColor = get_${variableName}(particleIndex, bufferIndex);
+
+            gl_FragColor = vec4(rgbaFloatChannel);
+
+
           }
         }
         `

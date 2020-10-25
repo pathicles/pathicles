@@ -6,7 +6,7 @@ const {
   particleTypesArrayFromDescriptor,
   betaFromGamma,
   createParticleCollection
-} = require('./variables')
+} = require('./pathicles.initialize.js')
 
 describe('particleTypesArrayFromDescriptor', () => {
   it('"PROTON"', () => {

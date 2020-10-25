@@ -2,7 +2,7 @@
 import { ortho, perspective, lookAt } from 'gl-mat4'
 
 export const SHADOW_MAP_SIZE = 1024
-export const TEXEL_SIZE = 0.5
+export const TEXEL_SIZE = 0.01
 
 export class Shadow {
   constructor(regl, { position, size, filterRadius = 5 }) {

@@ -1,46 +1,46 @@
 /* eslint-env browser */
 <template lang="pug">
-  .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
-    .debug.debug-only {{vp}}
-    .canvas-container(ref="canvasContainer")
-      canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-      <!--  .scene-backgrounds    -->
-      <!-- .scene-background(v-for='(scene, sceneIndex) in story.scenes'-->
-      <!--        :style="scene.image ? {'background-image': 'url(' + scene.image  + ')'} : {}" :class="'pathicles-story__scene-background--' + sceneIndex") &nbsp;-->
+.pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
+  .debug.debug-only {{vp}}
+  .canvas-container(ref="canvasContainer")
+    canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+    <!--  .scene-backgrounds    -->
+    <!-- .scene-background(v-for='(scene, sceneIndex) in story.scenes'-->
+    <!--        :style="scene.image ? {'background-image': 'url(' + scene.image  + ')'} : {}" :class="'pathicles-story__scene-background--' + sceneIndex") &nbsp;-->
 
-      <!--    .scene-captions-->
-      <!--      .scene-caption(-->
-      <!--        v-for='(scene, sceneIndex) in story.scenes'-->
-      <!--        :data-scene="sceneIndex")-->
-      <!--        .scene-caption-header-->
-      <!--          .scene-caption-title-->
-      <!--            span.pathicles(v-html='scene.caption_title')-->
-      <!--          .scene-caption-body-->
-      <!--            p(v-html='scene.body')-->
-    .scenes
-      .scene(
-        v-for='(scene, s) in story.scenes'
-        :id="'scrolly-story__scene--' + s"
-        :style="{height: scene.duration * 100 + 'vh'}"
-        :class="scene.type"
-        v-bind:key="'scene-' + s"
-        :data-scene="s"
-        :data-active="s === activeScene"
-        :data-status="(s === activeScene) ? 'present' : (s < activeScene) ? 'past' : 'future'")
-        .scene-content-wrapper.options(v-if="scene.type==='options'" )
-          <!--        .option(slot-key="option-1")-->
-          <!--        .option(slot-key="option-2")-->
-          <!--        .option(slot-key="option-3")-->
-        .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity2: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
-          .scene-main
-            .title(:data-index="scene.scene_index")
-              span.pathicles(v-if="scene.title" v-html='scene.title')
-            .subtitle(v-if="scene.subtitle_1_1")
-              span.pathicles(v-html='scene.subtitle_1_1')
-            .subtitle(v-if="scene.subtitle_1_2")
-              span.pathicles(v-html='scene.subtitle_1_2')
-            .body
-              p(v-html='scene.body')
+    <!--    .scene-captions-->
+    <!--      .scene-caption(-->
+    <!--        v-for='(scene, sceneIndex) in story.scenes'-->
+    <!--        :data-scene="sceneIndex")-->
+    <!--        .scene-caption-header-->
+    <!--          .scene-caption-title-->
+    <!--            span.pathicles(v-html='scene.caption_title')-->
+    <!--          .scene-caption-body-->
+    <!--            p(v-html='scene.body')-->
+  .scenes
+    .scene(
+      v-for='(scene, s) in story.scenes'
+      :id="'scrolly-story__scene--' + s"
+      :style="{height: scene.duration * 100 + 'vh'}"
+      :class="scene.type"
+      v-bind:key="'scene-' + s"
+      :data-scene="s"
+      :data-active="s === activeScene"
+      :data-status="(s === activeScene) ? 'present' : (s < activeScene) ? 'past' : 'future'")
+      .scene-content-wrapper.options(v-if="scene.type==='options'" )
+        <!--        .option(slot-key="option-1")-->
+        <!--        .option(slot-key="option-2")-->
+        <!--        .option(slot-key="option-3")-->
+      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity2: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
+        .scene-main
+          .title(:data-index="scene.scene_index")
+            span.pathicles(v-if="scene.title" v-html='scene.title')
+          .subtitle(v-if="scene.subtitle_1_1")
+            span.pathicles(v-html='scene.subtitle_1_1')
+          .subtitle(v-if="scene.subtitle_1_2")
+            span.pathicles(v-html='scene.subtitle_1_2')
+          .body
+            p(v-html='scene.body')
 </template>
 
 <script>
