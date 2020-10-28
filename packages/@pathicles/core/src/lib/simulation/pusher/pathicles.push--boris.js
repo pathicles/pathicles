@@ -223,7 +223,7 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
     variables.referencePoint =
       model.lattice.beamline.length &&
       model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
-    //console.log(channelsPerValueCount)
+    console.log(channelsPerValueCount)
     const jobs = Array(channelsPerValueCount)
       .fill(0)
       .map((_, i) => ({

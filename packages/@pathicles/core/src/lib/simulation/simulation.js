@@ -18,8 +18,6 @@ export class Simulation {
     this.configuration.simulate = true
     this.channelsPerValueCount = configuration.renderToFloat ? 4 : 4
 
-    console.log(this.channelsPerValueCount)
-
     this.RTTFloatType = configuration.simulateHalfFloat
       ? 'half float'
       : support.RTTFloatType
@@ -77,8 +75,6 @@ export class Simulation {
         type: 'float'
       })
     }
-
-    console.log(this.variables)
 
     this.model = {
       halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,
@@ -151,8 +147,7 @@ export class Simulation {
 
   prerender() {
     const batchSize = 1
-    const steps = Math.min(this.model.bufferLength, this.model.stepCount)
-    console.log(steps)
+    const steps = this.model.bufferLength
     const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize)
     if (steps % batchSize > 0) {
       batchSizes.push(steps % batchSize)
