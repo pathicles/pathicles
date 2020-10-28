@@ -25,7 +25,8 @@ export default function drawVariableTexture(
     attributes: { position: [2, 0, 0, 2, -2, -2] },
 
     uniforms: {
-      texture: ({ tick }, props) => variables[props.variableName][tick % 2]
+      texture: ({ tick }, props) =>
+        variables[props.variableName].buffers[tick % 2]
     },
 
     viewport: {

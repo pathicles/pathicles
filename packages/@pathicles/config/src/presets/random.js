@@ -12,7 +12,7 @@ export const random = {
     loops: 10,
 
     mode: 'framewise',
-    stepsPerTick: 8,
+    stepsPerTick: 1,
     stepCount: 128
   },
 
@@ -23,7 +23,7 @@ export const random = {
     emitter: {
       randomize: true,
       gamma: 2,
-      particleCount: 512,
+      particleCount: 128,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

@@ -112,7 +112,7 @@ export default function (regl, { variables, model, view }, shadow) {
         ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
 
         utParticleColorAndType: () => variables.particleColorsAndTypes,
-        utPositionBuffer: () => variables.position[0],
+        utPositionBuffer: () => variables.position.buffers[0],
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },

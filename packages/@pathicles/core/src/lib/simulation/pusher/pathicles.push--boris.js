@@ -1,11 +1,12 @@
 import { getters } from './getters.gsls.js'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
 
-export default function (regl, { variables, model }) {
+export default function (regl, { variables, model, channelsPerValueCount }) {
+  // console.log('channelsPerValueCount', channelsPerValueCount)
   const pushFactory = (variableName, bufferVariableName) =>
     regl({
       framebuffer: (context, props) =>
-        variables[variableName][props.pathiclesTick % 2],
+        variables[variableName].buffers[props.pathiclesTick % 2],
       primitive: 'triangles',
       elements: null,
       offset: 0,
@@ -21,6 +22,7 @@ export default function (regl, { variables, model }) {
         particleCount: model.particleCount,
         tick: regl.prop('pathiclesTick'),
         rgbaFloatChannel: regl.prop('rgbaFloatChannel'),
+        rgbaFloatChannels: regl.prop('rgbaFloatChannels'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -31,11 +33,11 @@ export default function (regl, { variables, model }) {
           variables.particleChargesMassesChargeMassRatios,
 
         utPositionBuffer: (context, props) =>
-          variables.position[(props.pathiclesTick + 1) % 2],
+          variables.position.buffers[(props.pathiclesTick + 1) % 2],
         utVelocityBuffer: (context, props) =>
           variableName === 'position'
-            ? variables.velocity[props.pathiclesTick % 2]
-            : variables.velocity[(props.pathiclesTick + 1) % 2]
+            ? variables.velocity.buffers[props.pathiclesTick % 2]
+            : variables.velocity.buffers[(props.pathiclesTick + 1) % 2]
       },
 
       vert: `
@@ -56,6 +58,7 @@ export default function (regl, { variables, model }) {
         uniform sampler2D utVelocityBuffer;
         uniform float tick;
         uniform float rgbaFloatChannel;
+        uniform float rgbaFloatChannels;
         uniform float halfDeltaTOverC;
         uniform float boundingBoxSize;
         uniform float particleCount;
@@ -179,7 +182,7 @@ export default function (regl, { variables, model }) {
 
           texelParticleIndex = floor(gl_FragCoord.x);
           texelBufferIndex = floor(gl_FragCoord.y/4.);
-          texelRgbaFloatChannel = fract(gl_FragCoord.y/4.)*4. - .5;
+          texelRgbaFloatChannel = (rgbaFloatChannels == 4.) ? fract(gl_FragCoord.y/4.)*4. - .5 : 0.;
 
           float nextBufferPosition = floor(mod(tick, bufferLength + 1.));
           float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
@@ -193,12 +196,24 @@ export default function (regl, { variables, model }) {
             // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
 
           }
+             // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
+             // gl_FragColor = vec4( texelRgbaFloatChannel );
+            // gl_FragColor = readVariable(${bufferVariableName}, texelParticleIndex, texelBufferIndex);
+
         }
         `
     })
 
-  const pushVelocity = pushFactory('velocity', 'utVelocityBuffer')
-  const pushPosition = pushFactory('position', 'utPositionBuffer')
+  const pushVelocity = pushFactory(
+    'velocity',
+    'utVelocityBuffer',
+    channelsPerValueCount
+  )
+  const pushPosition = pushFactory(
+    'position',
+    'utPositionBuffer',
+    channelsPerValueCount
+  )
 
   return () => {
     variables.tick.value++
@@ -208,14 +223,14 @@ export default function (regl, { variables, model }) {
     variables.referencePoint =
       model.lattice.beamline.length &&
       model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
-
-    const jobs = Array(1)
+    //console.log(channelsPerValueCount)
+    const jobs = Array(channelsPerValueCount)
       .fill(0)
       .map((_, i) => ({
         pathiclesTick: variables.tick.value,
-        rgbaFloatChannel: i
+        rgbaFloatChannel: i,
+        rgbaFloatChannels: channelsPerValueCount
       }))
-
     pushVelocity(jobs)
 
     pushPosition(jobs)

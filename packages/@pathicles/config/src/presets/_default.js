@@ -28,7 +28,7 @@ export default {
   renderToFloat: true,
 
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
 
     mode: 'framewise',
@@ -96,7 +96,7 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: false,
+    showTextures: true,
     texelSize: 1,
     viewRange: [0, 1],
 

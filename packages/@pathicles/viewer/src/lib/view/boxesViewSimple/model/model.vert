@@ -72,7 +72,7 @@ vec4 get_color(float p) {
   return texture2D(utParticleColorAndType, coords);
 }
 vec4 get_position(float p, float b) {
-  vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength) ;
+  vec2 coords = vec2(p + .5, b+.5) / vec2(particleCount, bufferLength) ;
   return texture2D(utPositionBuffer, coords);
 }
 

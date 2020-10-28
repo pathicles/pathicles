@@ -21,7 +21,7 @@ export class ReglSimulatorInstance {
       canvas,
       profile: this.config.profile,
       attributes: {
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         antialiasing: true
       },
       pixelRatio,

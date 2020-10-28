@@ -1,8 +1,6 @@
 import { createParticleCollection } from './variables'
 import { random, boundedRandom } from '../utils/random'
 
-const channelsPerBuffer = 4
-
 export default function (
   bufferLength,
   {
@@ -19,9 +17,9 @@ export default function (
   }
 ) {
   // boundingBoxSize = -1
-  let fourPositions = new Float32Array(particleCount * bufferLength * 4)
-  let fourVelocities = new Float32Array(particleCount * bufferLength * 4)
-  // let fourMomenta = new Float32Array(particleCount * bufferLength * 4)
+  let fourPositions = new Array(particleCount)
+  let fourVelocities = new Array(particleCount)
+  // let fourMomenta = new Float32Array(particleCount)
   let particleTypes = new Array(particleCount)
 
   if (randomize) {
@@ -36,31 +34,6 @@ export default function (
       fourVelocities[p * 4 + 3] = 0
       particleTypes[p] = Math.floor(random() * 4)
     }
-    fourPositions = new Float32Array(
-      [
-        ...fourPositions,
-        ...fourPositions,
-        ...fourPositions,
-        ...fourPositions
-      ].concat(
-        new Array(
-          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
-        ).fill(0)
-      )
-    )
-
-    fourVelocities = new Float32Array(
-      [
-        ...fourVelocities,
-        ...fourVelocities,
-        ...fourVelocities,
-        ...fourVelocities
-      ].concat(
-        new Array(
-          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
-        ).fill(0)
-      )
-    )
   } else {
     const particleCollection = createParticleCollection({
       particleCount: particleCount,
@@ -73,39 +46,10 @@ export default function (
       direction: direction,
       directionJitter: directionJitter
     })
-    fourPositions = new Float32Array(
-      [
-        ...particleCollection.fourPositions,
-        ...particleCollection.fourPositions,
-        ...particleCollection.fourPositions,
-        ...particleCollection.fourPositions
-      ].concat(
-        new Array(
-          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
-        ).fill(0)
-      )
-    )
 
-    fourVelocities = new Float32Array(
-      [
-        ...particleCollection.fourVelocities,
-        ...particleCollection.fourVelocities,
-        ...particleCollection.fourVelocities,
-        ...particleCollection.fourVelocities
-      ].concat(
-        new Array(
-          particleCount * (bufferLength - 1) * 4 * channelsPerBuffer
-        ).fill(0)
-      )
-    )
-    // fourMomenta = new Float32Array(
-    //   [
-    //     ...particleCollection.fourMomenta
-    //     // ...particleCollection.fourVelocities,
-    //     // ...particleCollection.fourVelocities,
-    //     // ...particleCollection.fourVelocities
-    //   ].concat(new Array(particleCount * (bufferLength - 1) * 4).fill(0))
-    // )
+    fourPositions = particleCollection.fourPositions
+
+    fourVelocities = particleCollection.fourVelocities
 
     particleTypes = particleCollection.particleTypes
   }

@@ -4,7 +4,7 @@ import initialize from './pathicles.initialize'
 import pushBoris from './pusher/pathicles.push--boris'
 
 import readData from './pathicles.variables.read'
-import { createBuffers, loadBuffers } from './utils/pingPongVariableBuffers'
+import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import drawVariableTexture from './pathicles.variables.drawTexture'
 import { Lattice } from './lattice/lattice'
 
@@ -16,6 +16,9 @@ export class Simulation {
 
     this.configuration = configuration
     this.configuration.simulate = true
+    this.channelsPerValueCount = configuration.renderToFloat ? 4 : 4
+
+    console.log(this.channelsPerValueCount)
 
     this.RTTFloatType = configuration.simulateHalfFloat
       ? 'half float'
@@ -32,20 +35,25 @@ export class Simulation {
       configuration.model.emitter
     ))
 
-    // console.log({ fourPositions })
-
     this.variables = {
       initialData: this.initialData,
-      position: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
-        fourPositions,
-        this.RTTFloatType
+      position: new VariableBuffers(
+        regl,
+        particleCount,
+        bufferLength,
+        this.RTTFloatType,
+        this.channelsPerValueCount,
+        fourPositions
       ),
-      velocity: loadBuffers(
-        createBuffers(regl, particleCount, bufferLength, this.RTTFloatType),
-        fourVelocities,
-        this.RTTFloatType
+      velocity: new VariableBuffers(
+        regl,
+        particleCount,
+        bufferLength,
+        this.RTTFloatType,
+        this.channelsPerValueCount,
+        fourVelocities
       ),
+
       tick: { value: 0 },
       referencePoint: [0, 0, 0],
       pingPong: 0,
@@ -70,6 +78,8 @@ export class Simulation {
       })
     }
 
+    console.log(this.variables)
+
     this.model = {
       halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,
       particleCount: this.initialData.particleCount,
@@ -91,14 +101,15 @@ export class Simulation {
     if (configuration.simulate) {
       this.push = pushBoris(this._regl, {
         variables: this.variables,
-        model: this.model
+        model: this.model,
+        channelsPerValueCount: this.channelsPerValueCount
       })
     }
 
     this.drawVariableTexture = drawVariableTexture(regl, {
       variables: this.variables,
       particleCount: this.model.particleCount,
-      bufferLength: this.model.bufferLength,
+      bufferLength: this.model.bufferLength * this.channelsPerValueCount,
       texelSize: configuration.view.texelSize,
       x0: 100,
       y0: configuration.view.texelSize
@@ -133,22 +144,15 @@ export class Simulation {
   }
 
   reset() {
-    loadBuffers(
-      this.variables.position,
-      this.initialData.fourPositions,
-      this.RTTFloatType
-    )
-    loadBuffers(
-      this.variables.velocity,
-      this.initialData.fourVelocities,
-      this.RTTFloatType
-    )
+    this.variables.position.load(this.initialData.fourPositions)
+    this.variables.velocity.load(this.initialData.fourVelocities)
     this.variables.tick.value = 0
   }
 
   prerender() {
     const batchSize = 1
-    const steps = this.model.bufferLength
+    const steps = Math.min(this.model.bufferLength, this.model.stepCount)
+    console.log(steps)
     const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize)
     if (steps % batchSize > 0) {
       batchSizes.push(steps % batchSize)

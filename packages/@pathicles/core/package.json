@@ -11,6 +11,8 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "ndarray": "^1.0.19",
+    "ndarray-unpack": "^1.0.0",
     "angle-normals": "^1.0.0",
     "byte-data": "^19.0.1",
     "detect-it": "^3.0.5",

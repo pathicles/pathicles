@@ -23,6 +23,7 @@ export default function readData(regl, { variables, model }) {
   const precision = 1000
   return {
     tick: variables.tick.value,
+    // data_: data,
     data: {
       position: Object.values(data.position[variables.tick.value % 2]).map(
         (d) => Math.floor(d * precision) / precision
