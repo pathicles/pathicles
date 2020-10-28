@@ -13,16 +13,16 @@ export const freePhoton = {
 
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 11
+    stepCount: 1
   },
 
   model: {
-    bufferLength: 11,
+    bufferLength: 2,
     tickDurationOverC: 0.1,
     emitter: {
       particleCount: 256,
       particleType: 'PHOTON',
-      bunchShape: 'SPIRAL_XY',
+      bunchShape: 'SQUARE',
       direction: [0, 0, 1],
       position: [0, 1, 0],
       directionJitter: [0, 0, 0],

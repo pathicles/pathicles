@@ -112,8 +112,8 @@ export default function (regl, { variables, model, view }) {
 
         vDiffuseColor = getParticleData(aParticle).color;
 
-        float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
-        vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
+        float bufferPosition = (aStep < 1.) ? bufferLength : aStep - 1.;
+        vec4 previousFourPosition = get_position(aParticle, bufferPosition);
         vec4 currentFourPosition = get_position(aParticle, aStep);
 
         mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));

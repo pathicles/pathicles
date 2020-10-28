@@ -26,7 +26,7 @@ export default function (regl, options) {
   let phi = Math.atan2(d[1], d[0])
 
   let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
-  theta -= d[0] < 0 ? Math.PI : 0
+  // theta -= d[0] < 0 ? Math.PI : 0
 
   // if (d[1] < 0) phi = -phi // + Math.PI
   const cameraOptions = Object.assign({}, options, {

@@ -124,11 +124,13 @@ export class ReglSimulatorInstance {
         if (this.config.view.camera.autorotate) {
           this.cameras['free'].rotate(-this.config.view.camera.dTheta, 0)
         }
+        const tick = this.simulation.variables.tick.value
         if (this.simulate) this.pathiclesRunner.next()
         this.cameras['free'].tick({})
         if (
           this.cameras['free'].state.dirty ||
-          this.pathiclesRunner.fsm.state === 'active'
+          tick !== this.simulation.variables.tick.value
+          // this.pathiclesRunner.fsm.state === 'active'
         ) {
           this.setCameraUniforms[this.control.cameraMode](
             {

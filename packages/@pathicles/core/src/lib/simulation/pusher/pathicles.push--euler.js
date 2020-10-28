@@ -24,48 +24,48 @@ export default function (regl, { variables, constants }) {
         uniform float particleCount;
         uniform float bufferLength;
         uniform float gravityConstant;
-        
+
         uniform float particleInteraction;
         uniform float electricFieldStrength;
         uniform float dipole_strength;
         uniform float dipole_minZ;
         uniform float dipole_maxZ;
-        
+
         uniform float quadrupole_1_strength;
         uniform float quadrupole_1_rotated;
         uniform float quadrupole_1_minZ;
         uniform float quadrupole_1_maxZ;
-        
+
         uniform float quadrupole_2_strength;
         uniform float quadrupole_2_rotated;
         uniform float quadrupole_2_minZ;
         uniform float quadrupole_2_maxZ;
-        
+
         float chargeMassRatio_unit_Ckg_1[4];
         float chargeMassRatioOverC_unit_Ckg_1[4];
         float charge_unit_qe[4];
         float mass_unit_eVc_2[4];
-        
+
         float ptype[${constants.model.particleCount}];
-        
+
         float getParticleType(float id) {
           for (int i=0; i < 2048; i++) {
               if (float(i) == id) return ptype[i];
           }
         }
-        
+
         struct ParticleData {
           float mass;
           float charge;
           float chargeMassRatio;
         };
-        
+
         ParticleData getParticleData(float p) {
-          
+
           float particleType = getParticleType(p);
-          
+
           ParticleData particleData = ParticleData(0., 0., 0.);
-          
+
           if (particleType == 1.) {
             particleData.mass = mass_unit_eVc_2[1];
             particleData.charge = charge_unit_qe[1];
@@ -81,11 +81,11 @@ export default function (regl, { variables, constants }) {
             particleData.charge = charge_unit_qe[3];
             particleData.chargeMassRatio = chargeMassRatio_unit_Ckg_1[3];
           }
-          
+
           return particleData;
         }
 
-        vec4 get_position(float p, float b) {
+        vec4 readVariable(utPositionBuffer, float p, float b) {
           vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
           return texture2D(utPositionBuffer, coords);
         }
@@ -93,26 +93,26 @@ export default function (regl, { variables, constants }) {
           vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
           return texture2D(utVelocityBuffer, coords);
         }
-        
+
         vec3 get_efield(vec3 position) {
-          
+
           vec3 E = vec3( 0., 0., electricFieldStrength );
           return E;
         }
-        
+
         vec3 get_bfield(vec3 position) {
-         
+
           vec3 B = vec3( 0.0 );
-          
+
           if (position.z > dipole_minZ && position.z < dipole_maxZ ) {
             B += vec3(0., dipole_strength, 0);
           }
-          
+
           if (position.z >  quadrupole_1_minZ && position.z < quadrupole_1_maxZ ) {
             float orientation = (quadrupole_1_rotated > 0.) ? -1. : 1.;
             B += quadrupole_1_strength * vec3(position.y, position.x, 0);
           }
-          
+
           if (position.z >  quadrupole_2_minZ && position.z < quadrupole_2_maxZ ) {
             float orientation = (quadrupole_2_rotated > 0.) ? -1. : 1.;
             B +=  quadrupole_2_strength * vec3( position.y, -position.x, 0);
@@ -137,18 +137,18 @@ export default function (regl, { variables, constants }) {
           mass_unit_eVc_2[1] = 510998.94;
           mass_unit_eVc_2[2] = 510998.94;
           mass_unit_eVc_2[3] = 938272081.;
-          
+
           ${particleTypeArrayDefintion(constants.model.particleTypes)};
         }
 
-        vec4 push_position(float p, float bufferHead, float previousBufferHead) {
+        vec4 push_position(float p, float bufferHead, float bufferPosition) {
 
-          vec4 previousValue = get_position(p, previousBufferHead);
+          vec4 previousValue = readVariable(utPositionBuffer, p, bufferPosition);
 
           vec3 previousPosition = previousValue.xyz;
           float previousTime  = previousValue.w;
 
-          vec3 previousVelocity = get_velocity(p, previousBufferHead).xyz;
+          vec3 previousVelocity = get_velocity(p, bufferPosition).xyz;
           vec3 currentVelocity = get_velocity(p, bufferHead).xyz;
 
           return vec4(
@@ -157,16 +157,16 @@ export default function (regl, { variables, constants }) {
         }
 
 
-        vec4 push_velocity(float p, float bufferHead, float previousBufferHead) {
-        
+        vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
+
           ParticleData particleData = getParticleData(p);
 
-          vec4 previousPosition = get_position(p, previousBufferHead);
+          vec4 previousPosition = readVariable(utPositionBuffer, p, bufferPosition);
 
-          vec4 previousVelocity = get_velocity(p, previousBufferHead);
+          vec4 previousVelocity = get_velocity(p, bufferPosition);
 
           vec3 intermediatePosition = previousPosition.xyz + previousVelocity.xyz  * halfDeltaT;
-          
+
           vec3 E = get_efield(intermediatePosition);
           vec3 B = get_bfield(intermediatePosition);
           vec3 G = vec3(0., -gravityConstant, 0.);
@@ -186,7 +186,7 @@ export default function (regl, { variables, constants }) {
             velocity.z *= -1.0;
           }
           #endif
-          
+
           velocity += particleData.mass * G * halfDeltaT;
 
           return vec4(velocity, previousVelocity.w);
@@ -200,12 +200,12 @@ export default function (regl, { variables, constants }) {
           p = floor(gl_FragCoord.x);
           b = floor(gl_FragCoord.y);
 
-          float currentBufferHead = floor(mod(tick, bufferLength));
-          float previousBufferHead = (b == 0.) ? bufferLength : b - 1.;
+          float nextBufferPosition = floor(mod(tick, bufferLength));
+          float bufferPosition = (b == 0.) ? bufferLength : b - 1.;
 
-          if (currentBufferHead == b) {
+          if (nextBufferPosition == b) {
 
-            gl_FragColor = push_${variableName}(p, currentBufferHead, previousBufferHead);
+            gl_FragColor = push_${variableName}(p, nextBufferPosition, bufferPosition);
 
           } else {
 

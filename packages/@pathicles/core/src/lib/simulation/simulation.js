@@ -32,7 +32,7 @@ export class Simulation {
       configuration.model.emitter
     ))
 
-    // console.log(fourPositions)
+    // console.log({ fourPositions })
 
     this.variables = {
       initialData: this.initialData,

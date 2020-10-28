@@ -9,6 +9,7 @@ uniform vec3 shadowDirection;
 uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
+uniform float stageSize;
 
 varying vec3 vShadowCoord;
 varying vec3 vPosition;
@@ -101,7 +102,7 @@ void main(void) {
   vec3 color=mix(mainColor, lineColor, grid);
   float opacity = clamp(grid, 0.2, gridControl.w*grid);
   float fogDistance = length(vPosition);
-  float fogAmount = smoothstep(10., 8., fogDistance);
+  float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
 
   gl_FragColor =vec4(color.rgb, fogAmount*opacity) + vec4(vec3(-.2*amountInLight), fogAmount);
 

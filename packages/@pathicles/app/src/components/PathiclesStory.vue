@@ -77,8 +77,8 @@ export default {
               preset: 'story-loop',
               data: 'story-electric.js',
               camera: {
-                position: [0, 1, 4],
-                target: [0, 1, 0]
+                eye: [-2.5, 2, -5],
+                center: [0, 1.5, 0]
               }
             }
           },
@@ -94,8 +94,8 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                position: [-5, 1, 5],
-                target: [0, 1, 0]
+                eye: [-5, 1, 5],
+                center: [0, 1, 0]
               }
             }
           },
@@ -111,8 +111,8 @@ export default {
               preset: 'story-dipole',
               data: 'story-dipole.js',
               camera: {
-                position: [-7, 1, 0],
-                target: [0, 1, 0]
+                eye: [-7, 1, 0],
+                center: [0, 1, 0]
               }
             }
           },
@@ -127,18 +127,19 @@ export default {
               preset: 'story-quadrupole',
               data: 'story-quadrupole.js',
               camera: {
-                position: [6, 1, 4],
-                target: [0, 1, 0]
+                eye: [-4, 1.5, -3],
+                center: [0, 1.5, 0]
               }
             }
           },
           {
             type: 'options',
             pathicles: {
-              preset: 'story-empty',
+              preset: 'story-electric',
+              data: 'story-electric.js',
               camera: {
-                position: [1, 5, 0],
-                target: [-1, 0, 0]
+                eye: [-5, 1, 5],
+                center: [0, 1, 0]
               }
             }
           }
@@ -191,31 +192,31 @@ export default {
 
     this.story.scenes.forEach((scene, s) => {
       if (scene.pathicles && scene.pathicles.data) {
-        if (scene.pathicles.data === 'story-quadrupole.js')
+        if (scene.pathicles.data === 'story-quadrupole.js') {
           scene.data = () => storyQuadrupole().then((r) => r)
-        else if (scene.pathicles.data === 'story-dipole.js')
+        } else if (scene.pathicles.data === 'story-dipole.js') {
           scene.data = () => storyDipole().then((r) => r)
-        else scene.data = () => storyElectric().then((r) => r)
+        } else {
+          scene.data = () => storyElectric().then((r) => r)
+        }
       }
       scene.cameraSploints = {
-        position: scene.pathicles.camera
-          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.position)
+        eye: scene.pathicles.camera
+          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.eye)
           : [
               ...[0, 1].map(
-                () => this.story.scenes[s - 1].pathicles.camera.position
+                () => this.story.scenes[s - 1].pathicles.camera.eye
               ),
-              ...[2, 3].map(
-                () => this.story.scenes[s + 1].pathicles.camera.position
-              )
+              ...[2, 3].map(() => this.story.scenes[s + 1].pathicles.camera.eye)
             ],
-        target: scene.pathicles.camera
-          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.target)
+        center: scene.pathicles.camera
+          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.center)
           : [
               ...[0, 1].map(
-                () => this.story.scenes[s - 1].pathicles.camera.target
+                () => this.story.scenes[s - 1].pathicles.camera.center
               ),
               ...[2, 3].map(
-                () => this.story.scenes[s + 1].pathicles.camera.target
+                () => this.story.scenes[s + 1].pathicles.camera.center
               )
             ]
       }

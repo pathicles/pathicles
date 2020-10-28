@@ -3,10 +3,18 @@
 import { describe, it, expect } from '@jest/globals'
 
 const {
+  jitterPosition,
   particleTypesArrayFromDescriptor,
   betaFromGamma,
   createParticleCollection
-} = require('./pathicles.initialize.js')
+} = require('./variables')
+
+describe('jitterPosition', () => {
+  it('"0,0,0"', () => {
+    const jitteredPosition = jitterPosition([0, 0, 0], [0, 0, 0])
+    expect(jitteredPosition).toEqual([0, 0, 0])
+  })
+})
 
 describe('particleTypesArrayFromDescriptor', () => {
   it('"PROTON"', () => {

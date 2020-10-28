@@ -13,6 +13,7 @@ varying float vColorCorrection;
 
 uniform float ambientLightAmount;
 uniform float diffuseLightAmount;
+uniform float stageSize;
 
 uniform float pathicleWidth;
 uniform vec3 eye;
@@ -49,7 +50,7 @@ void main () {
     * (vec3(.5 * smoothstep(5., 0., length(vPosition-eye))));
 
   float fogDistance = length(vPosition);
-  float fogAmount = smoothstep(16., 15., fogDistance);
+  float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
 
   gl_FragColor =vec4(color.rgb, fogAmount);
 

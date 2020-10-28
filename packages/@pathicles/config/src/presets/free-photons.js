@@ -8,11 +8,11 @@ export const freePhotons = {
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 1,
 
-    mode: 'framewise',
-    stepsPerTick: 8,
+    mode: 'stepwise',
+    stepsPerTick: 1,
     stepCount: 200
   },
 

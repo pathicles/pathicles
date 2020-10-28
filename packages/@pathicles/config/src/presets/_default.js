@@ -29,7 +29,7 @@ export default {
 
   runner: {
     prerender: false,
-    loops: 1,
+    loops: 0,
 
     mode: 'framewise',
     stepsPerTick: 4,
@@ -46,8 +46,8 @@ export default {
       randomize: false,
 
       // "row", "column", "cross", "square", "disc"
-      bunchShape: 'square',
-      particleCount: 256,
+      bunchShape: 'COLUMN',
+      particleCount: 128,
       particleSeparation: 0.1,
       gamma: 0,
       position: [0, 0, 0],
@@ -79,7 +79,7 @@ export default {
 
     stageGrid: {
       y: 0,
-      size: 20
+      size: 18
       // dark: 1,
       // light: 0.8
     },
@@ -92,7 +92,7 @@ export default {
 
     pathicleRelativeGap: 4,
     pathicleRelativeHeight: 8,
-    pathicleWidth: 0.001,
+    pathicleWidth: 0.002,
 
     showAxes: false,
     showVignette: true,

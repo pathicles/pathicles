@@ -13,26 +13,22 @@ export default function (regl, { variables, model, view }, shadow) {
   const initialParticleDistances = Array(model.particleCount)
     .fill(0)
     .map((_, i) => {
-      return (
-        (variables.initialData &&
-          Math.sqrt(
-            Math.pow(
-              variables.initialData.fourPositions[i * 4] -
-                variables.initialData.emitterPosition[0],
-              2
-            ) +
-              Math.pow(
-                variables.initialData.fourPositions[i * 4 + 1] -
-                  variables.initialData.emitterPosition[1],
-                2
-              ) +
-              Math.pow(
-                variables.initialData.fourPositions[i * 4 + 2] -
-                  variables.initialData.emitterPosition[2],
-                2
-              )
-          )) ||
-        0
+      return Math.sqrt(
+        Math.pow(
+          variables.initialData.fourPositions[i * 4] -
+            variables.initialData.emitterPosition[0],
+          2
+        ) +
+          Math.pow(
+            variables.initialData.fourPositions[i * 4 + 1] -
+              variables.initialData.emitterPosition[1],
+            2
+          ) +
+          Math.pow(
+            variables.initialData.fourPositions[i * 4 + 2] -
+              variables.initialData.emitterPosition[2],
+            2
+          )
       )
     })
 
@@ -106,6 +102,7 @@ export default function (regl, { variables, model, view }, shadow) {
 
       uniforms: {
         ...shadow.uniforms,
+        stageSize: view.stageGrid.size,
 
         ...(mode === 'shadow' && {
           projection: shadow.shadowProjectionMatrix,

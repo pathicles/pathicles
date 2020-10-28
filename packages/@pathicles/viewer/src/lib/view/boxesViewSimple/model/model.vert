@@ -75,6 +75,32 @@ vec4 get_position(float p, float b) {
   vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength) ;
   return texture2D(utPositionBuffer, coords);
 }
+
+vec4 readVariable(sampler2D tex, float p, float b) {
+
+  return get_position(p,b);
+  float x = texture2D(tex,
+  vec2(p + particleCount * 0., b) /
+  vec2(particleCount, bufferLength)).x;
+
+  float y = texture2D(tex,
+  vec2(p + particleCount * 0., b) /
+  vec2(particleCount, bufferLength)).y;
+
+  float z = texture2D(tex,
+  vec2(p + particleCount * 1., b) /
+  vec2(particleCount, bufferLength)).z;
+
+  float w = texture2D(tex,
+  vec2(p + particleCount * 0., b) /
+  vec2(particleCount, bufferLength)).w;
+
+  return vec4(x, y, z, w);
+}
+
+
+
+
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition) {
 
   float undefinedBuffer = (currentFourPosition.w == 0. || previousFourPosition.w > currentFourPosition.w) ? 1.0 : 0.0;
@@ -94,6 +120,11 @@ void main () {
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
+
+  previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
+
+
+
   vec4 currentFourPosition = get_position(aParticle, aStep);
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
@@ -103,7 +134,7 @@ void main () {
 #endif
 
 #ifdef shadow
-  vScale = vec3(pathicleWidth*10., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
+  vScale = vec3(pathicleWidth*10., pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - 0.*pathicleGap);
 #endif
 
   vec3 scaledPosition = aPosition * vScale;
@@ -143,7 +174,7 @@ void main () {
 
 //  vColorCorrection = amountInLight;
   vColorCorrection = (texelDepth >  .5) ? 0. : 1.; //aColorCorrection; //1.-abs(sin(aParticle)) * .2;
-//  vColorCorrection = aColorCorrection;
+  vColorCorrection = aColorCorrection;
 
 
 #endif// lighting

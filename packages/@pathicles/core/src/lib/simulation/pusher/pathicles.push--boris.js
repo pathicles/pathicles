@@ -2,7 +2,7 @@ import { getters } from './getters.gsls.js'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
 
 export default function (regl, { variables, model }) {
-  const pushFactory = (variableName) =>
+  const pushFactory = (variableName, bufferVariableName) =>
     regl({
       framebuffer: (context, props) =>
         variables[variableName][props.pathiclesTick % 2],
@@ -20,6 +20,7 @@ export default function (regl, { variables, model }) {
         bufferLength: model.bufferLength,
         particleCount: model.particleCount,
         tick: regl.prop('pathiclesTick'),
+        rgbaFloatChannel: regl.prop('rgbaFloatChannel'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -49,11 +50,12 @@ export default function (regl, { variables, model }) {
         //#extension WEBGL_color_buffer_float : enable
 
         const highp float c = 2.99792458e+8;
-        uniform sampler2D utParticleColorAndType;
+        //uniform sampler2D utParticleColorAndType;
         uniform sampler2D utParticleChargesMassesChargeMassRatios;
         uniform sampler2D utPositionBuffer;
         uniform sampler2D utVelocityBuffer;
         uniform float tick;
+        uniform float rgbaFloatChannel;
         uniform float halfDeltaTOverC;
         uniform float boundingBoxSize;
         uniform float particleCount;
@@ -81,7 +83,7 @@ export default function (regl, { variables, model }) {
           //     if ( p == float(p2) ) { continue; }
           //       ParticleData particleData2 = getParticleData(float(p2));
           //     if (particleData2.charge > 0.) {
-          //       vec3 position2 = get_position(float(p2), previousBufferHead).xyz;
+          //       vec3 position2 = readVariable(utPositionBuffer, float(p2), bufferPosition).xyz;
           //       // float particleCharge2 = 1.; // POSITRON / PROTRON
           //       // if (particleType == 1.) { // ELECTRON
           //       //     particleCharge2 = charge_unit_qe[1];
@@ -111,42 +113,42 @@ export default function (regl, { variables, model }) {
            return B;
         }
 
-        vec4 push_position(float p, float bufferHead, float previousBufferHead) {
+        vec4 push_position(float p, float bufferHead, float bufferPosition) {
 
           ParticleData particleData = getParticleData(p);
-          vec4 previousValue = get_position(p, previousBufferHead);
+          vec4 fourPosition = readVariable(utPositionBuffer, p, bufferPosition);
 
-          vec3 previousPosition = previousValue.xyz;
-          float previousTime  = previousValue.w;
+          vec3 position = fourPosition.xyz;
+          float time  = fourPosition.w;
 
-          vec3 previousMomentum = get_velocity(p, previousBufferHead).xyz;
-          vec3 currentMomentum = get_velocity(p, bufferHead).xyz;
+          vec3 fourMomentum = readVariable(utVelocityBuffer, p, bufferPosition).xyz;
+          vec3 nextMomentum = readVariable(utVelocityBuffer, p, bufferHead).xyz;
 
-          float nextTime = previousTime + 2. * halfDeltaTOverC;
+          float nextTime = time + 2. * halfDeltaTOverC;
 
           return (particleData.particleType < .1)
-            ? vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime)
-            : vec4(previousPosition + previousMomentum / sqrt(1. + dot(previousMomentum, previousMomentum)) * halfDeltaTOverC + currentMomentum / sqrt(1. + dot(currentMomentum, currentMomentum)) * halfDeltaTOverC, nextTime);
+            // photon
+            ? vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
+            // massive particles
+            : vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime);
         }
 
 
-        vec4 push_velocity(float p, float bufferHead, float previousBufferHead) {
+        vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
 
           ParticleData particleData = getParticleData(p);
           vec3 momentum;
 
+          vec4 fourPosition = readVariable(utPositionBuffer, p, bufferPosition);
+          vec4 fourVelocity = readVariable(utVelocityBuffer, p, bufferPosition);
+          vec3 velocity = fourVelocity.xyz;
+          float gamma = fourVelocity.w;
 
-
-          vec4 previous4Position = get_position(p, previousBufferHead);
-          vec4 previous4Velocity = get_velocity(p, previousBufferHead);
-          vec3 previousVelocity = previous4Velocity.xyz;
-          float previousGamma = previous4Velocity.w;
-
-          vec3 intermediatePosition = previous4Position.xyz + previousVelocity * halfDeltaTOverC;
+          vec3 intermediatePosition = fourPosition.xyz + velocity * halfDeltaTOverC;
           vec3 E = getE(intermediatePosition);
           vec3 B = getB(intermediatePosition);
 
-          momentum = previousVelocity;
+          momentum = velocity;
           if (particleData.particleType < .1) {
 
           } else {
@@ -168,35 +170,35 @@ export default function (regl, { variables, model }) {
             vec3 reflect = step(vec3(-boundingBoxSize), intermediatePosition) - step(vec3(boundingBoxSize), intermediatePosition);
             momentum *= 2. * reflect * reflect - 1.;
           }
-          return vec4( momentum, previous4Velocity.w );
+          return vec4( momentum, gamma );
         }
 
         void main () {
           initLatticeData();
-          float particleIndex, bufferIndex, rgbaFloatChannel;
+          float texelParticleIndex, texelBufferIndex, texelRgbaFloatChannel;
 
-          particleIndex = floor(gl_FragCoord.x);
-          bufferIndex = floor(gl_FragCoord.y/4.);
-          rgbaFloatChannel = fract(gl_FragCoord.y/4.)*4.;
+          texelParticleIndex = floor(gl_FragCoord.x);
+          texelBufferIndex = floor(gl_FragCoord.y/4.);
+          texelRgbaFloatChannel = fract(gl_FragCoord.y/4.)*4. - .5;
 
-          float currentBufferHead = floor(mod(tick, bufferLength + 1.));
-          float previousBufferHead = (bufferIndex == 0.) ? bufferLength : bufferIndex - 1.;
+          float nextBufferPosition = floor(mod(tick, bufferLength + 1.));
+          float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
 
-          if (currentBufferHead == bufferIndex) {
-            gl_FragColor = push_${variableName}(particleIndex, currentBufferHead, previousBufferHead);
+          if (nextBufferPosition == texelBufferIndex) {
+            gl_FragColor = push_${variableName}(texelParticleIndex, nextBufferPosition, bufferPosition);
+
           } else {
-            gl_FragColor = get_${variableName}(particleIndex, bufferIndex);
+            gl_FragColor = readVariable(${bufferVariableName}, texelParticleIndex, texelBufferIndex);
 
-            gl_FragColor = vec4(rgbaFloatChannel);
-
+            // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
 
           }
         }
         `
     })
 
-  const pushVelocity = pushFactory('velocity')
-  const pushPosition = pushFactory('position')
+  const pushVelocity = pushFactory('velocity', 'utVelocityBuffer')
+  const pushPosition = pushFactory('position', 'utPositionBuffer')
 
   return () => {
     variables.tick.value++
@@ -207,11 +209,15 @@ export default function (regl, { variables, model }) {
       model.lattice.beamline.length &&
       model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
-    pushVelocity({
-      pathiclesTick: variables.tick.value
-    })
-    pushPosition({
-      pathiclesTick: variables.tick.value
-    })
+    const jobs = Array(1)
+      .fill(0)
+      .map((_, i) => ({
+        pathiclesTick: variables.tick.value,
+        rgbaFloatChannel: i
+      }))
+
+    pushVelocity(jobs)
+
+    pushPosition(jobs)
   }
 }

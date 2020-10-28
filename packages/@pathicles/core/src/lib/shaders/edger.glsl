@@ -16,7 +16,7 @@ float edger(vec2 uv, vec3 boxScale, float edgeWidth, vec3 normal) {
   return clamp(edgeX+edgeY, 0., 1.);
 }
 
-  #pragma glslify: export(edger);
+#pragma glslify: export(edger);
 
 //
 //float edgerFeathered(vec2 uv, vec3 boxScale, float edgeWidth) {

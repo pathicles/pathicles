@@ -35,6 +35,8 @@ export default function (regl, view, shadow) {
       uniforms: {
         ...shadow.uniforms,
 
+        stageSize: view.stageGrid.size,
+
         ...(mode === 'shadow' && {
           projection: shadow.shadowProjectionMatrix,
           view: shadow.shadowViewMatrix

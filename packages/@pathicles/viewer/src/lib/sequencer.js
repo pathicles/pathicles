@@ -21,6 +21,24 @@ export default function (regl, scenes, stateVars, onStateChange) {
       data: Array(scene.particleCount * 4),
       shape: [scene.particleCount, 1, 4]
     })
+    scene.initialParticleDistances = regl.texture({
+      data: Array(scene.particleCount),
+      shape: [scene.particleCount, 1, 1]
+    })
+
+    const variables = (scene.variables = {
+      referencePoint: [0, 0, 0],
+      pingPong: 0,
+      tick: { value: scene.bufferLength },
+      position: scene.position,
+      particleColorsAndTypes: scene.particleColorsAndTypes,
+
+      initialData: {
+        // initialParticleDistances: scene.initialParticleDistances,
+        fourPositions: [],
+        emitterPosition: scene.preset.model.emitter.position
+      }
+    })
 
     if (scene.data) {
       scene.data().then(({ data }) => {
@@ -33,6 +51,13 @@ export default function (regl, scenes, stateVars, onStateChange) {
           format: 'rgba',
           data: new Float32Array(data.position.map((d) => d / 1))
         })
+
+        // if (variables.initialData.fourPositions) {
+        //   variables.initialData.fourPositions.set(
+        //     data.position.slice(0, scene.particleCount)
+        //   )
+        //   // console.log(variables.initialData.fourPositions)
+        // }
         scene.particleColorsAndTypes({
           data: data.particleTypes
             .map((p) => scene.preset.colors[p].concat(p))
@@ -41,14 +66,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
           type: 'float'
         })
       })
-    }
-
-    scene.variables = {
-      referencePoint: [0, 0, 0],
-      pingPong: 0,
-      tick: { value: scene.bufferLength },
-      position: scene.position,
-      particleColorsAndTypes: scene.particleColorsAndTypes
     }
 
     scene.model = {
@@ -75,13 +92,13 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene._t1_normalized = scene._t1 / scenes.duration
     t = scene._t1
     if (scene.cameraSploints)
-      if (scene.cameraSploints.position) {
+      if (scene.cameraSploints.eye) {
         scene.cameraPositionBSpline = (t) =>
-          bspline(t, 2, scene.cameraSploints.position)
+          bspline(t, 2, scene.cameraSploints.eye)
 
-        if (scene.cameraSploints.target) {
+        if (scene.cameraSploints.center) {
           scene.cameraTargetBSpline = (t) =>
-            bspline(t, 2, scene.cameraSploints.target)
+            bspline(t, 2, scene.cameraSploints.center)
         }
       }
   })
