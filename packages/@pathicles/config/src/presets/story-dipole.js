@@ -10,7 +10,7 @@ export const storyDipole = {
   },
 
   model: {
-    tickDurationOverC: 0.2,
+    // tickDurationOverC: 0.2,
     emitter: {
       particleType: 'ELECTRON ELECTRON',
       bunchShape: 'SPIRAL_XY',
@@ -33,7 +33,7 @@ export const storyDipole = {
         d: {
           type: LatticeElementTypes.SBEN,
           l: 10,
-          strength: 0.004
+          strength: 0.005
         }
       },
       beamline: ['l', 'd', 'l'],

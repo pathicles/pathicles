@@ -71,7 +71,14 @@ export default {
   view: {
     // lightPosition: [1, 5, 1],
 
-    lights: [{ position: [0, 10, 0], size: 10 }, { position: [-1, 5, -1] }],
+    lights: [
+      {
+        position: [0, 10, 0],
+        near: -10,
+        far: 10,
+        size: 10
+      }
+    ],
     ambientLightAmount: 0.3,
     diffuseLightAmount: 0.8,
 
@@ -118,8 +125,8 @@ export default {
       center: [0, 1, 0],
 
       fovY: (2 * Math.PI) / (360 / 35),
-      dTheta: 0.001,
-      autorotate: false,
+      dTheta: 0.01,
+      autorotate: true,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,
       // zoomAboutCursor: false,

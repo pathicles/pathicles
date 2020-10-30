@@ -13,11 +13,11 @@ export const freeElectron = {
 
     mode: 'framewise',
     stepsPerTick: 1,
-    stepCount: 5
+    stepCount: 6
   },
 
   model: {
-    bufferLength: 7,
+    bufferLength: 5,
     tickDurationOverC: 0.1,
     emitter: {
       particleCount: 1,
