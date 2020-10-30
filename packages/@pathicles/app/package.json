@@ -12,11 +12,11 @@
     "devPort": 9303
   },
   "dependencies": {
-    "detect-gpu": "^2.0.4",
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "@pathicles/viewer": "^0.1.0",
     "canvas-orbit-camera": "^1.0.2",
+    "detect-gpu": "^2.0.4",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
     "typeface-barlow": "^0.0.71",

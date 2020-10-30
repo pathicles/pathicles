@@ -14,7 +14,6 @@
     "devPort": 9002
   },
   "dependencies": {
-    "glsl-hash-blur": "^1.0.3",
     "@pathicles/config": "^0.1.0",
     "@pathicles/core": "^0.1.0",
     "b-spline": "^2.0.1",
@@ -25,6 +24,7 @@
     "gl-vec4": "^1.0.1",
     "glsl-atmosphere": "^2.0.0",
     "glsl-fog": "^0.0.1",
+    "glsl-hash-blur": "^1.0.3",
     "glsl-inverse": "^1.0.0",
     "glsl-look-at": "^1.0.0",
     "glsl-transpose": "^1.0.0",
@@ -61,7 +61,7 @@
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-eslint-bundle": "^5.0.2",
-    "rollup-plugin-glslify": "1.1.3",
+    "rollup-plugin-glslify": "^1.2.0",
     "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-require-context": "^1.0.1",
     "rollup-plugin-visualizer": "^4.1.1"
