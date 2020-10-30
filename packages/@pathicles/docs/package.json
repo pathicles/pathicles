@@ -1,0 +1,17 @@
+{
+  "name": "@pathicles/docs",
+  "license": "MIT",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "vitepress build",
+    "dev": "vitepress"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "vitepress": "^0.7.0",
+    "@typescript-eslint/parser": "^4.6.0"
+
+  }
+}

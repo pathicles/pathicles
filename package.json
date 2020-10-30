@@ -14,6 +14,7 @@
   },
   "workspaces": [
     "packages/@pathicles/core",
+    "packages/@pathicles/docs",
     "packages/@pathicles/prerendered",
     "packages/@pathicles/config",
     "packages/@pathicles/viewer",
@@ -21,14 +22,14 @@
   ],
   "scripts": {
     "build:app": "yarn workspace @pathicles/app run build",
-    "build:docs": "npx vitepress build packages/@pathicles/docs/src",
+    "build:docs": "yarn workspace @pathicles/docs run build",
     "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "build": "yarn run build:libs; yarn run build:app",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
     "dev": "npm-run-all  --parallel  dev:libs dev:app",
     "dev:app": "yarn workspace @pathicles/app run dev",
-    "dev:docs": "npx vitepress dev packages/@pathicles/docs/src",
+    "dev:docs": "yarn workspace @pathicles/docs run dev",
     "dev:libs": "lerna run --parallel --scope @pathicles/core --scope @pathicles/viewer --scope @pathicles/config dev",
     "lint-fix": "yarn workspaces run lint-fix",
     "prettier-packages": "npx prettier-package-json --write; lerna exec -- npx prettier-package-json --write",
@@ -42,18 +43,18 @@
     }
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
-    "conventional-changelog-cli": "2.0.31",
+    "conventional-changelog-cli": "^2.1.0",
+    "@typescript-eslint/parser": "^4.6.0",
+
     "dotenv": "^8.2.0",
-    "flatted": "^2.0.1",
-    "fs-extra-plus": "0.5.15",
+    "flatted": "^3.1.0",
+    "fs-extra-plus": "^0.5.19",
     "gh-pages": "^3.1.0",
     "jest": "^26.4.2",
-    "lerna": "^3.20.2",
-    "lint-staged": "9.5.0",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.5.0",
     "npm-run-all": "^4.1.5",
     "pkg-up": "^3.1.0",
-    "vitepress": "^0.6.0",
-    "wsrun": "^5.2.2"
+    "wsrun": "^5.2.4"
   }
 }
