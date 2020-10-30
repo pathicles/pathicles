@@ -25,7 +25,7 @@ export default {
       // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
       include: /node_modules/
     }),
-    glslify(),
+    glslify({ compress: false }),
     cleanup(),
     json(),
     bundleSize()

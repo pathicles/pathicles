@@ -16,7 +16,7 @@ export default {
     commonjs({
       include: /node_modules/
     }),
-    glslify(),
+    glslify({ compress: false }),
     cleanup(),
     bundleSize()
     // visualizer({ brotliSize: true, gzipSize: true })
