@@ -6,8 +6,8 @@ import json from '@rollup/plugin-json'
 import bundleSize from 'rollup-plugin-bundle-size'
 import { join } from 'path'
 import cleanup from 'rollup-plugin-cleanup'
-import progress from 'rollup-plugin-progress'
-import babel from '@rollup/plugin-babel'
+// import progress from 'rollup-plugin-progress'
+// import babel from '@rollup/plugin-babel'
 
 export default {
   input: join('src', 'index.js'),
@@ -16,9 +16,9 @@ export default {
     file: pkg.module
   },
   plugins: [
-    progress({
-      clearLine: true // default: true
-    }),
+    // progress({
+    //   clearLine: true // default: true
+    // }),
     // babel(),
     nodeResolve(),
     commonjs({

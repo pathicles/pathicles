@@ -3,7 +3,7 @@ import nodeResolve from '@rollup/plugin-node-resolve'
 import glslify from 'rollup-plugin-glslify'
 import bundleSize from 'rollup-plugin-bundle-size'
 import cleanup from 'rollup-plugin-cleanup'
-import visualizer from 'rollup-plugin-visualizer'
+// import visualizer from 'rollup-plugin-visualizer'
 
 export default {
   input: 'src/index.js',
@@ -18,8 +18,8 @@ export default {
     }),
     glslify(),
     cleanup(),
-    bundleSize(),
-    visualizer({ brotliSize: true, gzipSize: true })
+    bundleSize()
+    // visualizer({ brotliSize: true, gzipSize: true })
   ],
   external: ['debug', 'regl']
 }

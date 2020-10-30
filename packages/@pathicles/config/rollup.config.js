@@ -5,7 +5,7 @@ import nodeResolve from '@rollup/plugin-node-resolve'
 import bundleSize from 'rollup-plugin-bundle-size'
 import { join } from 'path'
 import cleanup from 'rollup-plugin-cleanup'
-import progress from 'rollup-plugin-progress'
+// import progress from 'rollup-plugin-progress'
 
 export default {
   input: join('src', 'index.js'),
@@ -14,9 +14,9 @@ export default {
     file: pkg.module
   },
   plugins: [
-    progress({
-      clearLine: true // default: true
-    }),
+    // progress({
+    //   clearLine: true // default: true
+    // }),
     babel({ babelHelpers: 'bundled' }),
     nodeResolve(),
     commonjs({
