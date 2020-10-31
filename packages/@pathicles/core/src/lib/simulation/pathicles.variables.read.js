@@ -4,18 +4,19 @@ export default function readData(regl, { variables, model }) {
     (key) => key === 'position' || key === 'velocity'
   )
 
-  variableNames.forEach((key) => {
-    data[key] = [
-      new Float32Array(model.particleCount * model.bufferLength * 4 * 4),
-      new Float32Array(model.particleCount * model.bufferLength * 4 * 4)
-    ]
-  })
+  const width = variables['position'].buffers[0].width
+  const height = variables['position'].buffers[0].height
 
   variableNames.forEach((variableName) => {
-    regl({ framebuffer: variables[variableName][0] })(() => {
+    data[variableName] = [
+      new Float32Array(width * height * 4),
+      new Float32Array(width * height * 4)
+    ]
+
+    regl({ framebuffer: variables[variableName].buffers[0] })(() => {
       regl.read({ data: data[variableName][0] })
     })
-    regl({ framebuffer: variables[variableName][1] })(() => {
+    regl({ framebuffer: variables[variableName].buffers[1] })(() => {
       regl.read({ data: data[variableName][1] })
     })
   })

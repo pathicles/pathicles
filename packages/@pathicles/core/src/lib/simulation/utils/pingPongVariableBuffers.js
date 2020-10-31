@@ -7,6 +7,7 @@ export class VariableBuffers {
     channelsPerValueCount,
     initialData
   ) {
+    // console.log(channelsPerValueCount)
     this.regl = regl
     this.particleCount = particleCount
     this.bufferLength = bufferLength

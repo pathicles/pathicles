@@ -4,6 +4,11 @@ export default function drawVariableTexture(
   regl,
   { variables, texelSize = 1, y0 = 0 }
 ) {
+  const width = variables['position'].buffers[0].width * texelSize
+  const height = variables['position'].buffers[0].height * texelSize
+
+  console.log(width, height)
+
   return regl({
     vert: `
       precision mediump float;
@@ -31,13 +36,11 @@ export default function drawVariableTexture(
 
     viewport: {
       x: (_, props) => {
-        return props.variableName === 'velocity'
-          ? (variables.initialData.particleCount + 1) * texelSize
-          : 0
+        return props.variableName === 'velocity' ? width + texelSize : 0
       },
       y: y0,
-      width: variables.initialData.particleCount * texelSize,
-      height: variables.initialData.bufferLength * texelSize
+      width,
+      height
     },
     depth: {
       enable: false

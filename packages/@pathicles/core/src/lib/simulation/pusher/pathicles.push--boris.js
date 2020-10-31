@@ -193,8 +193,6 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
           } else {
             gl_FragColor = readVariable(${bufferVariableName}, texelParticleIndex, texelBufferIndex);
 
-            // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
-
           }
              // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
              // gl_FragColor = vec4( texelRgbaFloatChannel );
@@ -223,7 +221,7 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
     variables.referencePoint =
       model.lattice.beamline.length &&
       model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
-    console.log(channelsPerValueCount)
+
     const jobs = Array(channelsPerValueCount)
       .fill(0)
       .map((_, i) => ({
@@ -231,8 +229,8 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         rgbaFloatChannel: i,
         rgbaFloatChannels: channelsPerValueCount
       }))
-    pushVelocity(jobs)
 
+    pushVelocity(jobs)
     pushPosition(jobs)
   }
 }

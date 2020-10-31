@@ -76,6 +76,8 @@ export class Simulation {
       })
     }
 
+    // console.log(this.variables)
+
     this.model = {
       halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,
       particleCount: this.initialData.particleCount,
