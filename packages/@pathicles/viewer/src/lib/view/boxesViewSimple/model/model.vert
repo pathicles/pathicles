@@ -14,6 +14,7 @@ mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
   );
 }
 
+
 attribute vec3 aPosition;
 
 attribute vec3 aNormal;
@@ -124,7 +125,6 @@ void main () {
   vec4 currentFourPosition = get_position(aParticle, aStep);
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-
 #ifdef lighting
   vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - currentFourPosition.xyz) - pathicleGap);
 #endif
@@ -155,23 +155,9 @@ void main () {
 
 #ifdef lighting
 
-//  float amountInLight = 0.0;
-  int x = 0;
-  int y = 0;
-//
-////  for (int x = -1; x <= 1; x++) {
-////    for (int y = -1; y <= 1; y++) {
-  float texelDepth = decodeFloat(texture2D(shadowMap, vShadowCoord.xy + vec2(x, y) * texelSize));
-//      if (vShadowCoord.z < 0.26) {
-//        amountInLight += 1.0;
-////      }
-////    }
-//  }
-//  amountInLight /= 1.0;
 
-//  vColorCorrection = amountInLight;
-  vColorCorrection = (texelDepth >  .5) ? 0. : 1.; //aColorCorrection; //1.-abs(sin(aParticle)) * .2;
   vColorCorrection = aColorCorrection;
+
 
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 

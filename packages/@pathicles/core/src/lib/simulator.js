@@ -146,14 +146,15 @@ export class ReglSimulatorInstance {
               })
 
               if (this.config.view.showTextures) {
-                this.simulation.drawVariableTexture({
-                  variableName: 'position'
-                })
-                this.simulation.drawVariableTexture({
-                  variableName: 'velocity'
-                })
+                // this.simulation.drawVariableTexture({
+                //   variableName: 'position'
+                // })
+                // this.simulation.drawVariableTexture({
+                //   variableName: 'velocity'
+                // })
                 this.view.shadow.drawFbo()
               }
+              // window.shadow = this.view.shadow.readFBO()
             }
           )
         }

@@ -47,6 +47,8 @@ const onDocumentKeyDown = (app) => (event) => {
   } else if (keyCode === 68) {
     // d for dump
     console.log(app.simulation.dump())
+    console.log(app.view.shadow.readFBO())
+    window.shadow = app.view.shadow.readFBO()
   } else if (keyCode === 77) {
     // m for mode
     app.pathiclesRunner.toggleMode()

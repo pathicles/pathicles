@@ -129,6 +129,8 @@ export default function (regl, { variables, model, view }, shadow) {
             0
           ])
         }
+        // view: shadow.shadowViewMatrix,
+        // project: shadow.shadowProjectionMatrix
       },
       ...(mode === 'shadow' && {
         framebuffer: shadow.fbo

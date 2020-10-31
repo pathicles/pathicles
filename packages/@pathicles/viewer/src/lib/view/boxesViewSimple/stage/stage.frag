@@ -22,6 +22,9 @@ varying vec2 vUv;
 
 
 float blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
+
+
+  return decodeFloat(texture2D(image, uv));
   vec2 off1 = vec2(1.411764705882353) * direction;
   vec2 off2 = vec2(3.2941176470588234) * direction;
   vec2 off3 = vec2(5.176470588235294) * direction;
@@ -80,17 +83,17 @@ void main(void) {
   vec3 lightDir = normalize(shadowDirection - vPosition);
   float cosTheta = dot(vNormal, lightDir);
 
-  vec3 fragmentDepth = vShadowCoord.xyz;
-  float shadowAcneRemover = 0.07;
-  fragmentDepth.z -= shadowAcneRemover;
+  float shadowAcneRemover = 1.7;
 
   float amountInLight = 0.0;
 
-  amountInLight = blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.));
+  //  amountInLight = (blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.)) - vShadowCoord.z > .001) ? 1. : 0.;
+  amountInLight = decodeFloat(texture2D(shadowMap, vShadowCoord.xy));
+//  (texture2D(shadowMap, vShadowCoord.xy).r - vShadowCoord.z < .001) ? 1. : 0.;
 
-  if (fragmentDepth.x < 0. || fragmentDepth.x > 1.0 || fragmentDepth.y < 0. || fragmentDepth.y > 1.0) {
-    amountInLight = 0.;
-  }
+  //  if (fragmentDepth.x < 0. || fragmentDepth.x > 1.0 || fragmentDepth.y < 0. || fragmentDepth.y > 1.0) {
+  //    amountInLight = 0.;
+  //  }
 
   float gridRatio=gridControl.x;
   vec3 gridPos=(vPosition+gridOffset.xyz)/gridRatio;
@@ -107,6 +110,8 @@ void main(void) {
 
   gl_FragColor =vec4(color.rgb, fogAmount*opacity)
     + vec4(vec3(-.1*amountInLight), fogAmount);
+
+//  gl_FragColor = vec4(vec3(texture2D(shadowMap, vShadowCoord.xy).r), 1.);
 
 }
 
