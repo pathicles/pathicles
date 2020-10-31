@@ -31,7 +31,7 @@
         <!--        .option(slot-key="option-1")-->
         <!--        .option(slot-key="option-2")-->
         <!--        .option(slot-key="option-3")-->
-      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity2: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
+      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
         .scene-main
           .title(:data-index="scene.scene_index")
             span.pathicles(v-if="scene.title" v-html='scene.title')
@@ -201,24 +201,28 @@ export default {
         }
       }
       scene.cameraSploints = {
-        eye: scene.pathicles.camera
-          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.eye)
-          : [
-              ...[0, 1].map(
-                () => this.story.scenes[s - 1].pathicles.camera.eye
-              ),
-              ...[2, 3].map(() => this.story.scenes[s + 1].pathicles.camera.eye)
-            ],
-        center: scene.pathicles.camera
-          ? [0, 1, 2, 3].map(() => scene.pathicles.camera.center)
-          : [
-              ...[0, 1].map(
-                () => this.story.scenes[s - 1].pathicles.camera.center
-              ),
-              ...[2, 3].map(
-                () => this.story.scenes[s + 1].pathicles.camera.center
-              )
-            ]
+        eye:
+          s - 1 < 0 || s + 1 > this.story.scenes.length - 1
+            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.eye)
+            : [
+                ...[0, 1].map(
+                  () => this.story.scenes[s - 1].pathicles.camera.eye
+                ),
+                ...[2, 3].map(
+                  () => this.story.scenes[s + 1].pathicles.camera.eye
+                )
+              ],
+        center:
+          s - 1 < 0 || s + 1 > this.story.scenes.length - 1
+            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.center)
+            : [
+                ...[0, 1].map(
+                  () => this.story.scenes[s - 1].pathicles.camera.center
+                ),
+                ...[2, 3].map(
+                  () => this.story.scenes[s + 1].pathicles.camera.center
+                )
+              ]
       }
     })
 

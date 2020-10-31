@@ -6,18 +6,8 @@ import interactionEvents from 'normalized-interaction-events'
 // import invert from 'gl-mat4/invert'
 import { Lethargy } from './Lethargy.js'
 
-export default function (regl, options) {
-  const { eye, center } = options
+function calcPhiThetaDistance(eye, center) {
   const d = [-center[0] + eye[0], -center[1] + eye[1], -center[2] + eye[2]]
-
-  //
-  // var lethargy
-  // if (typeof Lethargy !== 'undefined' && Lethargy !== null) {
-  //   lethargy = new Lethargy()
-  // }
-
-  // p[0] = ((p[0] > 0 ? p[0] : 2 * Math.PI + p[0]) * 360) / (2 * Math.PI)
-  // console.log(p)
 
   const distance = Math.sqrt(
     Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2)
@@ -26,7 +16,16 @@ export default function (regl, options) {
   let phi = Math.atan2(d[1], d[0])
 
   let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
+  return { phi, theta, distance }
+}
+
+export default function (regl, options) {
   // theta -= d[0] < 0 ? Math.PI : 0
+
+  const { phi, theta, distance } = calcPhiThetaDistance(
+    options.eye,
+    options.center
+  )
 
   // if (d[1] < 0) phi = -phi // + Math.PI
   const cameraOptions = Object.assign({}, options, {
@@ -35,14 +34,9 @@ export default function (regl, options) {
     rotationDecayTime: 50,
     panDecayTime: 50,
     distance,
-    // zoomAboutCursor: false,
-    // rotationCenter: center,
-    // phi: theta,
-    // theta: phi,
     phi,
     theta,
-    // up: [0, 0, 1],
-    center,
+    center: options.center,
     ...(options.aspectRatio && { aspectRatio: options.aspectRatio })
   })
 
@@ -59,6 +53,18 @@ export default function (regl, options) {
       phi: aCamera.params.phi,
       distance: aCamera.params.distance
     }
+  }
+
+  aCamera.updateEyeCenter = (eye, center) => {
+    const { phi, theta, distance } = calcPhiThetaDistance(
+      options.eye,
+      options.center
+    )
+
+    aCamera.params.center = center
+    aCamera.params.theta = theta
+    aCamera.params.phi = phi
+    aCamera.params.distance = distance
   }
 
   const setCameraUniforms = regl({
