@@ -40,19 +40,19 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {
-    setParams(config.view, () => {
+    setParams(config.view, ({ tick }) => {
       regl.clear({
         color: [0, 0, 0, 0],
-        // depth: 1,
+        depth: 1,
         framebuffer: shadow.fbo
       })
-      regl.clear({
-        color: [0, 0, 0, 0],
-        // depth: 1,
-        framebuffer: shadow.fboBlurred
-      })
+      // regl.clear({
+      //   color: [1, 0, 0, 0],
+      //   depth: 1,
+      //   framebuffer: shadow.fboBlurred
+      // })
 
-      config.view.isShadowEnabled && drawModel.shadow({})
+      config.view.isShadowEnabled && drawModel.shadow(props)
       // config.view.isShadowEnabled && shadow.blur()({})
       // config.view.showAxes &&
       //   drawAxis([

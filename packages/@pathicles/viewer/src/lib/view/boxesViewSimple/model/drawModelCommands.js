@@ -40,7 +40,7 @@ export default function (regl, { variables, model, view }, shadow) {
   const command = (mode) => {
     return regl({
       depth: true,
-      profile: true,
+      profile: false,
       blend: {
         enable: true,
         func: {
@@ -112,7 +112,9 @@ export default function (regl, { variables, model, view }, shadow) {
         ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
 
         utParticleColorAndType: () => variables.particleColorsAndTypes,
-        utPositionBuffer: () => variables.position.buffers[0],
+        utPositionBuffer: (ctx, props) => {
+          return props.position.buffers[0]
+        },
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },

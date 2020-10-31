@@ -116,14 +116,10 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 currentFourPosition
 
 void main () {
 
-
-
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
   vec4 previousFourPosition = get_position(aParticle, previousBufferHead);
 
   previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
-
-
 
   vec4 currentFourPosition = get_position(aParticle, aStep);
   mat4 lookAtMat4 = lookAt(currentFourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
@@ -139,8 +135,9 @@ void main () {
 
   vec3 scaledPosition = aPosition * vScale;
 
-  vPosition = vec3(1., 1., 1.) * (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
-  + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
+  vPosition = vec3(1., 1., 1.) *
+      (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
+      + 0.5 * (currentFourPosition.xyz + previousFourPosition.xyz)));
 
 
   vNormalOrig = aNormal;
@@ -152,7 +149,7 @@ void main () {
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, currentFourPosition);
 
-  vShadowCoord = ( shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
+  vShadowCoord = (  shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
 
 
 
@@ -176,11 +173,15 @@ void main () {
   vColorCorrection = (texelDepth >  .5) ? 0. : 1.; //aColorCorrection; //1.-abs(sin(aParticle)) * .2;
   vColorCorrection = aColorCorrection;
 
+  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 
 #endif// lighting
 
 
-  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
 
+#ifdef shadow
+  gl_Position =vec4(vShadowCoord, 1.0);
+
+#endif// shadow
 }
 

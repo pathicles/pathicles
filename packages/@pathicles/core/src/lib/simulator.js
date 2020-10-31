@@ -81,17 +81,15 @@ export class ReglSimulatorInstance {
 
   init(regl) {
     this.regl._commands = []
-    this.cameras = []
-    this.setCameraUniforms = []
-    ;[this.cameras['free'], this.setCameraUniforms['free']] = freeCameraFactory(
-      regl,
-      {
-        ...this.config.view.camera,
-        aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
-      }
-    )
+    // this.cameras = []
+    // this.setCameraUniforms = []
+    ;[this.camera, this.setCameraUniforms] = freeCameraFactory(regl, {
+      ...this.config.view.camera,
+      aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
+    })
 
-    this.camera = this.cameras['free']
+    // this.camera = this.cameras['free']
+    // this.setCameraUniforms = this.setCameraUniforms['free']
     PerformanceLogger.start('init.simulation')
     this.simulation = new Simulation(
       regl,
@@ -122,27 +120,30 @@ export class ReglSimulatorInstance {
     const mainloop = () => {
       return regl.frame(() => {
         if (this.config.view.camera.autorotate) {
-          this.cameras['free'].rotate(-this.config.view.camera.dTheta, 0)
+          this.camera.rotate(-this.config.view.camera.dTheta, 0)
         }
         const tick = this.simulation.variables.tick.value
         if (this.simulate) this.pathiclesRunner.next()
-        this.cameras['free'].tick({})
+        this.camera.tick({})
         if (
-          this.cameras['free'].state.dirty ||
+          this.camera.state.dirty ||
           tick !== this.simulation.variables.tick.value
           // this.pathiclesRunner.fsm.state === 'active'
         ) {
-          this.setCameraUniforms[this.control.cameraMode](
+          this.setCameraUniforms(
             {
-              ...this.cameras[this.control.cameraMode],
+              ...this.camera,
               viewRange: this.control.viewRange
               // scene: storyState.scene,
               // scene_t: storyState.scene_t
             },
             () => {
-              this.cameras['free'].tick({})
-
-              this.view.drawDiffuse({ viewRange: [0, 1] })
+              this.camera.tick({})
+              // console.log(this.simulation.variables.position.buffers)
+              this.view.drawDiffuse({
+                position: this.simulation.variables.position,
+                viewRange: [0, 1]
+              })
 
               if (this.config.view.showTextures) {
                 this.simulation.drawVariableTexture({

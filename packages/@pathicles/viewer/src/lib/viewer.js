@@ -7,6 +7,7 @@ import { defaultConfig } from '@pathicles/config'
 import createREGL from 'regl'
 // import drawVariableTexture from '@pathicles/core/src/lib/simulation/pathicles.variables.drawTexture'
 import { boundedRandom } from '@pathicles/core/src/lib/utils/random'
+import freeCameraFactory from '@pathicles/core/src/lib/utils/freeCameraFactory'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
@@ -17,7 +18,7 @@ export class ReglViewerInstance {
     createREGL({
       canvas,
       attributes: {
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialiasing: true
       },
       pixelRatio,
@@ -98,17 +99,24 @@ export class ReglViewerInstance {
   }
 
   initCameras() {
-    this.cameras = []
-    this.setCameraUniforms = []
-    ;[
-      this.cameras['guided'],
-      this.setCameraUniforms['guided']
-    ] = guidedCameraFactory(
-      { scenes: this.story.scenes, ...this.config.view },
-      this.regl
-    )
+    // this.cameras = []
+    // this.setCameraUniforms = []
+    ;[this.camera, this.setCameraUniforms] = freeCameraFactory(this.regl, {
+      ...this.config.view.camera,
+      aspectRatio:
+        this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
+    })
 
-    this.camera = this.cameras['guided']
+    // this.setCameraUniforms = []
+    // ;[
+    //   this.cameras['guided'],
+    //   this.setCameraUniforms['guided']
+    // ] = guidedCameraFactory(
+    //   { scenes: this.story.scenes, ...this.config.view },
+    //   this.regl
+    // )
+
+    // this.camera = this.cameras['free']
 
     this.modelTranslateX = 0
     this.modelTranslateY = 0
@@ -132,7 +140,7 @@ export class ReglViewerInstance {
               : this.loopTick > 768
               ? (this.loopTick - 768) / 256 + 0.5
               : 0.5
-          if (this.loopTick >= 128) {
+          if (this.loopTick >= 127) {
             this.modelTranslateX = boundedRandom() * 0.2
             this.modelTranslateY = boundedRandom() * 0.2
           }
@@ -155,28 +163,46 @@ export class ReglViewerInstance {
           this.modelTranslateY = 0
         }
 
-        this.setCameraUniforms[this.control.cameraMode](
+        const eye = storyState.scene.cameraPositionBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
+        const target = storyState.scene.cameraTargetBSpline(
+          Math.min(activeSceneProgress, 1)
+        )
+        console.log({ eye, target })
+
+        this.camera.updateEyeCenter(eye, target)
+
+        this.camera.tick({})
+
+        this.setCameraUniforms(
           {
-            ...this.cameras[this.control.cameraMode],
+            ...this.camera,
             scene: storyState.scene,
             activeSceneProgress
           },
           () => {
             regl.clear({
-              color: [1, 1, 1, 1],
+              color: [0, 0, 0, 0],
               depth: 1
             })
-
             this.view.drawDiffuse({
+              position: storyState.scene.variables.position,
               modelTranslateX: this.modelTranslateX,
               modelTranslateY: this.modelTranslateY,
               viewRange
             })
 
-            // if (true || this.config.view.showTextures) {
-            // this.view.shadow.drawFbo()
-            //   drawVariableTexture({ variableName: 'position' })
-            // }
+            // this.view.drawDiffuse({
+            //   modelTranslateX: this.modelTranslateX,
+            //   modelTranslateY: this.modelTranslateY,
+            //   viewRange
+            // })
+
+            if (this.config.view.showTextures) {
+              this.view.shadow.drawFbo()
+              // drawVariableTexture({ variableName: 'position' })
+            }
           }
         )
       })

@@ -13,9 +13,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     scene.particleCount = 128 //scene.preset.model.emitter.particleCount
     scene.bufferLength = scene.preset.model.bufferLength || 128
-    scene.position = [
-      createVariableTexture(regl, scene.particleCount, scene.bufferLength)
-    ]
 
     scene.particleColorsAndTypes = regl.texture({
       data: Array(scene.particleCount * 4),
@@ -26,11 +23,15 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [scene.particleCount, 1, 1]
     })
 
-    const variables = (scene.variables = {
+    scene.variables = {
       referencePoint: [0, 0, 0],
       pingPong: 0,
       tick: { value: scene.bufferLength },
-      position: scene.position,
+      position: {
+        buffers: [
+          createVariableTexture(regl, scene.particleCount, scene.bufferLength)
+        ]
+      },
       particleColorsAndTypes: scene.particleColorsAndTypes,
 
       initialData: {
@@ -38,12 +39,14 @@ export default function (regl, scenes, stateVars, onStateChange) {
         fourPositions: [],
         emitterPosition: scene.preset.model.emitter.position
       }
-    })
+    }
+
+    console.log(scene.variables)
 
     if (scene.data) {
       scene.data().then(({ data }) => {
         performance.mark('scene data')
-        scene.position[0]({
+        scene.variables.position.buffers[0]({
           width: scene.particleCount,
           height: scene.bufferLength * 4,
           min: 'nearest',
@@ -138,6 +141,8 @@ export default function (regl, scenes, stateVars, onStateChange) {
         ? [0, state.activeSceneProgress * 2]
         : [state.activeSceneProgress * 2 - 1, 1]
     let hasChanges = Object.keys(changed).length > 0
+
+    console.log(hasChanges)
 
     return hasChanges
   }

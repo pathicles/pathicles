@@ -37,14 +37,14 @@ export default function (regl, view, shadow) {
 
         stageSize: view.stageGrid.size,
 
-        ...(mode === 'shadow' && {
-          projection: shadow.shadowProjectionMatrix,
-          view: shadow.shadowViewMatrix
-        }),
+        // ...(mode === 'shadow' && {
+        //   projection: shadow.shadowProjectionMatrix,
+        //   view: shadow.shadowViewMatrix
+        // }),
 
         uOffset: [0, view.stageGrid.y, 0],
         // uResolution: [view.stageGrid.size, view.stageGrid.size],
-        ...(mode === 'lighting' && { shadowMap: shadow.fboBlurred })
+        ...(mode === 'lighting' && { shadowMap: shadow.fbo })
       },
       vert: [
         `#define ${mode} 1`,
@@ -55,15 +55,15 @@ export default function (regl, view, shadow) {
         `#define ${mode} 1`,
         `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
         frag
-      ].join('\n'),
-      ...(mode === 'shadow' && {
-        framebuffer: shadow.fbo
-      })
+      ].join('\n')
+      // ...(mode === 'shadow' && {
+      //   framebuffer: shadow.fbo
+      // })
     })
   }
 
   return {
-    lighting: command('lighting'),
-    shadow: command('shadow')
+    lighting: command('lighting')
+    // shadow: command('shadow')
   }
 }

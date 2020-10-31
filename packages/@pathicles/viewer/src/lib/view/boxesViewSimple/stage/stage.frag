@@ -99,12 +99,14 @@ void main(void) {
   float z=contributionOnAxis(gridPos.z);
   vec3 normal=normalize(vNormal);
   float grid=clamp(x+y+z, 0., 1.);
+
   vec3 color=mix(mainColor, lineColor, grid);
   float opacity = clamp(grid, 0.2, gridControl.w*grid);
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
 
-  gl_FragColor =vec4(color.rgb, fogAmount*opacity) + vec4(vec3(-.2*amountInLight), fogAmount);
+  gl_FragColor =vec4(color.rgb, fogAmount*opacity)
+    + vec4(vec3(-.1*amountInLight), fogAmount);
 
 }
 
