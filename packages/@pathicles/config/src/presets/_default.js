@@ -103,7 +103,7 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: true,
+    showTextures: false,
     texelSize: 1,
     viewRange: [0, 1],
 
@@ -125,7 +125,7 @@ export default {
       center: [0, 1, 0],
 
       fovY: (2 * Math.PI) / (360 / 35),
-      dTheta: 0.01,
+      dTheta: 0.001,
       autorotate: true,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,

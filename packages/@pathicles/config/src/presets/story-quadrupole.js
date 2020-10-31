@@ -17,8 +17,8 @@ export const storyQuadrupole = {
       direction: [1, 0, 0],
       position: [-10, 1.5, 0],
       // directionJitter: [0.2, 0.2, 0],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0.05, 0.05],
+      directionJitter: [0, 0.0, 0.1],
+      positionJitter: [0, 0.0, 0.0],
 
       gamma: 4.5
     },
