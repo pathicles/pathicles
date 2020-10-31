@@ -7,6 +7,7 @@ import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
 export function boxesViewSimple(regl, { variables, model, config }) {
+  const lightPosition = config.view.lights[0].position
   const shadow = new Shadow(regl, config.view.lights[0])
 
   const uniforms = {
@@ -40,7 +41,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {
-    setParams(config.view, ({ tick }) => {
+    setParams(config.view, ({ tick, time }) => {
       regl.clear({
         color: [0, 0, 0, 0],
         depth: 1,
@@ -51,6 +52,11 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       //   depth: 1,
       //   framebuffer: shadow.fboBlurred
       // })
+      shadow.update([
+        lightPosition[0],
+        lightPosition[1], // * Math.sin(time * 2),
+        lightPosition[2]
+      ])
 
       config.view.isShadowEnabled && drawModel.shadow(props)
       // config.view.isShadowEnabled && shadow.blur()({})

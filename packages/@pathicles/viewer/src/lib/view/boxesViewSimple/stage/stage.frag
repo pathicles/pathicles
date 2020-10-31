@@ -89,6 +89,7 @@ void main(void) {
 
   //  amountInLight = (blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.)) - vShadowCoord.z > .001) ? 1. : 0.;
   amountInLight = decodeFloat(texture2D(shadowMap, vShadowCoord.xy));
+  amountInLight = texture2D(shadowMap, vShadowCoord.xy).r;
 //  (texture2D(shadowMap, vShadowCoord.xy).r - vShadowCoord.z < .001) ? 1. : 0.;
 
   //  if (fragmentDepth.x < 0. || fragmentDepth.x > 1.0 || fragmentDepth.y < 0. || fragmentDepth.y > 1.0) {

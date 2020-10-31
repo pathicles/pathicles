@@ -40,8 +40,8 @@ void main () {
   vec3 lightDir = normalize(shadowDirection - 1.*vPosition);
   float cosTheta =
     clamp(1.*dot(vNormal, shadowDirection ), 0., 1.)
-    + clamp(1.*dot(vNormal, shadowDirection + vec3(10.,0.,10.)), 0., 1.)
-  +  clamp(1.*dot(vNormal, shadowDirection + vec3(-10., 0., -10.)), 0., 1.);
+    + clamp(2.*dot(vNormal, shadowDirection + vec3(10.,0.,10.)), 0., 1.)
+  +  clamp(2.*dot(vNormal, shadowDirection + vec3(-10., 0., -10.)), 0., 1.);
 
   vec3 ambient = ambientLightAmount * vColor.rgb;
   vec3 diffuse = diffuseLightAmount * vColor.rgb * cosTheta;
@@ -60,7 +60,7 @@ void main () {
 #endif// lighting
 #ifdef shadow
 
-  gl_FragColor = encodeFloat(vShadowCoord.z);
+  gl_FragColor = vec4(vShadowCoord.z*1.);
 #endif
 
 

@@ -5,6 +5,7 @@
   .configurator
     select(v-model="presetName" v-on:change="onChange($event)")
       option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
+      option(value="story" ) STORY
   .canvas-container(ref="container")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--      dat-gui(:model="configModel" @change="onChange")-->
@@ -110,19 +111,26 @@ export default {
     },
     onChange() {
       const params = { presetName: this.presetName }
-      history.pushState(
-        {},
-        null,
-        this.$route.path +
-          '?' +
-          Object.keys(params)
-            .map((key) => {
-              return (
-                encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-              )
-            })
-            .join('&')
-      )
+      if (this.presetName !== 'story') {
+        history.pushState(
+          {},
+          null,
+          this.$route.path +
+            '?' +
+            Object.keys(params)
+              .map((key) => {
+                return (
+                  encodeURIComponent(key) +
+                  '=' +
+                  encodeURIComponent(params[key])
+                )
+              })
+              .join('&')
+        )
+      } else {
+        this.$router.push('story')
+        // history.pushState({}, null, '/story')
+      }
       this.config = loadConfig(this.presetName)
       // console.log(this.config)
       this.reglInstance.loadConfig(this.config)

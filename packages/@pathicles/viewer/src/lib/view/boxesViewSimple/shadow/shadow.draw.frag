@@ -50,6 +50,6 @@ void main () {
 //   float depth = decodeFloat(texel);
 
   gl_FragColor = texel; //vec4(uv,uv);
-//   gl_FragColor = vec4(0., 0., 0., depth);
+   gl_FragColor = vec4(0., 0., 0., texel.r);
 }
 

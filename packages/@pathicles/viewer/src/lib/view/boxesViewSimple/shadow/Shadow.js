@@ -53,9 +53,34 @@ export class Shadow {
 
     this.filterRadius = filterRadius
 
+    this.update(position, size, near, far)
+
+    // this.shadowDirection = [...position]
+    // // normalize(this.shadowDirection, position)
+    // this.shadowMapSize = SHADOW_MAP_SIZE
+    //
+    // this.shadowViewMatrix = lookAt(
+    //   [],
+    //   position,
+    //   [0.0, 0.0, 0.0],
+    //   [0.0, 0.0, 1.0]
+    // )
+    // this.near = -10 //near
+    // this.far = 10 //far
+    // this.shadowProjectionMatrix = ortho(
+    //   [],
+    //   -size,
+    //   size,
+    //   -size,
+    //   size,
+    //   this.near,
+    //   this.far
+    // )
+  }
+
+  update(position, size = this.size, near = this.near, far = this.far) {
     this.shadowDirection = [...position]
     normalize(this.shadowDirection, position)
-    this.shadowMapSize = SHADOW_MAP_SIZE
 
     this.shadowViewMatrix = lookAt(
       [],
@@ -63,8 +88,9 @@ export class Shadow {
       [0.0, 0.0, 0.0],
       [0.0, 0.0, 1.0]
     )
-    this.near = -10 //near
-    this.far = 10 //far
+    this.size = size //near
+    this.near = near //near
+    this.far = far //far
     this.shadowProjectionMatrix = ortho(
       [],
       -size,
@@ -78,9 +104,9 @@ export class Shadow {
 
   get uniforms() {
     return {
-      shadowProjectionMatrix: this.shadowProjectionMatrix,
-      shadowViewMatrix: this.shadowViewMatrix,
-      shadowDirection: this.shadowDirection,
+      shadowProjectionMatrix: () => this.shadowProjectionMatrix,
+      shadowViewMatrix: () => this.shadowViewMatrix,
+      shadowDirection: () => this.shadowDirection,
 
       minBias: () => 0.001,
       maxBias: () => 0.3
