@@ -2,8 +2,7 @@
 
 import camera from './inertial-turntable-camera.js'
 
-import interactionEvents from 'normalized-interaction-events'
-// import invert from 'gl-mat4/invert'
+import interactionEvents from './normalized-interaction-events'
 import { Lethargy } from './Lethargy.js'
 
 function calcPhiThetaDistance(eye, center) {
@@ -67,7 +66,7 @@ export default function (regl, options) {
     aCamera.params.distance = distance
   }
 
-  const setCameraUniforms = regl({
+  aCamera.setCameraUniforms = regl({
     uniforms: {
       projection: (ctx, camera) => {
         camera.resize(ctx.viewportWidth / ctx.viewportHeight)
@@ -78,7 +77,7 @@ export default function (regl, options) {
       eye: (ctx, camera) => camera.state.eye
     }
   })
-  return [aCamera, setCameraUniforms]
+  return aCamera
 }
 
 function initializeCameraControls(

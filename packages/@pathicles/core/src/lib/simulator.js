@@ -80,16 +80,11 @@ export class ReglSimulatorInstance {
   }
 
   init(regl) {
-    this.regl._commands = []
-    // this.cameras = []
-    // this.setCameraUniforms = []
-    ;[this.camera, this.setCameraUniforms] = freeCameraFactory(regl, {
+    this.camera = freeCameraFactory(regl, {
       ...this.config.view.camera,
       aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
     })
 
-    // this.camera = this.cameras['free']
-    // this.setCameraUniforms = this.setCameraUniforms['free']
     PerformanceLogger.start('init.simulation')
     this.simulation = new Simulation(
       regl,
@@ -116,6 +111,7 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
+    // console.log(this.simulation.dump())
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
       return regl.frame(() => {
@@ -130,7 +126,7 @@ export class ReglSimulatorInstance {
           tick !== this.simulation.variables.tick.value
           // this.pathiclesRunner.fsm.state === 'active'
         ) {
-          this.setCameraUniforms(
+          this.camera.setCameraUniforms(
             {
               ...this.camera,
               viewRange: this.control.viewRange
@@ -146,13 +142,13 @@ export class ReglSimulatorInstance {
               })
 
               if (this.config.view.showTextures) {
-                // this.simulation.drawVariableTexture({
-                //   variableName: 'position'
-                // })
-                // this.simulation.drawVariableTexture({
-                //   variableName: 'velocity'
-                // })
-                this.view.shadow.drawFbo()
+                this.simulation.drawVariableTextures({
+                  variableName: 'position'
+                })
+                this.simulation.drawVariableTextures({
+                  variableName: 'velocity'
+                })
+                // this.view.shadow.drawFbo()
               }
               // window.shadow = this.view.shadow.readFBO()
             }
