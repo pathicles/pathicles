@@ -1,7 +1,9 @@
+/* eslint-env browser */
+
 <template></template>
 
 <script>
-import * as dat from 'dat.gui'
+// import * as dat from 'dat.gui'
 
 export default {
   name: 'dat-gui',

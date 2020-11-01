@@ -41,7 +41,8 @@ export function boxesViewSimple(regl, { variables, model, config }) {
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {
-    setParams(config.view, ({ tick, time }) => {
+    // eslint-disable-next-line no-unused-vars
+    setParams(config.view, ({ time }) => {
       regl.clear({
         color: [0, 0, 0, 0],
         depth: 1,
@@ -54,18 +55,18 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       // })
       shadow.update([
         lightPosition[0],
-        lightPosition[1], // * Math.sin(time * 2),
+        lightPosition[1], // Math.sin(time * 2),
         lightPosition[2]
       ])
 
       config.view.isShadowEnabled && drawModel.shadow(props)
       // config.view.isShadowEnabled && shadow.blur()({})
-      // config.view.showAxes &&
-      //   drawAxis([
-      //     { axis: [1, 0, 0] },
-      //     { axis: [0, 1, 0] },
-      //     { axis: [0, 0, 1] }
-      //   ])
+      config.view.showAxes &&
+        drawAxis([
+          { axis: [1, 0, 0] },
+          { axis: [0, 1, 0] },
+          { axis: [0, 0, 1] }
+        ])
 
       config.view.isStageVisible && drawStage.lighting()
       drawModel.lighting(props)

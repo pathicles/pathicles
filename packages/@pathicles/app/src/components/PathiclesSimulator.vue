@@ -147,8 +147,10 @@ export default {
         0
       ]
       this.reglInstance.loadConfig(this.config)
-    },
-    initGui(config) {}
+    }
+    // initGui(config) {
+    //   config
+    // }
   }
 }
 </script>
@@ -170,8 +172,8 @@ export default {
     position fixed
     z-index 10000
     top 0
-    left 0em
-    right 0em
+    left 0
+    right 0
     padding 1em
     font-size 16px
     width 100%

@@ -119,8 +119,8 @@ export function spiralDistributionXY({ n = 0, d = golden_angle }) {
   return Array(n)
     .fill(0)
     .map((zero, i) => {
-      const theta = i * golden_angle
-      const r = (Math.sqrt(i) / Math.sqrt(n) / 2) * 1
+      const theta = i * d
+      const r = Math.sqrt(i) / Math.sqrt(n) / 2
       return [r * Math.cos(theta), r * Math.sin(theta), 0]
     })
     .reduce((acc, val) => acc.concat(val), [])
@@ -130,7 +130,7 @@ export function spiralDistributionYZ({ n = 0, d = golden_angle }) {
   return Array(n)
     .fill(0)
     .map((zero, i) => {
-      const theta = i * golden_angle
+      const theta = i * d
       const r = Math.sqrt(i) / Math.sqrt(n) / 2
       return [0, r * Math.cos(theta), r * Math.sin(theta)]
     })

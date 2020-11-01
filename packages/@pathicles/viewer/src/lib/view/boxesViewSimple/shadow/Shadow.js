@@ -1,5 +1,5 @@
 import { ortho, lookAt } from 'gl-mat4'
-import { normalize, scale } from 'gl-vec3'
+import { normalize } from 'gl-vec3'
 
 import shadowDrawVert from './shadow.draw.vert'
 import shadowDrawFrag from './shadow.draw.frag'

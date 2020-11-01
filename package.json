@@ -13,12 +13,12 @@
     "url": "https://github.com/pathicles/pathicles/issues"
   },
   "workspaces": [
+    "packages/@pathicles/app",
+    "packages/@pathicles/config",
     "packages/@pathicles/core",
     "packages/@pathicles/docs",
     "packages/@pathicles/prerendered",
-    "packages/@pathicles/config",
-    "packages/@pathicles/viewer",
-    "packages/@pathicles/app"
+    "packages/@pathicles/viewer"
   ],
   "scripts": {
     "build": "yarn run build:libs; yarn run build:app",

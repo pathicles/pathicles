@@ -1,6 +1,5 @@
 /* eslint-env browser  */
 
-import guidedCameraFactory from './guidedCameraFactory'
 import { boxesViewSimple } from './view/boxesViewSimple'
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
@@ -92,7 +91,6 @@ export class ReglViewerInstance {
       }
     )
     this.story.setPosition(0)
-    // console.log(this.control.scenes)
 
     this.variables = this.control.scenes[0].variables
     this.model = this.story.getState().scene.model
@@ -179,7 +177,7 @@ export class ReglViewerInstance {
               viewRange
             })
 
-            if (true || this.config.view.showTextures) {
+            if (this.config.view.showTextures) {
               // this.view.shadow.drawFbo()
               this.view.drawVariableTexture({ variableName: 'position' })
             }

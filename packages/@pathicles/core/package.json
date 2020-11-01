@@ -40,16 +40,13 @@
     "normals": "^1.1.0",
     "nurbs": "^1.1.0",
     "primitive-cube": "^2.0.1"
-
-
   },
   "peerDependencies": {
     "regl": "^2.0.1"
   },
   "devDependencies": {
-    "@petamoriken/float16": "^2.0.0",
-    "ieee754-buffer": "^2.0.0",
     "@jest/globals": "^26.6.1",
+    "@petamoriken/float16": "^2.0.0",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-commonjs": "^11.0.2",
@@ -66,6 +63,7 @@
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-vue": "^6.2.2",
     "gl": "^4.8.0",
+    "ieee754-buffer": "^2.0.0",
     "jest": "^26.6.1",
     "prettier": "^2.1.2",
     "rollup": "^2.27.1",

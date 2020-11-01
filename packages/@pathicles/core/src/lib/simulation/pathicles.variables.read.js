@@ -1,4 +1,4 @@
-export default function readData(regl, { variables, model }) {
+export default function readData(regl, { variables }) {
   const data = {}
   const variableNames = Object.keys(variables).filter(
     (key) => key === 'position' || key === 'velocity'
