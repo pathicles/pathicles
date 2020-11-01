@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/pathicles/pathicles/compare/v0.1.0...v0.2.0) (2020-11-01)
+
+
+### Bug Fixes
+
+* change licence from 'MIT Licence' to 'MIT' ([c12a9ad](https://github.com/pathicles/pathicles/commit/c12a9ad57823510a489b0986058c17655640ae3c))
+
+
+### Features
+
+* **viewer:** add axis ([de1d59a](https://github.com/pathicles/pathicles/commit/de1d59a6af3f03fd8d93eab45bf0288bc564eb6c))
+* **viewer:** add grid background ([678993a](https://github.com/pathicles/pathicles/commit/678993a779cc920d1b17d7ac67ce50e08632c3a4))
+* **viewer:** add vignette ([53fc4e0](https://github.com/pathicles/pathicles/commit/53fc4e07e869eaf3edf5dcac247b8da2137e1a69))
+* **viewer:** add vignette ([24c1685](https://github.com/pathicles/pathicles/commit/24c16857946c3f48cdd8b614e29646c24cc7690c))
+* **viewer:** change background ([8bd1e71](https://github.com/pathicles/pathicles/commit/8bd1e719eb9d330a484b597a1cbe6141c4108aa2))
+* **viewer:** combine free and guided camera ([2ea2504](https://github.com/pathicles/pathicles/commit/2ea250405f83a555377c15b9f43d3fad22194447))
+* **viewer:** improve shadow ([ebb476c](https://github.com/pathicles/pathicles/commit/ebb476cf552cac11a2c5e91031b417b0e948bbf4))
+* **viewer:** remove sun backgroundf ([76af976](https://github.com/pathicles/pathicles/commit/76af976c12e044b6b3a91b80145143da869ce584))
+
+
+
+
+
 # 0.1.0 (2020-09-19)
 
 

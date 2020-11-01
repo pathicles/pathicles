@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/viewer",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "module": "dist/pathicles-viewer.esm.js",
   "scripts": {
     "build": "rollup -c",
@@ -14,8 +14,8 @@
     "devPort": 9002
   },
   "dependencies": {
-    "@pathicles/config": "^0.1.0",
-    "@pathicles/core": "^0.1.0",
+    "@pathicles/config": "^0.2.0",
+    "@pathicles/core": "^0.2.0",
     "b-spline": "^2.0.1",
     "gl-mat4": "^1.2.0",
     "gl-quat": "^1.0.0",

@@ -1,13 +1,12 @@
 {
   "name": "@pathicles/docs",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "build": "vitepress build",
     "dev": "vitepress",
     "lint-fix": "echo 'lint-fix'"
   },
-  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^7.12.1",

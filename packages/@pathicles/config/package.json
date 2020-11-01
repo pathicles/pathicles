@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/config",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@pathicles/core": "^0.1.0"
+    "@pathicles/core": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

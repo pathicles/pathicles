@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/pathicles/pathicles/compare/v0.1.0...v0.2.0) (2020-11-01)
+
+
+### Bug Fixes
+
+* change licence from 'MIT Licence' to 'MIT' ([c12a9ad](https://github.com/pathicles/pathicles/commit/c12a9ad57823510a489b0986058c17655640ae3c))
+
+
+### Features
+
+* **config:** change presets ([f5c8be9](https://github.com/pathicles/pathicles/commit/f5c8be92293eaffdeeef006babdb098b88f169db))
+* **config:** change settings ([c18b04e](https://github.com/pathicles/pathicles/commit/c18b04e651a9718762b8a1e0c370ed9cf2de3788))
+* **config:** change settings ([cd97f76](https://github.com/pathicles/pathicles/commit/cd97f76ec2e092399cf0c139d2ee083b964e0932))
+* **config:** change settings ([b63c1b6](https://github.com/pathicles/pathicles/commit/b63c1b6d9b030517cdd1a79b3d110417dfbfeda8))
+* **config:** change settings ([f9dee43](https://github.com/pathicles/pathicles/commit/f9dee43f5a51f466467d2a1a6557d47d27b20561))
+* **config:** change settings ([f59d74f](https://github.com/pathicles/pathicles/commit/f59d74f7f3c43e61f3a69a5c82e8e4cba195c382))
+
+
+
+
+
 # 0.1.0 (2020-09-19)
 
 

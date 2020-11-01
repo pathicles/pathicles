@@ -1,11 +1,9 @@
 {
   "name": "@pathicles/prerendered",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "lint-fix": "eslint --fix tools",
     "prerender": "node ./tools/prerender.js"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

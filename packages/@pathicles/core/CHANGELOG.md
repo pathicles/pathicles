@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/pathicles/pathicles/compare/v0.1.0...v0.2.0) (2020-11-01)
+
+
+### Bug Fixes
+
+* **core:** make event listeners passive ([95f8446](https://github.com/pathicles/pathicles/commit/95f8446e1ae484c6670a9bf88803be9c32da0f9b))
+* change licence from 'MIT Licence' to 'MIT' ([c12a9ad](https://github.com/pathicles/pathicles/commit/c12a9ad57823510a489b0986058c17655640ae3c))
+
+
+### Features
+
+* mobile support (float <-> rgba) ([e8a840b](https://github.com/pathicles/pathicles/commit/e8a840ba096792454a5835c429978be52c20a7ae))
+* **config:** change presets ([fe9c99b](https://github.com/pathicles/pathicles/commit/fe9c99b457193b54a4253124e7116a7c567ff229))
+* **config:** change settings ([f9dee43](https://github.com/pathicles/pathicles/commit/f9dee43f5a51f466467d2a1a6557d47d27b20561))
+* **viewer:** combine free and guided camera ([2ea2504](https://github.com/pathicles/pathicles/commit/2ea250405f83a555377c15b9f43d3fad22194447))
+* **viewer:** improve shadow ([ebb476c](https://github.com/pathicles/pathicles/commit/ebb476cf552cac11a2c5e91031b417b0e948bbf4))
+* mobile support (float <-> rgba) ([4e898bc](https://github.com/pathicles/pathicles/commit/4e898bc6e40b4c6167b69b114766168c9e237eb5))
+
+
+
+
+
 # 0.1.0 (2020-09-19)
 
 
