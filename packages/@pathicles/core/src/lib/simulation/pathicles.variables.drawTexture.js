@@ -7,8 +7,6 @@ export default function drawVariableTexture(
   const width = variables['position'].buffers[0].width * texelSize
   const height = variables['position'].buffers[0].height * texelSize
 
-  console.log(width, height)
-
   return regl({
     vert: `
       precision mediump float;

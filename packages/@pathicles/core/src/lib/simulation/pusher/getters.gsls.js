@@ -18,20 +18,38 @@ export const getters = `
       vec2(particleCount, bufferLength));
 
     float x = texture2D(tex,
-      vec2(p, b + particleCount * 0.) /
-      vec2(particleCount, bufferLength)).x;
+      vec2(p, b) /
+      vec2(particleCount, bufferLength * 4.)).x;
 
     float y = texture2D(tex,
-      vec2(p, b + particleCount * 4.) /
-      vec2(particleCount, bufferLength)).y;
+      vec2(p, b ) /
+      vec2(particleCount, bufferLength * 4.)).y;
 
     float z = texture2D(tex,
-      vec2(p, b + particleCount * 4. * 2.) /
-      vec2(particleCount, bufferLength)).z;
+      vec2(p, b) /
+      vec2(particleCount, bufferLength )).z;
 
     float w = texture2D(tex,
-      vec2(p , b * particleCount * 4. + 3.) /
-      vec2(particleCount, bufferLength)).w;
+      vec2(p, b) /
+      vec2(particleCount, bufferLength )).w;
+
+
+
+    // float x = texture2D(tex,
+    //   vec2(p, b + particleCount * 4. * 0.) /
+    //   vec2(particleCount, bufferLength)).x;
+    //
+    // float y = texture2D(tex,
+    //   vec2(p, b + 1.) /
+    //   vec2(particleCount, bufferLength)).y;
+    //
+    // float z = texture2D(tex,
+    //   vec2(p, b +  2.) /
+    //   vec2(particleCount, bufferLength)).z;
+    //
+    // float w = texture2D(tex,
+    //   vec2(p , b + 3.) /
+    //   vec2(particleCount, bufferLength)).w;
 
     return vec4(x, y, z, w);
   }

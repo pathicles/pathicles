@@ -19,22 +19,22 @@
     "detect-gpu": "^2.0.4",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
-    "typeface-barlow": "^0.0.71",
-    "typeface-barlow-condensed": "^0.0.71",
-    "typeface-barlow-semi-condensed": "^0.0.71",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0-beta.13"
+    "typeface-barlow": "^1.1.13",
+    "typeface-barlow-condensed": "^1.1.13",
+    "typeface-barlow-semi-condensed": "^1.1.13",
+    "vue": "^3.0.2",
+    "vue-router": "^4.0.0-rc.1"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/compiler-sfc": "^3.0.2",
     "fs-extra-plus": "^0.5.19",
     "jimp": "^0.16.1",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
-    "puppeteer": "^5.3.1",
+    "puppeteer": "^5.4.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "stylus-supremacy": "^2.14.5",
-    "vite": "^1.0.0-rc.4"
+    "vite": "^1.0.0-rc.8"
   }
 }

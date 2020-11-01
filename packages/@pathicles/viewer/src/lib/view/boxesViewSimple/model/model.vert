@@ -65,6 +65,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
+//#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl");
 
 
 
@@ -73,11 +74,11 @@ vec4 get_color(float p) {
   return texture2D(utParticleColorAndType, coords);
 }
 vec4 get_position(float p, float b) {
-  vec2 coords = vec2(p + .5, b+.5) / vec2(particleCount, bufferLength);
+  vec2 coords = vec2(p , b) / vec2(particleCount, bufferLength);
   return texture2D(utPositionBuffer, coords);
 }
 
-vec4 readVariable(sampler2D tex, float p, float b) {
+vec4 readVariable(sampler2D tex, float p, float b, float c, float d, float e) {
 
   return get_position(p, b);
   float x = texture2D(tex,
@@ -119,8 +120,8 @@ void main () {
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
 
-  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
-  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep);
+  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead, particleCount, bufferLength, 4.);
+  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep, particleCount, bufferLength, 4.);
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 

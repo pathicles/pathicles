@@ -99,24 +99,11 @@ export class ReglViewerInstance {
   }
 
   initCameras() {
-    // this.cameras = []
-    // this.setCameraUniforms = []
-    ;[this.camera, this.setCameraUniforms] = freeCameraFactory(this.regl, {
+    this.camera = freeCameraFactory(this.regl, {
       ...this.config.view.camera,
       aspectRatio:
         this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     })
-
-    // this.setCameraUniforms = []
-    // ;[
-    //   this.cameras['guided'],
-    //   this.setCameraUniforms['guided']
-    // ] = guidedCameraFactory(
-    //   { scenes: this.story.scenes, ...this.config.view },
-    //   this.regl
-    // )
-
-    // this.camera = this.cameras['free']
 
     this.modelTranslateX = 0
     this.modelTranslateY = 0
@@ -169,13 +156,12 @@ export class ReglViewerInstance {
         const target = storyState.scene.cameraTargetBSpline(
           Math.min(activeSceneProgress, 1)
         )
-        console.log({ eye, target })
-
         this.camera.updateEyeCenter(eye, target)
+        console.log(eye, target)
 
         this.camera.tick({})
 
-        this.setCameraUniforms(
+        this.camera.setCameraUniforms(
           {
             ...this.camera,
             scene: storyState.scene,
@@ -193,15 +179,9 @@ export class ReglViewerInstance {
               viewRange
             })
 
-            // this.view.drawDiffuse({
-            //   modelTranslateX: this.modelTranslateX,
-            //   modelTranslateY: this.modelTranslateY,
-            //   viewRange
-            // })
-
-            if (this.config.view.showTextures) {
-              this.view.shadow.drawFbo()
-              // drawVariableTexture({ variableName: 'position' })
+            if (true || this.config.view.showTextures) {
+              // this.view.shadow.drawFbo()
+              this.view.drawVariableTexture({ variableName: 'position' })
             }
           }
         )

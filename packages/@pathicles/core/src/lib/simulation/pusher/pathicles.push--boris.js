@@ -3,6 +3,7 @@ import { latticeChunk } from '../lattice/lattice.gsls.js'
 
 export default function (regl, { variables, model, channelsPerValueCount }) {
   // console.log('channelsPerValueCount', channelsPerValueCount)
+  // console.log(variables['position'].buffers, model.bufferLength)
   const pushFactory = (variableName, bufferVariableName) =>
     regl({
       framebuffer: (context, props) =>
@@ -50,6 +51,8 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
       frag: `
         precision highp float;
         //#extension WEBGL_color_buffer_float : enable
+
+        #define variableName ${variableName}
 
         const highp float c = 2.99792458e+8;
         //uniform sampler2D utParticleColorAndType;
@@ -115,6 +118,8 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
               }
            return B;
         }
+
+
 
         vec4 push_position(float p, float bufferHead, float bufferPosition) {
 
@@ -187,7 +192,7 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
           float nextBufferPosition = floor(mod(tick, bufferLength + 1.));
           float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
 
-          if (nextBufferPosition == texelBufferIndex) {
+          if (abs(nextBufferPosition - texelBufferIndex) < 0.1 ) {
             gl_FragColor = push_${variableName}(texelParticleIndex, nextBufferPosition, bufferPosition);
 
           } else {
@@ -195,6 +200,7 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
 
           }
              // gl_FragColor = vec4(texelParticleIndex * 10. + texelBufferIndex + texelRgbaFloatChannel/10.);
+
              // gl_FragColor = vec4( texelRgbaFloatChannel );
             // gl_FragColor = readVariable(${bufferVariableName}, texelParticleIndex, texelBufferIndex);
 

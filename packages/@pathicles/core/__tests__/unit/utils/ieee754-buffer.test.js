@@ -1,3 +1,5 @@
+import { describe } from '@jest/globals'
+
 const fixtures = [
   {
     float64: 0,

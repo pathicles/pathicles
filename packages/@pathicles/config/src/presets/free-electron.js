@@ -11,9 +11,9 @@ export const freeElectron = {
     prerender: true,
     loops: 0,
 
-    mode: 'framewise',
+    mode: 'stepwise',
     stepsPerTick: 1,
-    stepCount: 6
+    stepCount: 4
   },
 
   model: {
@@ -24,7 +24,7 @@ export const freeElectron = {
       particleType: 'ELECTRON',
       bunchShape: 'COLUMN',
       direction: [0, 0, 1],
-      position: [0, 0.1, 0],
+      position: [1, 10, 100],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 100

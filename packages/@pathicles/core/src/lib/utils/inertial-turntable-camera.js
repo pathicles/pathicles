@@ -1,3 +1,5 @@
+/* eslint-env browser */
+/* based on inertial-turntable-camera@2.0.4 by Ricky Reusser */
 'use strict'
 
 import transformMat4 from 'gl-vec3/transformMat4'

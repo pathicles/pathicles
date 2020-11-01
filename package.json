@@ -21,10 +21,10 @@
     "packages/@pathicles/app"
   ],
   "scripts": {
+    "build": "yarn run build:libs; yarn run build:app",
     "build:app": "yarn workspace @pathicles/app run build",
     "build:docs": "yarn workspace @pathicles/docs run build",
     "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
-    "build": "yarn run build:libs; yarn run build:app",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
     "dev": "npm-run-all  --parallel  dev:libs dev:app",
@@ -43,9 +43,8 @@
     }
   },
   "devDependencies": {
-    "conventional-changelog-cli": "^2.1.0",
     "@typescript-eslint/parser": "^4.6.0",
-
+    "conventional-changelog-cli": "^2.1.0",
     "dotenv": "^8.2.0",
     "flatted": "^3.1.0",
     "fs-extra-plus": "^0.5.19",

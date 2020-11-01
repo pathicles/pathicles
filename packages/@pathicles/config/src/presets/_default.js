@@ -2,7 +2,7 @@ export default {
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
-  logPushing: false,
+  logPushing: true,
   logPerformance: false,
 
   stats: false,
@@ -28,11 +28,10 @@ export default {
   renderToFloat: true,
 
   runner: {
-    prerender: true,
-    loops: 0,
-
+    prerender: false,
+    loops: 10,
     mode: 'framewise',
-    stepsPerTick: 4,
+    stepsPerTick: 1,
     stepCount: 127
   },
 
@@ -104,7 +103,7 @@ export default {
     showAxes: false,
     showVignette: true,
     showTextures: false,
-    texelSize: 1,
+    texelSize: 5,
     viewRange: [0, 1],
 
     // lights: [
@@ -126,7 +125,7 @@ export default {
 
       fovY: (2 * Math.PI) / (360 / 35),
       dTheta: 0.001,
-      autorotate: true,
+      autorotate: false,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,
       // zoomAboutCursor: false,

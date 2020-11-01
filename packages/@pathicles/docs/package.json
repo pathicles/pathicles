@@ -6,12 +6,10 @@
     "build": "vitepress build",
     "dev": "vitepress"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^7.12.1",
-    "vitepress": "^0.7.0",
-    "@typescript-eslint/parser": "^4.6.0"
-
+    "vitepress": "^0.7.0"
   }
 }

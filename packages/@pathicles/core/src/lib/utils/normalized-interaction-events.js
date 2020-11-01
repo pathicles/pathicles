@@ -1,4 +1,5 @@
 /* eslint-env browser */
+/* based on normalized-interaction-events@2.0.1 by Ricky Reusser */
 'use strict'
 
 import mouseChange from 'mouse-change'
@@ -73,9 +74,9 @@ export default function normalizedInteractionEvents(element) {
     previousPosition[1] = currentPosition[1]
   }
 
-  var x0 = null
-  var y0 = null
-  var active = 0
+  let x0 = null
+  let y0 = null
+  let active = 0
 
   function onMouseUp(event) {
     eventOffset(event, element, currentPosition)
@@ -167,8 +168,8 @@ export default function normalizedInteractionEvents(element) {
   }
 
   function indexOfTouch(touch) {
-    var id = touch.identifier
-    for (var i = 0; i < fingers.length; i++) {
+    let id = touch.identifier
+    for (let i = 0; i < fingers.length; i++) {
       if (
         fingers[i] &&
         fingers[i].touch &&
@@ -184,18 +185,18 @@ export default function normalizedInteractionEvents(element) {
     previousFingerPosition[0] = null
     previousFingerPosition[1] = null
 
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var newTouch = event.changedTouches[i]
-      var id = newTouch.identifier
-      var idx = indexOfTouch(id)
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const newTouch = event.changedTouches[i]
+      let id = newTouch.identifier
+      let idx = indexOfTouch(id)
 
       if (idx === -1 && activeTouchCount < 2) {
-        var first = activeTouchCount === 0
+        // var first = activeTouchCount === 0
 
         // newest and previous finger (previous may be undefined)
-        var newIndex = fingers[0] ? 1 : 0
-        var oldIndex = fingers[0] ? 0 : 1
-        var newFinger = {
+        const newIndex = fingers[0] ? 1 : 0
+        // var oldIndex = fingers[0] ? 0 : 1
+        const newFinger = {
           position: [0, 0],
           touch: null
         }
@@ -208,14 +209,14 @@ export default function normalizedInteractionEvents(element) {
         newFinger.touch = newTouch
         eventOffset(newTouch, element, newFinger.position)
 
-        var oldTouch = fingers[oldIndex] ? fingers[oldIndex].touch : undefined
+        // var oldTouch = fingers[oldIndex] ? fingers[oldIndex].touch : undefined
       }
     }
 
-    var xavg = 0
-    var yavg = 0
-    var fingerCount = 0
-    for (var i = 0; i < fingers.length; i++) {
+    let xavg = 0
+    let yavg = 0
+    let fingerCount = 0
+    for (let i = 0; i < fingers.length; i++) {
       if (!fingers[i]) continue
       xavg += fingers[i].position[0]
       yavg += fingers[i].position[1]
@@ -228,8 +229,8 @@ export default function normalizedInteractionEvents(element) {
       ev.theta = 0
 
       if (fingerCount > 1) {
-        var dx = fingers[1].position[0] - fingers[0].position[0]
-        var dy =
+        const dx = fingers[1].position[0] - fingers[0].position[0]
+        const dy =
           ((fingers[0].position[1] - fingers[1].position[1]) * width) / height
         ev.theta = Math.atan2(dy, dx)
       }
@@ -263,10 +264,10 @@ export default function normalizedInteractionEvents(element) {
   }
 
   function onTouchMove(event) {
-    var idx
-    var changed = false
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var movedTouch = event.changedTouches[i]
+    let idx
+    let changed = false
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const movedTouch = event.changedTouches[i]
       idx = indexOfTouch(movedTouch)
 
       if (idx !== -1) {
@@ -283,11 +284,11 @@ export default function normalizedInteractionEvents(element) {
         }
 
         if (fingers[idx] && previousFingerPosition[idx]) {
-          var x = fingers[idx].position[0]
-          var y = fingers[idx].position[1]
+          const x = fingers[idx].position[0]
+          const y = fingers[idx].position[1]
 
-          var dx = x - previousFingerPosition[idx][0]
-          var dy = y - previousFingerPosition[idx][1]
+          const dx = x - previousFingerPosition[idx][0]
+          const dy = y - previousFingerPosition[idx][1]
 
           ev.buttons = 0
           ev.mods = {}
@@ -312,32 +313,32 @@ export default function normalizedInteractionEvents(element) {
       } else if (activeTouchCount === 2) {
         if (previousFingerPosition[0] && previousFingerPosition[1]) {
           // Previous two-finger vector:
-          var pos0A = previousFingerPosition[0]
-          var pos0B = previousFingerPosition[1]
-          var dx0 = pos0B[0] - pos0A[0]
-          var dy0 = ((pos0B[1] - pos0A[1]) * width) / height
+          const pos0A = previousFingerPosition[0]
+          const pos0B = previousFingerPosition[1]
+          const dx0 = pos0B[0] - pos0A[0]
+          const dy0 = ((pos0B[1] - pos0A[1]) * width) / height
 
           // Current two-finger vector:
-          var pos1A = fingers[0].position
-          var pos1B = fingers[1].position
-          var dx1 = pos1B[0] - pos1A[0]
-          var dy1 = ((pos1A[1] - pos1B[1]) * width) / height
+          const pos1A = fingers[0].position
+          const pos1B = fingers[1].position
+          const dx1 = pos1B[0] - pos1A[0]
+          const dy1 = ((pos1A[1] - pos1B[1]) * width) / height
 
           // r, theta for the previous two-finger touch:
-          var r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.5
-          var theta0 = Math.atan2(dy0, dx0)
+          const r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.5
+          const theta0 = Math.atan2(dy0, dx0)
 
           // r, theta for the current two-finger touch:
-          var r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * 0.5
-          var theta1 = Math.atan2(dy1, dx1)
+          const r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * 0.5
+          const theta1 = Math.atan2(dy1, dx1)
 
-          var xavg = (pos0B[0] + pos0A[0]) * 0.5
-          var yavg = (pos0B[1] + pos0A[1]) * 0.5
-          var dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0])
-          var dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1])
+          const xavg = (pos0B[0] + pos0A[0]) * 0.5
+          const yavg = (pos0B[1] + pos0A[1]) * 0.5
+          const dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0])
+          const dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1])
 
-          var dr = r1 / r0
-          var dtheta = theta1 - theta0
+          const dr = r1 / r0
+          const dtheta = theta1 - theta0
 
           ev.buttons = 0
           ev.mods = mods
@@ -374,30 +375,30 @@ export default function normalizedInteractionEvents(element) {
   }
 
   function onTouchRemoved(event) {
-    var lastFinger
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var removed = event.changedTouches[i]
-      var idx = indexOfTouch(removed)
+    let lastFinger
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const removed = event.changedTouches[i]
+      let idx = indexOfTouch(removed)
 
       if (idx !== -1) {
         lastFinger = fingers[idx]
         fingers[idx] = null
         activeTouchCount--
-        var otherIdx = idx === 0 ? 1 : 0
-        var otherTouch = fingers[otherIdx] ? fingers[otherIdx].touch : undefined
+        // var otherIdx = idx === 0 ? 1 : 0
+        // var otherTouch = fingers[otherIdx] ? fingers[otherIdx].touch : undefined
       }
     }
 
-    var xavg = 0
-    var yavg = 0
+    let xavg = 0
+    let yavg = 0
     if (activeTouchCount === 0) {
       if (lastFinger) {
         xavg = lastFinger.position[0]
         yavg = lastFinger.position[1]
       }
     } else {
-      var fingerCount = 0
-      for (var i = 0; i < fingers.length; i++) {
+      let fingerCount = 0
+      for (let i = 0; i < fingers.length; i++) {
         if (!fingers[i]) continue
         xavg += fingers[i].position[0]
         yavg += fingers[i].position[1]
@@ -430,7 +431,7 @@ export default function normalizedInteractionEvents(element) {
     }
   }
 
-  var enabled = false
+  let enabled = false
 
   function enable() {
     if (enabled) return

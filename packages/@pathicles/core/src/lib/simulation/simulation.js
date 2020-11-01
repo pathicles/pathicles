@@ -103,33 +103,36 @@ export class Simulation {
         channelsPerValueCount: this.channelsPerValueCount
       })
     }
+  }
 
-    this.drawVariableTexture = drawVariableTexture(regl, {
+  drawVariableTextures() {
+    drawVariableTexture(this._regl, {
       variables: this.variables,
       particleCount: this.model.particleCount,
       bufferLength: this.model.bufferLength * this.channelsPerValueCount,
-      texelSize: configuration.view.texelSize,
+      texelSize: this.configuration.view.texelSize,
       x0: 100,
-      y0: configuration.view.texelSize
+      y0: this.configuration.view.texelSize
     })
+  }
 
-    this.log = () => {
-      if (this.configuration.dumpData) {
-        const data = readData(this._regl, {
-          variables: this.variables,
-          model: this.model
-        })
-        this._logStore.push({ tick: this.variables.tick.value, data: data })
-      }
+  log() {
+    if (this.configuration.logPushing) {
+      const data = readData(this._regl, {
+        variables: this.variables,
+        model: this.model
+      })
+      this._logStore.push({ tick: this.variables.tick.value, data: data })
     }
-    this.dump = () => {
-      return {
-        configuration: this.configuration,
-        ...readData(this._regl, {
-          variables: this.variables,
-          model: this.model
-        })
-      }
+  }
+
+  dump() {
+    return {
+      configuration: this.configuration,
+      ...readData(this._regl, {
+        variables: this.variables,
+        model: this.model
+      })
     }
   }
 
