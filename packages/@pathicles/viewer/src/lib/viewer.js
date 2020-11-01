@@ -155,9 +155,8 @@ export class ReglViewerInstance {
           Math.min(activeSceneProgress, 1)
         )
         this.camera.updateEyeCenter(eye, target)
-        console.log(eye, target)
 
-        this.camera.tick({})
+        this.camera.tick()
 
         this.camera.setCameraUniforms(
           {

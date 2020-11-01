@@ -55,10 +55,7 @@ export default function (regl, options) {
   }
 
   aCamera.updateEyeCenter = (eye, center) => {
-    const { phi, theta, distance } = calcPhiThetaDistance(
-      options.eye,
-      options.center
-    )
+    const { phi, theta, distance } = calcPhiThetaDistance(eye, center)
 
     aCamera.params.center = center
     aCamera.params.theta = theta

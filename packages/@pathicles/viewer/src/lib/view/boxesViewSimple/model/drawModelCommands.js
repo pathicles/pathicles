@@ -39,8 +39,9 @@ export default function (regl, { variables, model, view }, shadow) {
 
   const command = (mode) => {
     return regl({
-      depth: true,
-      profile: false,
+      depth: {
+        enable: true
+      },
       blend: {
         enable: true,
         func: {

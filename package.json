@@ -26,7 +26,7 @@
     "build:docs": "yarn workspace @pathicles/docs run build",
     "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/viewer --scope @pathicles/config build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
-    "deploy": "NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
+    "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
     "dev": "npm-run-all  --parallel  dev:libs dev:app",
     "dev:app": "yarn workspace @pathicles/app run dev",
     "dev:docs": "yarn workspace @pathicles/docs run dev",

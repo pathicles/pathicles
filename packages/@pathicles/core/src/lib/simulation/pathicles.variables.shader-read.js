@@ -21,7 +21,7 @@ export default function readData(regl, { variables, model }) {
     read(variables[variableName][0], function (err, d) {
       if (err) throw err
       data[variableName][0] = d
-      console.log(d)
+      // console.log(d)
     })
     // regl.read({ data: data[variableName][0] })
     //
@@ -29,7 +29,7 @@ export default function readData(regl, { variables, model }) {
       if (err) throw err
 
       data[variableName][1] = d
-      console.log(d)
+      // console.log(d)
     })
     // regl.read({ data: data[variableName][0] })
   })

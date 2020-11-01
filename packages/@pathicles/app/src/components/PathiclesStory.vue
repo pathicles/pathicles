@@ -77,8 +77,8 @@ export default {
               preset: 'story-loop',
               data: 'story-electric.js',
               camera: {
-                eye: [-2.5, 2, -5],
-                center: [0, 1.5, 10]
+                eye: [0, 1, 5],
+                center: [0, 1, 0]
               }
             }
           },

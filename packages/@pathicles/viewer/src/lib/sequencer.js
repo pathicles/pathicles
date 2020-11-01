@@ -41,8 +41,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
       }
     }
 
-    console.log(scene.variables)
-
     if (scene.data) {
       scene.data().then(({ data }) => {
         performance.mark('scene data')
@@ -140,11 +138,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       state.activeSceneProgress < 0.5
         ? [0, state.activeSceneProgress * 2]
         : [state.activeSceneProgress * 2 - 1, 1]
-    let hasChanges = Object.keys(changed).length > 0
-
-    console.log(hasChanges)
-
-    return hasChanges
+    return Object.keys(changed).length > 0
   }
 
   let currentPosition = 0

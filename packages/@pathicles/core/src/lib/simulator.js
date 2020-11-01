@@ -22,7 +22,7 @@ export class ReglSimulatorInstance {
       profile: this.config.profile,
       attributes: {
         preserveDrawingBuffer: false,
-        antialiasing: true
+        antialiasing: false
       },
       pixelRatio,
       onDone: (err, regl) => {
