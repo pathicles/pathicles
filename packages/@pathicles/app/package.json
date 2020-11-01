@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@pathicles/config": "^0.2.0",
+    "lodash-es": "^4.17.15",
+
     "@pathicles/core": "^0.2.0",
     "@pathicles/viewer": "^0.2.0",
     "canvas-orbit-camera": "^1.0.2",

@@ -43,6 +43,10 @@ export class ReglViewerInstance {
     })
   }
 
+  resize() {
+    this.regl.poll()
+  }
+
   destroy() {
     this.regl.destroy()
   }

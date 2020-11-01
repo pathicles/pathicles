@@ -63,6 +63,9 @@ export class ReglSimulatorInstance {
     })
   }
 
+  resize() {
+    this.regl.poll()
+  }
   destroy() {
     keyControlUnmount(this)
     this.regl.destroy()

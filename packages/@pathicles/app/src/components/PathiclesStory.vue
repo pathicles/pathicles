@@ -50,6 +50,8 @@ const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
 
 import { ReglViewerInstance } from '@pathicles/viewer'
+const defaultDelay = 150
+import debounce from 'lodash-es/debounce'
 
 const storyDipole = () =>
   import('@pathicles/prerendered/files/story-dipole.json')
@@ -150,13 +152,13 @@ export default {
       type: Number,
       default: 1
     },
-    maxScreenWidth: {
+    maxCanvasWidth: {
       type: Number,
-      default: 1000
+      default: 2048
     },
-    maxScreenHeight: {
+    maxCanvasHeight: {
       type: Number,
-      default: 1000
+      default: 1024
     },
     maxPixelRatio: {
       type: Number,
@@ -165,8 +167,8 @@ export default {
   },
   data: () => {
     return {
-      screenWidth: 600,
-      screenHeight: 600,
+      windowHeight: 0,
+      windowWidth: 0,
       storyHeight: 500,
       progress: 0,
       activeSceneProgress: 0,
@@ -178,8 +180,9 @@ export default {
   },
 
   mounted() {
-    this.screenWidth = window.innerWidth
-    this.screenHeight = window.innerHeight
+    window.addEventListener('resize', this.onWindowResize)
+    this.windowWidth = window.innerWidth
+    this.windowHeight = window.innerHeight
 
     this.story.scenes.forEach((scene) => {
       scene.duration =
@@ -244,35 +247,36 @@ export default {
 
   computed: {
     pixelRatio() {
-      return !window || Math.min(this.maxPixelRatio, window.devicePixelRatio)
-    },
-    width() {
-      return Math.min(this.screenWidth, this.maxScreenWidth)
-    },
-    height() {
-      return Math.min(this.screenHeight, this.maxScreenHeight)
+      return Math.min(
+        window.devicePixelRatio,
+        this.maxCanvasWidth / this.windowHeight
+      )
     },
     canvasStyles() {
       return {
-        width: this.width + 'px',
-        height: this.height + 'px'
+        width: this.windowWidth + 'px',
+        height: this.windowHeight + 'px'
       }
     },
     canvasWidth() {
-      return this.width * this.pixelRatio
+      return this.windowWidth * this.pixelRatio
     },
     canvasHeight() {
-      return this.height * this.pixelRatio
+      return this.windowHeight * this.pixelRatio
     }
   },
   unmounted() {
-    if (typeof window !== 'undefined' && window.document) {
-      this.reglInstance.destroy()
-      unwatchViewport(this.handleViewportChange)
-    }
+    this.reglInstance.destroy()
+    unwatchViewport(this.handleViewportChange)
   },
 
   methods: {
+    onWindowResize: debounce(function () {
+      this.windowWidth = window.innerWidth
+      this.windowHeight = window.innerHeight
+      this.reglInstance.resize()
+    }, defaultDelay), // delay
+
     handleViewportChange({ size, scroll }) {
       if (size.changed) {
         this.screenWidth = window.innerWidth

@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 import path from 'path'
 
 const alias = {
@@ -5,7 +7,7 @@ const alias = {
 }
 
 const config = {
-  alias,
+  // alias,
   plugins: [
     // Voie(),
     // ViteComponents({

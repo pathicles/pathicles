@@ -1,4 +1,4 @@
-/* eslint-env browser */ /* eslint-env browser */
+/* eslint-env browser */
 
 <template>
   <router-view :key="$route.fullPath" :class="{ prerender }"></router-view>

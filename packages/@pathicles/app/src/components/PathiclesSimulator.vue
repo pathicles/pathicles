@@ -14,18 +14,21 @@
 <script>
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
-// import { getGPUTier } from 'detect-gpu'
-// import DatGUI from './DatGUI'
+
+const defaultDelay = 150
+import debounce from 'lodash-es/debounce'
+
 export default {
   name: 'PathiclesSimulator',
+
   props: {
-    maxScreenWidth: {
+    maxCanvasWidth: {
       type: Number,
-      default: 1000
+      default: 2048
     },
-    maxScreenHeight: {
+    maxCanvasHeight: {
       type: Number,
-      default: 1000
+      default: 1024
     },
     maxPixelRatio: {
       type: Number,
@@ -34,46 +37,47 @@ export default {
   },
   data: () => {
     return {
-      screenWidth: 500,
-      screenHeight: 500,
       progress: 0.5,
       cameraMode: 'free',
       viewRange: [0, 1],
       presets,
       presetName: 'story-electric',
       config: {},
-      configModel: {}
+      configModel: {},
+      windowHeight: 0,
+      windowWidth: 0
     }
   },
   computed: {
     pixelRatio() {
-      return !window || Math.min(this.maxPixelRatio, window.devicePixelRatio)
-    },
-    width() {
-      return Math.min(this.screenWidth, this.maxScreenWidth)
-    },
-    height() {
-      return Math.min(this.screenHeight, this.maxScreenHeight)
+      return Math.min(
+        window.devicePixelRatio,
+        this.maxCanvasWidth / this.windowHeight
+      )
     },
     canvasStyles() {
       return {
-        width: this.width + 'px',
-        height: this.height + 'px'
+        width: this.windowWidth + 'px',
+        height: this.windowHeight + 'px'
       }
     },
     canvasWidth() {
-      return this.width * this.pixelRatio
+      return this.windowWidth * this.pixelRatio
     },
     canvasHeight() {
-      return this.height * this.pixelRatio
+      return this.windowHeight * this.pixelRatio
     }
   },
   unmounted() {
+    window.removeEventListener('resize', this.onWindowResize)
     this.reglInstance.destroy()
   },
   mounted() {
     // getGPUTier().then((tier) => {
     //   console.log(tier)
+    window.addEventListener('resize', this.onWindowResize)
+    this.windowWidth = window.innerWidth
+    this.windowHeight = window.innerHeight
 
     const parsedUrl = new URL(window.location.href)
     if (parsedUrl.searchParams.get('presetName') !== null)
@@ -85,8 +89,7 @@ export default {
       this.config.runner.prerender = true
     }
 
-    this.screenWidth = window.innerWidth
-    this.screenHeight = window.innerHeight
+    console.log(this.maxCanvasWidth / this.screenWidth)
 
     this.$nextTick(() => {
       this.reglInstance = new ReglSimulatorInstance({
@@ -106,9 +109,12 @@ export default {
   },
 
   methods: {
-    handleResize() {
-      this.scrollyHeight = document.documentElement.clientHeight
-    },
+    onWindowResize: debounce(function () {
+      this.windowWidth = window.innerWidth
+      this.windowHeight = window.innerHeight
+      this.reglInstance.resize()
+    }, defaultDelay), // delay
+
     onChange() {
       const params = { presetName: this.presetName }
       if (this.presetName !== 'story') {
