@@ -30,5 +30,10 @@ export default {
     json(),
     bundleSize()
   ],
+  watch: {
+    chokidar: {
+      paths: 'src/**'
+    }
+  },
   external: ['debug', 'regl', 'gl-mat4', 'gl-vec3']
 }

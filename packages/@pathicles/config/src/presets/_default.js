@@ -31,7 +31,7 @@ export default {
     prerender: false,
     loops: 10,
     mode: 'framewise',
-    stepsPerTick: 1,
+    stepsPerTick: 4,
     stepCount: 127
   },
 

@@ -65,7 +65,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-//#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl");
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
 
 
 
@@ -73,32 +73,33 @@ vec4 get_color(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
   return texture2D(utParticleColorAndType, coords);
 }
-vec4 get_position(float p, float b) {
-  vec2 coords = vec2(p , b) / vec2(particleCount, bufferLength);
-  return texture2D(utPositionBuffer, coords);
-}
-
-vec4 readVariable(sampler2D tex, float p, float b, float c, float d, float e) {
-
-  return get_position(p, b);
-  float x = texture2D(tex,
-  vec2(p + particleCount * 0., b) /
-  vec2(particleCount, bufferLength)).x;
-
-  float y = texture2D(tex,
-  vec2(p + particleCount * 0., b) /
-  vec2(particleCount, bufferLength)).y;
-
-  float z = texture2D(tex,
-  vec2(p + particleCount * 1., b) /
-  vec2(particleCount, bufferLength)).z;
-
-  float w = texture2D(tex,
-  vec2(p + particleCount * 0., b) /
-  vec2(particleCount, bufferLength)).w;
-
-  return vec4(x, y, z, w);
-}
+//
+//vec4 get_position(float p, float b) {
+//  vec2 coords = vec2(p , b) / vec2(particleCount, bufferLength);
+//  return texture2D(utPositionBuffer, coords);
+//}
+//
+//vec4 readVariable(sampler2D tex, float p, float b, float c, float d, float e) {
+//
+//  return get_position(p, b);
+//  float x = texture2D(tex,
+//  vec2(p + particleCount * 0., b) /
+//  vec2(particleCount, bufferLength)).x;
+//
+//  float y = texture2D(tex,
+//  vec2(p + particleCount * 0., b) /
+//  vec2(particleCount, bufferLength)).y;
+//
+//  float z = texture2D(tex,
+//  vec2(p + particleCount * 1., b) /
+//  vec2(particleCount, bufferLength)).z;
+//
+//  float w = texture2D(tex,
+//  vec2(p + particleCount * 0., b) /
+//  vec2(particleCount, bufferLength)).w;
+//
+//  return vec4(x, y, z, w);
+//}
 
 
 
@@ -120,8 +121,8 @@ void main () {
 
   float previousBufferHead = (aStep < 1.) ? bufferLength : aStep - 1.;
 
-  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead, particleCount, bufferLength, 4.);
-  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep, particleCount, bufferLength, 4.);
+  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
+  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep);
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
@@ -158,21 +159,15 @@ void main () {
   vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
 
 
-
   #ifdef lighting
 
   float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? .5 : 0.;
   vColorCorrection = aColorCorrection;//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
 
-
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
   //  gl_Position = vec4(vShadowCoord, 1.);
 
-
-
   #endif// lighting
-
-
 
   #ifdef shadow
   gl_Position =vec4(vShadowCoord, 1.0);

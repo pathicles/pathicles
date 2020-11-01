@@ -1,4 +1,4 @@
-vec4 readVariable(sampler2D tex, float p, float b, float particleCount, float bufferLength, float channelsPerValue) {
+vec4 readVariable(sampler2D tex, float p, float b) {
 
 
   return texture2D(tex,
