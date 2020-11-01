@@ -114,7 +114,6 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    // console.log(this.simulation.dump())
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
       return regl.frame(() => {
@@ -139,7 +138,11 @@ export class ReglSimulatorInstance {
             () => {
               this.camera.tick({})
               // console.log(this.simulation.variables.position.buffers)
+
               this.view.drawDiffuse({
+                colorCorrections: this.simulation.variables.colorCorrections,
+                particleColorsAndTypes: this.simulation.variables
+                  .particleColorsAndTypes,
                 position: this.simulation.variables.position,
                 viewRange: [0, 1]
               })

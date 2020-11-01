@@ -13,8 +13,10 @@ function calcPhiThetaDistance(eye, center) {
   )
 
   let phi = Math.atan2(d[1], d[0])
+  if (d[1] < 0) phi = phi + Math.PI / 2
 
   let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
+
   return { phi, theta, distance }
 }
 

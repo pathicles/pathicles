@@ -10,33 +10,6 @@ export default function (regl, { variables, model, view }, shadow) {
 
   let modelMatrix = identity([])
 
-  const initialParticleDistances = Array(model.particleCount)
-    .fill(0)
-    .map((_, i) => {
-      return Math.sqrt(
-        Math.pow(
-          variables.initialData.fourPositions[i * 4] -
-            variables.initialData.emitterPosition[0],
-          2
-        ) +
-          Math.pow(
-            variables.initialData.fourPositions[i * 4 + 1] -
-              variables.initialData.emitterPosition[1],
-            2
-          ) +
-          Math.pow(
-            variables.initialData.fourPositions[i * 4 + 2] -
-              variables.initialData.emitterPosition[2],
-            2
-          )
-      )
-    })
-
-  const maxParticleDistance = Math.max(...initialParticleDistances)
-  const colorCorrection = initialParticleDistances.map(
-    (d) => d / maxParticleDistance
-  )
-
   const command = (mode) => {
     return regl({
       depth: {
@@ -83,10 +56,6 @@ export default function (regl, { variables, model, view }, shadow) {
               .map((_, i) => Math.floor(i / model.particleCount))
           ),
           divisor: 1
-        },
-        aColorCorrection: {
-          buffer: regl.buffer(Array(model.bufferLength).fill(colorCorrection)),
-          divisor: 1
         }
       },
 
@@ -111,8 +80,13 @@ export default function (regl, { variables, model, view }, shadow) {
         }),
 
         ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
+        utColorCorrections: (ctx, props) => {
+          return props.colorCorrections
+        },
 
-        utParticleColorAndType: () => variables.particleColorsAndTypes,
+        utParticleColorAndType: (ctx, props) => {
+          return props.particleColorsAndTypes
+        },
         utPositionBuffer: (ctx, props) => {
           return props.position.buffers[0]
         },

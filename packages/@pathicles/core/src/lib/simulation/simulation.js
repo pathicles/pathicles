@@ -5,6 +5,7 @@ import pushBoris from './pusher/pathicles.push--boris'
 
 import readData from './pathicles.variables.read'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
+import { colorCorrection } from './utils/colorCorrection'
 import drawVariableTexture from './pathicles.variables.drawTexture'
 import { Lattice } from './lattice/lattice'
 
@@ -33,6 +34,14 @@ export class Simulation {
       configuration.model.emitter
     ))
 
+    const colorCorrections = colorCorrection(
+      particleCount,
+      fourPositions,
+      configuration.model.emitter.position
+    )
+
+    console.log(Math.min(...colorCorrections))
+
     this.variables = {
       initialData: this.initialData,
       position: new VariableBuffers(
@@ -58,6 +67,13 @@ export class Simulation {
       particleColorsAndTypes: regl.texture({
         data: particleTypes
           .map((p) => configuration.colors[p].concat(p))
+          .flat(),
+        shape: [particleCount, 1, 4],
+        type: 'float'
+      }),
+      colorCorrections: regl.texture({
+        data: particleTypes
+          .map((p, i) => [colorCorrections[i], 0, 0, 0])
           .flat(),
         shape: [particleCount, 1, 4],
         type: 'float'

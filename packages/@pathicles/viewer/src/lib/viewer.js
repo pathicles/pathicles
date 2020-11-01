@@ -68,14 +68,6 @@ export class ReglViewerInstance {
       particleCount: this.config.model.emitter.particleCount,
       bufferLength: this.config.model.bufferLength
     }
-    // this.drawVariableTexture = drawVariableTexture(regl, {
-    //   variables: this.variables,
-    //   particleCount: this.config.model.emitter.particleCount,
-    //   bufferLength: this.model.bufferLength,
-    //   texelSize: this.config.view.texelSize,
-    //   x0: 100,
-    //   y0: this.config.view.texelSize
-    // })
   }
 
   initStory() {
@@ -106,9 +98,6 @@ export class ReglViewerInstance {
       aspectRatio:
         this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     })
-
-    this.modelTranslateX = 0
-    this.modelTranslateY = 0
   }
 
   run(regl) {
@@ -173,7 +162,11 @@ export class ReglViewerInstance {
               color: [0, 0, 0, 0],
               depth: 1
             })
+
             this.view.drawDiffuse({
+              colorCorrections: storyState.scene.variables.colorCorrections,
+              particleColorsAndTypes:
+                storyState.scene.variables.particleColorsAndTypes,
               position: storyState.scene.variables.position,
               modelTranslateX: this.modelTranslateX,
               modelTranslateY: this.modelTranslateY,

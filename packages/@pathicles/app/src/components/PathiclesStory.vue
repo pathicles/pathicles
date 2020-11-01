@@ -296,22 +296,6 @@ export default {
             .activeSceneProgress.toFixed(2)
         }
       }
-      // if (scroll.changed || size.changed) {
-      //   this.vp = JSON.stringify(
-      //     {
-      //       sceneCount: this.story.scenes.length,
-      //       activeScene: this.activeScene,
-      //       activeSceneProgress: this.activeSceneProgress,
-      //       progress: this.progress.toFixed(2),
-      //       storyHeight: this.storyHeight,
-      //       duration: this.story.scenes.duration,
-      //       dt: this.duration,
-      //       scrollTop: scroll.top + this.screenHeight
-      //     },
-      //     null,
-      //     2
-      //   )
-      // }
     }
   }
 }

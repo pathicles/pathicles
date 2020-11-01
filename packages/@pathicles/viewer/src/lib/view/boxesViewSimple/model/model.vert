@@ -21,7 +21,6 @@ attribute vec3 aNormal;
 attribute vec2 aUV;
 
 attribute float aParticle;
-attribute float aColorCorrection;
 attribute float aStep;
 
 uniform float particleCount;
@@ -36,6 +35,8 @@ uniform float pathicleGap;
 uniform float pathicleHeight;
 uniform float stageGrid_size;
 
+
+uniform sampler2D utColorCorrections;
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D utPositionBuffer;
 uniform sampler2D utVelocityBuffer;
@@ -67,7 +68,10 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
 
-
+float get_colorCorrection(float p) {
+  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
+  return texture2D(utColorCorrections, coords).r;
+}
 
 vec4 get_color(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
@@ -162,7 +166,8 @@ void main () {
   #ifdef lighting
 
   float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? .5 : 0.;
-  vColorCorrection = aColorCorrection;//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
+//  vColorCorrection = aColorCorrection;//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
+  vColorCorrection = get_colorCorrection(aParticle);//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
 
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
   //  gl_Position = vec4(vShadowCoord, 1.);

@@ -28,8 +28,8 @@ export default {
   renderToFloat: true,
 
   runner: {
-    prerender: false,
-    loops: 10,
+    prerender: true,
+    loops: 0,
     mode: 'framewise',
     stepsPerTick: 4,
     stepCount: 127
@@ -78,8 +78,8 @@ export default {
         size: 10
       }
     ],
-    ambientLightAmount: 0.3,
-    diffuseLightAmount: 0.8,
+    ambientLightAmount: 0.5,
+    diffuseLightAmount: 0.5,
 
     // ssaoEnabled: false,
 

@@ -89,8 +89,6 @@ export default {
       this.config.runner.prerender = true
     }
 
-    console.log(this.maxCanvasWidth / this.screenWidth)
-
     this.$nextTick(() => {
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,

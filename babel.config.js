@@ -3,7 +3,7 @@
 module.exports = {
   env: {
     test: {
-      presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+      presets: [['@babel/configuration-env', { targets: { node: 'current' } }]],
       plugins: []
     }
   }

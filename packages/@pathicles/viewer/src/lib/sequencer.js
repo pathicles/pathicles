@@ -3,65 +3,77 @@
 
 import bspline from 'b-spline'
 import { config } from '@pathicles/config'
-import createVariableTexture from './createVariableTexture'
+import { VariableBuffers } from '@pathicles/core/src/lib/simulation/utils/pingPongVariableBuffers'
+
+import { colorCorrection } from '@pathicles/core/src/lib/simulation/utils/colorCorrection'
 
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
-    scene.presetName = scene.preset
-    scene.preset = config(scene.preset)
+    scene.presetName = scene.pathicles.preset
+    scene.configuration = config(scene.presetName)
 
-    scene.particleCount = 128 //scene.preset.model.emitter.particleCount
-    scene.bufferLength = scene.preset.model.bufferLength || 128
+    scene.channelsPerValueCount = scene.configuration.renderToFloat ? 4 : 4
 
-    scene.particleColorsAndTypes = regl.texture({
+    scene.particleCount = 128 //scene.configuration.model.emitter.particleCount
+    scene.bufferLength = scene.configuration.model.bufferLength || 128
+
+    const particleColorsAndTypes = regl.texture({
       data: Array(scene.particleCount * 4),
       shape: [scene.particleCount, 1, 4]
     })
-    scene.initialParticleDistances = regl.texture({
+    const colorCorrections = regl.texture({
       data: Array(scene.particleCount),
-      shape: [scene.particleCount, 1, 1]
+      shape: [scene.particleCount, 1, 4]
     })
 
     scene.variables = {
       referencePoint: [0, 0, 0],
       pingPong: 0,
       tick: { value: scene.bufferLength },
-      position: {
-        buffers: [
-          createVariableTexture(regl, scene.particleCount, scene.bufferLength)
-        ]
-      },
-      particleColorsAndTypes: scene.particleColorsAndTypes,
-
-      initialData: {
-        // initialParticleDistances: scene.initialParticleDistances,
-        fourPositions: [],
-        emitterPosition: scene.preset.model.emitter.position
-      }
+      particleColorsAndTypes,
+      colorCorrections,
+      position: new VariableBuffers(
+        regl,
+        scene.particleCount,
+        scene.bufferLength,
+        'float',
+        scene.channelsPerValueCount,
+        []
+      )
+      // initialData: {
+      //   // initialParticleDistances: scene.initialParticleDistances,
+      //   fourPositions: [],
+      //   emitterPosition: scene.configuration.model.emitter.position
+      // }
     }
 
     if (scene.data) {
       scene.data().then(({ data }) => {
         performance.mark('scene data')
-        scene.variables.position.buffers[0]({
-          width: scene.particleCount,
-          height: scene.bufferLength * 4,
-          min: 'nearest',
-          mag: 'nearest',
-          format: 'rgba',
-          data: new Float32Array(data.position.map((d) => d / 1))
-        })
+        scene.variables.position.load(data.position.map((d) => d / 1))
 
-        // if (variables.initialData.fourPositions) {
-        //   variables.initialData.fourPositions.set(
-        //     data.position.slice(0, scene.particleCount)
-        //   )
-        //   // console.log(variables.initialData.fourPositions)
-        // }
-        scene.particleColorsAndTypes({
+        scene.variables.particleColorsAndTypes({
           data: data.particleTypes
-            .map((p) => scene.preset.colors[p].concat(p))
+            .map((p) => scene.configuration.colors[p].concat(p))
+            .flat(),
+          shape: [scene.particleCount, 1, 4],
+          type: 'float'
+        })
+        const colorCorrections = colorCorrection(
+          scene.particleCount,
+          data.position,
+          scene.configuration.model.emitter.position
+        )
+
+        // console.log(scene.configuration)
+        // console.log([...colorCorrections].sort())
+        console.log(scene.configuration.model.emitter.position)
+        // console.log(Math.min(...colorCorrections))
+
+        scene.variables.colorCorrections({
+          data: data.particleTypes
+            .map((_, i) => [colorCorrections[i], 0, 0, 0])
             .flat(),
           shape: [scene.particleCount, 1, 4],
           type: 'float'
@@ -70,20 +82,20 @@ export default function (regl, scenes, stateVars, onStateChange) {
     }
 
     scene.model = {
-      halfDeltaTOverC: scene.preset.model.tickDurationOverC / 2,
+      halfDeltaTOverC: scene.configuration.model.tickDurationOverC / 2,
       particleCount: scene.particleCount,
       particleTypes: scene.data ? scene.data.particleTypes : [],
       bufferLength: scene.bufferLength,
-      stepCount: scene.preset.runner.stepCount,
-      boundingBoxSize: scene.preset.model.boundingBoxSize,
-      // lattice: new Lattice(scene.preset.model.lattice),
-      // latticeConfig: scene.preset.model.lattice,
+      stepCount: scene.configuration.runner.stepCount,
+      boundingBoxSize: scene.configuration.model.boundingBoxSize,
+      // lattice: new Lattice(scene.configuration.model.lattice),
+      // latticeConfig: scene.configuration.model.lattice,
       interactions: {
-        gravityConstant: scene.preset.model.interactions.gravityConstant,
+        gravityConstant: scene.configuration.model.interactions.gravityConstant,
         particleInteraction:
-          scene.preset.model.interactions.particleInteraction,
-        electricField: scene.preset.model.interactions.electricField,
-        magneticField: scene.preset.model.interactions.magneticField
+          scene.configuration.model.interactions.particleInteraction,
+        electricField: scene.configuration.model.interactions.electricField,
+        magneticField: scene.configuration.model.interactions.magneticField
       }
     }
     scene._s = s
