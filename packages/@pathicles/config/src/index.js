@@ -24,6 +24,7 @@ let merge = (...theArgs) => {
 }
 
 import defaultConfig from './presets/_default'
+import { dipole } from './presets/dipole'
 import { storyDipole } from './presets/story-dipole'
 import { storyElectric } from './presets/story-electric'
 import { storyQuadrupole } from './presets/story-quadrupole'
@@ -41,6 +42,7 @@ const presets = {
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
   [random.name]: random,
+  [dipole.name]: dipole,
   [gyrotest_1_electron.name]: gyrotest_1_electron
 }
 

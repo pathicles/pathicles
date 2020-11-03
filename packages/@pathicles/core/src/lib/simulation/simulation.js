@@ -6,7 +6,6 @@ import pushBoris from './pusher/pathicles.push--boris'
 import readData from './pathicles.variables.read'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { colorCorrection } from './utils/colorCorrection'
-import drawVariableTexture from './pathicles.variables.drawTexture'
 import { Lattice } from './lattice/lattice'
 
 export class Simulation {
@@ -17,11 +16,9 @@ export class Simulation {
 
     this.configuration = configuration
     this.configuration.simulate = true
-    this.channelsPerValueCount = configuration.renderToFloat ? 4 : 4
+    this.channelsPerValueCount = 4 //configuration.renderToFloat ? 4 : 4
 
-    this.RTTFloatType = configuration.simulateHalfFloat
-      ? 'half float'
-      : support.RTTFloatType
+    this.RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
 
     const {
       particleCount,
@@ -40,9 +37,10 @@ export class Simulation {
       configuration.model.emitter.position
     )
 
-    console.log(Math.min(...colorCorrections))
+    // console.log(Math.min(...colorCorrections))
 
     this.variables = {
+      RTTFloatType: this.RTTFloatType,
       initialData: this.initialData,
       position: new VariableBuffers(
         regl,
@@ -69,14 +67,14 @@ export class Simulation {
           .map((p) => configuration.colors[p].concat(p))
           .flat(),
         shape: [particleCount, 1, 4],
-        type: 'float'
+        type: this.RTTFloatType
       }),
       colorCorrections: regl.texture({
         data: particleTypes
           .map((p, i) => [colorCorrections[i], 0, 0, 0])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: 'float'
+        type: this.RTTFloatType
       }),
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
@@ -88,7 +86,7 @@ export class Simulation {
           ])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: 'float'
+        type: this.RTTFloatType
       })
     }
 
@@ -101,10 +99,10 @@ export class Simulation {
       bufferLength: this.initialData.bufferLength,
       stepCount: this.configuration.runner.stepCount,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
+      boundingBoxCenter: this.configuration.model.boundingBoxCenter,
       latticeConfig: this.configuration.model.lattice,
       lattice: new Lattice(this.configuration.model.lattice),
       interactions: {
-        gravityConstant: this.configuration.model.interactions.gravityConstant,
         particleInteraction: this.configuration.model.interactions
           .particleInteraction,
         electricField: this.configuration.model.interactions.electricField,
@@ -119,17 +117,6 @@ export class Simulation {
         channelsPerValueCount: this.channelsPerValueCount
       })
     }
-  }
-
-  drawVariableTextures() {
-    drawVariableTexture(this._regl, {
-      variables: this.variables,
-      particleCount: this.model.particleCount,
-      bufferLength: this.model.bufferLength * this.channelsPerValueCount,
-      texelSize: this.configuration.view.texelSize,
-      x0: 100,
-      y0: this.configuration.view.texelSize
-    })
   }
 
   log() {

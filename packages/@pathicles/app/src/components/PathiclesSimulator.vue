@@ -15,8 +15,7 @@
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig, presets } from '@pathicles/config'
 
-const defaultDelay = 150
-import debounce from 'lodash-es/debounce'
+import { unwatchViewport, watchViewport } from 'tornis'
 
 export default {
   name: 'PathiclesSimulator',
@@ -69,13 +68,13 @@ export default {
     }
   },
   unmounted() {
-    window.removeEventListener('resize', this.onWindowResize)
+    unwatchViewport(this.handleViewportChange)
     this.reglInstance.destroy()
   },
   mounted() {
     // getGPUTier().then((tier) => {
     //   console.log(tier)
-    window.addEventListener('resize', this.onWindowResize)
+    // window.addEventListener('resize', this.onWindowResize)
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
@@ -90,6 +89,7 @@ export default {
     }
 
     this.$nextTick(() => {
+      watchViewport(this.handleViewportChange)
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
         config: this.config,
@@ -101,17 +101,19 @@ export default {
           cameraMode: this.cameraMode
         }
       })
-      //this.scrollyHeight = this.$refs.scrollContainer.clientHeight
     })
-    // })
   },
 
   methods: {
-    onWindowResize: debounce(function () {
-      this.windowWidth = window.innerWidth
-      this.windowHeight = window.innerHeight
-      this.reglInstance.resize()
-    }, defaultDelay), // delay
+    handleViewportChange({ size }) {
+      if (size.changed) {
+        this.windowWidth = size.x
+        this.windowHeight = size.y
+        if (this.reglInstance) {
+          this.reglInstance.resize()
+        }
+      }
+    },
 
     onChange() {
       const params = { presetName: this.presetName }

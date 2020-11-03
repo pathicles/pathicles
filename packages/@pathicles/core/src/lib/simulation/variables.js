@@ -6,6 +6,7 @@ import {
   discDistributionXY,
   discDistributionYZ,
   rowDistribution,
+  cubeDistribution,
   squareDistributionXY,
   squareDistributionXZ,
   spiralDistributionXY,
@@ -45,16 +46,10 @@ export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
 
 export function jitterDirection({
   direction = [0, 0, 1],
-  directionJitter = [0, 0, 0],
-  localPosition = [0, 0, 0]
+  directionJitter = [0, 0, 0]
 }) {
   const jitteredDirection = direction.map(
-    (d, i) =>
-      d +
-      Math.floor(
-        Math.abs(boundedRandom()) * localPosition[i] * directionJitter[i] * 100
-      ) /
-        100
+    (d, i) => d + Math.floor(boundedRandom() * directionJitter[i] * 100) / 100
   )
   return norm.normalize(jitteredDirection, 'Euclidean')
 }
@@ -86,6 +81,7 @@ export function createParticleCollection({
   if (
     [
       'SQUARE',
+      'CUBE',
       'ROW',
       'DISC',
       'DISC_YZ',
@@ -136,11 +132,18 @@ export function createParticleCollection({
         })
       : bunchShape === 'SPIRAL_XY'
       ? spiralDistributionXY({
-          n: particleCount
+          n: particleCount,
+          d: particleSeparation
         })
       : bunchShape === 'SPIRAL_YZ'
       ? spiralDistributionYZ({
-          n: particleCount
+          n: particleCount,
+          d: particleSeparation
+        })
+      : bunchShape === 'CUBE'
+      ? cubeDistribution({
+          n: particleCount,
+          d: particleSeparation
         })
       : columnDistribution({
           n: particleCount,

@@ -45,13 +45,7 @@
 
 <script>
 import { watchViewport, unwatchViewport } from 'tornis'
-
-const clampMax = 1
-const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
-
-import { ReglViewerInstance } from '@pathicles/viewer'
-const defaultDelay = 150
-import debounce from 'lodash-es/debounce'
+import { ReglViewerInstance } from '@pathicles/core'
 
 const storyDipole = () =>
   import('@pathicles/prerendered/files/story-dipole.json')
@@ -59,6 +53,9 @@ const storyElectric = () =>
   import('@pathicles/prerendered/files/story-electric.json')
 const storyQuadrupole = () =>
   import('@pathicles/prerendered/files/story-quadrupole.json')
+
+const clampMax = 1
+const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
 
 export default {
   name: 'PathiclesStory',
@@ -113,7 +110,7 @@ export default {
               preset: 'story-dipole',
               data: 'story-dipole.js',
               camera: {
-                eye: [-7, 1, 0],
+                eye: [-5, 1, 0],
                 center: [0, 1, 0]
               }
             }
@@ -137,11 +134,11 @@ export default {
           {
             type: 'options',
             pathicles: {
-              preset: 'story-electric',
+              preset: 'story-loop',
               data: 'story-electric.js',
               camera: {
-                eye: [-5, 1, 5],
-                center: [0, 1, 0]
+                eye: [0, 0.5, 5],
+                center: [0, 0.5, 0]
               }
             }
           }
@@ -180,7 +177,6 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('resize', this.onWindowResize)
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
@@ -211,9 +207,7 @@ export default {
                 ...[0, 1].map(
                   () => this.story.scenes[s - 1].pathicles.camera.eye
                 ),
-                ...[2, 3].map(
-                  () => this.story.scenes[s + 1].pathicles.camera.eye
-                )
+                ...[2, 3].map(() => this.story.scenes[s].pathicles.camera.eye)
               ],
         center:
           s - 1 < 0 || s + 1 > this.story.scenes.length - 1
@@ -223,16 +217,14 @@ export default {
                   () => this.story.scenes[s - 1].pathicles.camera.center
                 ),
                 ...[2, 3].map(
-                  () => this.story.scenes[s + 1].pathicles.camera.center
+                  () => this.story.scenes[s].pathicles.camera.center
                 )
               ]
       }
     })
 
-    watchViewport(this.handleViewportChange)
-
     this.$nextTick(() => {
-      this.storyHeight = this.$refs.scrollContainer.clientHeight
+      watchViewport(this.handleViewportChange)
       this.reglInstance = new ReglViewerInstance({
         canvas: this.$refs.canvas,
         pixelRatio: this.pixelRatio,
@@ -271,22 +263,19 @@ export default {
   },
 
   methods: {
-    onWindowResize: debounce(function () {
-      this.windowWidth = window.innerWidth
-      this.windowHeight = window.innerHeight
-      this.reglInstance.resize()
-    }, defaultDelay), // delay
-
     handleViewportChange({ size, scroll }) {
       if (size.changed) {
-        this.screenWidth = window.innerWidth
-        this.screenHeight = window.innerHeight
+        this.windowWidth = size.x
+        this.windowHeight = size.y
         this.storyHeight = this.$refs.scrollContainer.clientHeight
+        if (this.reglInstance) {
+          this.reglInstance.resize()
+        }
       }
 
       if (scroll.changed) {
         this.progress = clamp(
-          (scroll.top + this.screenHeight) / this.storyHeight
+          (scroll.top + this.windowHeight) / this.storyHeight
         )
         if (this.reglInstance) {
           this.reglInstance.story.setPosition(this.progress)

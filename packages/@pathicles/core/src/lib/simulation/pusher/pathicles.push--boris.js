@@ -21,6 +21,7 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
       uniforms: {
         variableIdx: variableSlot,
         boundingBoxSize: model.boundingBoxSize,
+        boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         bufferLength: model.bufferLength,
         particleCount: model.particleCount,
         tick: regl.prop('pathiclesTick'),
@@ -29,7 +30,6 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
-        gravityConstant: model.interactions.gravityConstant,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
         utParticleChargesMassesChargeMassRatios: () =>

@@ -12,14 +12,15 @@ export default {
     file: 'dist/pathicles-viewer.esm.js'
   },
   plugins: [
-    nodeResolve({ preferBuiltins: true }),
+    nodeResolve(),
     commonjs({
+      // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo
       include: /node_modules/
-    }),
+    },
     glslify({ compress: false }),
     cleanup(),
     bundleSize()
     // visualizer({ brotliSize: true, gzipSize: true })
   ],
-  external: ['debug', 'regl']
+  external: ['debug', 'regl', 'gl-mat4', 'gl-vec3']
 }

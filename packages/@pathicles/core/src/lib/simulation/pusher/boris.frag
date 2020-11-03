@@ -14,9 +14,9 @@ uniform float rgbaFloatChannel;
 uniform float rgbaFloatChannels;
 uniform float halfDeltaTOverC;
 uniform float boundingBoxSize;
+uniform vec3 boundingBoxCenter;
 uniform float particleCount;
 uniform float bufferLength;
-uniform float gravityConstant;
 uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
@@ -128,7 +128,7 @@ vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
   }
 
   if (boundingBoxSize > 0.) {
-    vec3 reflect = step(vec3(-boundingBoxSize), intermediatePosition) - step(vec3(boundingBoxSize), intermediatePosition);
+    vec3 reflect = step(boundingBoxCenter-vec3(boundingBoxSize), intermediatePosition) - step(boundingBoxCenter+vec3(boundingBoxSize), intermediatePosition);
     momentum *= 2. * reflect * reflect - 1.;
   }
   return vec4(momentum, gamma);

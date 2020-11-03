@@ -1,13 +1,14 @@
 /* eslint-env browser */
 
-import freeCameraFactory from './utils/freeCameraFactory'
-import { Simulation } from './simulation/simulation'
-import SimulationFSM from './simulation/simulationFSM'
-import PerformanceLogger from './utils/PerformanceLogger'
-import { boxesViewSimple } from '@pathicles/viewer'
-import { keyControlMount, keyControlUnmount } from './utils/keyControl'
-import { checkSupport } from './utils/checkSupport'
+import freeCameraFactory from '../utils/freeCameraFactory'
+import { Simulation } from './simulation'
+import SimulationFSM from '../simulation/simulationFSM'
+import PerformanceLogger from '../utils/PerformanceLogger'
+import { boxesViewSimple } from '../views/boxesViewSimple'
+import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
+import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
+import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
@@ -83,10 +84,13 @@ export class ReglSimulatorInstance {
   }
 
   init(regl) {
+    // console.log(regl._gl.FLOAT)
     this.camera = freeCameraFactory(regl, {
       ...this.config.view.camera,
       aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
     })
+
+    this.drawTexture = drawTextureCommand(regl)
 
     PerformanceLogger.start('init.simulation')
     this.simulation = new Simulation(
@@ -136,7 +140,7 @@ export class ReglSimulatorInstance {
               // scene_t: storyState.scene_t
             },
             () => {
-              this.camera.tick({})
+              // this.camera.tick({})
               // console.log(this.simulation.variables.position.buffers)
 
               this.view.drawDiffuse({
@@ -148,19 +152,23 @@ export class ReglSimulatorInstance {
               })
 
               if (this.config.view.showTextures) {
-                this.simulation.drawVariableTextures({
-                  variableName: 'position'
+                this.drawTexture({
+                  texture: this.simulation.variables.position.buffers[tick],
+                  x0: 0
                 })
-                this.simulation.drawVariableTextures({
-                  variableName: 'velocity'
+                this.drawTexture({
+                  texture: this.simulation.variables.velocity.buffers[tick % 2],
+                  x0: 200
                 })
-                // this.view.shadow.drawFbo()
+                this.drawTexture({
+                  texture: this.view.shadow.fbo,
+                  x0: 400,
+                  scale: 0.5
+                })
               }
-              // window.shadow = this.view.shadow.readFBO()
             }
           )
         }
-        // PerformanceLogger.stop()
       })
     }
     this.loop = mainloop()

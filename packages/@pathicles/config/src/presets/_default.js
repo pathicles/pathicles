@@ -42,7 +42,6 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      randomize: false,
 
       // "row", "column", "cross", "square", "disc"
       bunchShape: 'COLUMN',
@@ -56,7 +55,6 @@ export default {
     },
     interactions: {
       particleInteraction: false,
-      gravityConstant: 0,
       electricField: [0, 0, 0],
       magneticField: [0, 0, 0]
     },
@@ -103,7 +101,7 @@ export default {
     showAxes: false,
     showVignette: true,
     showTextures: false,
-    texelSize: 5,
+    texelSize: 1,
     viewRange: [0, 1],
 
     // lights: [

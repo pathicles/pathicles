@@ -7,6 +7,7 @@ import createREGL from 'regl'
 // import drawVariableTexture from '@pathicles/core/src/lib/simulation/pathicles.variables.drawTexture'
 import { boundedRandom } from '@pathicles/core/src/lib/utils/random'
 import freeCameraFactory from '@pathicles/core/src/lib/utils/freeCameraFactory'
+import { drawTextureCommand } from '@pathicles/core'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
@@ -57,6 +58,8 @@ export class ReglViewerInstance {
     this.initStory()
     this.initCameras()
     this.loopTick = -1
+
+    this.drawTexture = drawTextureCommand(regl)
 
     this.view = boxesViewSimple(regl, {
       variables: this.variables,
@@ -119,8 +122,8 @@ export class ReglViewerInstance {
               ? (this.loopTick - 768) / 256 + 0.5
               : 0.5
           if (this.loopTick >= 127) {
-            this.modelTranslateX = boundedRandom() * 0.2
-            this.modelTranslateY = boundedRandom() * 0.2
+            this.modelTranslateX = boundedRandom() * 0.1
+            this.modelTranslateY = boundedRandom() * 0.1
           }
           this.loopTick = this.loopTick < 128 ? this.loopTick + 1 : 0
           activeSceneProgress =
@@ -172,10 +175,13 @@ export class ReglViewerInstance {
               modelTranslateY: this.modelTranslateY,
               viewRange
             })
+            if (storyState.scene.configuration.view.showTextures) {
+              this.drawTexture({
+                texture: storyState.scene.variables.position.buffers[0],
+                x0: 0
+              })
 
-            if (this.config.view.showTextures) {
-              // this.view.shadow.drawFbo()
-              this.view.drawVariableTexture({ variableName: 'position' })
+              // this.drawTexture({ texture: this.view.shadow.fbo, x0: 400 })
             }
           }
         )

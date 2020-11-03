@@ -1,12 +1,10 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import PathiclesSimulator from './components/PathiclesSimulator.vue'
 import PathiclesStory from './components/PathiclesStory.vue'
-import Resize from './components/Resize.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/resize', component: Resize },
     { path: '/', redirect: '/simulator' },
     { path: '/simulator', component: PathiclesSimulator },
     {

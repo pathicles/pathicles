@@ -8,9 +8,6 @@ const alias = {
 
 const config = {
   // alias,
-  optimizeDeps: {
-    include: ['lodash-es/debounce']
-  },
   plugins: [
     // Voie(),
     // ViteComponents({

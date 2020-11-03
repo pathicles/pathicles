@@ -136,3 +136,14 @@ export function spiralDistributionYZ({ n = 0, d = golden_angle }) {
     })
     .reduce((acc, val) => acc.concat(val), [])
 }
+
+export function cubeDistribution({ n = 0, d = 0.1 }) {
+  return Array(n)
+    .fill(0)
+    .map((zero, i) => {
+      const theta = i * d
+      const r = (Math.sqrt(i) / Math.sqrt(n) / 2) * 0
+      return [r * Math.sin(theta), r * Math.cos(theta), r * Math.sin(theta)]
+    })
+    .reduce((acc, val) => acc.concat(val), [])
+}

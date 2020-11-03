@@ -23,7 +23,6 @@ export default function (regl, { variables, constants }) {
         uniform float boundingBoxSize;
         uniform float particleCount;
         uniform float bufferLength;
-        uniform float gravityConstant;
 
         uniform float particleInteraction;
         uniform float electricFieldStrength;
@@ -169,11 +168,11 @@ export default function (regl, { variables, constants }) {
 
           vec3 E = get_efield(intermediatePosition);
           vec3 B = get_bfield(intermediatePosition);
-          vec3 G = vec3(0., -gravityConstant, 0.);
+          // vec3 G = vec3(0., -gravityConstant, 0.);
 
           vec3 velocity = previousVelocity.xyz;
 
-          velocity += particleData.mass * G * halfDeltaT;
+          // velocity += particleData.mass * G * halfDeltaT;
 
           #ifdef BOUNDING_BOX_SIZE
           if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
@@ -222,7 +221,6 @@ export default function (regl, { variables, constants }) {
         tick: pathiclesTick,
         halfDeltaT: constants.halfDeltaTOverC,
 
-        gravityConstant: constants.gravityConstant,
         particleInteraction: constants.particleInteraction,
         electricFieldStrength: 0,
         dipole_strength: constants.dipole_strength,
