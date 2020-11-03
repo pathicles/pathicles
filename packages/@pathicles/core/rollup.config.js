@@ -20,7 +20,7 @@ export default {
     //   clearLine: true // default: true
     // }),
     cleanup(),
-    babel({ babelHelpers: 'bundled' }),
+    // babel({ babelHelpers: 'bundled' }),
     nodeResolve(),
     commonjs({
       // https://github.com/rollup/@rollup/plugin-commonjs#usage-in-monorepo

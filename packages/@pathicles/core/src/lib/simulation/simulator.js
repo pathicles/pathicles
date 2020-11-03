@@ -153,7 +153,7 @@ export class ReglSimulatorInstance {
 
               if (this.config.view.showTextures) {
                 this.drawTexture({
-                  texture: this.simulation.variables.position.buffers[tick],
+                  texture: this.simulation.variables.position.buffers[tick % 2],
                   x0: 0
                 })
                 this.drawTexture({

@@ -3,8 +3,8 @@
   "license": "MIT",
   "version": "0.2.0",
   "type": "module",
-  "main": "dist/pathicles-config.min.js",
-  "module": "dist/pathicles-config.esm.js",
+  "main": "dist/pathicles-core.min.js",
+  "module": "dist/pathicles-core.esm.js",
   "scripts": {
     "build": "rollup --config ",
     "dev": "rollup --config -w",

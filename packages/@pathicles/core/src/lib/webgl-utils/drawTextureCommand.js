@@ -16,7 +16,7 @@ export function drawTextureCommand(regl) {
     viewport: {
       x: (_, props) => props.x0 || 0,
       y: 0,
-      width: (_, props) => 1 || props.texture.width * (props.scale || 1),
+      width: (_, props) => props.texture.width * (props.scale || 1),
       height: (_, props) => props.texture.height * (props.scale || 1)
     },
     depth: {
