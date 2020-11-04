@@ -110,11 +110,12 @@ export default {
     // ],ª
 
     camera: {
-      eye: [5, 1, 5],
-      center: [0, 1, 0],
+      eye: [5, 0.5, 5],
+      center: [0, 0.25, 0],
 
       fovY: (2 * Math.PI) / (360 / 35),
       dTheta: 0.001,
+      dPhi: 0.001,
       autorotate: true,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,

@@ -120,32 +120,25 @@ export class ReglSimulatorInstance {
   run(regl) {
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
-      return regl.frame(() => {
+      return regl.frame(({ tick }) => {
         if (this.config.view.camera.autorotate) {
-          this.camera.rotate(-this.config.view.camera.dTheta, 0)
+          // this.camera.rotate(0.01, 0)
+          this.camera.params.theta = (tick / 300) * 2 * Math.PI
+          this.camera.params.phi = 0.1 * Math.sin((tick / 300) * 2 * Math.PI)
         }
         const { changed } = this.simulate && this.pathiclesRunner.next()
 
         if (changed) {
           // console.log(this.simulation.dump())
         }
-        this.camera.tick({})
-        if (
-          this.camera.state.dirty ||
-          changed
-          // this.pathiclesRunner.fsm.state === 'active'
-        ) {
+        this.camera.tick()
+        if (this.camera.state.dirty || changed) {
           this.camera.setCameraUniforms(
             {
               ...this.camera,
               viewRange: this.control.viewRange
-              // scene: storyState.scene,
-              // scene_t: storyState.scene_t
             },
             () => {
-              // this.camera.tick({})
-              // console.log(this.simulation.variables.position.buffers)
-
               this.view.drawDiffuse({
                 colorCorrections: this.simulation.variables.colorCorrections,
                 particleColorsAndTypes: this.simulation.variables
