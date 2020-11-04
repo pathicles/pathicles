@@ -15,7 +15,11 @@ export function columnDistribution({ n = 0, d = 0 }) {
     .reduce((acc, val) => acc.concat(val), [])
 }
 
-export function squareDistributionXY({ n = 0, d = 0 }) {
+export function squareDistribution({
+  n = 0,
+  d = 0,
+  mixer = (x, y) => [x, y, 0]
+}) {
   const nx = Math.ceil(Math.sqrt(n))
   const ny = Math.ceil(n / nx)
 
@@ -27,122 +31,68 @@ export function squareDistributionXY({ n = 0, d = 0 }) {
     .map((zero, i) => {
       const ix = i % nx
       const iy = Math.floor(i / nx)
-      return [ix * d - dOffsetX, iy * d - dOffsetY, 0]
+      return mixer(ix * d - dOffsetX, iy * d - dOffsetY)
     })
     .reduce((acc, val) => acc.concat(val), [])
 }
 
-export function squareDistributionXZ({ n = 0, d = 0 }) {
-  const nx = Math.ceil(Math.sqrt(n))
-  const ny = Math.ceil(n / nx)
-
-  const dOffsetX = (d * (nx - 1)) / 2
-  const dOffsetY = (d * (ny - 1)) / 2
-
-  return Array(n)
-    .fill(0)
-    .map((zero, i) => {
-      const ix = i % nx
-      const iy = Math.floor(i / nx)
-      return [ix * d - dOffsetX, 0, iy * d - dOffsetY]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-}
-
-export function squareDistributionYZ({ n = 0, d = 0 }) {
-  const nx = Math.ceil(Math.sqrt(n))
-  const ny = Math.ceil(n / nx)
-
-  const dOffsetX = (d * (nx - 1)) / 2
-  const dOffsetY = (d * (ny - 1)) / 2
-
-  return Array(n)
-    .fill(0)
-    .map((zero, i) => {
-      const ix = i % nx
-      const iy = Math.floor(i / nx)
-      return [0, iy * d - dOffsetY, ix * d - dOffsetX]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-}
-
-export function discDistributionXY({ n = 0, d = 0 }) {
-  const nx = Math.ceil(Math.sqrt(n))
-  const ny = Math.ceil(n / nx)
-
-  const dOffsetX = (d * (nx - 1)) / 2
-  const dOffsetY = (d * (ny - 1)) / 2
-
-  return Array(n)
-    .fill(0)
-    .map((zero, i) => {
-      const ix = i % nx
-      const iy = Math.floor(i / nx)
-
-      if (
-        (ix * d - dOffsetX) ** 2 + (iy * d - dOffsetY) ** 2 <
-        ((nx * d) / 2) ** 2
-      )
-        return [ix * d - dOffsetX, iy * d - dOffsetY, 0]
-      else return [ix * d - dOffsetX, iy * d - dOffsetY - 10000, 0]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-  // .filter((a, i) => a < n)
-}
-
-export function discDistributionYZ({ n = 0, d = 0 }) {
-  const nx = Math.ceil(Math.sqrt(n))
-  const ny = Math.ceil(n / nx)
-
-  const dOffsetX = (d * (nx - 1)) / 2
-  const dOffsetY = (d * (ny - 1)) / 2
-
-  return Array(n)
-    .fill(0)
-    .map((zero, i) => {
-      const ix = i % nx
-      const iy = Math.floor(i / nx)
-
-      if (
-        (ix * d - dOffsetX) ** 2 + (iy * d - dOffsetY) ** 2 <
-        ((nx * d) / 2) ** 2
-      )
-        return [0, iy * d - dOffsetY, ix * d - dOffsetX]
-      else return [0, iy * d - dOffsetY - 10000, ix * d - dOffsetX]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-}
+// export function squareDistributionXZ({ n = 0, d = 0 }) {
+//   const nx = Math.ceil(Math.sqrt(n))
+//   const ny = Math.ceil(n / nx)
+//
+//   const dOffsetX = (d * (nx - 1)) / 2
+//   const dOffsetY = (d * (ny - 1)) / 2
+//
+//   return Array(n)
+//     .fill(0)
+//     .map((zero, i) => {
+//       const ix = i % nx
+//       const iy = Math.floor(i / nx)
+//       return [ix * d - dOffsetX, 0, iy * d - dOffsetY]
+//     })
+//     .reduce((acc, val) => acc.concat(val), [])
+// }
+//
+// export function squareDistributionYZ({ n = 0, d = 0 }) {
+//   const nx = Math.ceil(Math.sqrt(n))
+//   const ny = Math.ceil(n / nx)
+//
+//   const dOffsetX = (d * (nx - 1)) / 2
+//   const dOffsetY = (d * (ny - 1)) / 2
+//
+//   return Array(n)
+//     .fill(0)
+//     .map((zero, i) => {
+//       const ix = i % nx
+//       const iy = Math.floor(i / nx)
+//       return [0, iy * d - dOffsetY, ix * d - dOffsetX]
+//     })
+//     .reduce((acc, val) => acc.concat(val), [])
+// }
 
 const golden_angle = Math.PI * (3 - Math.sqrt(5))
 
-export function spiralDistributionXY({ n = 0, d = golden_angle }) {
+export function spiralDistribution({
+  n = 0,
+  d = golden_angle,
+  mixer = (r, theta) => [0, r * Math.cos(theta), r * Math.sin(theta)]
+}) {
   return Array(n)
     .fill(0)
     .map((zero, i) => {
-      const theta = i * d
-      const r = Math.sqrt(i) / Math.sqrt(n) / 2
-      return [r * Math.cos(theta), r * Math.sin(theta), 0]
+      const theta = i * golden_angle
+      const r = (Math.sqrt(i) / Math.sqrt(n)) * d * 3
+      return mixer(r, theta)
     })
     .reduce((acc, val) => acc.concat(val), [])
 }
 
-export function spiralDistributionYZ({ n = 0, d = golden_angle }) {
+export function cubeDistribution({ n = 0, d = 0 }) {
   return Array(n)
     .fill(0)
     .map((zero, i) => {
-      const theta = i * d
-      const r = Math.sqrt(i) / Math.sqrt(n) / 2
-      return [0, r * Math.cos(theta), r * Math.sin(theta)]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-}
-
-export function cubeDistribution({ n = 0, d = 0.1 }) {
-  return Array(n)
-    .fill(0)
-    .map((zero, i) => {
-      const theta = i * d
-      const r = (Math.sqrt(i) / Math.sqrt(n) / 2) * 0
+      const theta = i / 15
+      const r = d
       return [r * Math.sin(theta), r * Math.cos(theta), r * Math.sin(theta)]
     })
     .reduce((acc, val) => acc.concat(val), [])

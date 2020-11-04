@@ -8,13 +8,6 @@ export const dipole = {
       center: [0, 2, 0]
     }
   },
-  runner: {
-    prerender: true,
-    loops: 0,
-    mode: 'framewise',
-    stepsPerTick: 4,
-    stepCount: 512
-  },
 
   model: {
     bufferLength: 512,

@@ -4,21 +4,19 @@ export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      eye: [-4, 1.5, -3],
-      center: [0, 1.5, 0]
+      eye: [-7.5, 2, 0],
+      center: [0, 1, 0]
     }
   },
   model: {
-    tickDurationOverC: 0.15,
     emitter: {
       particleType: 'PROTON',
-      bunchShape: 'SPIRAL_YZ',
+      bunchShape: 'SQUARE_YZ',
       // particleCount: 81,
       direction: [1, 0, 0],
-      position: [-10, 1.5, 0],
-      // directionJitter: [0.2, 0.2, 0],
-      directionJitter: [0, 0.0, 0.1],
-      positionJitter: [0, 0.0, 0.0],
+      position: [-7.5, 1.5, 0],
+      directionJitter: [0, 0.02, 0.02],
+      positionJitter: [0, 0.02, 0.02],
 
       gamma: 4.5
     },

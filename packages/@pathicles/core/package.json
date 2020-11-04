@@ -18,6 +18,8 @@
     "eases": "^1.0.8",
     "easyimage": "^3.1.1",
     "event-emitter": "^0.3.5",
+    "ogl": "^0.0.60",
+
     "b-spline": "^2.0.1",
     "gl-mat4": "^1.2.0",
     "gl-matrix": "^3.0.0",

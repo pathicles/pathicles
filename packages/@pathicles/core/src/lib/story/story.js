@@ -18,7 +18,7 @@ export class ReglViewerInstance {
     createREGL({
       canvas,
       attributes: {
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         antialiasing: true
       },
       pixelRatio,
@@ -34,7 +34,6 @@ export class ReglViewerInstance {
         if (err) return console.error(err)
         try {
           this.regl = regl
-
           this.init(regl)
           this.run(regl)
         } catch (e) {
@@ -66,11 +65,6 @@ export class ReglViewerInstance {
       model: this.model,
       config: this.config
     })
-
-    this.variables.initialData = {
-      particleCount: this.config.model.emitter.particleCount,
-      bufferLength: this.config.model.bufferLength
-    }
   }
 
   initStory() {
@@ -110,10 +104,7 @@ export class ReglViewerInstance {
 
         let activeSceneProgress
         let viewRange
-        if (
-          storyState.scene.pathicles &&
-          storyState.scene.pathicles.preset === 'story-loop'
-        ) {
+        if (storyState.scene.pathicles && storyState.scene.pathicles.autoLoop) {
           this.loopTick = this.loopTick < 1024 ? this.loopTick + 1 : 0
           activeSceneProgress =
             this.loopTick < 128
@@ -143,6 +134,7 @@ export class ReglViewerInstance {
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
+        // console.log(viewRange)
 
         const eye = storyState.scene.cameraPositionBSpline(
           Math.min(activeSceneProgress, 1)
@@ -170,7 +162,7 @@ export class ReglViewerInstance {
               colorCorrections: storyState.scene.variables.colorCorrections,
               particleColorsAndTypes:
                 storyState.scene.variables.particleColorsAndTypes,
-              position: storyState.scene.variables.position,
+              position: storyState.scene.variables.position.buffers[0],
               modelTranslateX: this.modelTranslateX,
               modelTranslateY: this.modelTranslateY,
               viewRange

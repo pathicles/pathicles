@@ -13,74 +13,70 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.presetName = scene.pathicles.preset
     scene.configuration = config(scene.presetName)
 
-    scene.channelsPerValueCount = scene.configuration.renderToFloat ? 4 : 4
-
-    scene.particleCount = 128 //scene.configuration.model.emitter.particleCount
-    scene.bufferLength = scene.configuration.model.bufferLength || 128
+    const RTTFloatType = 'float'
+    const channelsPerValueCount = scene.configuration.channelsPerValueCount
+    const particleCount = 128 //scene.configuration.model.emitter.particleCount
+    const bufferLength = scene.configuration.bufferLength || 128
 
     const particleColorsAndTypes = regl.texture({
-      data: Array(scene.particleCount * 4),
-      shape: [scene.particleCount, 1, 4]
+      data: Array(particleCount * 4),
+      shape: [particleCount, 1, 4]
     })
     const colorCorrections = regl.texture({
-      data: Array(scene.particleCount),
-      shape: [scene.particleCount, 1, 4]
+      data: Array(particleCount),
+      shape: [particleCount, 1, 4]
     })
 
     scene.variables = {
       referencePoint: [0, 0, 0],
+      channelsPerValueCount,
+      bufferLength,
+      particleCount,
       pingPong: 0,
-      tick: { value: scene.bufferLength },
+      tick: { value: bufferLength },
       particleColorsAndTypes,
       colorCorrections,
       position: new VariableBuffers(
         regl,
-        scene.particleCount,
-        scene.bufferLength,
-        'float',
-        scene.channelsPerValueCount,
+        particleCount,
+        bufferLength,
+        RTTFloatType,
+        channelsPerValueCount,
         []
       )
-      // initialData: {
-      //   // initialParticleDistances: scene.initialParticleDistances,
-      //   fourPositions: [],
-      //   emitterPosition: scene.configuration.model.emitter.position
-      // }
     }
 
     if (scene.data) {
       scene.data().then(({ data }) => {
         performance.mark('scene data')
-        scene.variables.position.load(data.position.map((d) => d / 1))
+        scene.variables.position.load(data.position)
 
         scene.variables.particleColorsAndTypes({
           data: data.particleTypes
             .map((p) => scene.configuration.colors[p].concat(p))
             .flat(),
-          shape: [scene.particleCount, 1, 4],
-          type: 'float'
+          shape: [particleCount, 1, 4],
+          type: RTTFloatType
         })
-        const colorCorrections = colorCorrection(
-          scene.particleCount,
-          data.position,
-          scene.configuration.model.emitter.position
-        )
+
+        // if (scene.presetName === 'story-electric')
+        //   console.log({ name: scene.presetName, position: data.position })
 
         scene.variables.colorCorrections({
           data: data.particleTypes
-            .map((_, i) => [colorCorrections[i], 0, 0, 0])
+            .map((p, i) => [colorCorrections[i], 0, 0, 0])
             .flat(),
-          shape: [scene.particleCount, 1, 4],
-          type: 'float'
+          shape: [particleCount, 1, 4],
+          type: RTTFloatType
         })
       })
     }
 
     scene.model = {
       halfDeltaTOverC: scene.configuration.model.tickDurationOverC / 2,
-      particleCount: scene.particleCount,
+      particleCount: particleCount,
       particleTypes: scene.data ? scene.data.particleTypes : [],
-      bufferLength: scene.bufferLength,
+      bufferLength: bufferLength,
       stepCount: scene.configuration.runner.stepCount,
       boundingBoxSize: scene.configuration.model.boundingBoxSize,
       interactions: {

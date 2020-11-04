@@ -10,8 +10,8 @@ export default function readData(regl, { variables, model }) {
 
   variableNames.forEach((key) => {
     data[key] = [
-      new Float32Array(model.particleCount * model.bufferLength * 4),
-      new Float32Array(model.particleCount * model.bufferLength * 4)
+      new Float32Array(model.particleCount * variables.bufferLength * 4),
+      new Float32Array(model.particleCount * variables.bufferLength * 4)
     ]
   })
 

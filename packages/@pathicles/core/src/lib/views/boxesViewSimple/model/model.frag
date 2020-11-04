@@ -37,20 +37,26 @@ void main () {
 
 #ifdef lighting
 
-  vec3 lightDir = normalize(shadowDirection - 1.*vPosition);
-  float cosTheta =
-    clamp(clamp(1.*dot(vNormal, shadowDirection ), 0., 1.)
-    + clamp(1.*dot(vNormal, shadowDirection + vec3(10.,0.,10.)), 0., 1.)
-  +  clamp(1.*dot(vNormal, shadowDirection + vec3(-10., 0., -10.)), 0., 1.), 0., 1.);
+  vec3 lightDir = normalize(shadowDirection - vPosition);
+  float cosTheta = clamp(dot(vNormal, shadowDirection ), 0., 1.)
+  + .5*clamp(dot(vNormal, shadowDirection+vec3(5.,0.,5.)), 0., 1.)
+  + .5*clamp(dot(vNormal, shadowDirection+vec3(-5.,0.,-5.)), 0., 1.);
+
+//  float cosTheta = clamp(
+//  dot(vNormal, shadowDirection )
+//  + dot(vNormal, shadowDirection + vec3(1.,0.,1.))
+//  + dot(vNormal, shadowDirection + vec3(-1.,0.,-1.))
+//  , 0., 1.);
+//  +  clamp(1.*dot(vNormal, shadowDirection + vec3(-10., 0., -10.)), 0., 1.), 0., 1.);
 
   vec4 edgedColor = vColor + edger(vUv, vScale, .5 * pathicleWidth, vNormalOrig)   * (vec4(.5 * smoothstep(10., 2., length(vPosition-eye))));
 
   vec3 ambient = ambientLightAmount * edgedColor.rgb;
   vec3 diffuse = diffuseLightAmount * edgedColor.rgb * cosTheta;
 
-  float v = vColorCorrection + 1.;
+  float v =  1.;
 
-  vec3 color = vec3(ambient + v * diffuse);
+  vec3 color = vec3(ambient + diffuse);
 
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);

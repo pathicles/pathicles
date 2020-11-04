@@ -73,10 +73,11 @@ export default {
               '<strong>und die Beschleunigerphysik</strong> im Berufsverband.',
             image: '/images/story/story-electric.jpg',
             pathicles: {
-              preset: 'story-loop',
+              autoLoop: true,
+              preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                eye: [0, 1, 5],
+                eye: [-1, 1, 7.5],
                 center: [0, 1, 0]
               }
             }
@@ -93,7 +94,7 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                eye: [-5, 1, 5],
+                eye: [0, 1, 5],
                 center: [0, 1, 0]
               }
             }
@@ -110,7 +111,7 @@ export default {
               preset: 'story-dipole',
               data: 'story-dipole.js',
               camera: {
-                eye: [-5, 1, 0],
+                eye: [0, 1, 5],
                 center: [0, 1, 0]
               }
             }
@@ -126,19 +127,19 @@ export default {
               preset: 'story-quadrupole',
               data: 'story-quadrupole.js',
               camera: {
-                eye: [-4, 1.5, -3],
-                center: [0, 1.5, 0]
+                eye: [-7.5, 2, 0],
+                center: [0, 1, 0]
               }
             }
           },
           {
             type: 'options',
             pathicles: {
-              preset: 'story-loop',
-              data: 'story-electric.js',
+              autoLoop: true,
+              preset: 'story-empty',
               camera: {
-                eye: [0, 0.5, 5],
-                center: [0, 0.5, 0]
+                eye: [-7.5, 2, 0],
+                center: [0, 1, 0]
               }
             }
           }
@@ -201,24 +202,46 @@ export default {
       }
       scene.cameraSploints = {
         eye:
-          s - 1 < 0 || s + 1 > this.story.scenes.length - 1
-            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.eye)
+          s === 0 // 1 < 0 || s + 1 > this.story.scenes.length - 1
+            ? [
+                this.story.scenes[0].pathicles.camera.eye,
+                this.story.scenes[0].pathicles.camera.eye,
+                this.story.scenes[0].pathicles.camera.eye,
+                this.story.scenes[0].pathicles.camera.eye
+              ]
+            : s < this.story.scenes.length - 1
+            ? [
+                this.story.scenes[s - 1].pathicles.camera.eye,
+                this.story.scenes[s].pathicles.camera.eye,
+                this.story.scenes[s].pathicles.camera.eye,
+                this.story.scenes[s + 1].pathicles.camera.eye
+              ]
             : [
-                ...[0, 1].map(
-                  () => this.story.scenes[s - 1].pathicles.camera.eye
-                ),
-                ...[2, 3].map(() => this.story.scenes[s].pathicles.camera.eye)
+                this.story.scenes[s - 1].pathicles.camera.eye,
+                this.story.scenes[s].pathicles.camera.eye,
+                this.story.scenes[s].pathicles.camera.eye,
+                this.story.scenes[s].pathicles.camera.eye
               ],
         center:
-          s - 1 < 0 || s + 1 > this.story.scenes.length - 1
-            ? [0, 1, 2, 3].map(() => scene.pathicles.camera.center)
+          s === 0 // 1 < 0 || s + 1 > this.story.scenes.length - 1
+            ? [
+                this.story.scenes[0].pathicles.camera.center,
+                this.story.scenes[0].pathicles.camera.center,
+                this.story.scenes[0].pathicles.camera.center,
+                this.story.scenes[0].pathicles.camera.center
+              ]
+            : s < this.story.scenes.length - 1
+            ? [
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center
+              ]
             : [
-                ...[0, 1].map(
-                  () => this.story.scenes[s - 1].pathicles.camera.center
-                ),
-                ...[2, 3].map(
-                  () => this.story.scenes[s].pathicles.camera.center
-                )
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center,
+                this.story.scenes[s].pathicles.camera.center
               ]
       }
     })

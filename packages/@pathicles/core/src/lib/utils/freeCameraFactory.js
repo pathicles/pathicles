@@ -71,7 +71,6 @@ export default function (regl, options) {
         camera.resize(ctx.viewportWidth / ctx.viewportHeight)
         return camera.state.projection
       },
-      // iProj: (ctx, camera) => invert([], camera.state.projection),
       view: (ctx, camera) => camera.state.view,
       eye: (ctx, camera) => camera.state.eye
     }

@@ -12,9 +12,10 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
   const uniforms = {
     //model
-    bufferLength: model.bufferLength,
+    bufferLength: variables.bufferLength,
+    channelsPerValueCount: variables.channelsPerValueCount,
     particleCount: model.particleCount,
-    stepCount: model.stepCount || model.bufferLength,
+    stepCount: model.stepCount || variables.bufferLength,
     pathicleGap: config.view.pathicleRelativeGap * config.view.pathicleWidth,
     viewRange: regl.prop('viewRange'),
     ambientLightAmount: config.view.ambientLightAmount,
@@ -42,7 +43,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
   function drawDiffuse(props) {
     // eslint-disable-next-line no-unused-vars
-    setParams(config.view, ({}) => {
+    setParams(config.view, () => {
       regl.clear({
         color: [0, 0, 0, 0],
         depth: 1,

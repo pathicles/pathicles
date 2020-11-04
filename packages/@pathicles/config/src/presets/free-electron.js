@@ -2,8 +2,8 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      eye: [2.5, 0.2, 2.5],
-      center: [0, 0, 0]
+      eye: [2, 0.25, 2],
+      center: [0, 0, 0.5]
     }
   },
 
@@ -13,27 +13,19 @@ export const freeElectron = {
 
     mode: 'stepwise',
     stepsPerTick: 1,
-    stepCount: 4
+    stepCount: 11
   },
 
   model: {
-    bufferLength: 5,
+    bufferLength: 11,
     tickDurationOverC: 0.1,
     emitter: {
-      particleCount: 1,
-      particleType: 'ELECTRON',
-      bunchShape: 'COLUMN',
+      position: [0, 0.01, 0],
       direction: [0, 0, 1],
-      position: [1, 10, 100],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0],
-      gamma: 100
-    },
-
-    interactions: {
-      electricField: [0, 0, 0.0],
-      particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+      particleSeparation: 0.0,
+      gamma: 10,
+      particleCount: 1,
+      particleType: 'ELECTRON'
     }
   }
 }

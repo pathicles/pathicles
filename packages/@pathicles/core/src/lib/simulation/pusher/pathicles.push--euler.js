@@ -216,7 +216,7 @@ export default function (regl, { variables, constants }) {
       framebuffer: () => variables[variableName][pathiclesTick % 2],
       uniforms: {
         boundingBoxSize: constants.boundingBoxSize,
-        bufferLength: constants.model.bufferLength,
+        bufferLength: constants.variables.bufferLength,
         particleCount: constants.model.particleCount,
         tick: pathiclesTick,
         halfDeltaT: constants.halfDeltaTOverC,

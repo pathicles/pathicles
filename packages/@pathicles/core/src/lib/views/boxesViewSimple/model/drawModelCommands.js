@@ -36,14 +36,14 @@ export default function (regl, { variables, model, view }, shadow) {
       elements: geometry.cells,
       instances: () =>
         model.particleCount *
-        Math.min(variables.tick.value, model.bufferLength),
+        Math.min(variables.tick.value, variables.bufferLength),
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
         aUV: geometry.uvs,
         aParticle: {
           buffer: regl.buffer(
-            Array(model.particleCount * model.bufferLength)
+            Array(model.particleCount * variables.bufferLength)
               .fill(0)
               .map((_, i) => i % model.particleCount)
           ),
@@ -51,7 +51,7 @@ export default function (regl, { variables, model, view }, shadow) {
         },
         aStep: {
           buffer: regl.buffer(
-            Array(model.particleCount * model.bufferLength)
+            Array(model.particleCount * variables.bufferLength)
               .fill(0)
               .map((_, i) => Math.floor(i / model.particleCount))
           ),
@@ -88,14 +88,15 @@ export default function (regl, { variables, model, view }, shadow) {
           return props.particleColorsAndTypes
         },
         utPositionBuffer: (ctx, props) => {
-          return props.position.buffers[0]
+          return props.position
         },
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
+        channelsPerValueCount: variables.channelsPerValueCount,
         stageGrid_size: view.stageGrid.size / 2,
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
-        pathicleWidth: view.pathicleWidth * 3,
+        pathicleWidth: view.pathicleWidth * 2,
         model: (ctx, props) => {
           modelMatrix = identity([])
           return fromTranslation(modelMatrix, [

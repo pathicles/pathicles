@@ -10,8 +10,8 @@ uniform sampler2D utPositionBuffer;
 uniform sampler2D utVelocityBuffer;
 uniform float tick;
 uniform int variableIdx;
-uniform float rgbaFloatChannel;
-uniform float rgbaFloatChannels;
+uniform float channel;
+uniform float channelsPerValueCount;
 uniform float halfDeltaTOverC;
 uniform float boundingBoxSize;
 uniform vec3 boundingBoxCenter;
@@ -23,7 +23,7 @@ uniform float particleInteraction;
 
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
 
 /*__latticeChunkGLSL__*/
 
@@ -89,10 +89,12 @@ vec4 push_position(float p, float bufferHead, float bufferPosition) {
 
   return (particleData.particleType < .1)
   // photon
-  ? vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
+  ? vec4(position + fourMomentum * halfDeltaTOverC  + nextMomentum * halfDeltaTOverC, nextTime)
   // massive particles
   : vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime);
 }
+
+//  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
 
 
 vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
@@ -149,11 +151,11 @@ vec4 readVariable(float texelParticleIndex, float texelBufferIndex) {
 
 void main () {
   initLatticeData();
-  float texelParticleIndex, texelBufferIndex, texelRgbaFloatChannel;
+  float texelParticleIndex, texelBufferIndex, texelChannel;
 
   texelParticleIndex = floor(gl_FragCoord.x);
-  texelBufferIndex = floor(gl_FragCoord.y/4.);
-  texelRgbaFloatChannel = (rgbaFloatChannels == 4.) ? fract(gl_FragCoord.y/4.)*4. - .5 : 0.;
+  texelBufferIndex = floor(gl_FragCoord.y/channelsPerValueCount);
+  texelChannel = (channelsPerValueCount == 4.) ? fract(gl_FragCoord.y/4.)*4. - .5 : 0.;
 
   float nextBufferPosition = floor(mod(tick, bufferLength + 1.));
   float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
@@ -164,4 +166,6 @@ void main () {
   } else {
     gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex);
   }
+
+//  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, tick);
 }

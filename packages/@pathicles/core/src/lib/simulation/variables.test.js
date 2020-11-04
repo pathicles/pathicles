@@ -4,7 +4,7 @@ import { describe, it, expect } from '@jest/globals'
 
 const {
   jitterPosition,
-  particleTypesArrayFromDescriptor,
+  particleTypesFromDescriptor,
   betaFromGamma,
   createParticleCollection
 } = require('./variables')
@@ -18,19 +18,17 @@ describe('jitterPosition', () => {
 
 describe('particleTypesArrayFromDescriptor', () => {
   it('"PROTON"', () => {
-    const types = particleTypesArrayFromDescriptor('PROTON')
+    const types = particleTypesFromDescriptor('PROTON')
     expect(types.map((t) => t.name)).toEqual(['PROTON'])
   })
 
   it('"PROTON, 3"', () => {
-    const types = particleTypesArrayFromDescriptor('PROTON', 3)
+    const types = particleTypesFromDescriptor('PROTON', 3)
     expect(types.map((t) => t.name)).toEqual(['PROTON', 'PROTON', 'PROTON'])
   })
 
   it('"PROTON ELECTRON PHOTON PROTON"', () => {
-    const types = particleTypesArrayFromDescriptor(
-      'PROTON ELECTRON PHOTON PROTON'
-    )
+    const types = particleTypesFromDescriptor('PROTON ELECTRON PHOTON PROTON')
     expect(types.map((t) => t.name)).toEqual([
       'PROTON',
       'ELECTRON',
@@ -40,7 +38,7 @@ describe('particleTypesArrayFromDescriptor', () => {
   })
 
   it('"PROTON ELECTRON PHOTON PROTON, 10"', () => {
-    const types = particleTypesArrayFromDescriptor(
+    const types = particleTypesFromDescriptor(
       'PROTON ELECTRON PHOTON PROTON',
       10
     )

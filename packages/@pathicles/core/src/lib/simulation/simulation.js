@@ -1,6 +1,6 @@
 'use strict'
 
-import initialize from './pathicles.initialize'
+import { ParticleCollection } from './particle-collection'
 import pushBoris from './pusher/pathicles.push--boris'
 
 import readData from './pathicles.variables.read'
@@ -9,53 +9,50 @@ import { colorCorrection } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
 
 export class Simulation {
-  constructor(regl, configuration, support) {
+  constructor(regl, configuration) {
     this._regl = regl
 
     this._logStore = []
 
     this.configuration = configuration
     this.configuration.simulate = true
-    this.channelsPerValueCount = 4 //configuration.renderToFloat ? 4 : 4
 
-    this.RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
+    const channelsPerValueCount = configuration.channelsPerValueCount
 
+    const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
+
+    const { bufferLength } = configuration.model
     const {
       particleCount,
-      bufferLength,
       fourPositions,
       particleTypes,
       fourVelocities
-    } = (this.initialData = initialize(
-      configuration.model.bufferLength,
-      configuration.model.emitter
-    ))
+    } = (this.initialData = new ParticleCollection(configuration.model.emitter))
 
     const colorCorrections = colorCorrection(
-      particleCount,
       fourPositions,
       configuration.model.emitter.position
     )
 
-    // console.log(Math.min(...colorCorrections))
-
     this.variables = {
-      RTTFloatType: this.RTTFloatType,
+      bufferLength,
+      channelsPerValueCount,
+      RTTFloatType,
       initialData: this.initialData,
       position: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
-        this.RTTFloatType,
-        this.channelsPerValueCount,
+        RTTFloatType,
+        channelsPerValueCount,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
-        this.RTTFloatType,
-        this.channelsPerValueCount,
+        RTTFloatType,
+        channelsPerValueCount,
         fourVelocities
       ),
 
@@ -63,18 +60,16 @@ export class Simulation {
       referencePoint: [0, 0, 0],
       pingPong: 0,
       particleColorsAndTypes: regl.texture({
-        data: particleTypes
-          .map((p) => configuration.colors[p].concat(p))
-          .flat(),
+        data: particleTypes.map((p) => configuration.colors[p].concat(p)),
         shape: [particleCount, 1, 4],
-        type: this.RTTFloatType
+        type: RTTFloatType
       }),
       colorCorrections: regl.texture({
         data: particleTypes
           .map((p, i) => [colorCorrections[i], 0, 0, 0])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: this.RTTFloatType
+        type: RTTFloatType
       }),
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
@@ -86,17 +81,14 @@ export class Simulation {
           ])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: this.RTTFloatType
+        type: RTTFloatType
       })
     }
-
-    // console.log(this.variables)
 
     this.model = {
       halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,
       particleCount: this.initialData.particleCount,
       particleTypes: this.initialData.particleTypes,
-      bufferLength: this.initialData.bufferLength,
       stepCount: this.configuration.runner.stepCount,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
       boundingBoxCenter: this.configuration.model.boundingBoxCenter,
@@ -155,7 +147,7 @@ export class Simulation {
 
   prerender() {
     const batchSize = 1
-    const steps = this.model.bufferLength
+    const steps = this.variables.bufferLength
     const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize)
     if (steps % batchSize > 0) {
       batchSizes.push(steps % batchSize)
@@ -164,14 +156,6 @@ export class Simulation {
 
     batchSizes.forEach((batchSize) => {
       this.push(batchSize)
-
-      // window.prerendered =  readData(this._regl, {
-      //   variables: this.variables,
-      //   model: this.model
-      // })
-      //this.log()
     })
-    // const t1 = performance.now()
-    // console.log('duration: ', t1 - t0)
   }
 }

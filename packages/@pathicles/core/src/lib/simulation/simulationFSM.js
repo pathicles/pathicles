@@ -19,7 +19,7 @@ export default class SimulationFSM {
     this._prerender = prerender
     this._stepCount =
       stepCount < 0
-        ? this._simulation.constants.model.bufferLength - 1
+        ? this._simulation.constants.variables.bufferLength - 1
         : stepCount
     this._stepsPerTick = stepsPerTick
     this._loopCountMax = loops
@@ -71,16 +71,18 @@ export default class SimulationFSM {
         this._simulation.prerender()
         PerformanceLogger.stop()
       }
-      this._simulation.variables.tick.value = this._stepCount
-      this._simulation.push({})
+
+      this._simulation.dump()
       this.fsm = { state: 'paused' }
     } else {
       this.fsm = { state: 'restart' }
     }
+
+    // console.log(this._simulation.variables)
   }
 
   next() {
-    //const stateInitial = this.fsm.state
+    const tick_0 = this._simulation.variables.tick.value
     if (this.fsm.state === 'active') {
       if (this._simulation.variables.tick.value > this._stepCount - 1) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
@@ -89,7 +91,7 @@ export default class SimulationFSM {
           this.fsm.state = 'paused'
         }
       } else {
-        for (let s = 0; s < this._stepsPerTick; s++) {
+        for (let s = 0; s < this._stepsPerTick - 1; s++) {
           this._simulation.push({})
           if (this._simulation.variables.tick.value > this._stepCount) break
         }
@@ -103,17 +105,14 @@ export default class SimulationFSM {
       this._runCount++
       this._simulation.reset({})
       this._simulation.push({})
-      this.fsm.state = this.fsm.state.replace(/restart/, 'active')
+      this.fsm.state = this.fsm.state.replace(
+        /restart/,
+        this._mode === 'stepwise' ? 'paused' : 'active'
+      )
     }
 
-    // if (true || stateInitial !== this.fsm.state) {
-    //   console.log(
-    //     stateInitial +
-    //       ' ==> ' +
-    //       this.fsm.state +
-    //       ' // ' +
-    //       this._simulation.variables.tick.value
-    //   )
-    // }
+    const tick = this._simulation.variables.tick.value
+    const changed = tick !== tick_0
+    return { changed, tick }
   }
 }

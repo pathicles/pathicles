@@ -26,6 +26,7 @@ export default {
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
   renderToFloat: true,
+  channelsPerValueCount: 1,
 
   runner: {
     prerender: true,
@@ -36,17 +37,15 @@ export default {
   },
 
   model: {
+    tickDurationOverC: 0.2,
     bufferLength: 128,
-    tickDurationOverC: 0.5,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-
-      // "row", "column", "cross", "square", "disc"
       bunchShape: 'COLUMN',
       particleCount: 128,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -64,10 +63,7 @@ export default {
     }
   },
 
-  // view
   view: {
-    // lightPosition: [1, 5, 1],
-
     lights: [
       {
         position: [0, 10, 0],
@@ -79,13 +75,9 @@ export default {
     ambientLightAmount: 0.5,
     diffuseLightAmount: 0.5,
 
-    // ssaoEnabled: false,
-
     stageGrid: {
       y: 0,
       size: 18
-      // dark: 1,
-      // light: 0.8
     },
 
     rgbGamma: 1,
@@ -118,12 +110,12 @@ export default {
     // ],ª
 
     camera: {
-      eye: [1, 1, 0],
+      eye: [5, 1, 5],
       center: [0, 1, 0],
 
       fovY: (2 * Math.PI) / (360 / 35),
       dTheta: 0.001,
-      autorotate: false,
+      autorotate: true,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,
       // zoomAboutCursor: false,
@@ -133,7 +125,7 @@ export default {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 50
+      maxDistance: 10
     }
   },
 

@@ -124,12 +124,15 @@ export class ReglSimulatorInstance {
         if (this.config.view.camera.autorotate) {
           this.camera.rotate(-this.config.view.camera.dTheta, 0)
         }
-        const tick = this.simulation.variables.tick.value
-        if (this.simulate) this.pathiclesRunner.next()
+        const { changed } = this.simulate && this.pathiclesRunner.next()
+
+        if (changed) {
+          // console.log(this.simulation.dump())
+        }
         this.camera.tick({})
         if (
           this.camera.state.dirty ||
-          tick !== this.simulation.variables.tick.value
+          changed
           // this.pathiclesRunner.fsm.state === 'active'
         ) {
           this.camera.setCameraUniforms(
@@ -147,17 +150,23 @@ export class ReglSimulatorInstance {
                 colorCorrections: this.simulation.variables.colorCorrections,
                 particleColorsAndTypes: this.simulation.variables
                   .particleColorsAndTypes,
-                position: this.simulation.variables.position,
+                position: this.simulation.variables.position.buffers[
+                  this.simulation.variables.pingPong
+                ],
                 viewRange: [0, 1]
               })
 
               if (this.config.view.showTextures) {
                 this.drawTexture({
-                  texture: this.simulation.variables.position.buffers[tick % 2],
+                  texture: this.simulation.variables.position.buffers[
+                    this.simulation.variables.pingPong
+                  ],
                   x0: 0
                 })
                 this.drawTexture({
-                  texture: this.simulation.variables.velocity.buffers[tick % 2],
+                  texture: this.simulation.variables.velocity.buffers[
+                    this.simulation.variables.pingPong
+                  ],
                   x0: 200
                 })
                 this.drawTexture({

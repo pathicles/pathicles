@@ -5,7 +5,6 @@ import { latticeChunk } from '../lattice/lattice.gsls.js'
 export default function (regl, { variables, model, channelsPerValueCount }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
-
     return regl({
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.pathiclesTick % 2],
@@ -22,11 +21,10 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         variableIdx: variableSlot,
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        bufferLength: model.bufferLength,
         particleCount: model.particleCount,
+        bufferLength: variables.bufferLength,
+        channelsPerValueCount: variables.channelsPerValueCount,
         tick: regl.prop('pathiclesTick'),
-        rgbaFloatChannel: regl.prop('rgbaFloatChannel'),
-        rgbaFloatChannels: regl.prop('rgbaFloatChannels'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -74,8 +72,8 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
       .fill(0)
       .map((_, i) => ({
         pathiclesTick: variables.tick.value,
-        rgbaFloatChannel: i,
-        rgbaFloatChannels: channelsPerValueCount
+        channel: i,
+        channelsPerValueCount: channelsPerValueCount
       }))
 
     pushVelocity(jobs)

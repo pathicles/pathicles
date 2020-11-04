@@ -1,20 +1,4 @@
 precision highp float;
-#pragma glslify: inverse = require(glsl-inverse)
-#pragma glslify: transpose = require(glsl-transpose)
-mat4 lookAt(vec3 eye, vec3 at, vec3 up) {
-  vec3 zaxis = normalize(eye - at);
-  vec3 xaxis = normalize(cross(zaxis, up));
-  vec3 yaxis = cross(xaxis, zaxis);
-  zaxis *= -1.;
-  return mat4(
-  vec4(xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye)),
-  vec4(yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye)),
-  vec4(zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye)),
-  vec4(0, 0, 0, 1)
-  );
-}
-
-
 attribute vec3 aPosition;
 
 attribute vec3 aNormal;
@@ -26,6 +10,7 @@ attribute float aStep;
 uniform float particleCount;
 uniform float bufferLength;
 uniform float stepCount;
+uniform float channelsPerValueCount;
 
 uniform float dt;
 uniform vec2 viewRange;
@@ -35,7 +20,6 @@ uniform float pathicleGap;
 uniform float pathicleHeight;
 uniform float stageGrid_size;
 
-
 uniform sampler2D utColorCorrections;
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D utPositionBuffer;
@@ -43,13 +27,9 @@ uniform sampler2D utVelocityBuffer;
 uniform mat4 projection, view, model;
 uniform vec3 eye;
 
-
 uniform mat4 shadowProjectionMatrix;
 uniform mat4 shadowViewMatrix;
 uniform vec3 shadowDirection;
-uniform float minBias;
-uniform float maxBias;
-
 
 varying float toBeDiscarded;
 varying vec3 vScale;
@@ -63,10 +43,13 @@ varying float vColorCorrection;
 uniform sampler2D shadowMap;
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
 
+#pragma glslify: inverse = require(glsl-inverse)
+#pragma glslify: transpose = require(glsl-transpose)
+#pragma glslify: lookAt = require("@pathicles/core/src/lib/shaders/look-at.glsl");
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
 
 float get_colorCorrection(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
@@ -77,35 +60,6 @@ vec4 get_color(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
   return texture2D(utParticleColorAndType, coords);
 }
-//
-//vec4 get_position(float p, float b) {
-//  vec2 coords = vec2(p , b) / vec2(particleCount, bufferLength);
-//  return texture2D(utPositionBuffer, coords);
-//}
-//
-//vec4 readVariable(sampler2D tex, float p, float b, float c, float d, float e) {
-//
-//  return get_position(p, b);
-//  float x = texture2D(tex,
-//  vec2(p + particleCount * 0., b) /
-//  vec2(particleCount, bufferLength)).x;
-//
-//  float y = texture2D(tex,
-//  vec2(p + particleCount * 0., b) /
-//  vec2(particleCount, bufferLength)).y;
-//
-//  float z = texture2D(tex,
-//  vec2(p + particleCount * 1., b) /
-//  vec2(particleCount, bufferLength)).z;
-//
-//  float w = texture2D(tex,
-//  vec2(p + particleCount * 0., b) /
-//  vec2(particleCount, bufferLength)).w;
-//
-//  return vec4(x, y, z, w);
-//}
-
-
 
 
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
@@ -116,6 +70,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
   float outsideGrid = (fourPosition.x > stageGrid_size || fourPosition.x < -stageGrid_size
   || fourPosition.y > stageGrid_size || fourPosition.y < -stageGrid_size
   || fourPosition.z > stageGrid_size || fourPosition.z < -stageGrid_size) ? 1.0 : 0.0;
+
 
   return (outsideGrid > 0. || undefinedBuffer > 0. || beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
 
@@ -150,7 +105,7 @@ void main () {
 
   vUv = aUV;
 
-  vColor = get_color(aParticle);
+  vColor = get_color(aParticle) * (1. + get_colorCorrection(aParticle));
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, fourPosition);
 
