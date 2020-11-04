@@ -3,9 +3,9 @@
 
 import bspline from 'b-spline'
 import { config } from '@pathicles/config'
-import { VariableBuffers } from '@pathicles/core/src/lib/simulation/utils/pingPongVariableBuffers'
+import { VariableBuffers } from '../simulation/utils/pingPongVariableBuffers'
 
-import { colorCorrection } from '@pathicles/core/src/lib/simulation/utils/colorCorrection'
+import { colorCorrection } from '../simulation/utils/colorCorrection'
 
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
@@ -20,10 +20,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     const particleColorsAndTypes = regl.texture({
       data: Array(particleCount * 4),
-      shape: [particleCount, 1, 4]
-    })
-    const colorCorrections = regl.texture({
-      data: Array(particleCount),
       shape: [particleCount, 1, 4]
     })
 
@@ -61,6 +57,10 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
         // if (scene.presetName === 'story-electric')
         //   console.log({ name: scene.presetName, position: data.position })
+        const colorCorrections = colorCorrection(
+          scene.variables.position.fourPositions,
+          scene.configuration.model.emitter.position
+        )
 
         scene.variables.colorCorrections({
           data: data.particleTypes

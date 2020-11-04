@@ -14,8 +14,6 @@
   "dependencies": {
     "@pathicles/config": "^0.2.0",
     "@pathicles/core": "^0.2.0",
-    "canvas-orbit-camera": "^1.0.2",
-    "detect-gpu": "^2.0.4",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
     "typeface-barlow": "^1.1.13",
@@ -26,14 +24,11 @@
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.2",
-    "fs-extra-plus": "^0.5.19",
-    "jimp": "^0.16.1",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
-    "puppeteer": "^5.4.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "stylus-supremacy": "^2.14.5",
-    "vite": "^1.0.0-rc.8"
+    "vite": "^1.0.0-rc.9"
   }
 }

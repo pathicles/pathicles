@@ -1,5 +1,3 @@
-// import drawBackgroundCommand from './background/drawBackgroundCommands'
-// import drawBoxCommands from './box/drawBoxCommands'
 import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
 import { Shadow } from './shadow/Shadow'
