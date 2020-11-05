@@ -12,11 +12,12 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/polyfill": "^7.12.1",
     "@pathicles/config": "^0.2.0",
+    "b-spline": "^2.0.1",
     "detect-it": "^3.0.5",
     "event-emitter": "^0.3.5",
-    "ogl": "^0.0.60",
-    "b-spline": "^2.0.1",
     "gl-mat4": "^1.2.0",
     "gl-quat": "^1.0.0",
     "gl-texture2d-read-float": "^1.0.1",
@@ -30,14 +31,16 @@
     "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
+    "ogl": "^0.0.60",
     "primitive-cube": "^2.0.1"
   },
   "peerDependencies": {
     "regl": "^2.0.1"
   },
   "devDependencies": {
-    "byte-data": "^19.0.1",
-    "ieee754-buffer": "^2.0.0",
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
     "@jest/globals": "^26.6.2",
     "@petamoriken/float16": "^2.0.0",
     "@rollup/plugin-babel": "^5.2.1",
@@ -47,6 +50,7 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
+    "byte-data": "^19.0.1",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-chai-friendly": "^0.6.0",
@@ -56,14 +60,15 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.1.0",
     "gl": "^4.8.0",
+    "ieee754-buffer": "^2.0.0",
     "jest": "^26.6.3",
     "prettier": "^2.1.2",
     "rollup": "^2.33.1",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-eslint-bundle": "^5.0.2",
-    "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-glslify": "^1.2.0",
-    "rollup-plugin-require-context": "^1.0.1"
+    "rollup-plugin-require-context": "^1.0.1",
+    "rollup-plugin-visualizer": "^4.2.0"
   }
 }

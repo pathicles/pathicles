@@ -23,6 +23,12 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
+    const colorCorrections = regl.texture({
+      data: Array(particleCount * 4),
+      shape: [particleCount, 1, 4],
+      type: RTTFloatType
+    })
+
     scene.variables = {
       referencePoint: [0, 0, 0],
       channelsPerValueCount,
@@ -31,7 +37,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
       pingPong: 0,
       tick: { value: bufferLength },
       particleColorsAndTypes,
-      colorCorrections,
       position: new VariableBuffers(
         regl,
         particleCount,
@@ -55,16 +60,16 @@ export default function (regl, scenes, stateVars, onStateChange) {
           type: RTTFloatType
         })
 
-        // if (scene.presetName === 'story-electric')
-        //   console.log({ name: scene.presetName, position: data.position })
-        const colorCorrections = colorCorrection(
+        const colorCorrectionData = colorCorrection(
           scene.variables.position.fourPositions,
           scene.configuration.model.emitter.position
         )
 
+        // console.log({ colorCorrectionData })
+
         scene.variables.colorCorrections({
           data: data.particleTypes
-            .map((p, i) => [colorCorrections[i], 0, 0, 0])
+            .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
             .flat(),
           shape: [particleCount, 1, 4],
           type: RTTFloatType

@@ -2,6 +2,8 @@
 node_modules
 stats.html
 
+stats.html
+
 # local env files
 .env.local
 .env.*.local

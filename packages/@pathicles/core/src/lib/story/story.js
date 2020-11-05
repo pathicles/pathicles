@@ -157,7 +157,7 @@ export class ReglViewerInstance {
               color: [0, 0, 0, 0],
               depth: 1
             })
-
+            // console.log('xxx', storyState.scene.variables)
             this.view.drawDiffuse({
               colorCorrections: storyState.scene.variables.colorCorrections,
               particleColorsAndTypes:

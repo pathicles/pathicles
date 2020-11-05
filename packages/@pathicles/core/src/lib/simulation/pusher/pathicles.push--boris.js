@@ -32,7 +32,6 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         magneticField: model.interactions.magneticField || [0, 0, 1],
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
-
         utPositionBuffer: (context, props) =>
           variables.position.buffers[(props.pathiclesTick + 1) % 2],
         utVelocityBuffer: (context, props) =>
@@ -42,7 +41,17 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
       },
 
       vert,
-      frag: frag.replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
+      frag: frag
+        .replace('/*__latticeDefinition__*/', model.lattice.toGLSLDefinition())
+        .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
+        .replace(
+          '/*__latticeSize__*/',
+          `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
+            model.lattice.beamline.length || 1
+          }; const int BEAMLINE_ELEMENT_COUNT = ${
+            model.lattice.beamline.length
+          };`
+        )
     })
   }
 

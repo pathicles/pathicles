@@ -53,61 +53,6 @@ export class Lattice {
     })
   }
 
-  segmentIndexForZ(z) {
-    const z_mod = z % this.length()
-    for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
-      if (
-        z_mod >= this.beamline[idx].local_z_min &&
-        z_mod <= this.beamline[idx].local_z_max
-      )
-        return idx
-    }
-  }
-
-  length() {
-    // console.log(this.beamline[this.beamline.length - 1])
-    return (
-      this.beamline.length &&
-      this.beamline[this.beamline.length - 1].local_z_max
-    )
-  }
-
-  toGLSLDefinition() {
-    const myStartEnds = this.startEnds
-    return this.beamline
-      .map(
-        (v, i) =>
-          `beamline[${i}] = BeamlineElement(
-            vec3(${myStartEnds[i].start.join(',')}),
-            vec3(${myStartEnds[i].end.join(',')}),
-            ${LatticeElementTypesArray.indexOf(v.type)},
-            ${v.strength ? v.strength.toFixed(10) : '0.'})`
-      )
-      .join(',')
-  }
-
-  getClosestBeamlineElement(position) {
-    let bestLength = 1000
-    let bestIndex = 0
-
-    const startEnds = this.startEnds
-
-    for (let i = 0; i < this.beamline.length; i++) {
-      // console.log(i);
-      // let bl = this.beamline[i]
-      const currentLength =
-        Math.pow(position[0] - startEnds[i].start[0], 2) +
-        Math.pow(position[1] - startEnds[i].start[1], 2) +
-        Math.pow(position[2] - startEnds[i].start[2], 2)
-      if (currentLength < bestLength) {
-        bestIndex = i
-        bestLength = currentLength
-        // console.log('Bestlength', bestIndex, bestLength)
-      }
-    }
-    return this.beamline[bestIndex]
-  }
-
   get startEnds() {
     let phi = this.origin.phi
     let [x, y, z] = this.origin.position
@@ -161,5 +106,60 @@ export class Lattice {
         return colors['QUAD1']
       return colors[element.type]
     })
+  }
+
+  segmentIndexForZ(z) {
+    const z_mod = z % this.length()
+    for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
+      if (
+        z_mod >= this.beamline[idx].local_z_min &&
+        z_mod <= this.beamline[idx].local_z_max
+      )
+        return idx
+    }
+  }
+
+  length() {
+    // console.log(this.beamline[this.beamline.length - 1])
+    return (
+      this.beamline.length &&
+      this.beamline[this.beamline.length - 1].local_z_max
+    )
+  }
+
+  toGLSLDefinition() {
+    const myStartEnds = this.startEnds
+    return this.beamline
+      .map(
+        (v, i) =>
+          `beamline[${i}] = BeamlineElement(
+            vec3(${myStartEnds[i].start.join(',')}),
+            vec3(${myStartEnds[i].end.join(',')}),
+            ${LatticeElementTypesArray.indexOf(v.type)},
+            ${v.strength ? v.strength.toFixed(10) : '0.'})`
+      )
+      .join(',')
+  }
+
+  getClosestBeamlineElement(position) {
+    let bestLength = 1000
+    let bestIndex = 0
+
+    const startEnds = this.startEnds
+
+    for (let i = 0; i < this.beamline.length; i++) {
+      // console.log(i);
+      // let bl = this.beamline[i]
+      const currentLength =
+        Math.pow(position[0] - startEnds[i].start[0], 2) +
+        Math.pow(position[1] - startEnds[i].start[1], 2) +
+        Math.pow(position[2] - startEnds[i].start[2], 2)
+      if (currentLength < bestLength) {
+        bestIndex = i
+        bestLength = currentLength
+        // console.log('Bestlength', bestIndex, bestLength)
+      }
+    }
+    return this.beamline[bestIndex]
   }
 }

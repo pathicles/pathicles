@@ -14,9 +14,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/polyfill": "^7.12.1",
     "@pathicles/core": "^0.2.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
     "@jest/globals": "^26.6.2",
     "@petamoriken/float16": "^2.0.0",
     "@rollup/plugin-babel": "^5.2.1",
@@ -42,6 +47,7 @@
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-eslint-bundle": "^5.0.2",
     "rollup-plugin-progress": "^1.1.2",
-    "rollup-plugin-require-context": "^1.0.1"
+    "rollup-plugin-require-context": "^1.0.1",
+    "rollup-plugin-visualizer": "^4.2.0"
   }
 }

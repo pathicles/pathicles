@@ -47,11 +47,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
         depth: 1,
         framebuffer: shadow.fbo
       })
-      // regl.clear({
-      //   color: [1, 0, 0, 0],
-      //   depth: 1,
-      //   framebuffer: shadow.fboBlurred
-      // })
+
       shadow.update([
         lightPosition[0],
         lightPosition[1], // Math.sin(time * 2),
@@ -59,7 +55,6 @@ export function boxesViewSimple(regl, { variables, model, config }) {
       ])
 
       config.view.isShadowEnabled && drawModel.shadow(props)
-      // config.view.isShadowEnabled && shadow.blur()({})
       config.view.showAxes &&
         drawAxis([
           { axis: [1, 0, 0] },
@@ -67,7 +62,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
           { axis: [0, 0, 1] }
         ])
 
-      config.view.isStageVisible && drawStage.lighting()
+      config.view.isStageVisible && drawStage.lighting(props)
       drawModel.lighting(props)
       config.view.showVignette && drawVignette.lighting(props)
     })

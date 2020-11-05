@@ -1,9 +1,15 @@
 precision highp float;
 //#extension WEBGL_color_buffer_float : enable
 
+/*__latticeSize__*/
 
 const highp float c = 2.99792458e+8;
 //uniform sampler2D utParticleColorAndType;
+#pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
+
+const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
+const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
+const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 uniform sampler2D utParticleChargesMassesChargeMassRatios;
 uniform sampler2D utPositionBuffer;
@@ -21,11 +27,17 @@ uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
 
+/*__latticeChunkGLSL__*/
+
+
+#pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
 
-/*__latticeChunkGLSL__*/
+
+
+
 
 float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
   vec3 s = step(bottomLeft, v) - step(topRight, v);

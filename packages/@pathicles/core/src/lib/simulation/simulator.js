@@ -124,7 +124,8 @@ export class ReglSimulatorInstance {
         if (this.config.view.camera.autorotate) {
           // this.camera.rotate(0.01, 0)
           this.camera.params.theta = (tick / 300) * 2 * Math.PI
-          this.camera.params.phi = 0.1 * Math.sin((tick / 300) * 2 * Math.PI)
+          this.camera.params.phi =
+            0.1 * Math.sin((tick / 300) * 2 * Math.PI + Math.PI / 2)
         }
         const { changed } = this.simulate && this.pathiclesRunner.next()
 

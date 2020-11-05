@@ -2,8 +2,8 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      eye: [-5, 1, 0],
-      center: [0, 1, 0]
+      eye: [0, 1.5, -5],
+      center: [0, 1.5, 0]
     }
   },
 
