@@ -1,6 +1,5 @@
 #pragma glslify: export(getClosestBeamlineElement);
 
-
 BeamlineElement getBeamlineElement(float id) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     if (float(i) == id) return beamline[i];

@@ -6,7 +6,7 @@
   "main": "dist/pathicles-core.min.js",
   "module": "dist/pathicles-core.esm.js",
   "scripts": {
-    "build": "rollup --config ",
+    "build": "NODE_ENV=production rollup --config ",
     "dev": "rollup --config -w",
     "lint-fix": "eslint --fix src",
     "test:unit": "jest"

@@ -30,14 +30,14 @@ export default {
 
   runner: {
     prerender: true,
-    loops: 0,
+    loops: 10,
     mode: 'framewise',
     stepsPerTick: 4,
-    stepCount: 127
+    stepCount: 256
   },
 
   model: {
-    tickDurationOverC: 0.2,
+    tickDurationOverC: 0.25,
     bufferLength: 128,
     boundingBoxSize: -1,
     emitter: {
@@ -72,8 +72,8 @@ export default {
         size: 10
       }
     ],
-    ambientLightAmount: 0.5,
-    diffuseLightAmount: 0.5,
+    ambientLightAmount: 0.75,
+    diffuseLightAmount: 0.25,
 
     stageGrid: {
       y: 0,
@@ -92,8 +92,8 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: false,
-    texelSize: 1,
+    showTextures: true,
+    showTexturestTexelSize: 1,
     viewRange: [0, 1],
 
     // lights: [
@@ -110,13 +110,17 @@ export default {
     // ],ª
 
     camera: {
-      eye: [5, 0.5, 5],
-      center: [0, 0.25, 0],
+      center: [0, 1.5, 0],
+
+      distance: 2.5,
+      phi: (0 / 360) * 2 * Math.PI,
+      theta: (0 / 360) * 2 * Math.PI,
 
       fovY: (2 * Math.PI) / (360 / 35),
-      dTheta: 0.001,
-      dPhi: 0.001,
-      autorotate: true,
+      autorotate: false,
+      autorotateSpeedDistance: 0.1 * 2 * Math.PI,
+      autorotateSpeedTheta: 0.1 * 2 * Math.PI,
+      autorotateSpeedPhi: 0.1 * 2 * Math.PI,
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,
       // zoomAboutCursor: false,

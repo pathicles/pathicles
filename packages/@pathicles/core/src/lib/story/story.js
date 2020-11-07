@@ -76,16 +76,19 @@ export class ReglViewerInstance {
         viewRange: [0, 0]
       },
       (state) => {
-        if (state.scene.position) this.variables.position = state.scene.position
-        if (state.scene.particleColorsAndTypes) {
-          this.variables.particleColorsAndTypes =
-            state.scene.particleColorsAndTypes
-        }
+        // if (state.scene.position) this.variables.position = state.scene.position
+        // if (state.scene.particleColorsAndTypes) {
+        //   this.variables.particleColorsAndTypes =
+        //     state.scene.particleColorsAndTypes
+        // }
+        // if (state.scene.colorCorrections) {
+        //   this.variables.colorCorrections = state.scene.colorCorrections
+        // }
       }
     )
     this.story.setPosition(0)
 
-    this.variables = this.control.scenes[0].variables
+    this.variables = this.story.getState().scene.variables
     this.model = this.story.getState().scene.model
   }
 
@@ -134,15 +137,19 @@ export class ReglViewerInstance {
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
-        // console.log(viewRange)
 
-        const eye = storyState.scene.cameraPositionBSpline(
-          Math.min(activeSceneProgress, 1)
-        )
-        const target = storyState.scene.cameraTargetBSpline(
-          Math.min(activeSceneProgress, 1)
-        )
-        this.camera.updateEyeCenter(eye, target)
+        activeSceneProgress = Math.min(activeSceneProgress, 1)
+
+        this.camera.params.phi = storyState.scene.cameraBSplines.phi(
+          activeSceneProgress
+        )[0]
+
+        this.camera.params.distance = storyState.scene.cameraBSplines.distance(
+          activeSceneProgress
+        )[0]
+        this.camera.params.theta = storyState.scene.cameraBSplines.theta(
+          activeSceneProgress
+        )[0]
 
         this.camera.tick()
 
@@ -157,7 +164,6 @@ export class ReglViewerInstance {
               color: [0, 0, 0, 0],
               depth: 1
             })
-            // console.log('xxx', storyState.scene.variables)
             this.view.drawDiffuse({
               colorCorrections: storyState.scene.variables.colorCorrections,
               particleColorsAndTypes:

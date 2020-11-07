@@ -4,8 +4,10 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      eye: [0, 1, -7.5],
-      center: [0, 1, 0]
+      center: [0, 0, 0],
+      distance: 10,
+      theta: (-90 / 360) * 2 * Math.PI,
+      phi: (5 / 360) * 2 * Math.PI
     }
   },
 
@@ -13,30 +15,35 @@ export const storyDipole = {
     tickDurationOverC: 0.15,
     emitter: {
       bunchShape: 'SQUARE_XY',
-      particleType: 'ELECTRON ELECTRON',
-      position: [0, 1.5, -7.5],
-      direction: [0, 0, 1],
+      particleType: 'ELECTRON',
+      position: [0, -0.3, -2],
+      direction: [-1, 0.1, 0],
       directionJitter: [0.02, 0.02, 0],
-      positionJitter: [0.02, 0.02, 0],
+      positionJitter: [0.1, 0.1, 0.1],
       gamma: 11.05
     },
-    lattice: {
-      elements: {
-        l: {
-          type: LatticeElementTypes.DRIF,
-          l: 8
-        },
-        d: {
-          type: LatticeElementTypes.SBEN,
-          l: 2,
-          strength: 0.0025
-        }
-      },
-      beamline: ['l', 'd', 'l'],
-      origin: {
-        phi: 0,
-        position: [0, 0.5, -9]
-      }
+    interactions: {
+      particleInteraction: false,
+      electricField: [0, 0, 0],
+      magneticField: [0, 0.01, 0]
     }
+    // lattice: {
+    //   elements: {
+    //     l: {
+    //       type: LatticeElementTypes.DRIF,
+    //       l: 0
+    //     },
+    //     d: {
+    //       type: LatticeElementTypes.SBEN,
+    //       l: 10,
+    //       strength: 0.004
+    //     }
+    //   },
+    //   beamline: ['l', 'd', 'l'],
+    //   origin: {
+    //     phi: 0,
+    //     position: [0, 0.5, -9]
+    //   }
   }
+  // }
 }

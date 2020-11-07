@@ -32,6 +32,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.variables = {
       referencePoint: [0, 0, 0],
       channelsPerValueCount,
+      colorCorrections,
       bufferLength,
       particleCount,
       pingPong: 0,
@@ -49,31 +50,30 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     if (scene.data) {
       scene.data().then(({ data }) => {
-        performance.mark('scene data')
-        scene.variables.position.load(data.position)
+        if (data) {
+          performance.mark('scene data')
+          scene.variables.position.load(data.position)
 
-        scene.variables.particleColorsAndTypes({
-          data: data.particleTypes
-            .map((p) => scene.configuration.colors[p].concat(p))
-            .flat(),
-          shape: [particleCount, 1, 4],
-          type: RTTFloatType
-        })
+          scene.variables.particleColorsAndTypes({
+            data: data.particleTypes
+              .map((p) => scene.configuration.colors[p].concat(p))
+              .flat(),
+            shape: [particleCount, 1, 4],
+            type: RTTFloatType
+          })
 
-        const colorCorrectionData = colorCorrection(
-          scene.variables.position.fourPositions,
-          scene.configuration.model.emitter.position
-        )
-
-        // console.log({ colorCorrectionData })
-
-        scene.variables.colorCorrections({
-          data: data.particleTypes
-            .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
-            .flat(),
-          shape: [particleCount, 1, 4],
-          type: RTTFloatType
-        })
+          const colorCorrectionData = colorCorrection(
+            data.position,
+            scene.configuration.model.emitter.position
+          )
+          scene.variables.colorCorrections({
+            data: data.particleTypes
+              .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
+              .flat(),
+            shape: [particleCount, 1, 4],
+            type: RTTFloatType
+          })
+        }
       })
     }
 
@@ -97,16 +97,25 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene._t1 = t + scene.duration
     scene._t1_normalized = scene._t1 / scenes.duration
     t = scene._t1
-    if (scene.cameraSploints)
-      if (scene.cameraSploints.eye) {
-        scene.cameraPositionBSpline = (t) =>
-          bspline(t, 2, scene.cameraSploints.eye)
+    scene.cameraBSplines = {
+      distance: (x) => bspline(x, 2, scene.cameraSploints.distance),
+      phi: (x) => bspline(x, 2, scene.cameraSploints.phi),
+      theta: (x) => bspline(x, 2, scene.cameraSploints.theta)
 
-        if (scene.cameraSploints.center) {
-          scene.cameraTargetBSpline = (t) =>
-            bspline(t, 2, scene.cameraSploints.center)
-        }
-      }
+      // ,
+      // eye: (t) => bspline(t, 2, scene.cameraSploints.eye),
+      // center: (t) => bspline(t, 2, scene.cameraSploints.center)
+    }
+
+    console.log(scene.cameraSploints.distance)
+    // if (scene.cameraSploints)
+    //   scene.cameraPositionBSpline = (t) =>
+    //     bspline(t, 2, scene.cameraSploints.eye)
+    //
+    // if (scene.cameraSploints.center) {
+    //   scene.cameraTargetBSpline = (t) =>
+    //     bspline(t, 2, scene.cameraSploints.center)
+    // }
   })
 
   const state = {

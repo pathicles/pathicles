@@ -7,6 +7,8 @@
     "prerender": "node ./tools/prerender.js"
   },
   "devDependencies": {
-    "fs-extra-plus": "^0.5.19"
+    "fs-extra-plus": "^0.5.19",
+    "puppeteer": "^5.4.1",
+    "jimp": "^0.16.1"
   }
 }

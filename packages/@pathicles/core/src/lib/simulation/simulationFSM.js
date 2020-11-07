@@ -75,7 +75,7 @@ export default class SimulationFSM {
       this._simulation.dump()
       this.fsm = { state: 'paused' }
     } else {
-      this.fsm = { state: 'restart' }
+      this.fsm = { state: 'active' }
     }
 
     // console.log(this._simulation.variables)
@@ -91,7 +91,16 @@ export default class SimulationFSM {
           this.fsm.state = 'paused'
         }
       } else {
-        for (let s = 0; s < this._stepsPerTick - 1; s++) {
+        // let stepCountReached = false
+        // new Array(this._stepsPerTick).forEach((a) => {
+        //   debugger
+        //   console.log(a)
+        //   if (!stepCountReached)
+        //
+        //     stepCountReached = true
+        // })
+
+        for (let s = 0; s < this._stepsPerTick; s++) {
           this._simulation.push({})
           if (this._simulation.variables.tick.value > this._stepCount) break
         }
@@ -104,7 +113,9 @@ export default class SimulationFSM {
       this._loopCount++
       this._runCount++
       this._simulation.reset({})
-      this._simulation.push({})
+      for (let s = 0; s < this._stepsPerTick; s++) {
+        this._simulation.push({})
+      }
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === 'stepwise' ? 'paused' : 'active'

@@ -1,3 +1,5 @@
+#pragma glslify: export(encodeFloat);
+
 vec4 encodeFloat (float depth) {
   const vec4 bitShift = vec4(
   256 * 256 * 256,
@@ -16,4 +18,4 @@ vec4 encodeFloat (float depth) {
   return comp;
 }
 
-#pragma glslify: export(encodeFloat);
+

@@ -46,6 +46,7 @@
 <script>
 import { watchViewport, unwatchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
+import { config } from '@pathicles/config'
 
 const storyDipole = () =>
   import('@pathicles/prerendered/files/story-dipole.json')
@@ -75,11 +76,7 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-electric',
-              data: 'story-electric.js',
-              camera: {
-                eye: [-1, 1, 7.5],
-                center: [0, 1, 0]
-              }
+              data: 'story-electric.js'
             }
           },
 
@@ -94,8 +91,10 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                eye: [0, 1, 5],
-                center: [0, 1, 0]
+                center: [0, 1, 0],
+                distance: 5,
+                theta: (-90 / 360) * 2 * Math.PI,
+                phi: (15 / 360) * 2 * Math.PI
               }
             }
           },
@@ -109,11 +108,7 @@ export default {
             image: '/images/story/story-dipole.jpg',
             pathicles: {
               preset: 'story-dipole',
-              data: 'story-dipole.js',
-              camera: {
-                eye: [0, 1, 5],
-                center: [0, 1, 0]
-              }
+              data: 'story-dipole.js'
             }
           },
           {
@@ -125,11 +120,7 @@ export default {
             image: '/images/story/story-quadrupole.jpg',
             pathicles: {
               preset: 'story-quadrupole',
-              data: 'story-quadrupole.js',
-              camera: {
-                eye: [-7.5, 2, 0],
-                center: [0, 1, 0]
-              }
+              data: 'story-quadrupole.js'
             }
           },
           {
@@ -138,8 +129,10 @@ export default {
               autoLoop: true,
               preset: 'story-empty',
               camera: {
-                eye: [-7.5, 2, 0],
-                center: [0, 1, 0]
+                center: [0, 1, 0],
+                distance: 10,
+                theta: (-135 / 360) * 2 * Math.PI,
+                phi: (5 / 360) * 2 * Math.PI
               }
             }
           }
@@ -191,6 +184,35 @@ export default {
     )
 
     this.story.scenes.forEach((scene, s) => {
+      scene.presetName = scene.pathicles.preset
+      scene.configuration = config(scene.presetName)
+
+      scene.configuration.view.camera = {
+        ...scene.configuration.view.camera,
+        ...scene.pathicles.camera
+      }
+    })
+
+    console.log(this.story.scenes)
+
+    const cameraBSplointer = (scenes, s, key) => [
+      [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key]],
+      [scenes[s].configuration.view.camera[key]],
+      [
+        scenes[s < scenes.length - 1 && s !== 0 ? s + 1 : s].configuration.view
+          .camera[key]
+      ]
+    ]
+
+    this.story.scenes.forEach((scene, s) => {
+      scene.cameraSploints = {
+        phi: cameraBSplointer(this.story.scenes, s, 'phi'),
+        theta: cameraBSplointer(this.story.scenes, s, 'theta'),
+        distance: cameraBSplointer(this.story.scenes, s, 'distance')
+      }
+    })
+
+    this.story.scenes.forEach((scene, s) => {
       if (scene.pathicles && scene.pathicles.data) {
         if (scene.pathicles.data === 'story-quadrupole.js') {
           scene.data = () => storyQuadrupole().then((r) => r)
@@ -199,50 +221,6 @@ export default {
         } else {
           scene.data = () => storyElectric().then((r) => r)
         }
-      }
-      scene.cameraSploints = {
-        eye:
-          s === 0 // 1 < 0 || s + 1 > this.story.scenes.length - 1
-            ? [
-                this.story.scenes[0].pathicles.camera.eye,
-                this.story.scenes[0].pathicles.camera.eye,
-                this.story.scenes[0].pathicles.camera.eye,
-                this.story.scenes[0].pathicles.camera.eye
-              ]
-            : s < this.story.scenes.length - 1
-            ? [
-                this.story.scenes[s - 1].pathicles.camera.eye,
-                this.story.scenes[s].pathicles.camera.eye,
-                this.story.scenes[s].pathicles.camera.eye,
-                this.story.scenes[s + 1].pathicles.camera.eye
-              ]
-            : [
-                this.story.scenes[s - 1].pathicles.camera.eye,
-                this.story.scenes[s].pathicles.camera.eye,
-                this.story.scenes[s].pathicles.camera.eye,
-                this.story.scenes[s].pathicles.camera.eye
-              ],
-        center:
-          s === 0 // 1 < 0 || s + 1 > this.story.scenes.length - 1
-            ? [
-                this.story.scenes[0].pathicles.camera.center,
-                this.story.scenes[0].pathicles.camera.center,
-                this.story.scenes[0].pathicles.camera.center,
-                this.story.scenes[0].pathicles.camera.center
-              ]
-            : s < this.story.scenes.length - 1
-            ? [
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center
-              ]
-            : [
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center,
-                this.story.scenes[s].pathicles.camera.center
-              ]
       }
     })
 
@@ -338,7 +316,8 @@ export default {
     padding-left var(--page__padding__x)
 
   .scene-content-wrapper
-    z-index 10000
+
+    z-index -10000
     padding var(--page__padding__x)
     padding-bottom $bl(1)
     padding-top $bl(2)

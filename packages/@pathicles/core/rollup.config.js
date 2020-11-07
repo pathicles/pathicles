@@ -9,26 +9,32 @@ import cleanup from 'rollup-plugin-cleanup'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
 
+// eslint-disable-next-line no-undef
+const prod = () => process.env.NODE_ENV === 'production'
+
+const output = [
+  {
+    format: 'esm',
+    file: pkg.module
+  }
+]
+
+if (prod()) {
+  output.push({
+    format: 'cjs',
+    file: pkg.main,
+    plugins: [
+      getBabelOutputPlugin({
+        presets: ['@babel/preset-env'],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]]
+      })
+    ]
+  })
+}
+
 export default {
   input: join('src', 'index.js'),
-  output: [
-    {
-      format: 'esm',
-      file: pkg.module
-    },
-    {
-      format: 'cjs',
-      file: pkg.main,
-      plugins: [
-        getBabelOutputPlugin({
-          presets: ['@babel/preset-env'],
-          plugins: [
-            ['@babel/plugin-transform-runtime', { useESModules: false }]
-          ]
-        })
-      ]
-    }
-  ],
+  output,
   plugins: [
     visualizer({ filename: 'stats.html' }),
     cleanup(),
@@ -40,10 +46,5 @@ export default {
     glslify({ compress: false }),
     bundleSize()
   ],
-  external: ['debug', 'regl'],
-
-  watch: {
-    include: 'src/**',
-    clearScreen: true
-  }
+  external: ['debug', 'regl']
 }

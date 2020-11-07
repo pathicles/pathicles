@@ -2,14 +2,14 @@ export const freeElectron = {
   name: 'free-electron',
   view: {
     camera: {
-      eye: [2, 0.25, 2],
+      distance: 5,
       center: [0, 0, 0.5]
     }
   },
 
   runner: {
-    prerender: true,
-    loops: 0,
+    prerender: false,
+    loops: 1,
 
     mode: 'stepwise',
     stepsPerTick: 1,

@@ -36,11 +36,17 @@ export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
 
 export function jitterDirection({
   direction = [0, 0, 1],
-  directionJitter = [0, 0, 0]
+  directionJitter = [0, 0, 0],
+  localPosition = [0, 0, 0]
 }) {
   const jitteredDirection = new Vec3(
     ...direction.map(
-      (d, i) => d + Math.floor(boundedRandom() * directionJitter[i] * 100) / 100
+      (d, i) =>
+        d +
+        Math.floor(
+          boundedRandom(0, 1) * directionJitter[i] * localPosition[i] * 100
+        ) /
+          100
     )
   )
   return jitteredDirection.normalize()

@@ -23,10 +23,12 @@ function calcPhiThetaDistance(eye, center) {
 export default function (regl, options) {
   // theta -= d[0] < 0 ? Math.PI : 0
 
-  const { phi, theta, distance } = calcPhiThetaDistance(
-    options.eye,
-    options.center
-  )
+  const { phi, theta, distance, autorotate } = options
+
+  // const { phi, theta, distance } = calcPhiThetaDistance(
+  //   options.eye,
+  //   options.center
+  // )
 
   // if (d[1] < 0) phi = -phi // + Math.PI
   const cameraOptions = Object.assign({}, options, {
@@ -42,6 +44,7 @@ export default function (regl, options) {
   })
 
   const aCamera = camera(cameraOptions)
+  aCamera.autorotate = autorotate
   initializeCameraControls(aCamera, regl && regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
     maxDistance: options.maxDistance || 50
@@ -89,6 +92,7 @@ function initializeCameraControls(
 
   interactionEvents(canvas)
     .on('wheel', function (ev) {
+      camera.autorotate = false
       // e.preventDefault()
       // e.stopPropagation()
 
@@ -104,7 +108,7 @@ function initializeCameraControls(
     })
     .on('mousemove', function (ev) {
       if (!ev.active || ev.buttons !== 1) return
-
+      camera.autorotate = false
       if (ev.mods.shift) {
         camera.pan(ev.dx, ev.dy)
       } else if (ev.mods.meta) {
@@ -122,6 +126,7 @@ function initializeCameraControls(
       }
     })
     .on('touchmove', function (ev) {
+      camera.autorotate = false
       if (!ev.active) return
       camera.rotate(
         -ev.dx * radiansPerHalfScreenWidth,

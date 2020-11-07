@@ -4,8 +4,10 @@ export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      eye: [-7.5, 2, 0],
-      center: [0, 1, 0]
+      center: [0, 1, 0],
+      distance: 10,
+      theta: (-135 / 360) * 2 * Math.PI,
+      phi: (5 / 360) * 2 * Math.PI
     }
   },
   model: {
@@ -15,8 +17,8 @@ export const storyQuadrupole = {
       // particleCount: 81,
       direction: [1, 0, 0],
       position: [-7.5, 1.5, 0],
-      directionJitter: [0, 0.02, 0.02],
-      positionJitter: [0, 0.02, 0.02],
+      directionJitter: [0.02, 0.02, 0],
+      positionJitter: [0.1, 0.1, 0.1],
 
       gamma: 4.5
     },
@@ -25,29 +27,29 @@ export const storyQuadrupole = {
       elements: {
         q1: {
           type: LatticeElementTypes.QUAD,
-          strength: 1.2,
+          strength: 1.5,
           l: 2
         },
         q2: {
           type: LatticeElementTypes.QUAD,
-          strength: -1.8,
+          strength: -1.5,
           l: 2
         },
-        l1: {
+        l_4: {
           type: LatticeElementTypes.DRIF,
-          l: 5
+          l: 4
         },
-        l2: {
+        l_1: {
           type: LatticeElementTypes.DRIF,
           l: 1
         },
-        l3: {
+        l_2: {
           type: LatticeElementTypes.DRIF,
           l: 2
         }
       },
-      beamline2: ['l1', 'q1', 'q2', 'l1', 'q3', 'q4', 'l1'],
-      beamline: ['l1', 'q1', 'l2', 'q2', 'l3', 'q1', 'l2', 'q2', 'l1'],
+      beamline2: ['l_4', 'q1', 'q2', 'l_4', 'q3', 'q4', 'l_4'],
+      beamline: ['l_4', 'q1', 'l_1', 'q2', 'l_2', 'q1', 'l_1', 'q2', 'l_4'],
       origin: {
         phi: -Math.PI / 2,
         position: [-10, 0, 0]

@@ -2,8 +2,10 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      eye: [0, 1.5, -5],
-      center: [0, 1.5, 0]
+      center: [0, 1, 0],
+      distance: 10,
+      theta: (-45 / 360) * 2 * Math.PI,
+      phi: (0 / 360) * 2 * Math.PI
     }
   },
 
@@ -11,11 +13,10 @@ export const storyElectric = {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
       bunchShape: 'SQUARE_XY',
-      position: [0, 1.5, -7.5],
+      position: [0, 1.5, -10],
       direction: [0, 0, 1],
-      directionJitter: [0, 0.01, 0.01],
-      positionJitter: [0, 0.01, 0.01],
-
+      directionJitter: [0.02, 0.02, 0],
+      positionJitter: [0.1, 0.1, 0.1],
       gamma: 1.2
     },
 

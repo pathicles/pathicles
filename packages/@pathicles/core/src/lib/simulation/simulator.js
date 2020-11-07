@@ -118,22 +118,29 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
+    const {
+      autorotateSpeedTheta,
+      autorotateSpeedDistance,
+      autorotateSpeedPhi
+    } = this.config.view.camera
     if (this.simulate) this.pathiclesRunner.start()
     const mainloop = () => {
-      return regl.frame(({ tick }) => {
-        if (this.config.view.camera.autorotate) {
-          // this.camera.rotate(0.01, 0)
-          this.camera.params.theta = (tick / 300) * 2 * Math.PI
-          this.camera.params.phi =
-            0.1 * Math.sin((tick / 300) * 2 * Math.PI + Math.PI / 2)
+      return regl.frame(({ time }) => {
+        if (this.camera.autorotate) {
+          this.camera.params.distance =
+            this.config.view.camera.distance +
+            0.1 * Math.sin(autorotateSpeedDistance * time)
+          this.camera.params.theta = autorotateSpeedTheta * time
+          this.camera.params.phi = 0.05 * Math.sin(autorotateSpeedPhi * time)
         }
-        const { changed } = this.simulate && this.pathiclesRunner.next()
+        const { changed, tick } = this.simulate && this.pathiclesRunner.next()
 
+        console.log(tick)
         if (changed) {
           // console.log(this.simulation.dump())
         }
         this.camera.tick()
-        if (this.camera.state.dirty || changed) {
+        if (this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {
               ...this.camera,
@@ -155,19 +162,21 @@ export class ReglSimulatorInstance {
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
                   ],
-                  x0: 0
+                  x0: 0,
+                  scale: this.config.view.showTexturestTexelSize
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
                     this.simulation.variables.pingPong
                   ],
-                  x0: 200
+                  x0: 200,
+                  scale: this.config.view.showTexturestTexelSize
                 })
-                this.drawTexture({
-                  texture: this.view.shadow.fbo,
-                  x0: 400,
-                  scale: 0.5
-                })
+                // this.drawTexture({
+                //   texture: this.view.shadow.fbo,
+                //   x0: 400,
+                //   scale: this.config.view.showTexturestTexelSize
+                // })
               }
             }
           )
