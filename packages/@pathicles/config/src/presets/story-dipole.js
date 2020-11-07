@@ -4,9 +4,8 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      center: [0, 0, 0],
-      distance: 10,
-      theta: (-90 / 360) * 2 * Math.PI,
+      distance: 5,
+      theta: (-135 / 360) * 2 * Math.PI,
       phi: (5 / 360) * 2 * Math.PI
     }
   },
@@ -16,10 +15,10 @@ export const storyDipole = {
     emitter: {
       bunchShape: 'SQUARE_XY',
       particleType: 'ELECTRON',
-      position: [0, -0.3, -2],
-      direction: [-1, 0.1, 0],
-      directionJitter: [0.02, 0.02, 0],
-      positionJitter: [0.1, 0.1, 0.1],
+      position: [0, -0.4, -2],
+      direction: [-1, 0.2, 0],
+      directionJitter: [0.02, 0.02, 0.02],
+      positionJitter: [0.2, 0.2, 0.2],
       gamma: 11.05
     },
     interactions: {

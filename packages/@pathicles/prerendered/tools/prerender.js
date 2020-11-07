@@ -56,7 +56,9 @@ const queryString = '&debug=false&print=true&prerender=true'
     const page = await browser.newPage()
     const preset = presets[i]
     await page.setViewport({ width, height, deviceScaleFactor })
-    await page.goto(urlBase + '?prerender=1&presetName=' + preset + queryString)
+    await page.goto(
+      urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
+    )
     await page.waitForTimeout(1000)
 
     await page.screenshot({

@@ -2,10 +2,8 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [0, 1, 0],
-      distance: 10,
-      theta: (-45 / 360) * 2 * Math.PI,
-      phi: (0 / 360) * 2 * Math.PI
+      theta: (-30 / 360) * 2 * Math.PI,
+      phi: (-5 / 360) * 2 * Math.PI
     }
   },
 
@@ -15,8 +13,8 @@ export const storyElectric = {
       bunchShape: 'SQUARE_XY',
       position: [0, 1.5, -10],
       direction: [0, 0, 1],
-      directionJitter: [0.02, 0.02, 0],
-      positionJitter: [0.1, 0.1, 0.1],
+      directionJitter: [0.02, 0.02, 0.02],
+      positionJitter: [0.2, 0.2, 0.2],
       gamma: 1.2
     },
 

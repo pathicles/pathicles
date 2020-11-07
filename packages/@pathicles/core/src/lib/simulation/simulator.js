@@ -135,7 +135,6 @@ export class ReglSimulatorInstance {
         }
         const { changed, tick } = this.simulate && this.pathiclesRunner.next()
 
-        console.log(tick)
         if (changed) {
           // console.log(this.simulation.dump())
         }

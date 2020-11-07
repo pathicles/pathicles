@@ -87,6 +87,9 @@ export default {
     if (parsedUrl.searchParams.get('prerender')) {
       this.config.runner.prerender = true
     }
+    if (parsedUrl.searchParams.get('debug') === '0') {
+      this.config.view.showTextures = false
+    }
 
     this.$nextTick(() => {
       watchViewport(this.handleViewportChange)
@@ -138,7 +141,6 @@ export default {
         // history.pushState({}, null, '/story')
       }
       this.config = loadConfig(this.presetName)
-      // console.log(this.config)
       this.reglInstance.loadConfig(this.config)
     },
     update(configModel) {

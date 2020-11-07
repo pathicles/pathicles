@@ -5,7 +5,8 @@ import saveCanvas from './saveCanvas'
 const onDocumentKeyDown = (app) => (event) => {
   event.stopPropagation()
   // event.preventDefault()
-  const delta = -0.005
+  const delta = app.config.view.camera.autorotateSpeedTheta / 10
+  const dDistance = 0.1
   if (event.shiftKey) {
     switch (event.code) {
       case 'ArrowLeft':
@@ -24,16 +25,16 @@ const onDocumentKeyDown = (app) => (event) => {
   } else {
     switch (event.code) {
       case 'ArrowLeft':
-        app.camera.pan(-delta, 0)
+        app.camera.pan(dDistance, 0)
         break
       case `ArrowUp`:
-        app.camera.pan(0, +delta)
+        app.camera.pan(0, -dDistance)
         break
       case 'ArrowRight':
-        app.camera.pan(+delta, 0)
+        app.camera.pan(-dDistance, 0)
         break
       case 'ArrowDown':
-        app.camera.pan(0, -delta)
+        app.camera.pan(0, dDistance)
         break
     }
   }

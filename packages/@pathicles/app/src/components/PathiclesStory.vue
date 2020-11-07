@@ -91,10 +91,8 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                center: [0, 1, 0],
-                distance: 5,
-                theta: (-90 / 360) * 2 * Math.PI,
-                phi: (15 / 360) * 2 * Math.PI
+                distance: 10,
+                theta: (-90 / 360) * 2 * Math.PI
               }
             }
           },

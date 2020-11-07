@@ -29,7 +29,7 @@ export default {
   channelsPerValueCount: 1,
 
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 10,
     mode: 'framewise',
     stepsPerTick: 4,
@@ -44,7 +44,7 @@ export default {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'COLUMN',
-      particleCount: 128,
+      particleCount: 121,
       particleSeparation: 0.05,
       gamma: 0,
       position: [0, 0, 0],
@@ -92,8 +92,8 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: true,
-    showTexturestTexelSize: 1,
+    showTextures: false,
+    showTextureTexelSize: 1,
     viewRange: [0, 1],
 
     // lights: [
@@ -110,9 +110,9 @@ export default {
     // ],ª
 
     camera: {
-      center: [0, 1.5, 0],
+      center: [0, 1, 0],
 
-      distance: 2.5,
+      distance: 5,
       phi: (0 / 360) * 2 * Math.PI,
       theta: (0 / 360) * 2 * Math.PI,
 
@@ -130,7 +130,7 @@ export default {
       near: 0.0001,
 
       minDistance: 0.1,
-      maxDistance: 10
+      maxDistance: 20
     }
   },
 

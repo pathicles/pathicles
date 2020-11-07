@@ -74,12 +74,15 @@ vec3 getB(vec3 position) {
 
   vec3 B = magneticField;
 
+  vec3 localPosition = position - vec3(0., 1.5, 0.);
+
   if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
     B += vec3(0., ble.strength, 0.);
   } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
-    B += (ble.strength > 0.) ?
-    ble.strength * vec3(0, position.z, position.y - 1.5)
-    : abs(ble.strength) * vec3(0, -position.z, -(position.y- 1.5));
+    B += abs(ble.strength)  *
+    ((ble.strength > 0.)
+    ? vec3(localPosition.y, localPosition.x, 0)
+    : vec3(-(localPosition.y), -localPosition.x, 0.));
   }
   return B;
 }
@@ -179,5 +182,5 @@ void main () {
     gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex);
   }
 
-//  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, tick);
+  //  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, tick);
 }
