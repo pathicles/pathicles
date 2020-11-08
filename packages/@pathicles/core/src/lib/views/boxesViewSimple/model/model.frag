@@ -38,8 +38,8 @@ void main () {
 #ifdef lighting
 
   vec3 lightDir = normalize(shadowDirection - vPosition);
-  float cosTheta = .25*clamp(dot(vNormal, shadowDirection), 0., 1.)
-  + .5*clamp(dot(vNormal, shadowDirection+vec3(1.,0.,1.)), 0., 1.)
+  float cosTheta = .5*clamp(dot(vNormal, shadowDirection), 0., 1.)
+  + 1.5*clamp(dot(vNormal, shadowDirection+vec3(1.,0.,1.)), 0., 1.)
   + .5*clamp(dot(vNormal, shadowDirection+vec3(-1.,0.,-1.)), 0., 1.);
 
 //  float cosTheta = clamp(

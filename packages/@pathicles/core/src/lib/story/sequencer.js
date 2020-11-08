@@ -15,8 +15,8 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     const RTTFloatType = 'float'
     const channelsPerValueCount = scene.configuration.channelsPerValueCount
-    const particleCount = 128 //scene.configuration.model.emitter.particleCount
-    const bufferLength = scene.configuration.bufferLength || 128
+    const particleCount = scene.configuration.model.emitter.particleCount
+    const bufferLength = scene.configuration.model.bufferLength
 
     const particleColorsAndTypes = regl.texture({
       data: Array(particleCount * 4),
@@ -107,7 +107,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       // center: (t) => bspline(t, 2, scene.cameraSploints.center)
     }
 
-    console.log(scene.cameraSploints.distance)
+    // console.log(scene.cameraSploints.distance)
     // if (scene.cameraSploints)
     //   scene.cameraPositionBSpline = (t) =>
     //     bspline(t, 2, scene.cameraSploints.eye)

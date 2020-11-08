@@ -105,7 +105,7 @@ void main () {
 
   vUv = aUV;
 
-  vColor = get_color(aParticle) * (1. + get_colorCorrection(aParticle));
+  vColor = get_color(aParticle) * (1. + .5*get_colorCorrection(aParticle));
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, fourPosition);
 
@@ -122,7 +122,7 @@ void main () {
 
   float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? .5 : 0.;
 //  vColorCorrection = aColorCorrection;//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
-  vColorCorrection = get_colorCorrection(aParticle);//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
+  vColorCorrection = -0.; //get_colorCorrection(aParticle);//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
 
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
   //  gl_Position = vec4(vShadowCoord, 1.);
