@@ -6,6 +6,7 @@
     select(v-model="presetName" v-on:change="onChange($event)")
       option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
       option(value="story" ) STORY
+    .debug.debug-only {{vp}}
   .canvas-container(ref="container")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--      dat-gui(:model="configModel" @change="onChange")-->
@@ -44,7 +45,8 @@ export default {
       config: {},
       configModel: {},
       windowHeight: 0,
-      windowWidth: 0
+      windowWidth: 0,
+      vp: null
     }
   },
   computed: {

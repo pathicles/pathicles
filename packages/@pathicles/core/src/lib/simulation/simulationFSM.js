@@ -75,6 +75,10 @@ export default class SimulationFSM {
       this._simulation.dump()
       this.fsm = { state: 'paused' }
     } else {
+      for (let s = 0; s < this._stepsPerTick; s++) {
+        this._simulation.push({})
+      }
+
       this.fsm = { state: 'active' }
     }
 

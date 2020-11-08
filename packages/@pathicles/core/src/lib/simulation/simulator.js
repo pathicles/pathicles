@@ -136,7 +136,7 @@ export class ReglSimulatorInstance {
         const { changed, tick } = this.simulate && this.pathiclesRunner.next()
 
         if (changed) {
-          // console.log(this.simulation.dump())
+          console.log(tick, this.simulation.variables.tick.value)
         }
         this.camera.tick()
         if (this.camera.state.dirty) {
