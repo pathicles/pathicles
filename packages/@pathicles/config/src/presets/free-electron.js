@@ -3,7 +3,6 @@ export const freeElectron = {
   view: {
     camera: {
       center: [0, 0, 0.5],
-
       distance: 2,
       phi: (15 / 360) * 2 * Math.PI,
       theta: (45 / 360) * 2 * Math.PI
@@ -21,7 +20,7 @@ export const freeElectron = {
 
   model: {
     bufferLength: 11,
-    tickDurationOverC: 0.1,
+    iterationStepDurationOverC: 0.1,
     emitter: {
       position: [0, 0.01, 0],
       direction: [0, 0, 1],

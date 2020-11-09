@@ -4,8 +4,8 @@ export default {
   name: 'gyrotest-1-electron',
   view: {
     camera: {
-      eye: [3, 3, 0],
-      center: [0, 0, 0]
+      center: [0, 0, 0],
+      distance: 5
       //   center: [0.5, 0, 0],
       //   theta: (2 * Math.PI) / (360 / 45),
       //   phi: (2 * Math.PI) / (360 / 15),
@@ -14,19 +14,19 @@ export default {
   },
 
   runner: {
-    stepsPerTick: 8,
-    stepCount: 83
+    stepsPerTick: 1,
+    stepCount: 10
   },
 
   model: {
-    bufferLength: 128,
-    tickDurationOverC: 0.1,
+    bufferLength: 11,
+    iterationStepDurationOverC: 1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [0, 0.05, 0],
+      position: [-1, 0.0015, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.55

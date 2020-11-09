@@ -38,7 +38,7 @@ varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
 varying vec3 vShadowCoord;
-varying vec4 vColor;
+varying vec3 vColor;
 varying float vColorCorrection;
 uniform sampler2D shadowMap;
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
@@ -50,6 +50,26 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
+
+vec3 rgb2hsv(vec3 c)
+{
+  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+  float d = q.x - min(q.w, q.y);
+  float e = 1.0e-10;
+  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+
 
 float get_colorCorrection(float p) {
   vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
@@ -63,6 +83,7 @@ vec4 get_color(float p) {
 
 
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
+
 
   float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
   float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * stepCount) ? 1.0 : 0.0;
@@ -105,7 +126,12 @@ void main () {
 
   vUv = aUV;
 
-  vColor = get_color(aParticle) * (1. + .5*get_colorCorrection(aParticle));
+//  vec3 rgb2hsvColor = rgb2hsv(get_color(aParticle).rgb);
+//  rgb2hsvColor.z *= (get_colorCorrection(aParticle));
+//  vColor =  hsv2rgb(rgb2hsvColor);
+
+  vColor = get_color(aParticle).rgb;
+  vColorCorrection = get_colorCorrection(aParticle);
 
   toBeDiscarded = calculateToBeDiscarded(previousFourPosition, fourPosition);
 
@@ -122,10 +148,10 @@ void main () {
 
   float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? .5 : 0.;
 //  vColorCorrection = aColorCorrection;//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
-  vColorCorrection = -0.; //get_colorCorrection(aParticle);//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
+//  vColorCorrection = -1. + get_colorCorrection(aParticle);//1. - amountInLight * 1.; //aColorCorrection;; //1.-amountInLight; //aColorCorrection;
 
   gl_Position = projection * view *  model * vec4(vPosition, 1.0);
-  //  gl_Position = vec4(vShadowCoord, 1.);
+
 
   #endif// lighting
 

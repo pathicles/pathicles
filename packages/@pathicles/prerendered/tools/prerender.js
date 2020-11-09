@@ -4,30 +4,10 @@ const prerender = require('puppeteer')
 const path = require('path')
 const fs = require('fs-extra-plus')
 
-const Jimp = require('jimp')
+const sharp = require('sharp')
 
-// const imagemin = require('imagemin')
-// const ImageminGm = require('imagemin-gm')
-// const imageminGm = new ImageminGm()
-// const imageminJpegoptim = require('imagemin-jpegoptim')
-// const imageminPngquant = require('imagemin-pngquant')
-
-// const plugins = [
-//   imageminGm.resize({ width: 200, height: 200, gravity: 'Center' })
-// ]
-
-// const Type = require('js-binary').Type
-// const binarySchema = new Type({
-
-//   tick: 'int',
-//   data: {
-//     position: ['int'],
-//     particleTypes: ['int']
-//   }
-// })
-
-const width = 750
-const height = 750
+const defaultWidth = 750
+const defaultHeight = 750
 const deviceScaleFactor = 2
 
 const port = process.env.npm_package_config_devPort || 9303
@@ -41,69 +21,104 @@ const outputFolderPath = path.join(
   'files'
 )
 
-let presets = ['story-electric', 'story-quadrupole', 'story-dipole']
+const jobs = [
+  { preset: 'story-electric' },
+  { preset: 'story-quadrupole' },
+  { preset: 'story-dipole' }
+]
 
 const queryString = '&debug=false&print=true&prerender=true'
 
-;(async () => {
+// eslint-disable-next-line no-unused-vars
+const createImages = async () => {
   const browser = await prerender.launch({
     headless: false
     // executablePath:
     //   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   })
 
-  for (let i = 0; i < presets.length; i++) {
+  for (let i = 0; i < jobs.length; i++) {
     const page = await browser.newPage()
-    const preset = presets[i]
-    await page.setViewport({ width, height, deviceScaleFactor })
+    const preset = jobs[i].preset
+    const width = jobs[i].width || defaultWidth
+    const height = jobs[i].height || defaultHeight
+    await page.setViewport({
+      width,
+      height,
+      deviceScaleFactor
+    })
     await page.goto(
       urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
     )
     await page.waitForTimeout(1000)
 
     await page.screenshot({
-      quality: 100,
-      path: path.join(outputFolderPath, 'orig', preset + '.jpg')
+      path: path.join(outputFolderPath, 'orig', preset + '.png')
     })
 
     const dump = await page.evaluate(() => {
       return window.pathicles.simulation.dump()
     })
-    if (dump.data) {
-      let reducedData = {
-        // tick: dump.tick,
-        // configuration: dump.configuration,
-        data: {
-          position: dump.data.position.map((d) => d),
-          particleTypes: dump.data.particleTypes
-        }
+    fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
+      iterationStep: dump.iterationStep,
+      configuration: dump.configuration,
+      data: {
+        position: dump.data.position.map((d) => d),
+        particleTypes: dump.data.particleTypes
       }
-
-      fs.writeFileSync(
-        path.join(outputFolderPath, preset + '.json'),
-        JSON.stringify(reducedData)
-      )
-    }
+    })
   }
-
-  const images = await fs.glob(outputFolderPath + '/orig/*.{jpg,png}')
-  console.log(images)
-  await Promise.all(
-    images.map(async (imgPath) => {
-      const image = await Jimp.read(imgPath)
-      await image.resize(width * 2, height * 2)
-      await image.quality(60)
-      await image.writeAsync(imgPath.replace('orig', 'compressed@2x'))
-    })
-  )
-  await Promise.all(
-    images.map(async (imgPath) => {
-      const image = await Jimp.read(imgPath)
-      await image.resize(width, height)
-      await image.quality(60)
-      await image.writeAsync(imgPath.replace('orig', 'compressed@1x'))
-    })
-  )
-
   await browser.close()
+}
+
+const imagePaths = async () => {
+  return await fs.glob(outputFolderPath + '/orig/*.png')
+}
+
+const convertImagesSharp = async () => {
+  const qualities = [20, 40, 60, 80]
+
+  await Promise.all(
+    (await imagePaths()).map(async (imgPath) => {
+      let image_1 = await sharp(imgPath)
+        .resize(defaultWidth, defaultHeight)
+        .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
+          console.log(err, info)
+        })
+
+      let image_2 = await sharp(imgPath)
+        .resize(defaultWidth * 2, defaultHeight * 2)
+        .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
+          console.log(err, info)
+        })
+
+      qualities.forEach((quality) => {
+        image_1
+          .toFormat('jpg', { quality })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@1x')
+              .replace('.png', `_${quality}.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+        image_2
+          .toFormat('jpg', { quality })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@2x')
+              .replace('.png', `_${quality}.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+      })
+    })
+  )
+}
+
+;(async () => {
+  await createImages()
+  await convertImagesSharp()
 })()

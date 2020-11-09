@@ -75,10 +75,6 @@ export default class SimulationFSM {
       this._simulation.dump()
       this.fsm = { state: 'paused' }
     } else {
-      for (let s = 0; s < this._stepsPerTick; s++) {
-        this._simulation.push({})
-      }
-
       this.fsm = { state: 'active' }
     }
 
@@ -86,9 +82,12 @@ export default class SimulationFSM {
   }
 
   next() {
-    const tick_0 = this._simulation.variables.tick.value
+    const tick_0 = this._simulation.variables.iterationStep.value
     if (this.fsm.state === 'active') {
-      if (this._simulation.variables.tick.value > this._stepCount - 1) {
+      if (
+        this._simulation.variables.iterationStep.value >
+        this._stepCount - 1
+      ) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
           this.fsm.state = 'restart'
         } else {
@@ -106,7 +105,8 @@ export default class SimulationFSM {
 
         for (let s = 0; s < this._stepsPerTick; s++) {
           this._simulation.push({})
-          if (this._simulation.variables.tick.value > this._stepCount) break
+          if (this._simulation.variables.iterationStep.value > this._stepCount)
+            break
         }
 
         if (this._mode === 'stepwise') {
@@ -126,7 +126,7 @@ export default class SimulationFSM {
       )
     }
 
-    const tick = this._simulation.variables.tick.value
+    const tick = this._simulation.variables.iterationStep.value
     const changed = tick !== tick_0
     return { changed, tick }
   }

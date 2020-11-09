@@ -10,15 +10,11 @@ export function boxesViewSimple(regl, { variables, model, config }) {
 
   const uniforms = {
     //model
-    bufferLength: variables.bufferLength,
-    channelsPerValueCount: variables.channelsPerValueCount,
-    particleCount: model.particleCount,
-    stepCount: model.stepCount || variables.bufferLength,
-    pathicleGap: config.view.pathicleRelativeGap * config.view.pathicleWidth,
+    stageGrid_size: config.view.stageGrid.size / 2,
     viewRange: regl.prop('viewRange'),
     ambientLightAmount: config.view.ambientLightAmount,
     diffuseLightAmount: config.view.diffuseLightAmount,
-    dt: 2 * model.halfDeltaTOverC
+    dt: 2 * config.model.iterationStepDurationOverC
   }
 
   const setParams = regl({

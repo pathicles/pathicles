@@ -35,6 +35,7 @@ export class Simulation {
     )
 
     this.variables = {
+      particleCount,
       bufferLength,
       channelsPerValueCount,
       RTTFloatType,
@@ -56,7 +57,7 @@ export class Simulation {
         fourVelocities
       ),
 
-      tick: { value: 0 },
+      iterationStep: { value: 0 },
       referencePoint: [0, 0, 0],
       pingPong: 0,
       particleColorsAndTypes: regl.texture({
@@ -86,7 +87,7 @@ export class Simulation {
     }
 
     this.model = {
-      halfDeltaTOverC: this.configuration.model.tickDurationOverC / 2,
+      halfDeltaTOverC: this.configuration.model.iterationStepDurationOverC / 2,
       particleCount: this.initialData.particleCount,
       particleTypes: this.initialData.particleTypes,
       stepCount: this.configuration.runner.stepCount,
@@ -105,8 +106,7 @@ export class Simulation {
     if (configuration.simulate) {
       this.push = pushBoris(this._regl, {
         variables: this.variables,
-        model: this.model,
-        channelsPerValueCount: this.channelsPerValueCount
+        model: this.model
       })
     }
   }
@@ -117,17 +117,24 @@ export class Simulation {
         variables: this.variables,
         model: this.model
       })
-      this._logStore.push({ tick: this.variables.tick.value, data: data })
+      this._logStore.push({
+        iterationStep: this.variables.iterationStep.value,
+        data: data
+      })
     }
   }
 
   dump() {
     return {
-      configuration: this.configuration,
-      ...readData(this._regl, {
-        variables: this.variables,
-        model: this.model
-      })
+      configuration: JSON.parse(JSON.stringify(this.configuration)),
+      ...readData(
+        this._regl,
+        {
+          variables: this.variables,
+          model: this.model
+        },
+        1000
+      )
     }
   }
 
@@ -142,7 +149,7 @@ export class Simulation {
   reset() {
     this.variables.position.load(this.initialData.fourPositions)
     this.variables.velocity.load(this.initialData.fourVelocities)
-    this.variables.tick.value = 0
+    this.variables.iterationStep.value = 0
   }
 
   prerender() {

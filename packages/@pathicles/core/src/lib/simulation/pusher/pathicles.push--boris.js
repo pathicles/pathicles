@@ -2,12 +2,12 @@ import vert from './boris.vert'
 import frag from './boris.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
 
-export default function (regl, { variables, model, channelsPerValueCount }) {
+export default function (regl, { variables, model }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
     return regl({
       framebuffer: (context, props) =>
-        variables[variableName].buffers[props.pathiclesTick % 2],
+        variables[variableName].buffers[props.iterationStep % 2],
       primitive: 'triangles',
       elements: null,
       offset: 0,
@@ -24,7 +24,8 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         particleCount: model.particleCount,
         bufferLength: variables.bufferLength,
         channelsPerValueCount: variables.channelsPerValueCount,
-        tick: regl.prop('pathiclesTick'),
+        channel: regl.prop('channel'),
+        iterationStep: regl.prop('iterationStep'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -33,11 +34,11 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
         utPositionBuffer: (context, props) =>
-          variables.position.buffers[(props.pathiclesTick + 1) % 2],
+          variables.position.buffers[(props.iterationStep + 1) % 2],
         utVelocityBuffer: (context, props) =>
           variableName === 'position'
-            ? variables.velocity.buffers[props.pathiclesTick % 2]
-            : variables.velocity.buffers[(props.pathiclesTick + 1) % 2]
+            ? variables.velocity.buffers[props.iterationStep % 2]
+            : variables.velocity.buffers[(props.iterationStep + 1) % 2]
       },
 
       vert,
@@ -55,36 +56,26 @@ export default function (regl, { variables, model, channelsPerValueCount }) {
     })
   }
 
-  const pushVelocity = pushFactory(
-    'velocity',
-    'utVelocityBuffer',
-    1,
-    channelsPerValueCount
-  )
-  const pushPosition = pushFactory(
-    'position',
-    'utPositionBuffer',
-    0,
-    channelsPerValueCount
-  )
+  const pushVelocity = pushFactory('velocity', 'utVelocityBuffer', 1)
+  const pushPosition = pushFactory('position', 'utPositionBuffer', 0)
 
   return () => {
-    variables.tick.value++
-    const z = variables.tick.value * model.halfDeltaTOverC * 2
+    variables.iterationStep.value++
+    const z = variables.iterationStep.value * model.halfDeltaTOverC * 2
 
-    variables.pingPong = variables.tick.value % 2
+    variables.pingPong = variables.iterationStep.value % 2
     variables.referencePoint =
       model.lattice.beamline.length &&
       model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
-    const jobs = Array(channelsPerValueCount)
+    const jobs = Array(variables.channelsPerValueCount)
       .fill(0)
       .map((_, i) => ({
-        pathiclesTick: variables.tick.value,
-        channel: i,
-        channelsPerValueCount: channelsPerValueCount
+        iterationStep: variables.iterationStep.value,
+        channel: i
       }))
 
+    // console.log(jobs)
     pushVelocity(jobs)
     pushPosition(jobs)
   }

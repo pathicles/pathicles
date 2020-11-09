@@ -2,7 +2,6 @@
 /* eslint-env browser */
 
 import bspline from 'b-spline'
-import { config } from '@pathicles/config'
 import { VariableBuffers } from '../simulation/utils/pingPongVariableBuffers'
 
 import { colorCorrection } from '../simulation/utils/colorCorrection'
@@ -10,8 +9,10 @@ import { colorCorrection } from '../simulation/utils/colorCorrection'
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
-    scene.presetName = scene.pathicles.preset
-    scene.configuration = config(scene.presetName)
+    // scene.data().then(({ data }) => {
+    const { data, configuration } = scene.data
+    scene.presetName = configuration.presetName
+    scene.configuration = configuration
 
     const RTTFloatType = 'float'
     const channelsPerValueCount = scene.configuration.channelsPerValueCount
@@ -36,7 +37,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       bufferLength,
       particleCount,
       pingPong: 0,
-      tick: { value: bufferLength },
+      iterationStep: { value: bufferLength },
       particleColorsAndTypes,
       position: new VariableBuffers(
         regl,
@@ -48,47 +49,42 @@ export default function (regl, scenes, stateVars, onStateChange) {
       )
     }
 
-    if (scene.data) {
-      scene.data().then(({ data }) => {
-        if (data) {
-          performance.mark('scene data')
-          scene.variables.position.load(data.position)
+    performance.mark('scene data')
+    scene.variables.position.load(data.position)
 
-          scene.variables.particleColorsAndTypes({
-            data: data.particleTypes
-              .map((p) => scene.configuration.colors[p].concat(p))
-              .flat(),
-            shape: [particleCount, 1, 4],
-            type: RTTFloatType
-          })
+    scene.variables.particleColorsAndTypes({
+      data: data.particleTypes
+        .map((p) => scene.configuration.colors[p].concat(p))
+        .flat(),
+      shape: [particleCount, 1, 4],
+      type: RTTFloatType
+    })
 
-          const colorCorrectionData = colorCorrection(
-            data.position,
-            scene.configuration.model.emitter.position
-          )
-          scene.variables.colorCorrections({
-            data: data.particleTypes
-              .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
-              .flat(),
-            shape: [particleCount, 1, 4],
-            type: RTTFloatType
-          })
-        }
-      })
-    }
+    const colorCorrectionData = colorCorrection(
+      data.position,
+      configuration.model.emitter.position
+    )
+
+    scene.variables.colorCorrections({
+      data: data.particleTypes
+        .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
+        .flat(),
+      shape: [particleCount, 1, 4],
+      type: RTTFloatType
+    })
 
     scene.model = {
-      halfDeltaTOverC: scene.configuration.model.tickDurationOverC / 2,
+      halfDeltaTOverC: configuration.model.iterationStepDurationOverC / 2,
       particleCount: particleCount,
       particleTypes: scene.data ? scene.data.particleTypes : [],
       bufferLength: bufferLength,
-      stepCount: scene.configuration.runner.stepCount,
-      boundingBoxSize: scene.configuration.model.boundingBoxSize,
+      iterationStep: configuration.runner.iterationStep,
+      boundingBoxSize: configuration.model.boundingBoxSize,
       interactions: {
         particleInteraction:
-          scene.configuration.model.interactions.particleInteraction,
-        electricField: scene.configuration.model.interactions.electricField,
-        magneticField: scene.configuration.model.interactions.magneticField
+          configuration.model.interactions.particleInteraction,
+        electricField: configuration.model.interactions.electricField,
+        magneticField: configuration.model.interactions.magneticField
       }
     }
     scene._s = s
@@ -101,22 +97,9 @@ export default function (regl, scenes, stateVars, onStateChange) {
       distance: (x) => bspline(x, 2, scene.cameraSploints.distance),
       phi: (x) => bspline(x, 2, scene.cameraSploints.phi),
       theta: (x) => bspline(x, 2, scene.cameraSploints.theta)
-
-      // ,
-      // eye: (t) => bspline(t, 2, scene.cameraSploints.eye),
-      // center: (t) => bspline(t, 2, scene.cameraSploints.center)
     }
-
-    // console.log(scene.cameraSploints.distance)
-    // if (scene.cameraSploints)
-    //   scene.cameraPositionBSpline = (t) =>
-    //     bspline(t, 2, scene.cameraSploints.eye)
-    //
-    // if (scene.cameraSploints.center) {
-    //   scene.cameraTargetBSpline = (t) =>
-    //     bspline(t, 2, scene.cameraSploints.center)
-    // }
   })
+  // })
 
   const state = {
     sceneIdx: 0,

@@ -3,13 +3,13 @@
 vec4 readVariable(sampler2D tex, float p, float b) {
     return texture2D(
       tex,
-      vec2(p, b) / vec2(particleCount, bufferLength  *channelsPerValueCount)
+      vec2(p, b) / vec2(particleCount, bufferLength)
     );
   //  return texture2D(tex, vec2(p + particleCount * 0., b) /
   //  vec2(particleCount, bufferLength));
   float x = texture2D(tex,
   vec2(p + particleCount * 0., b) /
-  vec2(particleCount, bufferLength)).z;
+  vec2(particleCount, bufferLength)).x;
 
   float y = texture2D(tex,
   vec2(p + particleCount * 1., b) /

@@ -14,7 +14,7 @@ const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 uniform sampler2D utParticleChargesMassesChargeMassRatios;
 uniform sampler2D utPositionBuffer;
 uniform sampler2D utVelocityBuffer;
-uniform float tick;
+uniform float iterationStep;
 uniform int variableIdx;
 uniform float channel;
 uniform float channelsPerValueCount;
@@ -172,7 +172,7 @@ void main () {
   texelBufferIndex = floor(gl_FragCoord.y/channelsPerValueCount);
   texelChannel = (channelsPerValueCount == 4.) ? fract(gl_FragCoord.y/4.)*4. - .5 : 0.;
 
-  float nextBufferPosition = floor(mod(tick, bufferLength + 1.));
+  float nextBufferPosition = floor(mod(iterationStep, bufferLength + 1.));
   float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
 
   if (abs(nextBufferPosition - texelBufferIndex) < 0.1) {
@@ -182,5 +182,8 @@ void main () {
     gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex);
   }
 
-  //  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, tick);
+//    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
+//    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
+//    gl_FragColor = vec4(channel);
+//  *111., texelBufferIndex*10., texelChannel/100.);
 }

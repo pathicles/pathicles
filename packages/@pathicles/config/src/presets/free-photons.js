@@ -17,7 +17,7 @@ export const freePhotons = {
   },
 
   model: {
-    tickDurationOverC: 0.1,
+    iterationStepDurationOverC: 0.1,
     emitter: {
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',

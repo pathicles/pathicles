@@ -35,25 +35,25 @@ export default function (regl, { variables, model, view }, shadow) {
       },
       elements: geometry.cells,
       instances: () =>
-        model.particleCount *
-        Math.min(variables.tick.value, variables.bufferLength),
+        variables.particleCount *
+        Math.min(variables.iterationStep.value, variables.bufferLength),
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
         aUV: geometry.uvs,
         aParticle: {
           buffer: regl.buffer(
-            Array(model.particleCount * variables.bufferLength)
+            Array(variables.particleCount * variables.bufferLength)
               .fill(0)
-              .map((_, i) => i % model.particleCount)
+              .map((_, i) => i % variables.particleCount)
           ),
           divisor: 1
         },
         aStep: {
           buffer: regl.buffer(
-            Array(model.particleCount * variables.bufferLength)
+            Array(variables.particleCount * variables.bufferLength)
               .fill(0)
-              .map((_, i) => Math.floor(i / model.particleCount))
+              .map((_, i) => Math.floor(i / variables.particleCount))
           ),
           divisor: 1
         }
@@ -93,10 +93,14 @@ export default function (regl, { variables, model, view }, shadow) {
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
+        bufferLength: variables.bufferLength,
         channelsPerValueCount: variables.channelsPerValueCount,
-        stageGrid_size: view.stageGrid.size / 2,
+        particleCount: variables.particleCount,
+        stepCount: variables.stepCount || variables.bufferLength,
+        pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,
+
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
-        pathicleWidth: view.pathicleWidth * 2,
+        pathicleWidth: view.pathicleWidth,
         model: (ctx, props) => {
           modelMatrix = identity([])
           return fromTranslation(modelMatrix, [

@@ -90,11 +90,7 @@ void main(void) {
   //  amountInLight = (blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.)) - vShadowCoord.z > .001) ? 1. : 0.;
   amountInLight = decodeFloat(texture2D(shadowMap, vShadowCoord.xy));
   amountInLight = texture2D(shadowMap, vShadowCoord.xy).r;
-//  (texture2D(shadowMap, vShadowCoord.xy).r - vShadowCoord.z < .001) ? 1. : 0.;
 
-  //  if (fragmentDepth.x < 0. || fragmentDepth.x > 1.0 || fragmentDepth.y < 0. || fragmentDepth.y > 1.0) {
-  //    amountInLight = 0.;
-  //  }
 
   float gridRatio=gridControl.x;
   vec3 gridPos=(vPosition+gridOffset.xyz)/gridRatio;
@@ -107,7 +103,7 @@ void main(void) {
   vec3 color=mix(mainColor, lineColor, grid);
   float opacity = clamp(grid, 0.2, gridControl.w*grid);
   float fogDistance = length(vPosition);
-  float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
+  float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
 
   gl_FragColor =vec4(color.rgb, fogAmount*opacity)
     + vec4(vec3(-.1*amountInLight), fogAmount);

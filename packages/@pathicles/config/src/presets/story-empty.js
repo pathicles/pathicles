@@ -9,7 +9,6 @@ export const storyEmpty = {
   },
 
   model: {
-    // tickDurationOverC: 0.125,
     emitter: {
       particleType: 'PROTON ELECTRON  PHOTON',
       bunchShape: 'SQUARE',
@@ -17,8 +16,7 @@ export const storyEmpty = {
       position: [0, 1, -10],
       directionJitter: [0.01, 0.01, 0],
       positionJitter: [0.1, 0.1, 0],
-
-      gamma: 1.1
+      gamma: 1.2
     },
 
     interactions: {

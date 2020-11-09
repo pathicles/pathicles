@@ -86,8 +86,6 @@ export class ReglViewerInstance {
         // }
       }
     )
-    this.story.setPosition(0)
-
     this.variables = this.story.getState().scene.variables
     this.model = this.story.getState().scene.model
   }

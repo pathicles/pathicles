@@ -32,25 +32,25 @@ export default {
     prerender: false,
     loops: 10,
     mode: 'framewise',
-    stepsPerTick: 4,
-    stepCount: 256
+    stepsPerTick: 2,
+    stepCount: 128
   },
 
   model: {
-    tickDurationOverC: 0.25,
-    bufferLength: 128,
+    iterationStepDurationOverC: 0.5,
+    bufferLength: 64,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'COLUMN',
+      bunchShape: 'SQUARE_XY',
       particleCount: 121,
       particleSeparation: 0.05,
-      gamma: 0,
+      gamma: 1.2,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0]
+      directionJitter: [0.04, 0.04, 0],
+      positionJitter: [0.1, 0.1, 0]
     },
     interactions: {
       particleInteraction: false,
@@ -72,8 +72,8 @@ export default {
         size: 10
       }
     ],
-    ambientLightAmount: 0.75,
-    diffuseLightAmount: 0.25,
+    ambientLightAmount: 0.5,
+    diffuseLightAmount: 0.5,
 
     stageGrid: {
       y: 0,
@@ -86,9 +86,9 @@ export default {
     isShadowEnabled: true,
     isLatticeVisible: false,
 
-    pathicleRelativeGap: 4,
-    pathicleRelativeHeight: 8,
-    pathicleWidth: 0.002,
+    pathicleRelativeGap: 1,
+    pathicleRelativeHeight: 4,
+    pathicleWidth: 0.003,
 
     showAxes: false,
     showVignette: true,
@@ -112,9 +112,9 @@ export default {
     camera: {
       center: [0, 1, 0],
 
-      distance: 5,
-      phi: (0 / 360) * 2 * Math.PI,
-      theta: (0 / 360) * 2 * Math.PI,
+      distance: 2,
+      phi: (15 / 360) * 2 * Math.PI,
+      theta: (45 / 360) * 2 * Math.PI,
 
       fovY: (2 * Math.PI) / (360 / 35),
       autorotate: false,

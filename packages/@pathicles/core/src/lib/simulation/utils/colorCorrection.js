@@ -10,8 +10,18 @@ export function colorCorrection(fourPositions, emitterPosition) {
         )
       })
     const maxParticleDistance = Math.max(...initialParticleDistances)
-    return initialParticleDistances.map((d, i) =>
-      maxParticleDistance ? Math.pow(d / maxParticleDistance, 2) - 1 / 2 : 0
+    const relativeParticleDistances = initialParticleDistances.map((d) =>
+      maxParticleDistance === 0 ? 0 : d / maxParticleDistance
     )
+    return relativeParticleDistances.map((d) => {
+      return d < 0.5 ? 1 - d * 2 : 1
+    })
+    //
+    // return relativeParticleDistances.map((d) =>
+    //   d > 0.3
+    //       ? 1
+    //       : Math.pow(d , 1)
+    //     : 1
+    // )
   }
 }

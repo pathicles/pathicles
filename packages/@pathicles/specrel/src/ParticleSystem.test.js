@@ -3,9 +3,9 @@ import ParticleCollection from './ParticleCollection'
 import ParticleTypes from './ParticleTypes'
 import { format6 } from './Specrel'
 
-import presets from '../../config/presets'
+import { presets } from '@pathicles/config'
 
-describe('System ', function() {
+describe('System ', function () {
   it('has a constructor with a mandatory argument', () => {
     let constructor = () => {
       new ParticleSystem()
@@ -16,7 +16,7 @@ describe('System ', function() {
   })
 })
 
-describe('System of 10 photons ', function() {
+describe('System of 10 photons ', function () {
   const particleCount = 10
 
   const pCollection = ParticleCollection.create({
@@ -34,17 +34,17 @@ describe('System of 10 photons ', function() {
   })
 })
 
-describe('System.load', function() {
+describe('System.load', function () {
   it('has correct initial state', () => {})
 })
 
-describe('System.load(gyrotest--10-electrons', function() {
-  const config = presets.find(({ name }) => name === 'gyrotest--10-electrons')
-  const system = ParticleSystem.load(config)
+describe('System.load(gyrotest--1-electrons', function () {
+  const configuration = presets['gyrotest_1_electron']
+  const system = ParticleSystem.load(configuration)
 
   it('has correct particle count', () => {
     expect(system.particleCollection.particles).toHaveLength(
-      config.particleCount
+      configuration.particleCount
     )
   })
 })

@@ -48,12 +48,9 @@ import { watchViewport, unwatchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
-const storyDipole = () =>
-  import('@pathicles/prerendered/files/story-dipole.json')
-const storyElectric = () =>
-  import('@pathicles/prerendered/files/story-electric.json')
-const storyQuadrupole = () =>
-  import('@pathicles/prerendered/files/story-quadrupole.json')
+import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
+import storyElectric from '@pathicles/prerendered/files/story-electric.json'
+import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
 
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
@@ -92,7 +89,7 @@ export default {
               data: 'story-electric.js',
               camera: {
                 distance: 10,
-                theta: (-90 / 360) * 2 * Math.PI
+                theta: (-0 / 360) * 2 * Math.PI
               }
             }
           },
@@ -124,13 +121,14 @@ export default {
           {
             type: 'options',
             pathicles: {
-              autoLoop: true,
+              autoLoop: false,
               preset: 'story-empty',
+              data: 'story-electric.js',
               camera: {
                 center: [0, 1, 0],
                 distance: 10,
-                theta: (-135 / 360) * 2 * Math.PI,
-                phi: (5 / 360) * 2 * Math.PI
+                theta: (0 / 360) * 2 * Math.PI,
+                phi: (95 / 360) * 2 * Math.PI
               }
             }
           }
@@ -191,8 +189,6 @@ export default {
       }
     })
 
-    console.log(this.story.scenes)
-
     const cameraBSplointer = (scenes, s, key) => [
       [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key]],
       [scenes[s].configuration.view.camera[key]],
@@ -213,11 +209,11 @@ export default {
     this.story.scenes.forEach((scene, s) => {
       if (scene.pathicles && scene.pathicles.data) {
         if (scene.pathicles.data === 'story-quadrupole.js') {
-          scene.data = () => storyQuadrupole().then((r) => r)
+          scene.data = storyQuadrupole
         } else if (scene.pathicles.data === 'story-dipole.js') {
-          scene.data = () => storyDipole().then((r) => r)
+          scene.data = storyDipole
         } else {
-          scene.data = () => storyElectric().then((r) => r)
+          scene.data = storyElectric
         }
       }
     })

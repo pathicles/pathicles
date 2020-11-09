@@ -23,7 +23,7 @@ export class ReglSimulatorInstance {
       profile: this.config.profile,
       attributes: {
         preserveDrawingBuffer: false,
-        antialiasing: false
+        antialiasing: true
       },
       pixelRatio,
       onDone: (err, regl) => {
@@ -118,6 +118,7 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
+    // console.log(this.simulation.dump())
     const {
       autorotateSpeedTheta,
       autorotateSpeedDistance,
@@ -136,7 +137,8 @@ export class ReglSimulatorInstance {
         const { changed, tick } = this.simulate && this.pathiclesRunner.next()
 
         if (changed) {
-          console.log(tick, this.simulation.variables.tick.value)
+          // console.log(tick, this.simulation.variables.iterationStep.value)
+          // console.log(this.simulation.dump())
         }
         this.camera.tick()
         if (this.camera.state.dirty) {

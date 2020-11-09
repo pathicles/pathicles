@@ -20,7 +20,7 @@ export const random = {
     boundingBoxSize: 2,
     boundingBoxCenter: [0, 2, 0],
     bufferLength: 256,
-    tickDurationOverC: 0.1,
+    iterationStepDurationOverC: 0.1,
     emitter: {
       position: [0, 2, 0],
       direction: [0, 0, 0],

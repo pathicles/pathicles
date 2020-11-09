@@ -1,9 +1,7 @@
 import Specrel, { bigNumberMath, format30, format6 } from '../Specrel'
 import Pusher from './Pusher'
-import createLogger from '../Logger'
 
-const logger = createLogger('Pusher_BorisImplementation')
-logger.setLevel('info')
+const logger = { info: console.log }
 
 export default class Pusher_BorisImplementation extends Pusher {
   /**
@@ -39,7 +37,7 @@ export default class Pusher_BorisImplementation extends Pusher {
         )
 
         const { B, E } = this.system.fieldValue(
-          intermediatePosition.map(x => x.toNumber())
+          intermediatePosition.map((x) => x.toNumber())
         )
 
         const v_n = particle.velocity
@@ -124,7 +122,7 @@ export default class Pusher_BorisImplementation extends Pusher {
           bigNumberMath.multiply(v_n1, this._half_dt)
         )
 
-        particle._position__m = x_next.map(x => x.to('m').toNumeric())
+        particle._position__m = x_next.map((x) => x.to('m').toNumeric())
 
         // console.log(
         //   prettyjson.render({

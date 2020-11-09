@@ -11,7 +11,7 @@ export const dipole = {
 
   model: {
     bufferLength: 512,
-    tickDurationOverC: 0.1,
+    iterationStepDurationOverC: 0.1,
     emitter: {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
@@ -22,7 +22,7 @@ export const dipole = {
       gamma: 12.05
     },
     interactions: {
-      magneticField: [0, 0.01, 0],
+      magneticField: [0, 0.001, 0],
       particleInteraction: false
     },
     lattice: {

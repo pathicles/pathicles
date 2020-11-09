@@ -4,27 +4,23 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
+      center: [0, 1, 0],
       distance: 5,
-      theta: (-135 / 360) * 2 * Math.PI,
-      phi: (5 / 360) * 2 * Math.PI
+      theta: (0 / 360) * 2 * Math.PI,
+      phi: (0 / 360) * 2 * Math.PI
     }
   },
 
   model: {
-    tickDurationOverC: 0.15,
     emitter: {
-      bunchShape: 'SQUARE_XY',
       particleType: 'ELECTRON',
-      position: [0, -0.4, -2],
-      direction: [-1, 0.2, 0],
-      directionJitter: [0.02, 0.02, 0.02],
-      positionJitter: [0.2, 0.2, 0.2],
-      gamma: 11.05
+      position: [0, -0.4, -1],
+      direction: [-1, 0.2, 0]
     },
     interactions: {
       particleInteraction: false,
       electricField: [0, 0, 0],
-      magneticField: [0, 0.01, 0]
+      magneticField: [0, 0.001, 0]
     }
     // lattice: {
     //   elements: {
