@@ -1,3 +1,5 @@
+import defaultConfig from './_default'
+
 export const freeElectron = {
   name: 'free-electron',
   view: {
@@ -11,9 +13,8 @@ export const freeElectron = {
 
   runner: {
     prerender: false,
-    loops: 1,
-
-    mode: 'stepwise',
+    loops: 10,
+    mode: 'framewise',
     stepsPerTick: 1,
     stepCount: 11
   },
@@ -22,12 +23,18 @@ export const freeElectron = {
     bufferLength: 11,
     iterationStepDurationOverC: 0.1,
     emitter: {
-      position: [0, 0.01, 0],
+      position: [
+        0,
+        (defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight) /
+          2,
+        0
+      ],
       direction: [0, 0, 1],
       particleSeparation: 0.0,
       gamma: 10,
       particleCount: 1,
-      particleType: 'ELECTRON'
+      particleType: 'PROTON'
     }
   }
 }

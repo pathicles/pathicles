@@ -8,6 +8,7 @@ import glslify from 'rollup-plugin-glslify'
 import cleanup from 'rollup-plugin-cleanup'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
+import fs from 'fs-extra-plus'
 
 // eslint-disable-next-line no-undef
 const prod = () => process.env.NODE_ENV === 'production'
@@ -36,6 +37,16 @@ export default {
   input: join('src', 'index.js'),
   output,
   plugins: [
+    {
+      name: 'watch-external',
+      async buildStart() {
+        const files = await fs.glob('src/**/*')
+        console.log(files)
+        for (let file of files) {
+          this.addWatchFile(file)
+        }
+      }
+    },
     visualizer({ filename: 'stats.html' }),
     cleanup(),
     nodeResolve(),

@@ -13,7 +13,9 @@ export const storyElectric = {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
       position: [0, 1.5, -10],
-      direction: [0, 0, 1]
+      direction: [0, 0, 1],
+      directionJitter: [0.04, 0.04, 0],
+      positionJitter: [0.1, 0.1, 0]
     },
 
     interactions: {

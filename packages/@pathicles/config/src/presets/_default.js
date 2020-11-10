@@ -33,13 +33,13 @@ export default {
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
   renderToFloat: true,
-  channelsPerValueCount: 1,
+  channelsPerValueCount: 4,
 
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 10,
-    mode: 'framewise',
-    stepsPerTick: 2,
+    mode: 'stepwise',
+    stepsPerTick: 1,
     stepCount: 128
   },
 
@@ -55,9 +55,7 @@ export default {
       particleSeparation: 0.05,
       gamma: 1.2,
       position: [0, 0, 0],
-      direction: [0, 0, 1],
-      directionJitter: [0.04, 0.04, 0],
-      positionJitter: [0.1, 0.1, 0]
+      direction: [0, 0, 1]
     },
     interactions: {
       particleInteraction: false,
@@ -100,7 +98,7 @@ export default {
     showAxes: false,
     showVignette: true,
     showTextures: false,
-    showTextureTexelSize: 1,
+    showTextureScale: 15,
     viewRange: [0, 1],
 
     // lights: [

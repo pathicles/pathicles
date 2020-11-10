@@ -1,3 +1,5 @@
+import defaultConfig from './_default'
+
 export const freePhoton = {
   name: 'free-photon',
   view: {
@@ -21,9 +23,14 @@ export const freePhoton = {
     emitter: {
       particleCount: 1,
       particleType: 'PHOTON',
-      bunchShape: 'CUBE',
       direction: [0, 0, 1],
-      position: [0, 0.01, 0],
+      position: [
+        0,
+        (defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight) /
+          2,
+        0
+      ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1

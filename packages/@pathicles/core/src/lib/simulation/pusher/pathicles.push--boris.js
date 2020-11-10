@@ -21,7 +21,7 @@ export default function (regl, { variables, model }) {
         variableIdx: variableSlot,
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        particleCount: model.particleCount,
+        particleCount: variables.particleCount,
         bufferLength: variables.bufferLength,
         channelsPerValueCount: variables.channelsPerValueCount,
         channel: regl.prop('channel'),

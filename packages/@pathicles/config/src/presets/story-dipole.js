@@ -16,7 +16,9 @@ export const storyDipole = {
       bunchShape: 'SQUARE_XY',
       particleType: 'ELECTRON',
       position: [0, 1, -10],
-      direction: [0, 0, 1]
+      direction: [0, 0, 1],
+      directionJitter: [0.04, 0.04, 0],
+      positionJitter: [0.1, 0.1, 0]
     },
     lattice: {
       elements: {

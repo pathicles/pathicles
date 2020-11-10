@@ -49,24 +49,25 @@ export class ReglSimulatorInstance {
       },
       extensions: simulate
         ? [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'OES_texture_half_float',
-            'WEBGL_depth_texture'
-          ]
+          'angle_instanced_arrays',
+          'oes_texture_float',
+          'OES_standard_derivatives',
+          'OES_texture_half_float',
+          'WEBGL_depth_texture'
+        ]
         : [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'WEBGL_depth_texture'
-          ]
+          'angle_instanced_arrays',
+          'oes_texture_float',
+          'OES_standard_derivatives',
+          'WEBGL_depth_texture'
+        ]
     })
   }
 
   resize() {
     this.regl.poll()
   }
+
   destroy() {
     keyControlUnmount(this)
     this.regl.destroy()
@@ -125,6 +126,7 @@ export class ReglSimulatorInstance {
       autorotateSpeedPhi
     } = this.config.view.camera
     if (this.simulate) this.pathiclesRunner.start()
+    console.log(this.simulation.dump())
     const mainloop = () => {
       return regl.frame(({ time }) => {
         if (this.camera.autorotate) {
@@ -135,10 +137,26 @@ export class ReglSimulatorInstance {
           this.camera.params.phi = 0.05 * Math.sin(autorotateSpeedPhi * time)
         }
         const { changed, tick } = this.simulate && this.pathiclesRunner.next()
-
+        //
         if (changed) {
           // console.log(tick, this.simulation.variables.iterationStep.value)
-          // console.log(this.simulation.dump())
+          const dump = this.simulation.dump()
+          const position = dump.data.position
+          const particleCount = this.simulation.variables.particleCount
+          console.log(
+            position,
+            particleCount,
+            Array(this.simulation.variables.bufferLength)
+              .fill(0)
+              .map((d, i) => {
+                return [
+                  position[i],
+                  position[i + 1],
+                  position[i + 2],
+                  position[i + 3]
+                ]
+              })
+          )
         }
         this.camera.tick()
         if (this.camera.state.dirty) {
@@ -154,7 +172,7 @@ export class ReglSimulatorInstance {
                   .particleColorsAndTypes,
                 position: this.simulation.variables.position.buffers[
                   this.simulation.variables.pingPong
-                ],
+                  ],
                 viewRange: [0, 1]
               })
 
@@ -162,16 +180,18 @@ export class ReglSimulatorInstance {
                 this.drawTexture({
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
-                  ],
+                    ],
                   x0: 0,
-                  scale: this.config.view.showTexturestTexelSize
+                  scale: this.config.view.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
                     this.simulation.variables.pingPong
-                  ],
-                  x0: 200,
-                  scale: this.config.view.showTexturestTexelSize
+                    ],
+                  x0:
+                    (this.simulation.variables.particleCount + 1) *
+                    this.config.view.showTextureScale,
+                  scale: this.config.view.showTextureScale
                 })
                 // this.drawTexture({
                 //   texture: this.view.shadow.fbo,

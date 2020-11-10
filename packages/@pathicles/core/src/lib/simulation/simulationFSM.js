@@ -59,7 +59,7 @@ export default class SimulationFSM {
         'PathiclesRunner.start can be called in state initial only'
       )
     }
-
+    debugger
     this._runCount = 1
     this._loopCount = 1
 
@@ -82,6 +82,7 @@ export default class SimulationFSM {
   }
 
   next() {
+    debugger
     const tick_0 = this._simulation.variables.iterationStep.value
     if (this.fsm.state === 'active') {
       if (

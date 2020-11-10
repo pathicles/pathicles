@@ -38,6 +38,7 @@
     "regl": "^2.0.1"
   },
   "devDependencies": {
+    "fs-extra-plus": "^0.5.19",
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",

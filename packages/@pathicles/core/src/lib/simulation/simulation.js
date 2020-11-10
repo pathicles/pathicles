@@ -21,6 +21,8 @@ export class Simulation {
 
     const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
 
+    console.log({ channelsPerValueCount })
+
     const { bufferLength } = configuration.model
     const {
       particleCount,
@@ -34,14 +36,12 @@ export class Simulation {
       configuration.model.emitter.position
     )
 
-    console.log(colorCorrection)
-
     this.variables = {
       particleCount,
       bufferLength,
+      particleTypes,
       channelsPerValueCount,
       RTTFloatType,
-      initialData: this.initialData,
       position: new VariableBuffers(
         regl,
         particleCount,
@@ -90,9 +90,6 @@ export class Simulation {
 
     this.model = {
       halfDeltaTOverC: this.configuration.model.iterationStepDurationOverC / 2,
-      particleCount: this.initialData.particleCount,
-      particleTypes: this.initialData.particleTypes,
-      stepCount: this.configuration.runner.stepCount,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
       boundingBoxCenter: this.configuration.model.boundingBoxCenter,
       latticeConfig: this.configuration.model.lattice,

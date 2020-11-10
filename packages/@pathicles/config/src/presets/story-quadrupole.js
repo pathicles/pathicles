@@ -14,7 +14,9 @@ export const storyQuadrupole = {
     emitter: {
       particleType: 'PROTON',
       direction: [0, 0, -1],
-      position: [0, 1.5, 10]
+      position: [0, 1.5, 10],
+      directionJitter: [0.04, 0.04, 0],
+      positionJitter: [0.1, 0.1, 0]
     },
 
     lattice: {

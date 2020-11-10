@@ -30,7 +30,7 @@ export default function readData(regl, { variables }, precision = 100) {
       velocity: Object.values(
         data.velocity[variables.iterationStep.value % 2]
       ).map((d) => Math.floor(d * precision) / precision),
-      particleTypes: variables.initialData.particleTypes
+      particleTypes: variables.particleTypes
     }
   }
 }
