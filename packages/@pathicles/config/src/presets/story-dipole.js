@@ -13,32 +13,28 @@ export const storyDipole = {
 
   model: {
     emitter: {
+      bunchShape: 'SQUARE_XY',
       particleType: 'ELECTRON',
-      position: [0, -0.4, -1],
-      direction: [-1, 0.2, 0]
+      position: [0, 1, -10],
+      direction: [0, 0, 1]
     },
-    interactions: {
-      particleInteraction: false,
-      electricField: [0, 0, 0],
-      magneticField: [0, 0.001, 0]
+    lattice: {
+      elements: {
+        l: {
+          type: LatticeElementTypes.DRIF,
+          l: 10
+        },
+        d: {
+          type: LatticeElementTypes.SBEN,
+          l: 10,
+          strength: 0.000075
+        }
+      },
+      beamline: ['l', 'd', 'l'],
+      origin: {
+        phi: (0 / 360) * 2 * Math.PI,
+        position: [0, 1, -10]
+      }
     }
-    // lattice: {
-    //   elements: {
-    //     l: {
-    //       type: LatticeElementTypes.DRIF,
-    //       l: 0
-    //     },
-    //     d: {
-    //       type: LatticeElementTypes.SBEN,
-    //       l: 10,
-    //       strength: 0.004
-    //     }
-    //   },
-    //   beamline: ['l', 'd', 'l'],
-    //   origin: {
-    //     phi: 0,
-    //     position: [0, 0.5, -9]
-    //   }
   }
-  // }
 }

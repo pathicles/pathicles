@@ -36,7 +36,7 @@ export class VariableBuffers {
       })
     })
 
-    this.load(initialData)
+    if (initialData) this.load(initialData)
   }
 
   load(data) {

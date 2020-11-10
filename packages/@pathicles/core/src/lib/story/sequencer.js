@@ -45,25 +45,25 @@ export default function (regl, scenes, stateVars, onStateChange) {
         bufferLength,
         RTTFloatType,
         channelsPerValueCount,
-        []
+        data.position
       )
     }
 
     performance.mark('scene data')
-    scene.variables.position.load(data.position)
+    // scene.variables.position.load(data.position)
 
     scene.variables.particleColorsAndTypes({
       data: data.particleTypes
         .map((p) => scene.configuration.colors[p].concat(p))
         .flat(),
-      shape: [particleCount, 1, 4],
-      type: RTTFloatType
+      shape: [particleCount, 1, 4]
     })
 
     const colorCorrectionData = colorCorrection(
-      data.position,
+      data.position.slice(0, particleCount * 4),
       configuration.model.emitter.position
     )
+    console.log(colorCorrectionData)
 
     scene.variables.colorCorrections({
       data: data.particleTypes
@@ -74,11 +74,12 @@ export default function (regl, scenes, stateVars, onStateChange) {
     })
 
     scene.model = {
-      halfDeltaTOverC: configuration.model.iterationStepDurationOverC / 2,
-      particleCount: particleCount,
-      particleTypes: scene.data ? scene.data.particleTypes : [],
-      bufferLength: bufferLength,
-      iterationStep: configuration.runner.iterationStep,
+      // halfDeltaTOverC: configuration.model.iterationStepDurationOverC / 2,
+      // particleCount: particleCount,
+      // particleCount: particleCount,
+      // particleTypes: scene.data ? scene.data.particleTypes : [],
+      // bufferLength: bufferLength,
+      // iterationStep: configuration.runner.iterationStep,
       boundingBoxSize: configuration.model.boundingBoxSize,
       interactions: {
         particleInteraction:

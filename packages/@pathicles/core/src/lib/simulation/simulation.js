@@ -34,6 +34,8 @@ export class Simulation {
       configuration.model.emitter.position
     )
 
+    console.log(colorCorrection)
+
     this.variables = {
       particleCount,
       bufferLength,
@@ -63,7 +65,7 @@ export class Simulation {
       particleColorsAndTypes: regl.texture({
         data: particleTypes.map((p) => configuration.colors[p].concat(p)),
         shape: [particleCount, 1, 4],
-        type: RTTFloatType
+        type: 'uint8'
       }),
       colorCorrections: regl.texture({
         data: particleTypes
