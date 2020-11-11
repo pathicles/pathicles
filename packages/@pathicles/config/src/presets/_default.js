@@ -38,10 +38,10 @@ export default {
   channelsPerValueCount: 1,
 
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
+    iterationsPerTick: 4,
     iterationCount: 128
   },
 

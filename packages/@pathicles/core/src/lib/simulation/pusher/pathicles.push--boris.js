@@ -1,10 +1,16 @@
 import vert from './boris.vert'
 import frag from './boris.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
+import {
+  aFourIndexAttributes,
+  particleAttributes,
+  stepAttributes
+} from '../utils/pathicles.attributes'
 
 export default function (regl, { variables, model }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
+
     return regl({
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
@@ -15,6 +21,18 @@ export default function (regl, { variables, model }) {
       count: 3,
       attributes: {
         aXY: [-4, -4, 4, -4, 0, 4]
+        // aParticle: {
+        //   buffer: regl.buffer(particleAttributes(variables)),
+        //   divisor: 1
+        // },
+        // aStep: {
+        //   buffer: regl.buffer(stepAttributes(variables)),
+        //   divisor: 1
+        // },
+        // aFourIndex: {
+        //   buffer: regl.buffer(aFourIndexAttributes(variables)),
+        //   divisor: 1
+        // }
       },
 
       uniforms: {

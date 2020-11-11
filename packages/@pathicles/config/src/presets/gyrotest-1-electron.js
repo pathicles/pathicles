@@ -15,10 +15,10 @@ export default {
   },
 
   runner: {
-    prerender: false,
+    prerender: true,
     mode: RUNNER_MODE.STEPWISE,
     iterationsPerTick: 1,
-    iterationCount: 18
+    iterationCount: 17
   },
 
   model: {
@@ -29,7 +29,7 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       direction: [0, 0, 1],
-      position: [-1, 0.0015, 0],
+      position: [-1, 0.15, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1.55

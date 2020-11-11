@@ -120,7 +120,6 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    // console.log(this.simulation.dump())
     const {
       autorotateSpeedTheta,
       autorotateSpeedDistance,
@@ -140,7 +139,7 @@ export class ReglSimulatorInstance {
         const { changed } = this.simulate && this.pathiclesRunner.next()
 
         if (changed) {
-          console.log(stringify(this.simulation._logStore))
+          // console.log(stringify(this.simulation._logStore))
         }
         this.camera.tick()
         if (changed || this.camera.state.dirty) {

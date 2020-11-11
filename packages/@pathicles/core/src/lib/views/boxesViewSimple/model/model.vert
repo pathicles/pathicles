@@ -6,6 +6,7 @@ attribute vec2 aUV;
 
 attribute float aParticle;
 attribute float aStep;
+attribute float aFourIndex;
 
 uniform float particleCount;
 uniform float bufferLength;
@@ -84,7 +85,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
 
 void main () {
 
-  float previousBufferHead = aStep - 1.;
+  float previousBufferHead = aStep + 1.;
 
   vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
   vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep);

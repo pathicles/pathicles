@@ -27,6 +27,8 @@ uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
 
+
+
 /*__latticeChunkGLSL__*/
 
 
@@ -89,16 +91,16 @@ vec3 getB(vec3 position) {
 
 
 
-vec4 push_position(float p, float nextBufferPosition, float bufferPosition) {
+vec4 push_position(float p) {
 
   ParticleData particleData = getParticleData(p);
-  vec4 fourPosition = readVariable(utPositionBuffer, p, bufferPosition);
+  vec4 fourPosition = readVariable(utPositionBuffer, p, 0.);
 
   vec3 position = fourPosition.xyz;
   float time  = fourPosition.w;
 
-  vec3 fourMomentum = readVariable(utVelocityBuffer, p, bufferPosition).xyz;
-  vec3 nextMomentum = readVariable(utVelocityBuffer, p, nextBufferPosition).xyz;
+  vec3 fourMomentum = readVariable(utVelocityBuffer, p, 1.).xyz;
+  vec3 nextMomentum = readVariable(utVelocityBuffer, p, 0.).xyz;
 
   float nextTime = time + 2. * halfDeltaTOverC;
 
@@ -112,13 +114,13 @@ vec4 push_position(float p, float nextBufferPosition, float bufferPosition) {
 //  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
 
 
-vec4 push_velocity(float p, float nextBufferPosition, float bufferPosition) {
+vec4 push_velocity(float p) {
 
   ParticleData particleData = getParticleData(p);
   vec3 momentum;
 
-  vec4 fourPosition = readVariable(utPositionBuffer, p, bufferPosition);
-  vec4 fourVelocity = readVariable(utVelocityBuffer, p, bufferPosition);
+  vec4 fourPosition = readVariable(utPositionBuffer, p, 0.);
+  vec4 fourVelocity = readVariable(utVelocityBuffer, p, 0.);
   vec3 velocity = fourVelocity.xyz;
   float gamma = fourVelocity.w;
 
@@ -151,10 +153,10 @@ vec4 push_velocity(float p, float nextBufferPosition, float bufferPosition) {
   return vec4(momentum, gamma);
 }
 
-vec4 push(float p, float nextBufferPosition, float bufferPosition) {
+vec4 push(float p) {
   return (variableIdx == 0)
-  ? push_position(p, nextBufferPosition, bufferPosition)
-  : push_velocity(p, nextBufferPosition, bufferPosition);
+  ? push_position(p)
+  : push_velocity(p);
 }
 
 vec4 readVariable(float texelParticleIndex, float texelBufferIndex) {
@@ -175,12 +177,19 @@ void main () {
   float nextBufferPosition = floor(mod(iteration, bufferLength + 1.));
   float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
 
-  if (abs(nextBufferPosition - texelBufferIndex) < 0.1) {
-    gl_FragColor = push(texelParticleIndex, nextBufferPosition, bufferPosition);
+  nextBufferPosition = 0.;
+  bufferPosition = 1.;
 
+
+  if (texelBufferIndex  < 0.1) {
+    gl_FragColor = push(texelParticleIndex);
+//    gl_FragColor = vec4(readVariable(texelParticleIndex, texelBufferIndex).xyz, iteration);
+  } else if (texelBufferIndex  <= iteration)  {
+    gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex - 1.);
   } else {
-    gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex);
+    gl_FragColor = vec4(0);
   }
+//  gl_FragColor = vec4(texelBufferIndex);
 
 //    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
 //    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);

@@ -14,15 +14,15 @@ export const freeElectron = {
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
 
-    loops: 1,
+    loops: 0,
     iterationsPerTick: 1,
     iterationCount: 10
   },
 
   model: {
-    bufferLength: 6,
+    bufferLength: 11,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [

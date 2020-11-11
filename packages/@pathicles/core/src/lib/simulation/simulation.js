@@ -21,8 +21,6 @@ export class Simulation {
 
     const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
 
-    console.log({ channelsPerValueCount })
-
     const { bufferLength } = configuration.model
     const {
       particleCount,

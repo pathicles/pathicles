@@ -1,9 +1,31 @@
-const formatVariableValue = (arr) =>
-  Array(arr.length / 4)
-    .fill(0)
-    .map((d, i) => {
-      return [arr[i * 4], arr[i * 4 + 1], arr[i * 4 + 2], arr[i * 4 + 3]]
-    })
+const formatVariableValue = (arr, { particleCount, bufferLength }) => {
+  const result = []
+
+  for (let b = 0; b < bufferLength; b++) {
+    const step = []
+    result.push(step)
+    for (let p = 0; p < particleCount; p++) {
+      // debugger
+      step.push([
+        arr[b * particleCount * 4 + p * 4],
+        arr[b * particleCount * 4 + p * 4 + 1],
+        arr[b * particleCount * 4 + p * 4 + 2],
+        arr[b * particleCount * 4 + p * 4 + 3]
+      ])
+    }
+    // const step = Array(arr.length / bufferLength / 4)
+    //   .fill(0)
+    //   .map((d, i) => {
+    //     return [
+    //       arr[b * bufferLength + i * 4],
+    //       arr[b * bufferLength + i * 4 + 1],
+    //       arr[b * bufferLength + i * 4 + 2],
+    //       arr[b * bufferLength + i * 4 + 3]
+    //     ]
+    //   })
+  }
+  return result
+}
 
 export default function readData(regl, { variables }, precision = 10000) {
   const data = {}
@@ -40,7 +62,9 @@ export default function readData(regl, { variables }, precision = 10000) {
     pingPong: variables.pingPong,
     iteration: variables.iteration,
     particleTypes: variables.particleTypes,
-    position: formatVariableValue(position),
-    velocity: formatVariableValue(velocity)
+    // position_: position,
+    // velocity_: velocity,
+    position: formatVariableValue(position, variables),
+    velocity: formatVariableValue(velocity, variables)
   }
 }

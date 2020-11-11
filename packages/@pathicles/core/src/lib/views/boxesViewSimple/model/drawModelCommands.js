@@ -4,22 +4,18 @@ import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
-
-const stepAttributes = (particleCount, bufferLength) => {
-  return Array(particleCount * bufferLength)
-    .fill(0)
-    .map((_, i) => Math.floor(i / particleCount) + 1)
-}
-const particleAttributes = (particleCount, bufferLength) => {
-  return Array(particleCount * bufferLength)
-    .fill(0)
-    .map((_, i) => i % particleCount)
-}
+import {
+  particleAttributes,
+  stepAttributes,
+  aFourIndexAttributes
+} from '../../../simulation/utils/pathicles.attributes'
 
 export default function (regl, { variables, view }, shadow) {
   const geometry = createCube()
 
   let modelMatrix = identity([])
+
+  // console.log(aFourIndexAttributes(variables))
 
   const command = (mode) => {
     return regl({
@@ -61,15 +57,15 @@ export default function (regl, { variables, view }, shadow) {
         aNormal: geometry.normals,
         aUV: geometry.uvs,
         aParticle: {
-          buffer: regl.buffer(
-            particleAttributes(variables.particleCount, variables.bufferLength)
-          ),
+          buffer: regl.buffer(particleAttributes(variables)),
           divisor: 1
         },
         aStep: {
-          buffer: regl.buffer(
-            stepAttributes(variables.particleCount, variables.bufferLength)
-          ),
+          buffer: regl.buffer(stepAttributes(variables)),
+          divisor: 1
+        },
+        aFourIndex: {
+          buffer: regl.buffer(aFourIndexAttributes(variables)),
           divisor: 1
         }
       },
