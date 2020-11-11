@@ -75,7 +75,7 @@ export class ReglViewerInstance {
         sceneId: 0,
         viewRange: [0, 0]
       },
-      (state) => {
+      () => {
         // if (state.scene.position) this.variables.position = state.scene.position
         // if (state.scene.particleColorsAndTypes) {
         //   this.variables.particleColorsAndTypes =

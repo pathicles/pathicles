@@ -40,7 +40,7 @@ const PROTON = {
 
 export const LIST = [PHOTON, ELECTRON, POSITRON, PROTON]
 export const ParticleTypesList = [PHOTON, ELECTRON, POSITRON, PROTON]
-const BY_NAME_MAP = new Map(LIST.map(i => [i.name, i]))
+const BY_NAME_MAP = new Map(LIST.map((i) => [i.name, i]))
 
 const ParticleTypes = {
   PHOTON,
@@ -49,8 +49,8 @@ const ParticleTypes = {
   PROTON,
 
   byNameMap: BY_NAME_MAP,
-  byName: name => BY_NAME_MAP.get(name),
-  idByName: name => LIST.indexOf(BY_NAME_MAP.get(name))
+  byName: (name) => BY_NAME_MAP.get(name),
+  idByName: (name) => LIST.indexOf(BY_NAME_MAP.get(name))
 }
 
 export default ParticleTypes

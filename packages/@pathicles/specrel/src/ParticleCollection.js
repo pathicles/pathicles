@@ -147,7 +147,7 @@ class ParticleCollection {
   }
 
   clone() {
-    return new ParticleCollection(this.particles.map(p => p.clone()))
+    return new ParticleCollection(this.particles.map((p) => p.clone()))
   }
 }
 

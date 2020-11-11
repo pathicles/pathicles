@@ -1,11 +1,6 @@
 import vert from './boris.vert'
 import frag from './boris.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
-import {
-  aFourIndexAttributes,
-  particleAttributes,
-  stepAttributes
-} from '../utils/pathicles.attributes'
 
 export default function (regl, { variables, model }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {

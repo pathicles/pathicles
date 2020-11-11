@@ -3,8 +3,8 @@ import ParticleTypes from './ParticleTypes'
 import { max, min } from 'd3-array'
 import { bigNumberMath } from './Specrel'
 
-const arrayToNumbers = arr => {
-  return arr.map(a => a.toNumber())
+const arrayToNumbers = (arr) => {
+  return arr.map((a) => a.toNumber())
 }
 
 test('ParticleCollection default constructor ', () => {
@@ -27,7 +27,7 @@ test('new ParticleCollection({count: 2, particleTypeDistribution: [ParticleTypes
 
   expect(pCollection._particles).toHaveLength(2)
 
-  expect(pCollection._particles.map(p => p.particleType)).toEqual([
+  expect(pCollection._particles.map((p) => p.particleType)).toEqual([
     ParticleTypes.ELECTRON,
     ParticleTypes.ELECTRON
   ])
@@ -41,7 +41,7 @@ test('new ParticleCollection({particleCount: 3, particleTypeDistribution: "PROTO
 
   expect(pCollection._particles).toHaveLength(3)
 
-  expect(pCollection._particles.map(p => p.particleType)).toEqual([
+  expect(pCollection._particles.map((p) => p.particleType)).toEqual([
     ParticleTypes.PROTON,
     ParticleTypes.PROTON,
     ParticleTypes.PROTON
@@ -61,7 +61,7 @@ test('new ParticleCollection({particleCount: 7, particleTypeDistribution: "multi
 
   expect(pCollection._particles).toHaveLength(7)
 
-  expect(pCollection._particles.map(p => p.particleType)).toEqual([
+  expect(pCollection._particles.map((p) => p.particleType)).toEqual([
     ParticleTypes.PROTON,
     ParticleTypes.PHOTON,
     ParticleTypes.ELECTRON,
@@ -74,7 +74,7 @@ test('new ParticleCollection({particleCount: 7, particleTypeDistribution: "multi
   const pCollectionClone = pCollection.clone()
   expect(pCollectionClone._particles).toHaveLength(7)
 
-  expect(pCollectionClone._particles.map(p => p.particleType)).toEqual([
+  expect(pCollectionClone._particles.map((p) => p.particleType)).toEqual([
     ParticleTypes.PROTON,
     ParticleTypes.PHOTON,
     ParticleTypes.ELECTRON,
@@ -98,7 +98,7 @@ test('new ParticleCollection({particleCount: 5, particleTypeDistribution: "multi
 
   expect(pCollection._particles).toHaveLength(5)
 
-  expect(pCollection._particles.map(p => p.particleType)).toEqual([
+  expect(pCollection._particles.map((p) => p.particleType)).toEqual([
     ParticleTypes.PROTON,
     ParticleTypes.PHOTON,
     ParticleTypes.ELECTRON,
@@ -107,7 +107,7 @@ test('new ParticleCollection({particleCount: 5, particleTypeDistribution: "multi
   ])
 
   pCollection.distributeLocation({ bunchShape: 'ROW', dx: 0.1 })
-  expect(pCollection.particles.map(p => arrayToNumbers(p.position))).toEqual([
+  expect(pCollection.particles.map((p) => arrayToNumbers(p.position))).toEqual([
     [-0.2, 0, 0],
     [-0.1, 0, 0],
     [0, 0, 0],
@@ -130,23 +130,25 @@ describe('new ParticleCollection({particleCount: 251, particleTypeDistribution: 
 
   it('has correctly distributed particle positions', () => {
     // x fromm -7.5 to 7.5
-    const positions = pCollection.particles.map(p => p.position)
+    const positions = pCollection.particles.map((p) => p.position)
     const positionSet = new Set(positions)
 
     // 251 distinct values
     expect(positions).toHaveLength(positionSet.size)
-    expect(min(positions.map(r => r[0].toNumber()))).toEqual(-7.5)
-    expect(max(positions.map(r => r[1].toNumber()))).toEqual(7.5)
+    expect(min(positions.map((r) => r[0].toNumber()))).toEqual(-7.5)
+    expect(max(positions.map((r) => r[1].toNumber()))).toEqual(7.5)
   })
 
   it('has correctly distributed particle momenta', () => {
-    const momenta = pCollection.particles.map(p => [
+    const momenta = pCollection.particles.map((p) => [
       p.momentum[0].toNumber(),
       p.momentum[1].toNumber(),
       p.momentum[2].toNumber()
     ])
     // map to string for equality predicate in Set constructor
-    const momentaSet = new Set(momenta.map(p => p[0] + '_' + p[1] + '_' + p[2]))
+    const momentaSet = new Set(
+      momenta.map((p) => p[0] + '_' + p[1] + '_' + p[2])
+    )
     expect(momentaSet.size).toEqual(1)
 
     //const asArray = pCollection.asArrays()
@@ -158,13 +160,15 @@ describe('new ParticleCollection({particleCount: 251, particleTypeDistribution: 
   })
 
   it('has correctly distributed particle momenta', () => {
-    const momenta = pCollection.particles.map(p => [
+    const momenta = pCollection.particles.map((p) => [
       p.momentum[0].toNumber(),
       p.momentum[1].toNumber(),
       p.momentum[2].toNumber()
     ])
     // map to string for equality predicate in Set constructor
-    const momentaSet = new Set(momenta.map(p => p[0] + '_' + p[1] + '_' + p[2]))
+    const momentaSet = new Set(
+      momenta.map((p) => p[0] + '_' + p[1] + '_' + p[2])
+    )
     expect(momentaSet.size).toEqual(1)
 
     //const asArray = pCollection.asArrays()

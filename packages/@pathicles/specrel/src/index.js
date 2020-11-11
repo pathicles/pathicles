@@ -39,31 +39,31 @@ export function cross(a, b) {
   ]
 }
 
-export function gammaFromVelocity__ms_1(velocity__ms_1, round = a => a) {
+export function gammaFromVelocity__ms_1(velocity__ms_1, round = (a) => a) {
   const betaSquare = betaSquareFromVelocity__ms_1(velocity__ms_1, round)
   return round(1 / round(Math.sqrt(round(1 - round(betaSquare)))))
 }
 
-export function gammaFromVelocity__c(velocity__c, round = a => a) {
+export function gammaFromVelocity__c(velocity__c, round = (a) => a) {
   const betaSquare = betaSquareFromVelocity__c(velocity__c, round)
   return round(1 / round(Math.sqrt(round(1 - round(betaSquare)))))
 }
 
-export function gammaFromBetaSquare(betaSquare, round = a => a) {
+export function gammaFromBetaSquare(betaSquare, round = (a) => a) {
   return round(1 / round(Math.sqrt(round(1 - round(betaSquare)))))
 }
 
-export function gammaFromBeta(beta, round = a => a) {
+export function gammaFromBeta(beta, round = (a) => a) {
   return round(1 / round(Math.sqrt(round(1 - round(beta) * round(beta)))))
 }
 
-export function gammaFromBetaPrime(betaPrime, round = a => a) {
+export function gammaFromBetaPrime(betaPrime, round = (a) => a) {
   return round(
     1 / round(Math.sqrt(round(betaPrime) * round(2 - round(betaPrime))))
   )
 }
 
-export function gammaFromBetaPrimeSquare(betaPrimeSquare, round = a => a) {
+export function gammaFromBetaPrimeSquare(betaPrimeSquare, round = (a) => a) {
   return round(
     1 /
       round(
@@ -74,7 +74,7 @@ export function gammaFromBetaPrimeSquare(betaPrimeSquare, round = a => a) {
   )
 }
 
-export function betaSquareFromVelocity__ms_1(velocity__ms_1, round = a => a) {
+export function betaSquareFromVelocity__ms_1(velocity__ms_1, round = (a) => a) {
   return (
     round(round(velocity__ms_1[0] / c) ** 2) +
     round(round(velocity__ms_1[1] / c) ** 2) +
@@ -82,7 +82,7 @@ export function betaSquareFromVelocity__ms_1(velocity__ms_1, round = a => a) {
   )
 }
 
-export function betaSquareFromVelocity__c(velocity__c, round = a => a) {
+export function betaSquareFromVelocity__c(velocity__c, round = (a) => a) {
   return velocity__c[0] ** 2 + velocity__c[1] ** 2 + velocity__c[2] ** 2
 }
 
@@ -102,10 +102,10 @@ export function betaSquareFromVelocityPrime(
   )
 }
 
-export const format6 = obj => {
+export const format6 = (obj) => {
   return bigNumberMath.format(obj, { precision: 6 })
 }
-export const format30 = obj => {
+export const format30 = (obj) => {
   return bigNumberMath.format(obj, { precision: 30, lowerExp: 0 })
 }
 

@@ -39,10 +39,10 @@ export default class Pusher_EulerImplementation extends Pusher {
           qv_cross_B__Cms_1T,
           this._half_dt__s
         )
-        const deltaMomentum = deltaMomentum__CmT.map(dp =>
+        const deltaMomentum = deltaMomentum__CmT.map((dp) =>
           bigNumberMath.unit(dp, 'C m T')
         )
-        const deltaMomentum__eVc_1 = deltaMomentum.map(dp =>
+        const deltaMomentum__eVc_1 = deltaMomentum.map((dp) =>
           dp.to('eV / c').toNumeric()
         )
 

@@ -2,30 +2,29 @@
   "name": "@pathicles/specrel",
   "license": "MIT Licence",
   "version": "0.1.0",
-  "module": "dist/pathicles-specrel.esm.js",
-  "main": "dist/pathicles-specrel.min.js",
   "type": "module",
+  "main": "dist/pathicles-specrel.min.js",
+  "module": "dist/pathicles-specrel.esm.js",
   "scripts": {
+    "boris": "node ./src/pusher/Pusher_BorisImplementation.run.js",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "lint-fix": "eslint --fix src",
-    "test:unit": "jest",
+    "lint-fix": "echo 'eslint --fix src'",
     "test": "jest",
-    "boris": "node ./src/pusher/Pusher_BorisImplementation.run.js"
+    "test:unit": "jest"
+  },
+  "dependencies": {
+    "@pathicles/config": "^0.1.0",
+    "d3-array": "^2.8.0",
+    "d3-random": "^2.1.0",
+    "decimal.js": "^10.2.0",
+    "loglevel-plugin-prefix": "^0.8.4",
+    "mathjs": "^6.6.2",
+    "prettyjson": "^1.2.1",
+    "seedrandom": "^3.0.5",
+    "three": "^0.115.0"
   },
   "devDependencies": {
     "jest": "^25.2.7"
-  },
-  "dependencies": {
-
-    "@pathicles/config": "^0.1.0",
-    "loglevel-plugin-prefix": "^0.8.4",
-    "prettyjson": "^1.2.1",
-    "d3-random": "^2.1.0",
-    "d3-array": "^2.8.0",
-    "seedrandom": "^3.0.5",
-    "three": "^0.115.0",
-    "decimal.js": "^10.2.0",
-    "mathjs": "^6.6.2"
   }
 }

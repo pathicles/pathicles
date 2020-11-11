@@ -19,8 +19,6 @@
     "@pathicles/core": "^0.2.0"
   },
   "devDependencies": {
-    "json-stringify-pretty-compact": "^2.0.0",
-    "rollup-plugin-notify": "^1.1.0",
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
@@ -43,11 +41,13 @@
     "eslint-plugin-vue": "^7.1.0",
     "gl": "^4.8.0",
     "jest": "^26.6.3",
+    "json-stringify-pretty-compact": "^2.0.0",
     "prettier": "^2.1.2",
     "rollup": "^2.33.1",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-eslint-bundle": "^5.0.2",
+    "rollup-plugin-notify": "^1.1.0",
     "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-require-context": "^1.0.1",
     "rollup-plugin-visualizer": "^4.2.0"

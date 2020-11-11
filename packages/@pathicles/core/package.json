@@ -31,15 +31,12 @@
     "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
-    "ogl": "^0.0.60",
-    "primitive-cube": "^2.0.1",
-    "json-stringify-pretty-compact": "^2.0.0"
+    "primitive-cube": "^2.0.1"
   },
   "peerDependencies": {
     "regl": "^2.0.1"
   },
   "devDependencies": {
-    "fs-extra-plus": "^0.5.19",
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
@@ -61,6 +58,7 @@
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.1.0",
+    "fs-extra-plus": "^0.5.19",
     "gl": "^4.8.0",
     "ieee754-buffer": "^2.0.0",
     "jest": "^26.6.3",

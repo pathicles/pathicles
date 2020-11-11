@@ -6,8 +6,8 @@ import ParticleTypes from './ParticleTypes'
 import { Decimal } from 'decimal.js'
 
 Decimal.set({ precision: 20, rounding: 4 })
-const numberify = arr => {
-  return arr.map(a => a.toNumber())
+const numberify = (arr) => {
+  return arr.map((a) => a.toNumber())
 }
 
 describe('Particle constructor must be called with arguemtn', () => {
@@ -78,11 +78,6 @@ describe('electron with gamma = 2', () => {
     expect(electron.beta.toNumber()).toEqual(0.8660254037844386)
   })
 })
-
-
-
-
-
 
 describe('calculateGammaForVelocity', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
@@ -250,7 +245,7 @@ describe('Relativitic electrons ', () => {
     electron.setMomentumFromBeta(0.985, [0, 0, 1])
 
     expect(
-      electron.momentum.map(p => p.to('kg m / s').format({ precision: 3 }))
+      electron.momentum.map((p) => p.to('kg m / s').format({ precision: 3 }))
     ).toEqual(['0 (kg m) / s', '0 (kg m) / s', '1.56e-21 (kg m) / s'])
   })
 })

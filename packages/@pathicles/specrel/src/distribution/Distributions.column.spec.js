@@ -1,7 +1,7 @@
 import { columnDistribution } from './Distributions'
 
-const arrayToNumbers = arr => {
-  return arr.map(a => a.toNumber())
+const arrayToNumbers = (arr) => {
+  return arr.map((a) => a.toNumber())
 }
 
 test('row distribution ', () => {

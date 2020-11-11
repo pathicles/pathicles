@@ -179,7 +179,7 @@ export default {
       0
     )
 
-    this.story.scenes.forEach((scene, s) => {
+    this.story.scenes.forEach((scene) => {
       scene.presetName = scene.pathicles.preset
       scene.configuration = config(scene.presetName)
 
@@ -206,7 +206,7 @@ export default {
       }
     })
 
-    this.story.scenes.forEach((scene, s) => {
+    this.story.scenes.forEach((scene) => {
       if (scene.pathicles && scene.pathicles.data) {
         if (scene.pathicles.data === 'story-quadrupole.js') {
           scene.data = storyQuadrupole

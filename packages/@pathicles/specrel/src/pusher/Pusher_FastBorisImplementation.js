@@ -21,7 +21,7 @@ export default class Pusher_FastBorisImplementation extends Pusher {
   constructor({
     system,
     dt__s,
-    round = x => Math.fround(x),
+    round = (x) => Math.fround(x),
     stepHistoryLength = 1
   }) {
     super({ system, dt__s })
@@ -37,15 +37,15 @@ export default class Pusher_FastBorisImplementation extends Pusher {
     const initialData = system.particleCollection.asArrays(stepHistoryLength)
 
     this.variables = {
-      gamma: initialData.gamma.map(x => round(x)),
-      position__m: initialData.position__m.map(x => round(x)),
-      velocity__c: initialData.velocity__c.map(x => round(x))
+      gamma: initialData.gamma.map((x) => round(x)),
+      position__m: initialData.position__m.map((x) => round(x)),
+      velocity__c: initialData.velocity__c.map((x) => round(x))
       // velocityPrime__c: initialData.velocity__c.map(x => round(1 - round(x))),
       // velocityPrime__ms_1: initialData.velocity__c.map(x => round(Specrel.c - round(Specrel.c * x))),
     }
     this.uniforms = {
-      charge__eq: initialData.charge__eq.map(x => round(x)),
-      mass__eVc_2: initialData.mass__eVc_2.map(x => round(x))
+      charge__eq: initialData.charge__eq.map((x) => round(x)),
+      mass__eVc_2: initialData.mass__eVc_2.map((x) => round(x))
     }
     this._particleCount = this._system.particles.length
   }
@@ -137,7 +137,7 @@ export default class Pusher_FastBorisImplementation extends Pusher {
           chargeMassRatio__Ckg_1: round(pp.chargeMassRatio__Ckg_1)
         }
 
-        particle.velocity__ms_1 = particle.velocity__c.map(vi =>
+        particle.velocity__ms_1 = particle.velocity__c.map((vi) =>
           round(vi * Specrel.c)
         )
 

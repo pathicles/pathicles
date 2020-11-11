@@ -4,7 +4,7 @@ import { Shadow } from './shadow/Shadow'
 import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
-export function boxesViewSimple(regl, { variables, model, config }) {
+export function boxesViewSimple(regl, { variables, config }) {
   const lightPosition = config.view.lights[0].position
   const shadow = new Shadow(regl, config.view.lights[0])
 
