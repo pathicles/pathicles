@@ -31,12 +31,12 @@ for (let precision of ['32bit', '64bit']) {
 }
 
 function simulate(presetName, precision = '64bit', overwrite = {}) {
-  let round = x => x
+  let round = (x) => x
   if (precision === '32bit') {
-    round = x => Math.fround(x)
+    round = (x) => Math.fround(x)
   }
 
-  const load = presetName =>
+  const load = (presetName) =>
     require('../../../config/presets').default.find(
       ({ name }) => name === presetName
     )
@@ -54,7 +54,7 @@ function simulate(presetName, precision = '64bit', overwrite = {}) {
     stepHistoryLength: configuration.stepcount
   })
   const computeStart = performance.now()
-  pusher.push(configuration.stepCount, round)
+  pusher.push(configuration.iterationCount, round)
   const computeEnd = performance.now()
 
   const { boundingBox, steps } = pusher.toData()

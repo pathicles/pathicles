@@ -11,7 +11,7 @@ export const dipole = {
 
   model: {
     bufferLength: 512,
-    iterationStepDurationOverC: 0.1,
+    iterationDurationOverC: 0.1,
     emitter: {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',

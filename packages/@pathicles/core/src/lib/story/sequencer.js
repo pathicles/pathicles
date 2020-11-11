@@ -37,7 +37,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       bufferLength,
       particleCount,
       pingPong: 0,
-      iterationStep: { value: bufferLength },
+      iteration: { value: bufferLength },
       particleColorsAndTypes,
       position: new VariableBuffers(
         regl,
@@ -74,12 +74,12 @@ export default function (regl, scenes, stateVars, onStateChange) {
     })
 
     scene.model = {
-      // halfDeltaTOverC: configuration.model.iterationStepDurationOverC / 2,
+      // halfDeltaTOverC: configuration.model.iterationDurationOverC / 2,
       // particleCount: particleCount,
       // particleCount: particleCount,
       // particleTypes: scene.data ? scene.data.particleTypes : [],
       // bufferLength: bufferLength,
-      // iterationStep: configuration.runner.iterationStep,
+      // iteration: configuration.runner.iteration,
       boundingBoxSize: configuration.model.boundingBoxSize,
       interactions: {
         particleInteraction:

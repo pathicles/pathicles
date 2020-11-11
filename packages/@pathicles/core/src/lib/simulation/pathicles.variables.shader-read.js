@@ -35,14 +35,14 @@ export default function readData(regl, { variables, model }) {
   })
   const precision = 1000
   return {
-    tick: variables.iterationStep.value,
+    tick: variables.iteration,
     data: {
-      position: Object.values(
-        data.position[variables.iterationStep.value % 2]
-      ).map((d) => Math.floor(d * precision) / precision),
-      velocity: Object.values(
-        data.velocity[variables.iterationStep.value % 2]
-      ).map((d) => Math.floor(d * precision) / precision),
+      position: Object.values(data.position[variables.iteration % 2]).map(
+        (d) => Math.floor(d * precision) / precision
+      ),
+      velocity: Object.values(data.velocity[variables.iteration % 2]).map(
+        (d) => Math.floor(d * precision) / precision
+      ),
       particleTypes: variables.initialData.particleTypes
     }
   }

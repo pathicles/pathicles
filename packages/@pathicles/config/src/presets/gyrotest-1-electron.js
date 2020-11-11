@@ -1,4 +1,5 @@
 import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
+import { RUNNER_MODE } from '../constants'
 
 export default {
   name: 'gyrotest-1-electron',
@@ -14,12 +15,14 @@ export default {
   },
 
   runner: {
-    stepsPerTick: 1,
-    stepCount: 10
+    prerender: false,
+    mode: RUNNER_MODE.STEPWISE,
+    iterationsPerTick: 1,
+    iterationCount: 18
   },
 
   model: {
-    bufferLength: 11,
+    bufferLength: 18,
     iterationStepDurationOverC: 1,
     emitter: {
       particleCount: 1,

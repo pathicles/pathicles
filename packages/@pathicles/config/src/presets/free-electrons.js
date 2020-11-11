@@ -1,29 +1,29 @@
 import defaultConfig from './_default'
 import { RUNNER_MODE } from '../constants'
-export const freePhoton = {
-  name: 'free-photon',
+
+export const freeElectron = {
+  name: 'free-electron',
   view: {
     camera: {
-      eye: [2, 0.25, 2],
-      center: [0, 0, 0.5]
+      center: [0, 0, 0.5],
+      distance: 2,
+      phi: (15 / 360) * 2 * Math.PI,
+      theta: (45 / 360) * 2 * Math.PI
     }
   },
+
   runner: {
     prerender: true,
     loops: 0,
-
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 11
+    iterationCount: 10
   },
 
   model: {
-    bufferLength: 11,
+    bufferLength: 5,
     iterationDurationOverC: 0.1,
     emitter: {
-      particleCount: 1,
-      particleType: 'PHOTON',
-      direction: [0, 0, 1],
       position: [
         0,
         (defaultConfig.view.pathicleWidth *
@@ -31,15 +31,11 @@ export const freePhoton = {
           2,
         0
       ],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0],
-      gamma: 1
-    },
-
-    interactions: {
-      electricField: [0, 0, 0],
-      particleInteraction: false,
-      magneticField: [0, 0, 0]
+      direction: [0, 0, 1],
+      particleSeparation: 0.0,
+      gamma: 10,
+      particleCount: 1,
+      particleType: 'ELECTRON'
     }
   }
 }

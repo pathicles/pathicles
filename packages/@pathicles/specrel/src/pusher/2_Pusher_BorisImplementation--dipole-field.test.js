@@ -34,7 +34,7 @@ describe('Boris Pusher for system of 1 electron in magnetic dipole field ', () =
 })
 
 function simulate(presetName, overwrite = {}) {
-  const load = presetName => config(presetName)
+  const load = (presetName) => config(presetName)
   const configuration = Object.assign(load(presetName), overwrite)
   const particleSystem = ParticleSystem.load(configuration)
 
@@ -51,7 +51,7 @@ function simulate(presetName, overwrite = {}) {
   })
 
   const computeStart = performance.now()
-  borisPusher.push(configuration.stepCount)
+  borisPusher.push(configuration.iterationCount)
   const computeEnd = performance.now()
 
   // analysis
@@ -73,7 +73,7 @@ function simulate(presetName, overwrite = {}) {
     expected: {
       gyroRadius: particleSystem.particles[0]
         .gyroRadius(configuration.dipole_strength)
-        .map(d => d.toNumber('m')),
+        .map((d) => d.toNumber('m')),
       gyroPeriod: particleSystem.particles[0]
         .gyroPeriod(configuration.dipole_strength)
         .toNumber('s')

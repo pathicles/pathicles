@@ -1,7 +1,7 @@
 import { particleTypeArrayDefintion } from './utils'
 
 export default function (regl, { variables, constants }) {
-  const push = (variableName, iterationStep) =>
+  const push = (variableName, iteration) =>
     regl({
       vert: `
         //
@@ -213,12 +213,12 @@ export default function (regl, { variables, constants }) {
           }
         }
         `,
-      framebuffer: () => variables[variableName][iterationStep % 2],
+      framebuffer: () => variables[variableName][iteration % 2],
       uniforms: {
         boundingBoxSize: constants.boundingBoxSize,
         bufferLength: constants.variables.bufferLength,
         particleCount: constants.model.particleCount,
-        tick: iterationStep,
+        tick: iteration,
         halfDeltaT: constants.halfDeltaTOverC,
 
         particleInteraction: constants.particleInteraction,
@@ -234,11 +234,11 @@ export default function (regl, { variables, constants }) {
         quadrupole_2_rotated: 0,
         quadrupole_2_minZ: 0,
         quadrupole_2_maxZ: 0,
-        utPositionBuffer: () => variables.position[(iterationStep + 1) % 2],
+        utPositionBuffer: () => variables.position[(iteration + 1) % 2],
         utVelocityBuffer: () =>
           variableName === 'position'
-            ? variables.velocity[iterationStep % 2]
-            : variables.velocity[(iterationStep + 1) % 2]
+            ? variables.velocity[iteration % 2]
+            : variables.velocity[(iteration + 1) % 2]
       },
 
       attributes: {
@@ -252,10 +252,10 @@ export default function (regl, { variables, constants }) {
     })
 
   return () => {
-    variables.iterationStep.value++
-    variables.pingPong = variables.iterationStep.value % 2
-    // console.log(`push tick: ${variables.iterationStep.value}`);
-    push('velocity', variables.iterationStep.value)({})
-    push('position', variables.iterationStep.value)({})
+    variables.iteration++
+    variables.pingPong = variables.iteration % 2
+    // console.log(`push tick: ${variables.iteration}`);
+    push('velocity', variables.iteration)({})
+    push('position', variables.iteration)({})
   }
 }

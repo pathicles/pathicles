@@ -14,7 +14,7 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     viewRange: regl.prop('viewRange'),
     ambientLightAmount: config.view.ambientLightAmount,
     diffuseLightAmount: config.view.diffuseLightAmount,
-    dt: 2 * config.model.iterationStepDurationOverC
+    dt: 2 * config.model.iterationDurationOverC
   }
 
   const setParams = regl({
@@ -25,7 +25,6 @@ export function boxesViewSimple(regl, { variables, model, config }) {
     regl,
     {
       variables,
-      model,
       view: config.view
     },
     shadow

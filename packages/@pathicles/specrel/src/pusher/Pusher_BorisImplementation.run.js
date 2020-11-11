@@ -46,12 +46,7 @@ logger.debug('gyroFrequency', format30(gyroFrequency))
 logger.debug('gyroPeriod', format30(gyroFrequency.pow(-1).to('s')))
 logger.debug(
   'gyroPeriod/c',
-  format30(
-    gyroFrequency
-      .pow(-1)
-      .toNumeric()
-      .times(Specrel.speedOfLight__ms_1)
-  )
+  format30(gyroFrequency.pow(-1).toNumeric().times(Specrel.speedOfLight__ms_1))
 )
 //
 pusherTestSystem.particles[0]._momentum__eVc_1[2] = bigNumberMath.bignumber(
@@ -71,7 +66,7 @@ const borisPusher = new Pusher_BorisImplementation({
   dt__s: dt__s
 })
 
-for (let i = 0; i < configGyrotest.stepCount; i++) {
+for (let i = 0; i < configGyrotest.iterationCount; i++) {
   const result = borisPusher.push()
 
   // logger.info(
@@ -122,15 +117,15 @@ const particleData = pusherTestSystem._particleCollectionHistory.map(
   }
 )
 
-const xExtent = d3.extent(particleData.map(p => p.x__m))
+const xExtent = d3.extent(particleData.map((p) => p.x__m))
 // const yExtent = d3.extent(particleData.map(p => p.y__m))
-const zExtent = d3.extent(particleData.map(p => p.z__m))
+const zExtent = d3.extent(particleData.map((p) => p.z__m))
 
 logger.info('xExtent', xExtent)
 logger.info('zExtent', zExtent)
 
-const particleDataFixed = particleData.map(p =>
-  Object.values(p).map(v => v.toFixed(16).padStart(30))
+const particleDataFixed = particleData.map((p) =>
+  Object.values(p).map((v) => v.toFixed(16).padStart(30))
 )
 
 logger.warn(dsv.format(particleDataFixed))

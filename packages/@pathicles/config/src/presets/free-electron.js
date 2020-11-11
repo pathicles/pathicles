@@ -1,4 +1,5 @@
 import defaultConfig from './_default'
+import { RUNNER_MODE } from '../constants'
 
 export const freeElectron = {
   name: 'free-electron',
@@ -13,15 +14,16 @@ export const freeElectron = {
 
   runner: {
     prerender: false,
-    loops: 10,
-    mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 11
+    mode: RUNNER_MODE.STEPWISE,
+
+    loops: 1,
+    iterationsPerTick: 1,
+    iterationCount: 10
   },
 
   model: {
-    bufferLength: 11,
-    iterationStepDurationOverC: 0.1,
+    bufferLength: 6,
+    iterationDurationOverC: 0.1,
     emitter: {
       position: [
         0,
@@ -34,7 +36,7 @@ export const freeElectron = {
       particleSeparation: 0.0,
       gamma: 10,
       particleCount: 1,
-      particleType: 'PROTON'
+      particleType: 'ELECTRON'
     }
   }
 }

@@ -6,10 +6,20 @@ import {
   squareDistribution
 } from './distributions/distributions.js'
 import { boundedRandom } from '../utils/random'
-import { Vec3 } from 'ogl'
 import ParticleTypes from './particleTypes'
 
-function particleTypesFromDescriptor(particleTypeDescriptor, n = 0) {
+function normalize(a) {
+  let x = a[0]
+  let y = a[1]
+  let z = a[2]
+  let len = x * x + y * y + z * z
+  if (len > 0) {
+    len = 1 / Math.sqrt(len)
+  }
+  return [a[0] * len, a[1] * len, a[2] * len]
+}
+
+export function particleTypesFromDescriptor(particleTypeDescriptor, n = 0) {
   const particleTypesArray = particleTypeDescriptor
     .trim()
     .split(/\s+/)
@@ -39,7 +49,7 @@ export function jitterDirection({
   directionJitter = [0, 0, 0],
   localPosition = [0, 0, 0]
 }) {
-  const jitteredDirection = new Vec3(
+  const jitteredDirection = [
     ...direction.map(
       (d, i) =>
         d +
@@ -48,8 +58,9 @@ export function jitterDirection({
         ) /
           100
     )
-  )
-  return jitteredDirection.normalize()
+  ]
+
+  return normalize(jitteredDirection)
 }
 
 export function betaFromGamma(gamma = 0) {
@@ -137,7 +148,6 @@ export function ParticleCollection({
           d: particleSeparation
         })
 
-  console.log(localPositions)
   const fourPositions = particles
     .map((particle, p) => {
       const jitteredPosition = jitterPosition({

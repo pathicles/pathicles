@@ -7,7 +7,7 @@ export default function (regl, { variables, model }) {
     const latticeChunkGLSL = latticeChunk(model.lattice)
     return regl({
       framebuffer: (context, props) =>
-        variables[variableName].buffers[props.iterationStep % 2],
+        variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',
       elements: null,
       offset: 0,
@@ -25,7 +25,7 @@ export default function (regl, { variables, model }) {
         bufferLength: variables.bufferLength,
         channelsPerValueCount: variables.channelsPerValueCount,
         channel: regl.prop('channel'),
-        iterationStep: regl.prop('iterationStep'),
+        iteration: regl.prop('iteration'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -34,11 +34,11 @@ export default function (regl, { variables, model }) {
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
         utPositionBuffer: (context, props) =>
-          variables.position.buffers[(props.iterationStep + 1) % 2],
+          variables.position.buffers[(props.iteration + 1) % 2],
         utVelocityBuffer: (context, props) =>
           variableName === 'position'
-            ? variables.velocity.buffers[props.iterationStep % 2]
-            : variables.velocity.buffers[(props.iterationStep + 1) % 2]
+            ? variables.velocity.buffers[props.iteration % 2]
+            : variables.velocity.buffers[(props.iteration + 1) % 2]
       },
 
       vert,
@@ -59,24 +59,26 @@ export default function (regl, { variables, model }) {
   const pushVelocity = pushFactory('velocity', 'utVelocityBuffer', 1)
   const pushPosition = pushFactory('position', 'utPositionBuffer', 0)
 
-  return () => {
-    variables.iterationStep.value++
-    const z = variables.iterationStep.value * model.halfDeltaTOverC * 2
+  return (n) => {
+    for (let i = 0; i < n; i++) {
+      variables.iteration++
+      const z = variables.iteration * model.halfDeltaTOverC * 2
 
-    variables.pingPong = variables.iterationStep.value % 2
-    variables.referencePoint =
-      model.lattice.beamline.length &&
-      model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
+      variables.pingPong = variables.iteration % 2
+      variables.referencePoint =
+        model.lattice.beamline.length &&
+        model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
-    const jobs = Array(variables.channelsPerValueCount)
-      .fill(0)
-      .map((_, i) => ({
-        iterationStep: variables.iterationStep.value,
-        channel: i
-      }))
+      const jobs = Array(variables.channelsPerValueCount)
+        .fill(0)
+        .map((_, i) => ({
+          iteration: variables.iteration,
+          channel: i
+        }))
 
-    // console.log(jobs)
-    pushVelocity(jobs)
-    pushPosition(jobs)
+      // console.log(jobs)
+      pushVelocity(jobs)
+      pushPosition(jobs)
+    }
   }
 }

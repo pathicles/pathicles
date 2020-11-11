@@ -32,7 +32,8 @@
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "ogl": "^0.0.60",
-    "primitive-cube": "^2.0.1"
+    "primitive-cube": "^2.0.1",
+    "json-stringify-pretty-compact": "^2.0.0"
   },
   "peerDependencies": {
     "regl": "^2.0.1"

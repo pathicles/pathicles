@@ -9,6 +9,7 @@ import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
+import stringify from 'json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
@@ -49,18 +50,18 @@ export class ReglSimulatorInstance {
       },
       extensions: simulate
         ? [
-          'angle_instanced_arrays',
-          'oes_texture_float',
-          'OES_standard_derivatives',
-          'OES_texture_half_float',
-          'WEBGL_depth_texture'
-        ]
+            'angle_instanced_arrays',
+            'oes_texture_float',
+            'OES_standard_derivatives',
+            'OES_texture_half_float',
+            'WEBGL_depth_texture'
+          ]
         : [
-          'angle_instanced_arrays',
-          'oes_texture_float',
-          'OES_standard_derivatives',
-          'WEBGL_depth_texture'
-        ]
+            'angle_instanced_arrays',
+            'oes_texture_float',
+            'OES_standard_derivatives',
+            'WEBGL_depth_texture'
+          ]
     })
   }
 
@@ -125,8 +126,8 @@ export class ReglSimulatorInstance {
       autorotateSpeedDistance,
       autorotateSpeedPhi
     } = this.config.view.camera
-    if (this.simulate) this.pathiclesRunner.start()
-    console.log(this.simulation.dump())
+    // if (this.simulate) this.pathiclesRunner.start()
+    // console.log(this.simulation.dump())
     const mainloop = () => {
       return regl.frame(({ time }) => {
         if (this.camera.autorotate) {
@@ -136,30 +137,13 @@ export class ReglSimulatorInstance {
           this.camera.params.theta = autorotateSpeedTheta * time
           this.camera.params.phi = 0.05 * Math.sin(autorotateSpeedPhi * time)
         }
-        const { changed, tick } = this.simulate && this.pathiclesRunner.next()
-        //
+        const { changed } = this.simulate && this.pathiclesRunner.next()
+
         if (changed) {
-          // console.log(tick, this.simulation.variables.iterationStep.value)
-          const dump = this.simulation.dump()
-          const position = dump.data.position
-          const particleCount = this.simulation.variables.particleCount
-          console.log(
-            position,
-            particleCount,
-            Array(this.simulation.variables.bufferLength)
-              .fill(0)
-              .map((d, i) => {
-                return [
-                  position[i],
-                  position[i + 1],
-                  position[i + 2],
-                  position[i + 3]
-                ]
-              })
-          )
+          console.log(stringify(this.simulation._logStore))
         }
         this.camera.tick()
-        if (this.camera.state.dirty) {
+        if (changed || this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {
               ...this.camera,
@@ -172,7 +156,7 @@ export class ReglSimulatorInstance {
                   .particleColorsAndTypes,
                 position: this.simulation.variables.position.buffers[
                   this.simulation.variables.pingPong
-                  ],
+                ],
                 viewRange: [0, 1]
               })
 
@@ -180,14 +164,14 @@ export class ReglSimulatorInstance {
                 this.drawTexture({
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
-                    ],
+                  ],
                   x0: 0,
                   scale: this.config.view.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
                     this.simulation.variables.pingPong
-                    ],
+                  ],
                   x0:
                     (this.simulation.variables.particleCount + 1) *
                     this.config.view.showTextureScale,

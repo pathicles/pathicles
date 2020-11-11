@@ -40,6 +40,7 @@ export class Simulation {
       particleCount,
       bufferLength,
       particleTypes,
+      iterationCount: configuration.runner.iterationCount,
       channelsPerValueCount,
       RTTFloatType,
       position: new VariableBuffers(
@@ -59,7 +60,7 @@ export class Simulation {
         fourVelocities
       ),
 
-      iterationStep: { value: 0 },
+      iteration: 0,
       referencePoint: [0, 0, 0],
       pingPong: 0,
       particleColorsAndTypes: regl.texture({
@@ -89,7 +90,7 @@ export class Simulation {
     }
 
     this.model = {
-      halfDeltaTOverC: this.configuration.model.iterationStepDurationOverC / 2,
+      halfDeltaTOverC: this.configuration.model.iterationDurationOverC / 2,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
       boundingBoxCenter: this.configuration.model.boundingBoxCenter,
       latticeConfig: this.configuration.model.lattice,
@@ -112,14 +113,11 @@ export class Simulation {
 
   log() {
     if (this.configuration.logPushing) {
-      const data = readData(this._regl, {
-        variables: this.variables,
-        model: this.model
-      })
-      this._logStore.push({
-        iterationStep: this.variables.iterationStep.value,
-        data: data
-      })
+      this._logStore.push(
+        readData(this._regl, {
+          variables: this.variables
+        })
+      )
     }
   }
 
@@ -129,39 +127,20 @@ export class Simulation {
       ...readData(
         this._regl,
         {
-          variables: this.variables,
-          model: this.model
+          variables: this.variables
         },
         1000
       )
     }
   }
 
-  push(steps = 1) {
-    Array(steps)
-      .fill()
-      .map(() => {
-        this.push({})
-      })
-  }
-
   reset() {
     this.variables.position.load(this.initialData.fourPositions)
     this.variables.velocity.load(this.initialData.fourVelocities)
-    this.variables.iterationStep.value = 0
+    this.variables.iteration = 0
   }
 
   prerender() {
-    const batchSize = 1
-    const steps = this.variables.bufferLength
-    const batchSizes = Array(Math.floor(steps / batchSize)).fill(batchSize)
-    if (steps % batchSize > 0) {
-      batchSizes.push(steps % batchSize)
-    }
-    // const t0 = performance.now()
-
-    batchSizes.forEach((batchSize) => {
-      this.push(batchSize)
-    })
+    this.push(this.variables.iterationCount)
   }
 }

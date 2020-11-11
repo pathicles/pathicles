@@ -1,3 +1,5 @@
+import { RUNNER_MODE } from '../constants'
+
 export default {
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
@@ -33,19 +35,19 @@ export default {
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
   renderToFloat: true,
-  channelsPerValueCount: 4,
+  channelsPerValueCount: 1,
 
   runner: {
-    prerender: true,
-    loops: 10,
-    mode: 'stepwise',
-    stepsPerTick: 1,
-    stepCount: 128
+    prerender: false,
+    loops: 0,
+    mode: RUNNER_MODE.FRAMEWISE,
+    iterationsPerTick: 1,
+    iterationCount: 128
   },
 
   model: {
-    iterationStepDurationOverC: 0.5,
-    bufferLength: 64,
+    iterationDurationOverC: 0.5,
+    bufferLength: 256,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
@@ -91,7 +93,7 @@ export default {
     isShadowEnabled: true,
     isLatticeVisible: false,
 
-    pathicleRelativeGap: 1,
+    pathicleRelativeGap: 3,
     pathicleRelativeHeight: 4,
     pathicleWidth: 0.003,
 

@@ -5,7 +5,18 @@ import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
 
-export default function (regl, { variables, model, view }, shadow) {
+const stepAttributes = (particleCount, bufferLength) => {
+  return Array(particleCount * bufferLength)
+    .fill(0)
+    .map((_, i) => Math.floor(i / particleCount) + 1)
+}
+const particleAttributes = (particleCount, bufferLength) => {
+  return Array(particleCount * bufferLength)
+    .fill(0)
+    .map((_, i) => i % particleCount)
+}
+
+export default function (regl, { variables, view }, shadow) {
   const geometry = createCube()
 
   let modelMatrix = identity([])
@@ -34,26 +45,30 @@ export default function (regl, { variables, model, view }, shadow) {
         face: 'back'
       },
       elements: geometry.cells,
-      instances: () =>
-        variables.particleCount *
-        Math.min(variables.iterationStep.value, variables.bufferLength),
+      instances: () => {
+        // console.log(
+        //   variables.iteration,
+        //   variables.particleCount *
+        //     Math.min(variables.iteration, variables.bufferLength)
+        // )
+        return (
+          variables.particleCount *
+          Math.min(variables.iteration, variables.bufferLength)
+        )
+      },
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
         aUV: geometry.uvs,
         aParticle: {
           buffer: regl.buffer(
-            Array(variables.particleCount * variables.bufferLength)
-              .fill(0)
-              .map((_, i) => i % variables.particleCount)
+            particleAttributes(variables.particleCount, variables.bufferLength)
           ),
           divisor: 1
         },
         aStep: {
           buffer: regl.buffer(
-            Array(variables.particleCount * variables.bufferLength)
-              .fill(0)
-              .map((_, i) => Math.floor(i / variables.particleCount))
+            stepAttributes(variables.particleCount, variables.bufferLength)
           ),
           divisor: 1
         }
@@ -96,9 +111,10 @@ export default function (regl, { variables, model, view }, shadow) {
         bufferLength: variables.bufferLength,
         channelsPerValueCount: variables.channelsPerValueCount,
         particleCount: variables.particleCount,
-        stepCount: variables.stepCount || variables.bufferLength,
-        pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,
+        iterationCount: variables.iterationCount,
+        iteration: () => variables.iteration,
 
+        pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,
         pathicleWidth: view.pathicleWidth,
         model: (ctx, props) => {
@@ -109,8 +125,6 @@ export default function (regl, { variables, model, view }, shadow) {
             0
           ])
         }
-        // view: shadow.shadowViewMatrix,
-        // project: shadow.shadowProjectionMatrix
       },
       ...(mode === 'shadow' && {
         framebuffer: shadow.fbo

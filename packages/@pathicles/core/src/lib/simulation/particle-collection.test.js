@@ -1,17 +1,20 @@
 'use strict'
 
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 
-const {
-  jitterPosition,
-  particleTypesFromDescriptor,
+import {
   betaFromGamma,
-  createParticleCollection
-} = require('./variables')
+  ParticleCollection,
+  jitterPosition,
+  particleTypesFromDescriptor
+} from './particle-collection'
 
 describe('jitterPosition', () => {
   it('"0,0,0"', () => {
-    const jitteredPosition = jitterPosition([0, 0, 0], [0, 0, 0])
+    const jitteredPosition = jitterPosition({
+      position: [0, 0, 0],
+      jitter: [0, 0, 0]
+    })
     expect(jitteredPosition).toEqual([0, 0, 0])
   })
 })
@@ -108,10 +111,11 @@ describe('betaFromGamma(gamma)', () => {
   })
 })
 
-describe('createParticleCollection()', () => {
+describe('ParticleCollection()', () => {
   it('no argument args', () => {
-    const particleCollection = createParticleCollection({})
+    const particleCollection = ParticleCollection({})
     expect(particleCollection).toEqual({
+      particleCount: 3,
       particleTypes: [0, 1, 3],
       fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
       fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
@@ -119,9 +123,9 @@ describe('createParticleCollection()', () => {
   })
 
   it('electric', () => {
-    const particleCollection = createParticleCollection({
+    const particleCollection = ParticleCollection({
       particleCount: 3,
-      particleTypeDescriptor: 'PHOTON ELECTRON PROTON',
+      particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'ROW',
       particleSeparation: 0.1,
       gamma: 1,
@@ -130,15 +134,16 @@ describe('createParticleCollection()', () => {
     })
     expect(particleCollection).toEqual({
       particleTypes: [0, 1, 3],
+      particleCount: 3,
       fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
       fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
     })
   })
 
   it('electric with gamma 100', () => {
-    const particleCollection = createParticleCollection({
+    const particleCollection = ParticleCollection({
       particleCount: 3,
-      particleTypeDescriptor: 'PHOTON ELECTRON PROTON',
+      particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'ROW',
       particleSeparation: 0.1,
       gamma: 100,
@@ -147,6 +152,7 @@ describe('createParticleCollection()', () => {
     })
     expect(particleCollection).toEqual({
       particleTypes: [0, 1, 3],
+      particleCount: 3,
       fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
       fourVelocities: [
         0,
@@ -166,9 +172,9 @@ describe('createParticleCollection()', () => {
   })
 
   it('square of nine electrons in rest', () => {
-    const particleCollection = createParticleCollection({
+    const particleCollection = ParticleCollection({
       particleCount: 9,
-      particleTypeDescriptor: 'ELECTRON',
+      particleType: 'ELECTRON',
       bunchShape: 'SQUARE',
       particleSeparation: 1,
       gamma: 1,
@@ -177,6 +183,7 @@ describe('createParticleCollection()', () => {
     })
     expect(particleCollection).toEqual({
       particleTypes: Array(9).fill(1),
+      particleCount: 9,
       fourPositions: [
         -1,
         -1,

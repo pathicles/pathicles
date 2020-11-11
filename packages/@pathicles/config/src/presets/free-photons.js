@@ -1,3 +1,5 @@
+import { RUNNER_MODE } from '../constants'
+
 export const freePhotons = {
   name: 'free-photons',
   view: {
@@ -11,18 +13,19 @@ export const freePhotons = {
     prerender: true,
     loops: 0,
 
-    mode: 'framewise',
-    stepsPerTick: 1,
-    stepCount: 11
+    mode: RUNNER_MODE.FRAMEWISE,
+    iterationsPerTick: 1,
+    iterationCount: 11
   },
 
   model: {
-    iterationStepDurationOverC: 0.1,
+    bufferLength: 11,
+    iterationDurationOverC: 0.2,
     emitter: {
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',
       direction: [0, 0, 1],
-      position: [0, 1, 0],
+      position: [0, 1, -1],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1

@@ -1,4 +1,4 @@
- import Pusher_FastBorisImplementation from './Pusher_FastBorisImplementation'
+import Pusher_FastBorisImplementation from './Pusher_FastBorisImplementation'
 
 const epsilon = 0.00001
 
@@ -32,7 +32,7 @@ const logbook = []
 
 // let gamma = 2;
 // let electricFieldStrength = -10000000;
-const stepCount = 10
+const iterationCount = 10
 
 // for (let particleType of ["PHOTON", "ELECTRON", "PROTON"]) {
 for (let particleType of ['ELECTRON']) {
@@ -47,7 +47,7 @@ for (let particleType of ['ELECTRON']) {
           particleType,
           electricFieldStrength,
           gamma,
-          stepCount
+          iterationCount
         })
 
         // console.log(prettyjson.render(report.result));
@@ -58,16 +58,16 @@ for (let particleType of ['ELECTRON']) {
           // E_x: 0,
           // E_y: 0,
           E_z: electricFieldStrength,
-          stepCount,
+          iterationCount,
           // z_boundingBoxWidth: report.result.boundingBox.z.width,
           z_10__m: report.result.steps[10].particles[0].position__m[2],
           v_10__c: report.result.steps[10].particles[0].velocity__c[2],
 
           position__m: report.result.steps.map(
-            step => step.particles[0].position__m
+            (step) => step.particles[0].position__m
           ),
           velocity__c: report.result.steps.map(
-            step => step.particles[0].velocity__c
+            (step) => step.particles[0].velocity__c
           )
         })
 
@@ -93,7 +93,7 @@ function simulate(configuration = {}) {
   console.log(prettyjson.render(system))
   const dt__s = bigNumberMath
     .divide(
-      bigNumberMath.bignumber(1 / configuration.stepCount),
+      bigNumberMath.bignumber(1 / configuration.iterationCount),
       Specrel.speedOfLight
     )
     .toNumeric()
@@ -104,7 +104,7 @@ function simulate(configuration = {}) {
   })
 
   const computeStart = performance.now()
-  borisPusher.push(configuration.stepCount)
+  borisPusher.push(configuration.iterationCount)
   const computeEnd = performance.now()
 
   // analysis

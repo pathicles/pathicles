@@ -60,7 +60,7 @@ const createImages = async () => {
       return window.pathicles.simulation.dump()
     })
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
-      iterationStep: dump.iterationStep,
+      iteration: dump.iteration,
       configuration: dump.configuration,
       data: {
         position: dump.data.position.map((d) => d),

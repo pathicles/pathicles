@@ -14,7 +14,7 @@ const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 uniform sampler2D utParticleChargesMassesChargeMassRatios;
 uniform sampler2D utPositionBuffer;
 uniform sampler2D utVelocityBuffer;
-uniform float iterationStep;
+uniform float iteration;
 uniform int variableIdx;
 uniform float channel;
 uniform float channelsPerValueCount;
@@ -89,7 +89,7 @@ vec3 getB(vec3 position) {
 
 
 
-vec4 push_position(float p, float bufferHead, float bufferPosition) {
+vec4 push_position(float p, float nextBufferPosition, float bufferPosition) {
 
   ParticleData particleData = getParticleData(p);
   vec4 fourPosition = readVariable(utPositionBuffer, p, bufferPosition);
@@ -98,7 +98,7 @@ vec4 push_position(float p, float bufferHead, float bufferPosition) {
   float time  = fourPosition.w;
 
   vec3 fourMomentum = readVariable(utVelocityBuffer, p, bufferPosition).xyz;
-  vec3 nextMomentum = readVariable(utVelocityBuffer, p, bufferHead).xyz;
+  vec3 nextMomentum = readVariable(utVelocityBuffer, p, nextBufferPosition).xyz;
 
   float nextTime = time + 2. * halfDeltaTOverC;
 
@@ -112,7 +112,7 @@ vec4 push_position(float p, float bufferHead, float bufferPosition) {
 //  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
 
 
-vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
+vec4 push_velocity(float p, float nextBufferPosition, float bufferPosition) {
 
   ParticleData particleData = getParticleData(p);
   vec3 momentum;
@@ -151,10 +151,10 @@ vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
   return vec4(momentum, gamma);
 }
 
-vec4 push(float p, float bufferHead, float bufferPosition) {
+vec4 push(float p, float nextBufferPosition, float bufferPosition) {
   return (variableIdx == 0)
-  ? push_position(p, bufferHead, bufferPosition)
-  : push_velocity(p, bufferHead, bufferPosition);
+  ? push_position(p, nextBufferPosition, bufferPosition)
+  : push_velocity(p, nextBufferPosition, bufferPosition);
 }
 
 vec4 readVariable(float texelParticleIndex, float texelBufferIndex) {
@@ -172,7 +172,7 @@ void main () {
   texelBufferIndex = floor(gl_FragCoord.y/channelsPerValueCount);
   texelChannel = (channelsPerValueCount == 4.) ? fract(gl_FragCoord.y/4.)*4. - .5 : 0.;
 
-  float nextBufferPosition = floor(mod(iterationStep, bufferLength + 1.));
+  float nextBufferPosition = floor(mod(iteration, bufferLength + 1.));
   float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
 
   if (abs(nextBufferPosition - texelBufferIndex) < 0.1) {

@@ -23,7 +23,7 @@ export default {
 
   mounted() {
     // const configModel = (this.configModel = {
-    //   stepCount: 128,
+    //   iterationCount: 128,
     //   tickDuration__c_1: 0.1,
     //   stepHistoryLength: 128,
     //   ticksPerFrame: 2,
@@ -68,7 +68,7 @@ export default {
     // // .onChange(() => { update(configModel, true) })
     //
     // this.guiFolders.integrator
-    //   .add(configModel, 'stepCount', 0, 512)
+    //   .add(configModel, 'iterationCount', 0, 512)
     //   .step(1)
     //   .onFinishChange(() => {
     //     this.configuration = configModel

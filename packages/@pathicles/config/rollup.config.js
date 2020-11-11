@@ -7,6 +7,7 @@ import { join } from 'path'
 import cleanup from 'rollup-plugin-cleanup'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
+import notify from 'rollup-plugin-notify'
 
 export default {
   input: join('src', 'index.js'),
@@ -27,6 +28,7 @@ export default {
     }
   ],
   plugins: [
+    notify(),
     visualizer(),
     cleanup(),
     nodeResolve(),
