@@ -59,12 +59,13 @@ const createImages = async () => {
     const dump = await page.evaluate(() => {
       return window.pathicles.simulation.dump()
     })
+    console.log(dump)
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
       iteration: dump.iteration,
       configuration: dump.configuration,
       data: {
-        position: dump.data.position.map((d) => d),
-        particleTypes: dump.data.particleTypes
+        position: dump.position.map((d) => d),
+        particleTypes: dump.particleTypes
       }
     })
   }

@@ -11,6 +11,7 @@ import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
+    console.log('ReglViewerInstance')
     this.config = defaultConfig
     this.control = control
 
@@ -26,8 +27,7 @@ export class ReglViewerInstance {
         'angle_instanced_arrays',
         'oes_texture_float',
         'OES_standard_derivatives',
-        'OES_texture_half_float',
-        'WEBGL_depth_texture'
+        'OES_texture_half_float'
       ],
 
       onDone: (err, regl) => {

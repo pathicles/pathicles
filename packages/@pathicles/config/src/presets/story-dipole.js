@@ -29,7 +29,7 @@ export const storyDipole = {
         d: {
           type: LatticeElementTypes.SBEN,
           l: 10,
-          strength: 0.000075
+          strength: 0.00015
         }
       },
       beamline: ['l', 'd', 'l'],

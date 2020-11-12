@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { watchViewport, unwatchViewport } from 'tornis'
+import { unwatchViewport, watchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
@@ -73,7 +73,10 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-electric',
-              data: 'story-electric.js'
+              data: 'story-electric.js',
+              camera: {
+                center: [1, 1, 0]
+              }
             }
           },
 
@@ -135,6 +138,7 @@ export default {
         ]
       }
     },
+    debug: { default: true, type: Boolean },
     scrollFactor: {
       type: Number,
       default: 1
@@ -187,6 +191,7 @@ export default {
         ...scene.configuration.view.camera,
         ...scene.pathicles.camera
       }
+      console.log(scene.configuration.view.camera)
     })
 
     const cameraBSplointer = (scenes, s, key) => [
@@ -235,6 +240,7 @@ export default {
   computed: {
     pixelRatio() {
       return Math.min(
+        this.maxPixelRatio,
         window.devicePixelRatio,
         this.maxCanvasWidth / this.windowHeight
       )
@@ -278,6 +284,23 @@ export default {
           this.activeSceneProgress = this.reglInstance.story
             .getState()
             .activeSceneProgress.toFixed(2)
+        }
+
+        if (scroll.changed || size.changed) {
+          this.vp = JSON.stringify(
+            {
+              scenceCount: this.story.scenes.length,
+              activeScene: this.activeScene,
+              activeSceneProgress: this.activeSceneProgress,
+              progress: this.progress.toFixed(2),
+              storyHeight: this.storyHeight,
+              duration: this.story.scenes.duration,
+              dt: this.duration,
+              scrollTop: scroll.top + this.screenHeight
+            },
+            null,
+            2
+          )
         }
       }
     }

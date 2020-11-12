@@ -24,11 +24,11 @@ export default {
             image: '/images/story/story-electric.jpg',
             pathicles: {
               preset: 'story-loop',
-              data: 'story-electric.json',
-              camera: {
-                position: [-1, 1.5, 1],
-                target: [2, 1.5, -2]
-              }
+              data: 'story-electric.json'
+              // camera: {
+              //   position: [-1, 1.5, 1],
+              //   target: [2, 1.5, -2]
+              // }
             }
           },
           {
@@ -40,11 +40,11 @@ export default {
             scene_index: 1,
             pathicles: {
               preset: 'story-electric',
-              data: 'story-electric.json',
-              camera: {
-                position: [-2, 1.5, 0],
-                target: [0, 1.5, 0]
-              }
+              data: 'story-electric.json'
+              // camera: {
+              //   position: [-2, 1.5, 0],
+              //   target: [0, 1.5, 0]
+              // }
             }
           },
           {
@@ -57,11 +57,11 @@ export default {
             image: '/images/story/story-dipole.jpg',
             pathicles: {
               preset: 'story-dipole',
-              data: 'story-dipole.json',
-              camera: {
-                position: [2, 1.5, 2],
-                target: [0, 1.5, 0]
-              }
+              data: 'story-dipole.json'
+              // camera: {
+              //   position: [2, 1.5, 2],
+              //   target: [0, 1.5, 0]
+              // }
             }
           },
           {
@@ -73,21 +73,21 @@ export default {
             image: '/images/story/story-quadrupole.jpg',
             pathicles: {
               preset: 'story-quadrupole',
-              data: 'story-quadrupole.json',
-              camera: {
-                position: [2, 1.5, 2],
-                target: [0, 1.5, 0]
-              }
+              data: 'story-quadrupole.json'
+              // camera: {
+              //   position: [2, 1.5, 2],
+              //   target: [0, 1.5, 0]
+              // }
             }
           },
           {
             type: 'options',
             pathicles: {
-              preset: 'story-empty',
-              camera: {
-                position: [1, 5, 0],
-                target: [-1, 0, 0]
-              }
+              preset: 'story-empty'
+              // camera: {
+              //   position: [1, 5, 0],
+              //   target: [-1, 0, 0]
+              // }
             }
           }
         ]

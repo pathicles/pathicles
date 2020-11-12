@@ -53,7 +53,7 @@ DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-//  if (toBeDiscarded > .0) discard;
+  if (toBeDiscarded > .0) discard;
 
 #ifdef lighting
 
@@ -99,6 +99,7 @@ void main () {
   float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
 
   gl_FragColor =vec4(finalColor, fogAmount);
+  gl_FragColor =vec4(finalColor, 1.);
 
 #endif// lighting
 #ifdef shadow

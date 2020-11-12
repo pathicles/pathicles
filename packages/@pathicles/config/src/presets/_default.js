@@ -4,7 +4,7 @@ export default {
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
-  logPushing: true,
+  logPushing: false,
   logPerformance: false,
 
   stats: false,
@@ -41,21 +41,21 @@ export default {
     prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 4,
-    iterationCount: 128
+    iterationsPerTick: 2,
+    iterationCount: 127
   },
 
   model: {
-    iterationDurationOverC: 0.5,
-    bufferLength: 256,
+    iterationDurationOverC: 0.25,
+    bufferLength: 128,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_XY',
       particleCount: 121,
-      particleSeparation: 0.05,
-      gamma: 1.2,
+      particleSeparation: 0.02,
+      gamma: 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1]
     },

@@ -31,7 +31,8 @@
     "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
-    "primitive-cube": "^2.0.1"
+    "primitive-cube": "^2.0.1",
+    "@petamoriken/float16": "^2.0.0"
   },
   "peerDependencies": {
     "regl": "^2.0.1"

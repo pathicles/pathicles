@@ -55,7 +55,7 @@ export class VariableBuffers {
                 ).fill(0)
               )
           )
-        : new Uint16Array(
+        : new Uint8Array(
             new Array(this.channelsPerValueCount)
               .fill(convertToHalfFloat(data))
               .flat()
@@ -68,7 +68,6 @@ export class VariableBuffers {
                 ).fill(0)
               )
           )
-
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
         width: this.width,

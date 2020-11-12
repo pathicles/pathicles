@@ -12,6 +12,7 @@ import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
+    console.log('PathiclesStory')
     keyControlMount(this)
     this.config = config
     this.simulate = simulate

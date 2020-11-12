@@ -33,7 +33,6 @@ export class Simulation {
       fourPositions,
       configuration.model.emitter.position
     )
-
     this.variables = {
       particleCount,
       bufferLength,

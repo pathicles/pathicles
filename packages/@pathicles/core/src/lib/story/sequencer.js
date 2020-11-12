@@ -2,7 +2,6 @@
 /* eslint-env browser */
 
 import bspline from 'b-spline'
-import { VariableBuffers } from '../simulation/utils/pingPongVariableBuffers'
 
 import { colorCorrection } from '../simulation/utils/colorCorrection'
 
@@ -14,7 +13,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.presetName = configuration.presetName
     scene.configuration = configuration
 
-    const RTTFloatType = 'float'
+    const RTTFloatType = 'half float'
     const channelsPerValueCount = scene.configuration.channelsPerValueCount
     const particleCount = scene.configuration.model.emitter.particleCount
     const bufferLength = scene.configuration.model.bufferLength
@@ -36,22 +35,26 @@ export default function (regl, scenes, stateVars, onStateChange) {
       colorCorrections,
       bufferLength,
       particleCount,
+      iterationCount: 128,
       pingPong: 0,
-      iteration: { value: bufferLength },
+      iteration: bufferLength,
       particleColorsAndTypes,
-      position: new VariableBuffers(
-        regl,
-        particleCount,
-        bufferLength,
-        RTTFloatType,
-        channelsPerValueCount,
-        data.position
-      )
+      position: {
+        buffers: [
+          regl.texture({
+            width: particleCount,
+            height: bufferLength,
+            min: 'nearest',
+            mag: 'nearest',
+            format: 'rgba',
+            type: 'float32',
+            data: new Float32Array(data.position.map((d) => d / 1))
+          })
+        ]
+      }
     }
 
     performance.mark('scene data')
-    // scene.variables.position.load(data.position)
-
     scene.variables.particleColorsAndTypes({
       data: data.particleTypes
         .map((p) => scene.configuration.colors[p].concat(p))
@@ -60,10 +63,14 @@ export default function (regl, scenes, stateVars, onStateChange) {
     })
 
     const colorCorrectionData = colorCorrection(
-      data.position.slice(0, particleCount * 4),
+      data.position.slice(-particleCount * 4),
       configuration.model.emitter.position
     )
-    console.log(colorCorrectionData)
+    // console.log(
+    //   data.position,
+    //   configuration.model.emitter.position,
+    //   colorCorrectionData
+    // )
 
     scene.variables.colorCorrections({
       data: data.particleTypes

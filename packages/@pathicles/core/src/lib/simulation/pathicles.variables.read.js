@@ -62,9 +62,9 @@ export default function readData(regl, { variables }, precision = 10000) {
     pingPong: variables.pingPong,
     iteration: variables.iteration,
     particleTypes: variables.particleTypes,
-    // position_: position,
-    // velocity_: velocity,
-    position: formatVariableValue(position, variables),
-    velocity: formatVariableValue(velocity, variables)
+    position: position,
+    velocity: velocity,
+    position_: formatVariableValue(position, variables),
+    velocity_: formatVariableValue(velocity, variables)
   }
 }
