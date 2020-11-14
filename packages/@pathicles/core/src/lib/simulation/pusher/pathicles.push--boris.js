@@ -88,8 +88,6 @@ export default function (regl, { variables, model }) {
           iteration: variables.iteration,
           channel: i
         }))
-
-      // console.log(jobs)
       pushVelocity(jobs)
       pushPosition(jobs)
     }

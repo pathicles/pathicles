@@ -1,17 +1,45 @@
-const formatVariableValue = (arr, { particleCount, bufferLength }) => {
+const formatVariableValue = (
+  arr,
+  { particleCount, bufferLength, channelsPerValueCount }
+) => {
   const result = []
 
   for (let b = 0; b < bufferLength; b++) {
     const step = []
     result.push(step)
+
     for (let p = 0; p < particleCount; p++) {
       // debugger
-      step.push([
-        arr[b * particleCount * 4 + p * 4],
-        arr[b * particleCount * 4 + p * 4 + 1],
-        arr[b * particleCount * 4 + p * 4 + 2],
-        arr[b * particleCount * 4 + p * 4 + 3]
-      ])
+      const particle = []
+      step.push(particle)
+
+      for (let c = 0; c < channelsPerValueCount; c++) {
+        particle.push([
+          arr[
+            b * channelsPerValueCount * particleCount * 4 +
+              p * 4 +
+              c * channelsPerValueCount * particleCount
+          ],
+          arr[
+            b * channelsPerValueCount * particleCount * 4 +
+              p * 4 +
+              1 +
+              c * channelsPerValueCount * particleCount
+          ],
+          arr[
+            b * channelsPerValueCount * particleCount * 4 +
+              p * 4 +
+              2 +
+              c * channelsPerValueCount * particleCount
+          ],
+          arr[
+            b * channelsPerValueCount * particleCount * 4 +
+              p * 4 +
+              3 +
+              c * channelsPerValueCount * particleCount
+          ]
+        ])
+      }
     }
     // const step = Array(arr.length / bufferLength / 4)
     //   .fill(0)
@@ -63,7 +91,7 @@ export default function readData(regl, { variables }, precision = 10000) {
     iteration: variables.iteration,
     particleTypes: variables.particleTypes,
     position: position,
-    velocity: velocity,
+    // velocity: velocity,
     position_: formatVariableValue(position, variables),
     velocity_: formatVariableValue(velocity, variables)
   }

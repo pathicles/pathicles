@@ -8,7 +8,7 @@
       option(value="story" ) STORY
     .debug.debug-only {{vp}}
   .canvas-container(ref="container")
-    canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+    canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 

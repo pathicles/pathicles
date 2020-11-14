@@ -1,7 +1,7 @@
 import { config } from '@pathicles/config'
 const { performance } = require('perf_hooks')
 
-import { bigNumberMath, format6, speedOfLight__ms_1 } from '../Specrel'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from '../'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import { ParticleSystem } from '../ParticleSystem'

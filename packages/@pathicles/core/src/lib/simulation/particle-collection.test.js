@@ -175,7 +175,7 @@ describe('ParticleCollection()', () => {
     const particleCollection = ParticleCollection({
       particleCount: 9,
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE',
+      bunchShape: 'SQUARE_XY',
       particleSeparation: 1,
       gamma: 1,
       emitterDirection: [0, 0, 1],

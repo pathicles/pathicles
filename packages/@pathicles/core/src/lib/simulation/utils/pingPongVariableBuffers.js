@@ -1,4 +1,5 @@
 import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
+import { variableTexture } from './variableTexture'
 
 export class VariableBuffers {
   constructor(
@@ -25,14 +26,11 @@ export class VariableBuffers {
         format: 'rgba',
         colorType: RTTFloatType,
         depthStencil: false,
-        color: regl.texture({
-          width: this.width,
-          height: this.height,
-          min: 'nearest',
-          mag: 'nearest',
-          format: 'rgba',
-          type: RTTFloatType
-        })
+        color: variableTexture(
+          regl,
+          { width: this.width, height: this.height },
+          RTTFloatType
+        )
       })
     })
 

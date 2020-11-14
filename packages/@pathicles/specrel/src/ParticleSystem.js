@@ -1,4 +1,4 @@
-import Specrel, { bigNumberMath, format6 } from './Specrel'
+import Specrel, { bigNumberMath, format6 } from '..'
 import {
   FieldTypes,
   MagneticConstantField,

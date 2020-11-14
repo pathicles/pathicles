@@ -1,4 +1,4 @@
-import { bigNumberMath } from '../Specrel'
+import { bigNumberMath } from '../'
 import Pusher from './Pusher'
 
 export default class Pusher_EulerImplementation extends Pusher {

@@ -1,10 +1,8 @@
-/* eslint-env jest */
-
+import { describe, expect, it } from '@jest/globals'
 import {
   betaSquareFromVelocity__c,
   betaSquareFromVelocityPrime,
   bigNumberMath,
-  c,
   speedOfLight,
   speedOfLight__ms_1,
   elementaryCharge,
@@ -13,7 +11,7 @@ import {
   gammaFromBetaPrime,
   gammaFromBetaPrimeSquare,
   gammaFromBetaSquare
-} from './Specrel'
+} from './index'
 import ParticleTypes from './ParticleTypes'
 import prettyjson from 'prettyjson'
 
@@ -26,44 +24,44 @@ describe('beta', () => {
       for (let j = 1; j < 2; j++) {
         const angle = (2 * Math.PI) / j
         const velocity__c = [0, 0, beta]
-        const velocityPrime__c = velocity__c.map(v => 1 - v)
+        const velocityPrime__c = velocity__c.map((v) => 1 - v)
 
         //const velocity__ms_1 = velocity__c.map(v => v * c)
 
-        console.log({
-          label: '1 - ' + betaPrime,
-          beta,
-          angle,
-          velocity__c,
-          velocityPrime__c,
-          // betaSquareFromVelocity: betaSquareFromVelocity(velocity__c),
-          betaSquareFromVelocity32: betaSquareFromVelocity__c(
-            velocity__c,
-            Math.fround
-          ),
-          // betaSquareFromVelocityRoot: Math.sqrt(betaSquareFromVelocity(velocity__c)),
-          betaSquareFromVelocityRoot32: Math.fround(
-            Math.sqrt(betaSquareFromVelocity__c(velocity__c, Math.fround))
-          ),
-          // betaSquareFromVelocityPrime: betaSquareFromVelocityPrime(velocityPrime__c),
-          betaSquareFromVelocityPrime32: betaSquareFromVelocityPrime(
-            velocityPrime__c,
-            Math.fround
-          ),
-          // betaSquareFromVelocityPrimeRoot: Math.sqrt(betaSquareFromVelocityPrime(velocityPrime__c)),
-          betaSquareFromVelocityPrimeRoot32: Math.fround(
-            Math.sqrt(
-              betaSquareFromVelocityPrime(velocityPrime__c, Math.fround)
-            )
-          ),
-          gammaFromBeta: gammaFromBeta(
-            Math.sqrt(betaSquareFromVelocity__c(velocity__c))
-          ),
-          gammaFromBeta32: gammaFromBeta(
-            Math.sqrt(betaSquareFromVelocity__c(velocity__c, Math.fround)),
-            Math.fround
-          )
-        })
+        // console.log({
+        //   label: '1 - ' + betaPrime,
+        //   beta,
+        //   angle,
+        //   velocity__c,
+        //   velocityPrime__c,
+        //   // betaSquareFromVelocity: betaSquareFromVelocity(velocity__c),
+        //   betaSquareFromVelocity32: betaSquareFromVelocity__c(
+        //     velocity__c,
+        //     Math.fround
+        //   ),
+        //   // betaSquareFromVelocityRoot: Math.sqrt(betaSquareFromVelocity(velocity__c)),
+        //   betaSquareFromVelocityRoot32: Math.fround(
+        //     Math.sqrt(betaSquareFromVelocity__c(velocity__c, Math.fround))
+        //   ),
+        //   // betaSquareFromVelocityPrime: betaSquareFromVelocityPrime(velocityPrime__c),
+        //   betaSquareFromVelocityPrime32: betaSquareFromVelocityPrime(
+        //     velocityPrime__c,
+        //     Math.fround
+        //   ),
+        //   // betaSquareFromVelocityPrimeRoot: Math.sqrt(betaSquareFromVelocityPrime(velocityPrime__c)),
+        //   betaSquareFromVelocityPrimeRoot32: Math.fround(
+        //     Math.sqrt(
+        //       betaSquareFromVelocityPrime(velocityPrime__c, Math.fround)
+        //     )
+        //   ),
+        //   gammaFromBeta: gammaFromBeta(
+        //     Math.sqrt(betaSquareFromVelocity__c(velocity__c))
+        //   ),
+        //   gammaFromBeta32: gammaFromBeta(
+        //     Math.sqrt(betaSquareFromVelocity__c(velocity__c, Math.fround)),
+        //     Math.fround
+        //   )
+        // })
       }
     }
   })
@@ -128,10 +126,10 @@ describe('beta', () => {
         }
       })
     }
-    console.log(prettyjson.render(result))
+    // console.log(prettyjson.render(result))
   })
 
-  it('beta', () => {
+  it('beta 2', () => {
     const betaZ = 0.99999999
     const beta = [0, 0, betaZ]
 
@@ -140,10 +138,10 @@ describe('beta', () => {
     const betaSquaredRoot = Math.sqrt(betaSquared)
     // const gamma = 1 / Math.sqrt(1 - betaSquared)
 
-    const betaSquared__32 =
-      Math.fround(beta[0] * beta[0]) +
-      Math.fround(beta[1] * beta[1]) +
-      Math.fround(beta[2] * beta[2])
+    // const betaSquared__32 =
+    //   Math.fround(beta[0] * beta[0]) +
+    //   Math.fround(beta[1] * beta[1]) +
+    //   Math.fround(beta[2] * beta[2])
     // const betaSquaredRoot__32_ = Math.fround(Math.sqrt(betaSquared__32))
     // const betaSquaredRoot__32 = Math.sqrt(betaSquared__32)
     // const gamma__32 = Math.fround(
@@ -191,7 +189,7 @@ describe('beta', () => {
   //
   //   expect(dbeta).toEqual([0, 0, dbetaz])
   //   expect(betaSquaredRoot).toEqual(dbetaz)
-  })
+  // })
 })
 
 describe('Specrel constants', () => {

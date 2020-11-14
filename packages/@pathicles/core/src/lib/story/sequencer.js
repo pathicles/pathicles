@@ -4,6 +4,7 @@
 import bspline from 'b-spline'
 
 import { colorCorrection } from '../simulation/utils/colorCorrection'
+import { variableTexture } from '../simulation/utils/variableTexture'
 
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
@@ -13,7 +14,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.presetName = configuration.presetName
     scene.configuration = configuration
 
-    const RTTFloatType = 'half float'
+    const variableType = 'float32'
     const channelsPerValueCount = scene.configuration.channelsPerValueCount
     const particleCount = scene.configuration.model.emitter.particleCount
     const bufferLength = scene.configuration.model.bufferLength
@@ -26,7 +27,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
     const colorCorrections = regl.texture({
       data: Array(particleCount * 4),
       shape: [particleCount, 1, 4],
-      type: RTTFloatType
+      type: variableType
     })
 
     scene.variables = {
@@ -41,15 +42,15 @@ export default function (regl, scenes, stateVars, onStateChange) {
       particleColorsAndTypes,
       position: {
         buffers: [
-          regl.texture({
-            width: particleCount,
-            height: bufferLength,
-            min: 'nearest',
-            mag: 'nearest',
-            format: 'rgba',
-            type: 'float32',
-            data: new Float32Array(data.position.map((d) => d / 1))
-          })
+          variableTexture(
+            regl,
+            {
+              width: particleCount,
+              height: bufferLength
+            },
+            variableType,
+            new Float32Array(data.position.map((d) => d / 1))
+          )
         ]
       }
     }
@@ -77,16 +78,10 @@ export default function (regl, scenes, stateVars, onStateChange) {
         .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
         .flat(),
       shape: [particleCount, 1, 4],
-      type: RTTFloatType
+      type: variableType
     })
 
     scene.model = {
-      // halfDeltaTOverC: configuration.model.iterationDurationOverC / 2,
-      // particleCount: particleCount,
-      // particleCount: particleCount,
-      // particleTypes: scene.data ? scene.data.particleTypes : [],
-      // bufferLength: bufferLength,
-      // iteration: configuration.runner.iteration,
       boundingBoxSize: configuration.model.boundingBoxSize,
       interactions: {
         particleInteraction:

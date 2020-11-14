@@ -3,7 +3,8 @@ import {
   spiralDistribution,
   rowDistribution,
   cubeDistribution,
-  squareDistribution
+  squareDistribution,
+  distribution
 } from './distributions/distributions.js'
 import { boundedRandom } from '../utils/random'
 import ParticleTypes from './particleTypes'
@@ -82,71 +83,11 @@ export function ParticleCollection({
   // create particle collection
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 
-  // distribute Location
-
-  if (
-    [
-      'SQUARE',
-      'CUBE',
-      'ROW',
-      'COLUMN',
-      'SQUARE_YZ',
-      'SQUARE_XY',
-      'SPIRAL_XY',
-      'SPIRAL_YZ'
-    ].indexOf(bunchShape) === -1
-  ) {
-    throw new Error('unknown distribution type')
-  }
-  const localPositions =
-    bunchShape === 'SQUARE_XY'
-      ? squareDistribution({
-          n: particleCount,
-          d: particleSeparation,
-          mixer: (a, b) => [a, b, 0]
-        })
-      : bunchShape === 'SQUARE_XZ'
-      ? squareDistribution({
-          n: particleCount,
-          d: particleSeparation,
-          mixer: (a, b) => [a, 0, b]
-        })
-      : bunchShape === 'SQUARE_YZ'
-      ? squareDistribution({
-          n: particleCount,
-          d: particleSeparation,
-          mixer: (a, b) => [0, a, b]
-        })
-      : bunchShape === 'ROW'
-      ? rowDistribution({
-          n: particleCount,
-          d: particleSeparation
-        })
-      : bunchShape === 'COLUMN'
-      ? columnDistribution({
-          n: particleCount,
-          d: particleSeparation
-        })
-      : bunchShape === 'SPIRAL_XY'
-      ? spiralDistribution({
-          n: particleCount,
-          d: particleSeparation,
-          mixer: (r, theta) => [r * Math.cos(theta), r * Math.sin(theta), 0]
-        })
-      : bunchShape === 'SPIRAL_YZ'
-      ? spiralDistribution({
-          n: particleCount,
-          d: particleSeparation
-        })
-      : bunchShape === 'CUBE'
-      ? cubeDistribution({
-          n: particleCount,
-          d: particleSeparation
-        })
-      : columnDistribution({
-          n: particleCount,
-          d: particleSeparation
-        })
+  const localPositions = distribution({
+    shape: bunchShape,
+    count: particleCount,
+    separation: particleSeparation
+  })
 
   const fourPositions = particles
     .map((particle, p) => {

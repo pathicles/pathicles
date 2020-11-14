@@ -1,30 +1,30 @@
-/* eslint-env jest */
-const squareDistributionXY = require('./distributions').squareDistributionXY
-const squareDistributionXZ = require('./distributions').squareDistributionXZ
+import { describe, expect, it } from '@jest/globals'
 
-describe('squareDistributionXY', () => {
+const squareDistribution = require('./distributions').squareDistribution
+
+describe('squareDistribution', () => {
   it('{}', () => {
-    const distribution = squareDistributionXY({})
+    const distribution = squareDistribution({})
     expect(distribution).toEqual([])
   })
 
   it('{n: 1}', () => {
-    const distribution = squareDistributionXY({
+    const distribution = squareDistribution({
       n: 1
     })
     expect(distribution).toEqual([0, 0, 0])
   })
 
   it('{n: 1, d: 1}', () => {
-    const distribution = squareDistributionXY({
+    const distribution = squareDistribution({
       n: 1,
       d: 1
     })
     expect(distribution).toEqual([0, 0, 0])
   })
 
-  it('{n: 3, d: 1}', () => {
-    const distribution = squareDistributionXY({
+  it('{n: 3, d: 1} x-y', () => {
+    const distribution = squareDistribution({
       n: 3,
       d: 1
     })
@@ -32,7 +32,7 @@ describe('squareDistributionXY', () => {
   })
 
   it('{n: 3, d: 0}', () => {
-    const distribution = squareDistributionXY({
+    const distribution = squareDistribution({
       n: 3,
       d: 0
     })
@@ -40,37 +40,38 @@ describe('squareDistributionXY', () => {
   })
 })
 
-describe('squareDistributionXZ', () => {
+describe('squareDistribution', () => {
   it('{}', () => {
-    const distribution = squareDistributionXY({})
+    const distribution = squareDistribution({})
     expect(distribution).toEqual([])
   })
 
   it('{n: 1}', () => {
-    const distribution = squareDistributionXZ({
+    const distribution = squareDistribution({
       n: 1
     })
     expect(distribution).toEqual([0, 0, 0])
   })
 
-  it('{n: 1, d: 1}', () => {
-    const distribution = squareDistributionXZ({
+  it('{n: 1, d: 1} x-y', () => {
+    const distribution = squareDistribution({
       n: 1,
       d: 1
     })
     expect(distribution).toEqual([0, 0, 0])
   })
 
-  it('{n: 3, d: 1}', () => {
-    const distribution = squareDistributionXZ({
+  it('{n: 3, d: 1} x-z', () => {
+    const distribution = squareDistribution({
       n: 3,
-      d: 1
+      d: 1,
+      mixer: (a, b) => [a, 0, b]
     })
     expect(distribution).toEqual([-0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 0.5])
   })
 
   it('{n: 3, d: 0}', () => {
-    const distribution = squareDistributionXZ({
+    const distribution = squareDistribution({
       n: 3,
       d: 0
     })

@@ -9,10 +9,11 @@ import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
+import stringify from '@aitodotai/json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
-    console.log('PathiclesStory')
+    console.log('PathiclesSimulator')
     keyControlMount(this)
     this.config = config
     this.simulate = simulate
@@ -139,7 +140,12 @@ export class ReglSimulatorInstance {
         const { changed } = this.simulate && this.pathiclesRunner.next()
 
         if (changed) {
-          // console.log(stringify(this.simulation._logStore))
+          // console.log(
+          //   stringify(
+          //     this.simulation._logStore[this.simulation._logStore.length - 1],
+          //     { maxLength: 200 }
+          //   )
+          // )
         }
         this.camera.tick()
         if (changed || this.camera.state.dirty) {

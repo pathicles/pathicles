@@ -4,7 +4,7 @@ const epsilon = 0.00001
 
 const { PerformanceObserver, performance } = require('perf_hooks')
 
-import Specrel, { bigNumberMath, format6 } from '../Specrel'
+import Specrel, { bigNumberMath, format6 } from '../'
 import * as d3 from 'd3'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 

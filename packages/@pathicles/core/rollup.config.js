@@ -43,7 +43,6 @@ export default {
       name: 'watch-external',
       async buildStart() {
         const files = await fs.glob('src/**/*')
-        console.log(files)
         for (let file of files) {
           this.addWatchFile(file)
         }

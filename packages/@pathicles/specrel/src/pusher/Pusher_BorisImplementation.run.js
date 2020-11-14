@@ -1,19 +1,22 @@
 /* eslint-env node */
 
-//import { ParticleSystem } from './../ParticleSystem'
-// import { bigNumberMath, format30 } from './../Specrel'
-import Pusher_BorisImplementation from '@pathicles/specrel/src/pusher/Pusher_BorisImplementation'
-import presets from './../PathiclesConfigurationPresets.js'
-import { PusherTestSystemFactory } from './PusherTestSystemFactory'
-import createLogger from '../../utils/Logger'
-import * as d3 from 'd3'
+// import { ParticleSystem } from './../ParticleSystem'
+import { bigNumberMath, format30 } from './../index.js'
+import { Pusher_BorisImplementation } from './Pusher_BorisImplementation.js'
 
-const configGyrotest = presets.remembered['gyrotest'][0]
+import pkg from '@pathicles/config'
+const { config } = pkg
 
-const logger = createLogger('pathicles')
-logger.setLevel('warn')
+const configGyrotest = config('gyrotest-1-electron')
 
-const pusherTestSystem = PusherTestSystemFactory(configGyrotest)
+// import { PusherTestSystemFactory } from './PusherTestSystemFactory'
+// import createLogger from '../../utils/Logger'
+// import * as d3 from 'd3'
+//
+// const logger = createLogger('pathicles')
+// logger.setLevel('warn')
+
+// const pusherTestSystem = PusherTestSystemFactory(configGyrotest)
 
 const gyroRadius = bigNumberMath.divide(
   bigNumberMath.multiply(

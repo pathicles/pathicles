@@ -1,5 +1,4 @@
-/* eslint-env jest */
-'use strict'
+import { describe, expect, it } from '@jest/globals'
 
 const rowDistribution = require('./distributions').rowDistribution
 

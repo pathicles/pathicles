@@ -3,12 +3,21 @@ import Specrel, {
   format30,
   gammaFromVelocity__c,
   gammaFromVelocity__ms_1
-} from '../Specrel'
+} from '../'
 import Pusher from './Pusher'
 import createLogger from '../Logger'
 import * as d3 from 'd3'
 
-const logger = createLogger('Pusher_FastBorisImplementation')
+const logger = createLogger(
+  "Pusher_FastBorisImplementatlet canvas = document.getElementById('canvas');\n" +
+    "let gl = canvas.getContext('webgl');\n" +
+    '\n' +
+    "canvas.addEventListener('webglcontextlost', (event) => {\n" +
+    '\tconsole.log(event);\n' +
+    '});\n' +
+    '\n' +
+    "gl.getExtension('WEBGL_lose_context').loseContext();\nion"
+)
 // logger.setLevel("warn")
 logger.enable = true
 

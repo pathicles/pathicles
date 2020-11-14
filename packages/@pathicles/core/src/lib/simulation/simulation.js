@@ -24,8 +24,8 @@ export class Simulation {
     const { bufferLength } = configuration.model
     const {
       particleCount,
-      fourPositions,
       particleTypes,
+      fourPositions,
       fourVelocities
     } = (this.initialData = new ParticleCollection(configuration.model.emitter))
 

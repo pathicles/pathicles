@@ -97,3 +97,58 @@ export function cubeDistribution({ n = 0, d = 0 }) {
     })
     .reduce((acc, val) => acc.concat(val), [])
 }
+
+export function distribution({ shape, count, separation }) {
+  return shape === 'SQUARE_XY'
+    ? squareDistribution({
+        n: count,
+        d: separation,
+        mixer: (a, b) => [a, b, 0]
+      })
+    : shape === 'SQUARE_XZ'
+    ? squareDistribution({
+        n: count,
+        d: separation,
+        mixer: (a, b) => [a, 0, b]
+      })
+    : shape === 'SQUARE_YZ'
+    ? squareDistribution({
+        n: count,
+        d: separation,
+        mixer: (a, b) => [0, a, b]
+      })
+    : shape === 'ROW'
+    ? rowDistribution({
+        n: count,
+        d: separation
+      })
+    : shape === 'COLUMN'
+    ? columnDistribution({
+        n: count,
+        d: separation
+      })
+    : shape === 'SPIRAL_XY'
+    ? spiralDistribution({
+        n: count,
+        d: separation,
+        mixer: (r, theta) => [r * Math.cos(theta), r * Math.sin(theta), 0]
+      })
+    : shape === 'SPIRAL_YZ'
+    ? spiralDistribution({
+        n: count,
+        d: separation
+      })
+    : shape === 'CUBE'
+    ? cubeDistribution({
+        n: count,
+        d: separation
+      })
+    : shape === 'COLUMN'
+    ? columnDistribution({
+        n: count,
+        d: separation
+      })
+    : (function () {
+        throw new Error('unknown distribution type: ', shape)
+      })()
+}

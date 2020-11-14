@@ -1,6 +1,6 @@
-import { speedOfLight__ms_1, bigNumberMath } from '../Specrel'
+import { speedOfLight__ms_1, bigNumberMath } from './../index.js'
 
-export default class Pusher {
+export class Pusher {
   /**
    * Create a pusher for a system
    * @param {ParticleSystem} system - The particle system the pusher is applied to.
@@ -31,7 +31,8 @@ export default class Pusher {
     return this._system
   }
 
+  // eslint-disable-next-line no-unused-vars
   push({ dt }) {
-    throw 'abbstract class'
+    throw new Error('abstract class')
   }
 }

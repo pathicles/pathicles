@@ -1,5 +1,6 @@
 import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
 import { RUNNER_MODE } from '../constants'
+import defaultConfig from './_default'
 
 export default {
   name: 'gyrotest-1-electron',
@@ -15,24 +16,29 @@ export default {
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
     mode: RUNNER_MODE.STEPWISE,
     iterationsPerTick: 1,
-    iterationCount: 17
+    iterationCount: 18
   },
 
   model: {
-    bufferLength: 18,
-    iterationStepDurationOverC: 1,
+    bufferLength: 19,
+    iterationDurationOverC: (2 * Math.PI) / 1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE',
+      bunchShape: 'SQUARE_XY',
       direction: [0, 0, 1],
-      position: [-1, 0.15, 0],
+      position: [
+        -1,
+        defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight,
+        0
+      ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1.55
+      gamma: 1 / Math.sqrt(1 - 0.05867 * 0.05867) //1.55
     },
 
     lattice: {
@@ -40,7 +46,7 @@ export default {
         l0: {
           type: LatticeElementTypes.SBEN,
           l: 20,
-          strength: 0.002
+          strength: 0.0001
         }
       },
       beamline: ['l0'],

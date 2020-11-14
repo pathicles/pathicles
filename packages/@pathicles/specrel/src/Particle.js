@@ -1,8 +1,4 @@
-import {
-  bigNumberMath,
-  speedOfLight__ms_1,
-  speedOfLight
-} from '@pathicles/specrel'
+import { bigNumberMath, speedOfLight__ms_1, speedOfLight } from './index'
 
 class Particle {
   constructor(particleType) {
@@ -37,7 +33,7 @@ class Particle {
     }
     this._particleType = particleType
 
-    console.log(this)
+    // console.log(this)
   }
 
   get particleType() {
@@ -270,7 +266,7 @@ class Particle {
         .pow(-1)
     }
 
-    if (direction.length != 3) {
+    if (direction.length !== 3) {
       throw 'direction must bew Array of length 3'
     }
 
@@ -314,17 +310,17 @@ class Particle {
     )
   }
 
-  calculateGammaForU(u) {
-    return bigNumberMath
-      .add(
-        1,
-        bigNumberMath.divide(
-          bigNumberMath.add(u[0].pow(2), u[1].pow(2), u[2].pow(2)),
-          speedOfLight.pow(2)
-        )
-      )
-      .sqrt()
-  }
+  // calculateGammaForU(u) {
+  //   return bigNumberMath
+  //     .add(
+  //       1,
+  //       bigNumberMath.divide(
+  //         bigNumberMath.add(u[0].pow(2), u[1].pow(2), u[2].pow(2)),
+  //         speedOfLight.pow(2)
+  //       )
+  //     )
+  //     .sqrt()
+  // }
 
   toString() {
     return (

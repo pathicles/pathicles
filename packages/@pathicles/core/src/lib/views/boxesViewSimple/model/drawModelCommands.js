@@ -42,15 +42,16 @@ export default function (regl, { variables, view }, shadow) {
       },
       elements: geometry.cells,
       instances: () => {
+        return (
+          variables.particleCount *
+          // variables.channelsPerValueCount *
+          Math.min(variables.iteration, variables.bufferLength)
+        )
         // console.log(
         //   variables.iteration,
         //   variables.particleCount *
         //     Math.min(variables.iteration, variables.bufferLength)
         // )
-        return (
-          variables.particleCount *
-          Math.min(variables.iteration, variables.bufferLength)
-        )
       },
       attributes: {
         aPosition: geometry.positions,

@@ -1,7 +1,7 @@
 import { ParticleSystem } from './ParticleSystem'
 import ParticleCollection from './ParticleCollection'
 import ParticleTypes from './ParticleTypes'
-import { format6 } from './Specrel'
+import { format6 } from './'
 
 import { presets } from '@pathicles/config'
 

@@ -3,7 +3,7 @@ import { config } from '@pathicles/config'
 
 import { performance } from 'perf_hooks'
 
-import { bigNumberMath, format6, speedOfLight } from '../Specrel'
+import { bigNumberMath, format6, speedOfLight } from '../'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'

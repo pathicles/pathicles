@@ -1,16 +1,15 @@
-import { bigNumberMath, format6, speedOfLight__ms_1 } from '@pathicles/specrel'
+import { describe, expect, it } from '@jest/globals'
+
+import { bigNumberMath, format6, speedOfLight__ms_1 } from './index'
 
 import Particle from './Particle'
 import ParticleTypes from './ParticleTypes'
-// todo: refactor to mathjs
-import { Decimal } from 'decimal.js'
 
-Decimal.set({ precision: 20, rounding: 4 })
 const numberify = (arr) => {
   return arr.map((a) => a.toNumber())
 }
 
-describe('Particle constructor must be called with arguemtn', () => {
+describe('Particle constructor must be called with argument', () => {
   let constructor = () => {
     new Particle()
   }
@@ -79,38 +78,62 @@ describe('electron with gamma = 2', () => {
   })
 })
 
-describe('calculateGammaForVelocity', () => {
+describe('electron: calculateGammaForVelocity', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
 
-  const gamma1 = electron.calculateGammaForVelocity(
-    bigNumberMath.evaluate('[0c, 0c, 0.8660254038c]')
-  )
-  const gamma2 = electron.calculateGammaForBeta(
-    bigNumberMath.bignumber(0.8660254038)
-  )
-  const gamma3 = electron.calculateGammaForU(
-    bigNumberMath.evaluate('[0 c, 0c, 1.7320508076c]')
-  )
+  it('[0c, 0c, 0.8660254038c] => 2', () => {
+    const gamma1 = electron.calculateGammaForVelocity(
+      bigNumberMath.evaluate('[0c, 0c, 0.8660254038c]')
+    )
+    expect(format6(gamma1)).toEqual('2')
+  })
 
-  expect(format6(gamma2)).toEqual('2')
-  expect(format6(gamma1)).toEqual('2')
-  expect(format6(gamma3)).toEqual('2')
+  it('beta(0.86602540389  => 2', () => {
+    const gamma2 = electron.calculateGammaForBeta(
+      bigNumberMath.bignumber(0.8660254038)
+    )
+    expect(format6(gamma2)).toEqual('2')
+  })
+
+  // const gamma3 = electron.calculateGammaForU(
+  //   bigNumberMath.evaluate('[0 c, 0c, 1.7320508076c]')
+  // )
+
+  // expect(format6(gamma3)).toEqual('2')
 })
 
-test('Particle factory: PHOTON', () => {
+describe('Particle factory: Particle.create(ParticleTypes.PHOTON)', () => {
   const photon = new Particle.create(ParticleTypes.PHOTON)
 
-  expect(photon.particleType.name).toEqual(ParticleTypes.PHOTON.name)
+  it('is of particle type: ' + ParticleTypes.PHOTON.name, () =>
+    expect(photon.particleType.name).toEqual(ParticleTypes.PHOTON.name)
+  )
 
-  expect(format6(photon.mass)).toEqual('0 eV / c^2')
-  expect(format6(photon.charge.to('C'))).toEqual('0 C')
-  expect(format6(photon.position)).toEqual('[0 m, 0 m, 0 m]')
-  expect(format6(photon.momentum)).toEqual('[0 eV / c, 0 eV / c, 1 eV / c]')
+  it('has mass of 0 eV / c^2', () =>
+    expect(format6(photon.mass)).toEqual('0 eV / c^2'))
+
+  it('has charge of 0C', () =>
+    expect(format6(photon.charge.to('C'))).toEqual('0 C'))
+
+  it('has location at [0 m, 0 m, 0 m]', () =>
+    expect(format6(photon.position)).toEqual('[0 m, 0 m, 0 m]'))
+
+  it('has default momentum of [0 eV / c, 0 eV / c, 1 eV / c]', () =>
+    expect(format6(photon.momentum)).toEqual('[0 eV / c, 0 eV / c, 1 eV / c]'))
+
+  it('has default momentum 2 of [0 eV / c, 0 eV / c, 1 eV / c]', () =>
+    expect(
+      photon.momentum
+        .equals(bigNumberMath.evaluate('[0 eV / c, 0 eV / c, 1 eV / c]'))
+        .toBeTruthy()
+    ))
+
   expect(format6(photon.momentumNormalized)).toEqual('[0, 0, 1]')
 
   // console.log(photon.beta)
   // console.log("photon.beta", photon.beta.toNumber())
-  expect(format6(photon.velocity)).toEqual('[0 c, 0 c, 1 c]')
+  it('has default velocity of [0 c, 0 c, 1c]', () =>
+    expect(format6(photon.velocity)).toEqual([0, 0, 2.99792e8]))
 
   expect(format6(photon.chargeMassRatio)).toEqual('0 C / kg')
 
@@ -132,7 +155,7 @@ test('Particle factory: PHOTON', () => {
   expect(format6(projectedPosition__m)).toEqual('[0, 0, 1]')
 })
 
-test('Particle factory: ELECTRON', () => {
+describe('Particle factory: ELECTRON', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
 
   expect(format6(electron.mass)).toEqual('5.10999e+5 eV / c^2')

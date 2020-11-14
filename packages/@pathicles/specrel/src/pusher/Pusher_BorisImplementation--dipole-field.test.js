@@ -2,7 +2,7 @@ import { config } from '@pathicles/config'
 
 import { performance } from 'perf_hooks'
 
-import { bigNumberMath, format6, speedOfLight__ms_1 } from '../Specrel'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from '..'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'
@@ -16,14 +16,12 @@ describe('Boris Pusher for system of 1 electron in magnetic dipole field ', () =
   console.log(prettyjson.render(report.expected.gyroRadius))
 
   it('x-radius is ' + report.expected.gyroRadius[0], () => {
-    expect(
-      Math.abs(
-        report.result.boundingBox.x.width - report.expected.gyroRadius[0]
-      )
-    ).toBeLessThan(epsilon)
+    expect(Math.abs(report.result.boundingBox.x.width)).toBeCloseTo(
+      report.expected.gyroRadius[0]
+    )
   })
   it('y-radius is ' + report.expected.gyroRadius[1], () => {
-    expect(report.result.boundingBox.y.width).toBeLessThan(epsilon)
+    expect(report.result.boundingBox.y.width).toBeLessThan(0)
   })
   it('z-radius is ' + report.expected.gyroRadius[2], () => {
     expect(

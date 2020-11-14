@@ -53,7 +53,7 @@ DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-  if (toBeDiscarded > .0) discard;
+//  if (toBeDiscarded > .0) discard;
 
 #ifdef lighting
 

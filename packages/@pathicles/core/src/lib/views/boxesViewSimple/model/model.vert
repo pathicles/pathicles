@@ -11,7 +11,7 @@ attribute float aFourIndex;
 uniform float particleCount;
 uniform float bufferLength;
 uniform float iterationCount;
-uniform float channelsPerValueCount;
+uniform int channelsPerValueCount;
 
 uniform float iteration;
 uniform float dt;
@@ -68,6 +68,7 @@ vec4 get_color(float p) {
 
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
 
+  return 0.;
   float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
   float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterationCount) ? 1.0 : 0.0;
   float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterationCount) ? 1.0 : 0.0;
@@ -80,15 +81,13 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
 //  outsideGrid > 0. ||
 //  undefinedBuffer > 0. ||
   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
-
 }
 
 void main () {
 
-  float previousBufferHead = aStep + 1.;
-
-  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousBufferHead);
-  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep);
+  float previousStep = aStep + 1.;
+  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousStep) + vec4(0.,0. *.1, 0., 0.);
+  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep) + vec4(0., 0. *.1, 0., 0.);
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 

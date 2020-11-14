@@ -1,9 +1,10 @@
-import Specrel, { bigNumberMath, format30, format6 } from '../Specrel'
-import Pusher from './Pusher'
+import { bigNumberMath, format30, format6 } from '../index.js'
+import { Pusher } from './Pusher.js'
 
+// eslint-disable-next-line no-undef
 const logger = { info: console.log }
 
-export default class Pusher_BorisImplementation extends Pusher {
+export class Pusher_BorisImplementation extends Pusher {
   /**
    * Create a Euler pusher for a system
    * @param {ParticleSystem} system - The particle system the pusher is applied to.
@@ -31,6 +32,9 @@ export default class Pusher_BorisImplementation extends Pusher {
         result.particles[p].current.gamma = particle.gamma
         result.dt__s = this._dt__s
 
+        // console.log(particle.position)
+        //
+        // console.log(bigNumberMath.multiply(particle.velocity, this._half_dt))
         const intermediatePosition = bigNumberMath.add(
           particle.position,
           bigNumberMath.multiply(particle.velocity, this._half_dt)

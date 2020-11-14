@@ -1,7 +1,7 @@
 import ParticleCollection from './ParticleCollection'
 import ParticleTypes from './ParticleTypes'
 import { max, min } from 'd3-array'
-import { bigNumberMath } from './Specrel'
+import { bigNumberMath } from './'
 
 const arrayToNumbers = (arr) => {
   return arr.map((a) => a.toNumber())

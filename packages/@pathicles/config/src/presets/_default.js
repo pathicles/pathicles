@@ -35,13 +35,13 @@ export default {
   pusher: 'boris', // "boris", "euler"
   simulateHalfFloat: false,
   renderToFloat: true,
-  channelsPerValueCount: 1,
+  channelsPerValueCount: 4,
 
   runner: {
-    prerender: true,
-    loops: 0,
+    prerender: false,
+    loops: -1,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 2,
+    iterationsPerTick: 4,
     iterationCount: 127
   },
 
@@ -100,7 +100,7 @@ export default {
     showAxes: false,
     showVignette: true,
     showTextures: false,
-    showTextureScale: 15,
+    showTextureScale: 1,
     viewRange: [0, 1],
 
     // lights: [

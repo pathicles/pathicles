@@ -1,7 +1,11 @@
-import { create, all } from 'mathjs'
+import pkg from 'mathjs'
+const { create, all } = pkg
+
+// import { create, all } from 'mathjs'
 
 // create a mathjs instance with configuration
 let bigNumberConfig = {
+  matrix: 'Array',
   number: 'BigNumber'
 }
 export const bigNumberMath = create(all, bigNumberConfig)
