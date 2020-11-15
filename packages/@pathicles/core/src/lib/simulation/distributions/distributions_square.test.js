@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 
 const squareDistribution = require('./distributions').squareDistribution
 
-describe('squareDistribution', () => {
+describe('squareDistribution 1', () => {
   it('{}', () => {
     const distribution = squareDistribution({})
     expect(distribution).toEqual([])

@@ -8,7 +8,7 @@ function log(msg) {
 }
 
 function glEnum(gl, v) {
-  for (var key in gl) {
+  for (let key in gl) {
     if (gl[key] === v) {
       return key
     }
@@ -17,7 +17,7 @@ function glEnum(gl, v) {
 }
 
 function getExt(gl, name, msg) {
-  var ext = glContext.getExtension(name)
+  let ext = glContext.getExtension(name)
   log((ext ? 'can ' : 'can **NOT** ') + msg)
   return ext
 }

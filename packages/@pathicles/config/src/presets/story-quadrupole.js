@@ -13,6 +13,7 @@ export const storyQuadrupole = {
   model: {
     emitter: {
       particleType: 'PROTON',
+      particleSeparation: 0.05,
       direction: [0, 0, -1],
       position: [0, 1.5, 10],
       directionJitter: [0.2, 0.2, 0]

@@ -5,8 +5,8 @@ import saveCanvas from './saveCanvas'
 const onDocumentKeyDown = (app) => (event) => {
   event.stopPropagation()
   // event.preventDefault()
-  const delta = app.config.view.camera.autorotateSpeedTheta / 10
-  const dDistance = 0.1
+  const delta = app.config.view.camera.autorotateSpeedTheta / 50
+  const dDistance = 0.01
   if (event.shiftKey) {
     switch (event.code) {
       case 'ArrowLeft':

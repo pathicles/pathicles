@@ -54,12 +54,10 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleCount: 121,
-      particleSeparation: 0.05,
+      particleSeparation: 0.075,
       gamma: 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      directionJitter: [0.01, 0.01, 0],
-
       positionJitter: [0.1, 0.1, 0.1]
     },
     interactions: {
@@ -97,8 +95,8 @@ export default {
     isLatticeVisible: false,
 
     pathicleRelativeGap: 3,
-    pathicleRelativeHeight: 4,
-    pathicleWidth: 0.003,
+    pathicleRelativeHeight: 5,
+    pathicleWidth: 0.0025,
 
     showAxes: false,
     showVignette: true,

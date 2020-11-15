@@ -60,10 +60,10 @@ void main () {
   vec3 viewDir = normalize( eye - vPosition);
   vec3 normal = normalize( vNormal);
 
-  directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .5);
+  directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
   directionalLights[1] = DirectionalLight(shadowDirection+vec3(-2.,0.,2.), vec3(1.), .25);
   directionalLights[2] = DirectionalLight(shadowDirection+vec3(2.,0.,-2.), vec3(1.),.25);
-  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x,-shadowDirection.y, shadowDirection.z), vec3(.5), .5);
+  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x,-shadowDirection.y, shadowDirection.z), vec3(.5), .15);
 
 //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(vPosition-eye))));
   vec3 edgedColor = vColor;
@@ -77,23 +77,11 @@ void main () {
     float specAmt = specular(light.direction, viewDir, normal, 0.0) * light.intensity;
 
     float shadow = vColorCorrection; //clamp(vColorCorrection + abs(2.+vPosition.y*5.), 0., 1.);
-    float specMask = edger(vUv, vScale, .5 * pathicleWidth, vNormalOrig) * smoothstep(5., 2., length(vPosition-eye));
+    float specMask = 0.5 * edger(vUv, vScale, 1. * pathicleWidth, vNormalOrig) * smoothstep(5., 2., length(vPosition-eye));
     vec3 specCol = specMask * sceneLight * specAmt;
     finalColor += shadow * vColor * diffAmt * light.color;
     finalColor += shadow * specCol * sceneLight;
   }
-
-
-
-
-//
-//  vec3 ambient = ambientLightAmount * edgedColor.rgb;
-//  vec3 diffuse = diffuseLightAmount * edgedColor.rgb * cosTheta;
-
-//  float v =  vColorCorrection;
-//
-//  vec3 color = vec3(ambient + diffuse);
-
 
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);

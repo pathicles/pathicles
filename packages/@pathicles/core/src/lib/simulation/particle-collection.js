@@ -1,11 +1,4 @@
-import {
-  columnDistribution,
-  spiralDistribution,
-  rowDistribution,
-  cubeDistribution,
-  squareDistribution,
-  distribution
-} from './distributions/distributions.js'
+import { distribution } from './distributions/distributions.js'
 import { boundedRandom } from '../utils/random'
 import ParticleTypes from './particleTypes'
 
