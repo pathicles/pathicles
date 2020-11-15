@@ -113,12 +113,32 @@ const convertImagesSharp = async () => {
               console.log(err, info)
             }
           )
+        image_1
+          .toFormat('webp', { quality })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@1x')
+              .replace('.png', `_${quality}.webp`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+        image_2
+          .toFormat('webp', { quality })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@2x')
+              .replace('.png', `_${quality}.webp`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
       })
     })
   )
 }
 
 ;(async () => {
-  await createImages()
+  // await createImages()
   await convertImagesSharp()
 })()
