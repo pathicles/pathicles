@@ -100,87 +100,80 @@ export class ReglViewerInstance {
 
   run(regl) {
     const mainloop = () => {
-      return regl.frame(() => {
+      return regl.frame(({ time }) => {
         const storyState = this.story.getState()
 
-        let activeSceneProgress
+        let sceneProgress
         let viewRange
+        sceneProgress = storyState.sceneProgress
         if (storyState.scene.pathicles && storyState.scene.pathicles.autoLoop) {
-          this.loopTick = this.loopTick < 1024 ? this.loopTick + 1 : 0
-          activeSceneProgress =
-            this.loopTick < 128
-              ? this.loopTick / 256
-              : this.loopTick > 768
-              ? (this.loopTick - 768) / 256 + 0.5
-              : 0.5
-          if (this.loopTick >= 127) {
-            this.modelTranslateX = boundedRandom() * 0.1
-            this.modelTranslateY = boundedRandom() * 0.1
+          const autoloopProgress = (time % 1) / 1
+          if (autoloopProgress < 0.01) {
+            this.modelTranslateX = boundedRandom() * 0.05
+            this.modelTranslateY = boundedRandom() * 0.05
           }
-          this.loopTick = this.loopTick < 128 ? this.loopTick + 1 : 0
-          activeSceneProgress =
-            this.loopTick < 16
-              ? this.loopTick / 32
-              : this.loopTick > 96
-              ? (this.loopTick - 96) / 32 + 0.5
-              : 0.5
-
-          viewRange =
-            activeSceneProgress < 0.5
-              ? [0, activeSceneProgress * 2]
-              : [activeSceneProgress * 2 - 1, 1]
+          viewRange = [autoloopProgress - 0.15, autoloopProgress + 0.15]
+          // sceneProgress <= 0.5
+          //   ? [0, sceneProgress]
+          //   : [0.5 + sceneProgress, 1 - sceneProgress]
         } else {
-          activeSceneProgress = storyState.activeSceneProgress
           viewRange = storyState.viewRange
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
 
-        activeSceneProgress = Math.min(activeSceneProgress, 1)
+        sceneProgress = Math.min(sceneProgress, 1)
 
         this.camera.params.phi = storyState.scene.cameraBSplines.phi(
-          activeSceneProgress
+          sceneProgress
         )[0]
 
         this.camera.params.distance = storyState.scene.cameraBSplines.distance(
-          activeSceneProgress
+          sceneProgress
         )[0]
         this.camera.params.theta = storyState.scene.cameraBSplines.theta(
-          activeSceneProgress
+          sceneProgress
         )[0]
 
+        this.camera.params.center = [
+          storyState.scene.cameraBSplines.centerX(sceneProgress)[0],
+          storyState.scene.cameraBSplines.centerY(sceneProgress)[0],
+          storyState.scene.cameraBSplines.centerZ(sceneProgress)[0]
+        ]
+
         this.camera.tick()
-
-        this.camera.setCameraUniforms(
-          {
-            ...this.camera,
-            scene: storyState.scene,
-            activeSceneProgress
-          },
-          () => {
-            regl.clear({
-              color: [0, 0, 0, 0],
-              depth: 1
-            })
-            this.view.drawDiffuse({
-              colorCorrections: storyState.scene.variables.colorCorrections,
-              particleColorsAndTypes:
-                storyState.scene.variables.particleColorsAndTypes,
-              position: storyState.scene.variables.position.buffers[0],
-              modelTranslateX: this.modelTranslateX,
-              modelTranslateY: this.modelTranslateY,
-              viewRange
-            })
-            if (storyState.scene.configuration.view.showTextures) {
-              this.drawTexture({
-                texture: storyState.scene.variables.position.buffers[0],
-                x0: 0
+        if (this.camera.state.dirty) {
+          this.camera.setCameraUniforms(
+            {
+              ...this.camera,
+              scene: storyState.scene,
+              sceneProgress
+            },
+            () => {
+              regl.clear({
+                color: [0, 0, 0, 0],
+                depth: 1
               })
+              this.view.drawDiffuse({
+                colorCorrections: storyState.scene.variables.colorCorrections,
+                particleColorsAndTypes:
+                  storyState.scene.variables.particleColorsAndTypes,
+                position: storyState.scene.variables.position.buffers[0],
+                modelTranslateX: this.modelTranslateX,
+                modelTranslateY: this.modelTranslateY,
+                viewRange
+              })
+              if (storyState.scene.configuration.view.showTextures) {
+                this.drawTexture({
+                  texture: storyState.scene.variables.position.buffers[0],
+                  x0: 0
+                })
 
-              // this.drawTexture({ texture: this.view.shadow.fbo, x0: 400 })
+                // this.drawTexture({ texture: this.view.shadow.fbo, x0: 400 })
+              }
             }
-          }
-        )
+          )
+        }
       })
     }
     mainloop()

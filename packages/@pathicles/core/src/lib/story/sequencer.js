@@ -46,7 +46,8 @@ export default function (regl, scenes, stateVars, onStateChange) {
             regl,
             {
               width: particleCount,
-              height: bufferLength
+              height: bufferLength,
+              channelsPerValueCount
             },
             variableType,
             new Float32Array(data.position.map((d) => d / 1))
@@ -99,7 +100,10 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.cameraBSplines = {
       distance: (x) => bspline(x, 2, scene.cameraSploints.distance),
       phi: (x) => bspline(x, 2, scene.cameraSploints.phi),
-      theta: (x) => bspline(x, 2, scene.cameraSploints.theta)
+      theta: (x) => bspline(x, 2, scene.cameraSploints.theta),
+      centerX: (x) => bspline(x, 2, scene.cameraSploints.centerX),
+      centerY: (x) => bspline(x, 2, scene.cameraSploints.centerY),
+      centerZ: (x) => bspline(x, 2, scene.cameraSploints.centerZ)
     }
   })
   // })
@@ -130,14 +134,14 @@ export default function (regl, scenes, stateVars, onStateChange) {
     } else {
       delete changed.sceneIdx
     }
-    state.activeSceneProgress =
+    state.sceneProgress =
       ((t - state.scene._t0_normalized) * scenes.duration) /
       state.scene.duration
 
-    state.viewRange =
-      state.activeSceneProgress < 0.5
-        ? [0, state.activeSceneProgress * 2]
-        : [state.activeSceneProgress * 2 - 1, 1]
+    state.viewRange = [state.sceneProgress - 0.1, state.sceneProgress + 0.1]
+    // state.sceneProgress < 0.5
+    //   ? [0, state.sceneProgress * 2]
+    //   : [state.sceneProgress * 2 - 1, 1]
     return Object.keys(changed).length > 0
   }
 

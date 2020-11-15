@@ -1,5 +1,4 @@
 /* eslint-disable */
-import PerformanceLogger from './PerformanceLogger'
 
 function log(msg) {
   // var div = document.createElement("div");
@@ -86,10 +85,7 @@ export function checkSupport() {
       const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
-      PerformanceLogger.start('getRTTFloatType')
-
       support.RTTFloatType = getRTTFloatType(glContext)
-      PerformanceLogger.stop()
       //
       // console.log(gl)
       // var testFloat = getExt(

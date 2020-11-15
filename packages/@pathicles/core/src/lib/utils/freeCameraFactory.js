@@ -5,25 +5,33 @@ import camera from './inertial-turntable-camera.js'
 import interactionEvents from './normalized-interaction-events'
 import { Lethargy } from './Lethargy.js'
 
-function calcPhiThetaDistance(eye, center) {
-  const d = [-center[0] + eye[0], -center[1] + eye[1], -center[2] + eye[2]]
-
-  const distance = Math.sqrt(
-    Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2)
-  )
-
-  let phi = Math.atan2(d[1], d[0])
-  if (d[1] < 0) phi = phi + Math.PI / 2
-
-  let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
-
-  return { phi, theta, distance }
-}
+// function calcPhiThetaDistance(eye, center) {
+//   const d = [-center[0] + eye[0], -center[1] + eye[1], -center[2] + eye[2]]
+//
+//   const distance = Math.sqrt(
+//     Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2)
+//   )
+//
+//   let phi = Math.atan2(d[1], d[0])
+//   if (d[1] < 0) phi = phi + Math.PI / 2
+//
+//   let theta = Math.atan2(Math.sqrt(d[0] * d[0] + d[1] * d[1]), d[2])
+//
+//   return { phi, theta, distance }
+// }
 
 export default function (regl, options) {
   // theta -= d[0] < 0 ? Math.PI : 0
 
-  const { phi, theta, distance, autorotate } = options
+  const {
+    phi,
+    theta,
+    distance,
+    autorotate,
+    autorotateSpeedDistance,
+    autorotateSpeedTheta,
+    autorotateSpeedPhi
+  } = options
 
   // const { phi, theta, distance } = calcPhiThetaDistance(
   //   options.eye,
@@ -59,14 +67,40 @@ export default function (regl, options) {
     }
   }
 
-  aCamera.updateEyeCenter = (eye, center) => {
-    const { phi, theta, distance } = calcPhiThetaDistance(eye, center)
+  aCamera.toggleAutorotate = () => {
+    aCamera.autorotate = !aCamera.autorotate
 
-    aCamera.params.center = center
-    aCamera.params.theta = theta
-    aCamera.params.phi = phi
-    aCamera.params.distance = distance
+    if (aCamera.autorotate) {
+      aCamera.startAutorotate()
+    }
   }
+  aCamera.startAutorotate = () => {
+    aCamera.autorotateParams = { ...aCamera.params }
+    console.log('startAutorotate')
+
+    aCamera.autorotateT0 = Date.now()
+  }
+  aCamera.doAutorotate = () => {
+    if (aCamera.autorotate) {
+      const dt = (Date.now() - aCamera.autorotateT0) / 1000
+      aCamera.params.distance =
+        aCamera.autorotateParams.distance +
+        0.1 * Math.sin(autorotateSpeedDistance * dt)
+      aCamera.params.theta =
+        aCamera.autorotateParams.theta + autorotateSpeedTheta * dt
+      aCamera.params.phi =
+        aCamera.autorotateParams.phi + 0.05 * Math.sin(autorotateSpeedPhi * dt)
+    }
+  }
+
+  // aCamera.updateEyeCenter = (eye, center) => {
+  //   const { phi, theta, distance } = calcPhiThetaDistance(eye, center)
+  //
+  //   aCamera.params.center = center
+  //   aCamera.params.theta = theta
+  //   aCamera.params.phi = phi
+  //   aCamera.params.distance = distance
+  // }
 
   aCamera.setCameraUniforms = regl({
     uniforms: {

@@ -31,7 +31,7 @@
         <!--        .option(slot-key="option-1")-->
         <!--        .option(slot-key="option-2")-->
         <!--        .option(slot-key="option-3")-->
-      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity: (s === activeScene) ? 1 - activeSceneProgress * 4 : 1 }")
+      .scene-content-wrapper(:id="'scrolly-story__scene-content-wrapper--' + s" v-if="scene.type==='caption'" :style="{opacity: (s === activeScene) ? 1 - sceneProgress * 4 : 1 }")
         .scene-main
           .title(:data-index="scene.scene_index")
             span.pathicles(v-if="scene.title" v-html='scene.title')
@@ -75,7 +75,7 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                center: [1, 1, 0]
+                center: [-0.1, 1, 0]
               }
             }
           },
@@ -91,8 +91,8 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                distance: 10,
-                theta: (-0 / 360) * 2 * Math.PI
+                // distance: 10,
+                theta: (-45 / 360) * 2 * Math.PI
               }
             }
           },
@@ -129,7 +129,7 @@ export default {
               data: 'story-electric.js',
               camera: {
                 center: [0, 1, 0],
-                distance: 10,
+                distance: 5,
                 theta: (0 / 360) * 2 * Math.PI,
                 phi: (95 / 360) * 2 * Math.PI
               }
@@ -162,7 +162,7 @@ export default {
       windowWidth: 0,
       storyHeight: 500,
       progress: 0,
-      activeSceneProgress: 0,
+      sceneProgress: 0,
       vp: null,
       cameraMode: 'guided',
       viewRange: [0, 0],
@@ -191,23 +191,37 @@ export default {
         ...scene.configuration.view.camera,
         ...scene.pathicles.camera
       }
-      console.log(scene.configuration.view.camera)
+      // console.log(scene.configuration.view.camera)
     })
 
-    const cameraBSplointer = (scenes, s, key) => [
-      [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key]],
-      [scenes[s].configuration.view.camera[key]],
-      [
-        scenes[s < scenes.length - 1 && s !== 0 ? s + 1 : s].configuration.view
-          .camera[key]
-      ]
-    ]
+    const cameraBSplointer = (scenes, s, key, index) => {
+      return typeof index === 'undefined'
+        ? [
+            [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key]],
+            [scenes[s].configuration.view.camera[key]],
+            [
+              scenes[s < scenes.length - 1 ? s + 1 : s].configuration.view
+                .camera[key]
+            ]
+          ]
+        : [
+            [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key][index]],
+            [scenes[s].configuration.view.camera[key][index]],
+            [
+              scenes[s < scenes.length - 1 && s !== 0 ? s + 1 : s].configuration
+                .view.camera[key][index]
+            ]
+          ]
+    }
 
     this.story.scenes.forEach((scene, s) => {
       scene.cameraSploints = {
         phi: cameraBSplointer(this.story.scenes, s, 'phi'),
         theta: cameraBSplointer(this.story.scenes, s, 'theta'),
-        distance: cameraBSplointer(this.story.scenes, s, 'distance')
+        distance: cameraBSplointer(this.story.scenes, s, 'distance'),
+        centerX: cameraBSplointer(this.story.scenes, s, 'center', 0),
+        centerY: cameraBSplointer(this.story.scenes, s, 'center', 1),
+        centerZ: cameraBSplointer(this.story.scenes, s, 'center', 2)
       }
     })
 
@@ -281,9 +295,9 @@ export default {
         if (this.reglInstance) {
           this.reglInstance.story.setPosition(this.progress)
           this.activeScene = this.reglInstance.story.getState().sceneIdx
-          this.activeSceneProgress = this.reglInstance.story
+          this.sceneProgress = this.reglInstance.story
             .getState()
-            .activeSceneProgress.toFixed(2)
+            .sceneProgress.toFixed(2)
         }
 
         if (scroll.changed || size.changed) {
@@ -291,7 +305,7 @@ export default {
             {
               scenceCount: this.story.scenes.length,
               activeScene: this.activeScene,
-              activeSceneProgress: this.activeSceneProgress,
+              sceneProgress: this.sceneProgress,
               progress: this.progress.toFixed(2),
               storyHeight: this.storyHeight,
               duration: this.story.scenes.duration,

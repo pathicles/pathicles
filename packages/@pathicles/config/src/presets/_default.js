@@ -5,7 +5,7 @@ export default {
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
   logPushing: false,
-  logPerformance: false,
+  logPerformance: true,
 
   stats: false,
   profile: false,
@@ -41,7 +41,7 @@ export default {
     prerender: false,
     loops: -1,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 4,
+    iterationsPerTick: 1,
     iterationCount: 127
   },
 
@@ -52,12 +52,15 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
+      bunchShape: 'SPIRAL_XY',
       particleCount: 121,
-      particleSeparation: 0.02,
+      particleSeparation: 0.05,
       gamma: 1.25,
       position: [0, 0, 0],
-      direction: [0, 0, 1]
+      direction: [0, 0, 1],
+      directionJitter: [0.01, 0.01, 0],
+
+      positionJitter: [0.1, 0.1, 0.1]
     },
     interactions: {
       particleInteraction: false,

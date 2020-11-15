@@ -1,60 +1,3 @@
-const formatVariableValue = (
-  arr,
-  { particleCount, bufferLength, channelsPerValueCount }
-) => {
-  const result = []
-
-  for (let b = 0; b < bufferLength; b++) {
-    const step = []
-    result.push(step)
-
-    for (let p = 0; p < particleCount; p++) {
-      // debugger
-      const particle = []
-      step.push(particle)
-
-      for (let c = 0; c < channelsPerValueCount; c++) {
-        particle.push([
-          arr[
-            b * channelsPerValueCount * particleCount * 4 +
-              p * 4 +
-              c * channelsPerValueCount * particleCount
-          ],
-          arr[
-            b * channelsPerValueCount * particleCount * 4 +
-              p * 4 +
-              1 +
-              c * channelsPerValueCount * particleCount
-          ],
-          arr[
-            b * channelsPerValueCount * particleCount * 4 +
-              p * 4 +
-              2 +
-              c * channelsPerValueCount * particleCount
-          ],
-          arr[
-            b * channelsPerValueCount * particleCount * 4 +
-              p * 4 +
-              3 +
-              c * channelsPerValueCount * particleCount
-          ]
-        ])
-      }
-    }
-    // const step = Array(arr.length / bufferLength / 4)
-    //   .fill(0)
-    //   .map((d, i) => {
-    //     return [
-    //       arr[b * bufferLength + i * 4],
-    //       arr[b * bufferLength + i * 4 + 1],
-    //       arr[b * bufferLength + i * 4 + 2],
-    //       arr[b * bufferLength + i * 4 + 3]
-    //     ]
-    //   })
-  }
-  return result
-}
-
 export default function readData(regl, { variables }, precision = 10000) {
   const data = {}
   const variableNames = Object.keys(variables).filter(
@@ -91,8 +34,6 @@ export default function readData(regl, { variables }, precision = 10000) {
     iteration: variables.iteration,
     particleTypes: variables.particleTypes,
     position: position,
-    // velocity: velocity,
-    position_: formatVariableValue(position, variables),
-    velocity_: formatVariableValue(velocity, variables)
+    velocity: velocity
   }
 }

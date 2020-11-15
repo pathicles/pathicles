@@ -7,18 +7,21 @@
 //
 // export { log, error, PerformanceLogger }
 
-class PerformanceLogger {
+export class PerformanceLogger {
   constructor(active = true) {
     if (window.performanceLogger) return window.performanceLogger
 
     this.current = null
     this.active = active
+    this.running = false
     this.entries = []
     window.performanceLogger = this
   }
 
   start(label) {
     if (this.active) {
+      if (this.running) this.stop()
+      this.running = true
       this.current = {
         label: label,
         t0: performance.now()
@@ -31,10 +34,12 @@ class PerformanceLogger {
       this.current.dt = this.current.t1 - this.current.t0
 
       this.entries.push(this.current)
+      this.running = false
     }
   }
 
   report() {
+    if (this.running) this.stop()
     return this.entries
       .map(
         ({ label, dt }) => `
@@ -43,5 +48,3 @@ class PerformanceLogger {
       .join('\n')
   }
 }
-
-export default new PerformanceLogger()

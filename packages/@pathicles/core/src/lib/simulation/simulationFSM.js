@@ -1,6 +1,5 @@
 /* eslint-env browser */
 
-import PerformanceLogger from '../utils/PerformanceLogger'
 import { RUNNER_MODE } from '@pathicles/config/src/constants.js'
 
 const INITIAL = 'initial'
@@ -64,39 +63,7 @@ export default class SimulationFSM {
         this._loopCount = 1
       }
     }
-
-    // log('toggleActivity() for this.fsm.state: ' + this.fsm.state)
   }
-  //
-  // start() {
-  //   if (this._simulation.configuration.logPushing) this._simulation.log()
-  //   if (this.fsm.state !== STATES.INITIAL) {
-  //     console.error('PathiclesRunner.start can be called in state initial only')
-  //     throw new Error(
-  //       'PathiclesRunner.start can be called in state initial only'
-  //     )
-  //   }
-  //
-  //   if (this.fsm.state === STATES.INITIAL) {
-  //     this._runCount = 1
-  //     this._loopCount = 1
-  //
-  //     if (this._prerender) {
-  //       // log('start.prerender')
-  //
-  //       PerformanceLogger.start('prerender')
-  //       if (this.simulate) {
-  //         this._simulation.prerender()
-  //         PerformanceLogger.stop()
-  //       }
-  //
-  //       if (this._simulation.configuration.logPushing) this._simulation.log()
-  //       this.fsm = { state: STATES.PAUSED }
-  //     } else {
-  //       this.fsm = { state: STATES.ACTIVE }
-  //     }
-  //   }
-  // }
 
   next() {
     const tick_0 = this._simulation.variables.iteration
@@ -107,10 +74,8 @@ export default class SimulationFSM {
       this._loopCount = 1
 
       if (this._prerender) {
-        PerformanceLogger.start('prerender')
         if (this.simulate) {
           this._simulation.prerender()
-          PerformanceLogger.stop()
         }
 
         if (this._simulation.configuration.logPushing) this._simulation.log()

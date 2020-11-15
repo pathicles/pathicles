@@ -68,7 +68,6 @@ vec4 get_color(float p) {
 
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
 
-  return 0.;
   float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
   float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterationCount) ? 1.0 : 0.0;
   float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterationCount) ? 1.0 : 0.0;

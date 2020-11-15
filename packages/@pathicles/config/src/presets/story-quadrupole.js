@@ -4,9 +4,9 @@ export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [0, 1, 0],
+      center: [0.3, 1.5, 0],
       distance: 5,
-      theta: (210 / 360) * 2 * Math.PI,
+      theta: (0 / 360) * 2 * Math.PI,
       phi: (0 / 360) * 2 * Math.PI
     }
   },
@@ -15,25 +15,24 @@ export const storyQuadrupole = {
       particleType: 'PROTON',
       direction: [0, 0, -1],
       position: [0, 1.5, 10],
-      directionJitter: [0.04, 0.04, 0],
-      positionJitter: [0.1, 0.1, 0]
+      directionJitter: [0.2, 0.2, 0]
     },
 
     lattice: {
       elements: {
         q1: {
           type: LatticeElementTypes.QUAD,
-          strength: -0.3,
-          l: 2
+          strength: -0.5,
+          l: 1
         },
         q2: {
           type: LatticeElementTypes.QUAD,
-          strength: 0.3,
-          l: 2
+          strength: 0.5,
+          l: 1
         },
         l_5: {
           type: LatticeElementTypes.DRIF,
-          l: 1.5
+          l: 5
         },
         l_1: {
           type: LatticeElementTypes.DRIF,

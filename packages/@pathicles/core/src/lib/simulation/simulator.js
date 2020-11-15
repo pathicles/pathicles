@@ -3,22 +3,24 @@
 import freeCameraFactory from '../utils/freeCameraFactory'
 import { Simulation } from './simulation'
 import SimulationFSM from '../simulation/simulationFSM'
-import PerformanceLogger from '../utils/PerformanceLogger'
+import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { boxesViewSimple } from '../views/boxesViewSimple'
 import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
+import { variable2NestedArray } from './utils/variable2NestedArray'
 import stringify from '@aitodotai/json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
-    console.log('PathiclesSimulator')
     keyControlMount(this)
     this.config = config
     this.simulate = simulate
     this.control = control
-
+    this.performanceLogger = new PerformanceLogger(this.config.logPerformance)
+    this.performanceLogger.start('xxx')
+    this.performanceLogger.stop()
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
@@ -35,13 +37,13 @@ export class ReglSimulatorInstance {
 
           window.pathicles = this
 
-          PerformanceLogger.start('checkSupport')
+          this.performanceLogger.start('checkSupport')
           this.checkSupport(regl)
-          PerformanceLogger.stop()
+          this.performanceLogger.stop()
 
-          PerformanceLogger.start('init')
+          this.performanceLogger.start('init')
           this.init(regl)
-          PerformanceLogger.stop()
+          this.performanceLogger.stop()
 
           this.run(regl)
         } catch (e) {
@@ -95,7 +97,7 @@ export class ReglSimulatorInstance {
 
     this.drawTexture = drawTextureCommand(regl)
 
-    PerformanceLogger.start('init.simulation')
+    this.performanceLogger.start('init.simulation')
     this.simulation = new Simulation(
       regl,
       {
@@ -103,51 +105,47 @@ export class ReglSimulatorInstance {
       },
       this.support
     )
-    PerformanceLogger.stop()
+    this.performanceLogger.stop()
 
-    PerformanceLogger.start('init.view')
+    this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
       variables: this.simulation.variables,
       model: this.simulation.model,
       config: this.config
     })
-    PerformanceLogger.stop()
-    PerformanceLogger.start('init.runner')
+    this.performanceLogger.stop()
+    this.performanceLogger.start('init.runner')
     this.pathiclesRunner = new SimulationFSM(this.simulation, {
       ...this.config.runner,
       simulate: this.simulate
     })
-    PerformanceLogger.stop()
+    this.performanceLogger.stop()
   }
 
   run(regl) {
-    const {
-      autorotateSpeedTheta,
-      autorotateSpeedDistance,
-      autorotateSpeedPhi
-    } = this.config.view.camera
     // if (this.simulate) this.pathiclesRunner.start()
     // console.log(this.simulation.dump())
     const mainloop = () => {
-      return regl.frame(({ time }) => {
-        if (this.camera.autorotate) {
-          this.camera.params.distance =
-            this.config.view.camera.distance +
-            0.1 * Math.sin(autorotateSpeedDistance * time)
-          this.camera.params.theta = autorotateSpeedTheta * time
-          this.camera.params.phi = 0.05 * Math.sin(autorotateSpeedPhi * time)
-        }
+      return regl.frame(() => {
+        this.performanceLogger.start('pathiclesRunner.next')
         const { changed } = this.simulate && this.pathiclesRunner.next()
+        this.performanceLogger.stop()
 
-        if (changed) {
-          // console.log(
-          //   stringify(
-          //     this.simulation._logStore[this.simulation._logStore.length - 1],
-          //     { maxLength: 200 }
-          //   )
-          // )
+        if (changed && this.config.logPushing) {
+          console.log(
+            stringify(
+              variable2NestedArray(
+                this.simulation._logStore[this.simulation._logStore.length - 1]
+                  .position,
+                this.simulation.variables
+              ),
+              { maxLength: 200 }
+            )
+          )
         }
+        this.camera.doAutorotate()
         this.camera.tick()
+
         if (changed || this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {

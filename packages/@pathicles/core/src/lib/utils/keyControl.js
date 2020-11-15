@@ -41,7 +41,7 @@ const onDocumentKeyDown = (app) => (event) => {
   const keyCode = event.keyCode
   if (keyCode === 65) {
     // a for autorotate
-    app.camera.autorotate = !app.camera.autorotate
+    app.camera.toggleAutorotate()
   } else if (keyCode === 67) {
     const cameraConfig = app.camera.toConfig()
     console.log(JSON.stringify({ camera: cameraConfig }, null, 2))
