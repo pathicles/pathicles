@@ -107,11 +107,23 @@ define("./sw.js",['./workbox-81c54aed'], function (workbox) { 'use strict';
    */
 
   workbox.precacheAndRoute([{
+    "url": "_assets/index.0c49a848.js",
+    "revision": "ba6049e5887c85e247404df534fa4889"
+  }, {
+    "url": "_assets/story-dipole.ad8f1539.js",
+    "revision": "87f17200123aa2be4273bd07e955d667"
+  }, {
+    "url": "_assets/story-electric.0bbf3a75.js",
+    "revision": "c344f5e3b74678507b0ffe2be8d20dfd"
+  }, {
+    "url": "_assets/story-quadrupole.9df9ba6f.js",
+    "revision": "9169440e380b229c32dacfd8509fc396"
+  }, {
     "url": "_assets/style.6b7e3d11.css",
     "revision": "7c257f60f8f87362e80075c96131f47c"
   }, {
     "url": "index.html",
-    "revision": "02ea591e514c071d2c2a1fc09ecd7bbe"
+    "revision": "f820b7ff06ab1f8f8e71b7063df9c61f"
   }], {});
 
 });
