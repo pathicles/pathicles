@@ -17,7 +17,9 @@
     "eslint-plugin-vue": "^7.1.0",
     "fs-extra-plus": "^0.5.19",
     "jimp": "^0.16.1",
-    "puppeteer": "^5.4.1",
+    "ndarray": "^1.0.19",
+    "puppeteer-core": "^5.4.1",
+    "save-pixels": "^2.3.4",
     "sharp": "^0.26.2"
   }
 }
