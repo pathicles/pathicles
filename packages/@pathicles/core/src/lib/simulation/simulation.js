@@ -85,6 +85,7 @@ export class Simulation {
       })
     }
 
+    // eslint-disable-next-line no-undef
     console.log(this.log(false))
     // console.log(this.variables.position.toTypedArray())
 

@@ -52,4 +52,4 @@ const config = (presetName) => {
   return merge(true, defaultConfig, presets[presetName]) || defaultConfig
 }
 
-export { PARTICLE_TYPE, config, defaultConfig, presets, merge }
+export { PARTICLE_TYPE, RUNNER_MODE, config, defaultConfig, presets, merge }
