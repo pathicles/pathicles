@@ -9,8 +9,6 @@ import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
-import { variable2NestedArray } from './utils/variable2NestedArray'
-import stringify from '@aitodotai/json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control, simulate = true }) {
@@ -26,7 +24,7 @@ export class ReglSimulatorInstance {
       canvas,
       profile: this.config.profile,
       attributes: {
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         antialiasing: true
       },
       pixelRatio,
@@ -132,16 +130,7 @@ export class ReglSimulatorInstance {
         this.performanceLogger.stop()
 
         if (changed && this.config.logPushing) {
-          console.log(
-            stringify(
-              variable2NestedArray(
-                this.simulation._logStore[this.simulation._logStore.length - 1]
-                  .position,
-                this.simulation.variables
-              ),
-              { maxLength: 200 }
-            )
-          )
+          console.log(this.simulation.log(false))
         }
         this.camera.doAutorotate()
         this.camera.tick()

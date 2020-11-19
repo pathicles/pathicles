@@ -47,7 +47,7 @@ const onDocumentKeyDown = (app) => (event) => {
     console.log(JSON.stringify({ camera: cameraConfig }, null, 2))
   } else if (keyCode === 68) {
     // d for dump
-    console.log(app.simulation.dump())
+    console.log(app.simulation.log(false))
   } else if (keyCode === 77) {
     // m for mode
     app.pathiclesRunner.toggleMode()

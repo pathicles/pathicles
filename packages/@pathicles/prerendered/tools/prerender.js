@@ -57,7 +57,7 @@ const createImages = async () => {
     })
 
     const dump = await page.evaluate(() => {
-      return window.pathicles.simulation.dump()
+      return window.pathicles.simulation.log(false)
     })
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
       iteration: dump.iteration,

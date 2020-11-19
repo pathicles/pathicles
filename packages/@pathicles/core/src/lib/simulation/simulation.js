@@ -2,10 +2,8 @@
 
 import { ParticleCollection } from './particle-collection'
 import pushBoris from './pusher/pathicles.push--boris'
-
-import readData from './pathicles.variables.read'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
-import { colorCorrection } from './utils/colorCorrection'
+import { colorCorrection } from './utils/color-correction.js'
 import { Lattice } from './lattice/lattice'
 
 export class Simulation {
@@ -19,7 +17,7 @@ export class Simulation {
 
     const channelsPerValueCount = configuration.channelsPerValueCount
 
-    const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
+    const RTTFloatType = 'uint8' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
 
     const { bufferLength } = configuration.model
     const {
@@ -33,6 +31,7 @@ export class Simulation {
       fourPositions,
       configuration.model.emitter.position
     )
+
     this.variables = {
       particleCount,
       bufferLength,
@@ -86,6 +85,16 @@ export class Simulation {
       })
     }
 
+    console.log(this.log(false))
+    // console.log(this.variables.position.toTypedArray())
+
+    // console.log(
+    //   variable2NestedArray(this.variables.position.loadedData, {
+    //     particleCount,
+    //     bufferLength
+    //   })
+    // )
+
     this.model = {
       halfDeltaTOverC: this.configuration.model.iterationDurationOverC / 2,
       boundingBoxSize: this.configuration.model.boundingBoxSize,
@@ -108,27 +117,17 @@ export class Simulation {
     }
   }
 
-  log() {
-    if (this.configuration.logPushing) {
-      this._logStore.push(
-        readData(this._regl, {
-          variables: this.variables
-        })
-      )
+  log(toStore = this.configuration.logPushing) {
+    const positionData = this.variables.position.toTypedArray()
+    const velocityData = this.variables.velocity.toTypedArray()
+    const entry = {
+      iteration: this.variables.iteration,
+      position: positionData,
+      velocity: velocityData
     }
-  }
 
-  dump() {
-    return {
-      configuration: JSON.parse(JSON.stringify(this.configuration)),
-      ...readData(
-        this._regl,
-        {
-          variables: this.variables
-        },
-        1000
-      )
-    }
+    toStore && this._logStore.push(entry)
+    return entry
   }
 
   reset() {
