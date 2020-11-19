@@ -82,20 +82,19 @@ export function ParticleCollection({
     separation: particleSeparation
   })
 
-  const fourPositions = particles
-    .map((particle, p) => {
-      const jitteredPosition = jitterPosition({
-        position: position,
-        jitter: positionJitter
-      })
-      return [
-        localPositions[p * 3] + jitteredPosition[0],
-        localPositions[p * 3 + 1] + jitteredPosition[1],
-        localPositions[p * 3 + 2] + jitteredPosition[2],
-        0
-      ]
+  const fourPositions = particles.map((particle, p) => {
+    const jitteredPosition = jitterPosition({
+      position: position,
+      jitter: positionJitter
     })
-    .reduce((acc, val) => acc.concat(val), [])
+    return [
+      localPositions[p * 3] + jitteredPosition[0],
+      localPositions[p * 3 + 1] + jitteredPosition[1],
+      localPositions[p * 3 + 2] + jitteredPosition[2],
+      0
+    ]
+  })
+  // .reduce((acc, val) => acc.concat(val), [])
 
   const fourVelocities = particles.map((particle, p) => {
     const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
@@ -117,19 +116,22 @@ export function ParticleCollection({
   })
   //  .reduce((acc, val) => acc.concat(val), [])
 
-  const fourMomenta = particles
-    .map((particle, p) => {
-      return [
-        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][0],
-        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][1],
-        (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][2],
-        gamma
-      ]
-    })
-    .reduce((acc, val) => acc.concat(val), [])
+  const fourMomenta = particles.map((particle, p) => {
+    return [
+      (particle.mass__eVc_2 === 0 ? 1 : particle.mass__eVc_2) *
+        fourVelocities[p][0],
+      (particle.mass__eVc_2 === 0 ? 1 : particle.mass__eVc_2) *
+        fourVelocities[p][1],
+      (particle.mass__eVc_2 === 0 ? 1 : particle.mass__eVc_2) *
+        fourVelocities[p][2],
+      gamma
+    ]
+  })
+  // .reduce((acc, val) => acc.concat(val), [])
+
   return {
     fourPositions,
-    fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
+    fourVelocities, //: fourMomenta, //.reduce((acc, val) => acc.concat(val), []),
     // fourMomenta,
     particleCount,
     particleTypes: particles.map((p) => p.id)

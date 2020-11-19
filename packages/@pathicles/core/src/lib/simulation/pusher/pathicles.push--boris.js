@@ -5,14 +5,12 @@ import { latticeChunk } from '../lattice/lattice.gsls.js'
 export default function (regl, { variables, model }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
-
     return regl({
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',
       elements: null,
       offset: 0,
-      dither: false,
       count: 3,
       attributes: {
         aXY: [-4, -4, 4, -4, 0, 4]
@@ -78,6 +76,9 @@ export default function (regl, { variables, model }) {
       const z = variables.iteration * model.halfDeltaTOverC * 2
 
       variables.pingPong = variables.iteration % 2
+      variables.position.pingPong = variables.pingPong
+      variables.velocity.pingPong = variables.pingPong
+      variables.pingPong = variables.iteration % 2
       variables.referencePoint =
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
@@ -88,6 +89,7 @@ export default function (regl, { variables, model }) {
           iteration: variables.iteration,
           channel: i
         }))
+
       pushVelocity(jobs)
       pushPosition(jobs)
     }

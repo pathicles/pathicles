@@ -35,7 +35,10 @@ uniform float particleInteraction;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
+
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
+
+#pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/pack-float.glsl");
 
 
 
@@ -168,24 +171,24 @@ void main () {
 //  gl_FragColor = vec4(texelBufferIndex);
   float texelParticleIndex, texelBufferIndex, texelChannel;
   texelChannel = (channelsPerValueCount == 4) ? mod(gl_FragCoord.y, 4.) -.5 : 0.;
-
-
+//
+//
 //  if(texelChannel > 0.) {
 //    gl_FragColor = vec4(texelChannel);
 //  } else {
-
+//
     initLatticeData();
-
-
-    texelParticleIndex = gl_FragCoord.x - .5;
-    texelBufferIndex = floor((gl_FragCoord.y - .5) / float(channelsPerValueCount));
-    texelChannel = floor(gl_FragCoord.y - .5)  - floor((gl_FragCoord.y - .5) / float(channelsPerValueCount)) * float(channelsPerValueCount);
-
-    float nextBufferPosition = floor(mod(iteration, bufferLength + 1.));
-    float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
-
-    nextBufferPosition = 0.;
-    bufferPosition = 1.;
+//
+//
+    texelParticleIndex = gl_FragCoord.y - .5;
+    texelBufferIndex = floor((gl_FragCoord.x - .5) / 4.);
+    texelChannel = floor(gl_FragCoord.x - .5)  - texelBufferIndex * 4.;
+    ////
+    ////    float nextBufferPosition = floor(mod(iteration, bufferLength + 1.));
+    ////    float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
+    //
+    //    float nextBufferPosition = 0.;
+    //    float bufferPosition = 1.;
 
     vec4 value = (texelBufferIndex  < 0.1)
       ? push(texelParticleIndex)
@@ -196,6 +199,28 @@ void main () {
     gl_FragColor = (texelChannel == 0.)
       ? value
       : value; //vec4(channel, texelChannel, -1., -1.);
+//
+    value = readVariable( texelParticleIndex, texelBufferIndex);
+    value = readVariable( 0., 0.);
+//
+
+  gl_FragColor = packFloat(-(texelParticleIndex * 10. + texelBufferIndex + texelChannel / 10.));
+
+//
+    gl_FragColor = (channel == 0)
+      ? packFloat(value.x)
+      : (channel == 1)
+        ? packFloat(value.y)
+        : (channel == 2)
+          ? packFloat(value.z)
+          : (channel == 3)
+            ? packFloat(value.w)
+            : vec4(-9999.);
+
+//  gl_FragColor = packFloat(texelParticleIndex);
+//  gl_FragColor = packFloat(texelParticleIndex + texelBufferIndex  * .1 );
+//  gl_FragColor = packFloat( gl_FragCoord.y );
+
 
 //  gl_FragColor = vec4(gl_FragCoord.y  - .5  - 0. * texelBufferIndex * float(channelsPerValueCount));
 //  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, -1.);
@@ -221,7 +246,6 @@ void main () {
 
 //    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
 //
-  //gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
-//    gl_FragColor = vec4(channel);
-//  *111., texelBufferIndex*10., texelChannel/100.);
+//  gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
+
 }

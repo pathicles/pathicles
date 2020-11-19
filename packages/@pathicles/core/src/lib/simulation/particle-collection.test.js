@@ -2,6 +2,8 @@
 
 import { describe, expect, it } from '@jest/globals'
 
+import { PARTICLE_TYPE } from '@pathicles/config'
+
 import {
   betaFromGamma,
   ParticleCollection,
@@ -21,22 +23,26 @@ describe('jitterPosition', () => {
 
 describe('particleTypesArrayFromDescriptor', () => {
   it('"PROTON"', () => {
-    const types = particleTypesFromDescriptor('PROTON')
-    expect(types.map((t) => t.name)).toEqual(['PROTON'])
+    const types = particleTypesFromDescriptor(PARTICLE_TYPE.PROTON)
+    expect(types.map((t) => t.name)).toEqual([PARTICLE_TYPE.PROTON])
   })
 
   it('"PROTON, 3"', () => {
-    const types = particleTypesFromDescriptor('PROTON', 3)
-    expect(types.map((t) => t.name)).toEqual(['PROTON', 'PROTON', 'PROTON'])
+    const types = particleTypesFromDescriptor(PARTICLE_TYPE.PROTON, 3)
+    expect(types.map((t) => t.name)).toEqual([
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.PROTON
+    ])
   })
 
   it('"PROTON ELECTRON PHOTON PROTON"', () => {
     const types = particleTypesFromDescriptor('PROTON ELECTRON PHOTON PROTON')
     expect(types.map((t) => t.name)).toEqual([
-      'PROTON',
-      'ELECTRON',
-      'PHOTON',
-      'PROTON'
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.ELECTRON,
+      PARTICLE_TYPE.PHOTON,
+      PARTICLE_TYPE.PROTON
     ])
   })
 
@@ -46,16 +52,16 @@ describe('particleTypesArrayFromDescriptor', () => {
       10
     )
     expect(types.map((t) => t.name)).toEqual([
-      'PROTON',
-      'ELECTRON',
-      'PHOTON',
-      'PROTON',
-      'PROTON',
-      'ELECTRON',
-      'PHOTON',
-      'PROTON',
-      'PROTON',
-      'ELECTRON'
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.ELECTRON,
+      PARTICLE_TYPE.PHOTON,
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.ELECTRON,
+      PARTICLE_TYPE.PHOTON,
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.PROTON,
+      PARTICLE_TYPE.ELECTRON
     ])
   })
 })
@@ -117,12 +123,20 @@ describe('ParticleCollection()', () => {
     expect(particleCollection).toEqual({
       particleCount: 3,
       particleTypes: [0, 1, 3],
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
-      fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
+      fourVelocities: [
+        [0, 0, 1, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
+      ]
     })
   })
 
-  it('electric', () => {
+  it('PHELPRO row', () => {
     const particleCollection = ParticleCollection({
       particleCount: 3,
       particleType: 'PHOTON ELECTRON PROTON',
@@ -135,12 +149,20 @@ describe('ParticleCollection()', () => {
     expect(particleCollection).toEqual({
       particleTypes: [0, 1, 3],
       particleCount: 3,
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
-      fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
+      fourVelocities: [
+        [0, 0, 1, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
+      ]
     })
   })
 
-  it('electric with gamma 100', () => {
+  it('PHELPRO row with gamma 100', () => {
     const particleCollection = ParticleCollection({
       particleCount: 3,
       particleType: 'PHOTON ELECTRON PROTON',
@@ -153,28 +175,24 @@ describe('ParticleCollection()', () => {
     expect(particleCollection).toEqual({
       particleTypes: [0, 1, 3],
       particleCount: 3,
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
       fourVelocities: [
-        0,
-        0,
-        1,
-        100,
-        0,
-        0,
-        99.99499987499375,
-        100,
-        0,
-        0,
-        99.99499987499375,
-        100
+        [0, 0, 1, 100],
+        [0, 0, 99.99499987499375, 100],
+        [0, 0, 99.99499987499375, 100]
       ]
+      // fourMomenta: []
     })
   })
 
-  it('square of nine electrons in rest', () => {
+  it('square of nine electrons at rest', () => {
     const particleCollection = ParticleCollection({
       particleCount: 9,
-      particleType: 'ELECTRON',
+      particleType: PARTICLE_TYPE.ELECTRON,
       bunchShape: 'SQUARE_XY',
       particleSeparation: 1,
       gamma: 1,
@@ -185,81 +203,26 @@ describe('ParticleCollection()', () => {
       particleTypes: Array(9).fill(1),
       particleCount: 9,
       fourPositions: [
-        -1,
-        -1,
-        0,
-        0,
-        //
-        0,
-        -1,
-        0,
-        0, //
-        1,
-        -1,
-        0,
-        0, //
-        -1,
-        0,
-        0,
-        0, //
-        0,
-        0,
-        0,
-        0, //
-        1,
-        0,
-        0,
-        0, //
-        -1,
-        1,
-        0,
-        0, //
-        0,
-        1,
-        0,
-        0, //
-        1,
-        1,
-        0,
-        0 //
+        [-1, -1, 0, 0],
+        [0, -1, 0, 0],
+        [1, -1, 0, 0],
+        [-1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 0, 0, 0],
+        [-1, 1, 0, 0],
+        [0, 1, 0, 0],
+        [1, 1, 0, 0]
       ],
       fourVelocities: [
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
       ]
     })
   })
