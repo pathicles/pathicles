@@ -14,15 +14,15 @@ export const freeElectron = {
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.STEPWISE,
 
     loops: 0,
     iterationsPerTick: 1,
-    iterationCount: 20
+    iterationCount: 10
   },
 
   model: {
-    bufferLength: 11,
+    bufferLength: 5,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [
@@ -35,7 +35,7 @@ export const freeElectron = {
       direction: [0, 0, 1],
       particleSeparation: 0.0,
       gamma: 10,
-      particleCount: 1,
+      particleCount: 2,
       particleType: 'ELECTRON'
     }
   }

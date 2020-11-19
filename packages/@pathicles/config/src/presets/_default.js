@@ -4,7 +4,7 @@ export default {
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
-  logPushing: false,
+  logPushing: true,
   logPerformance: true,
 
   stats: false,
@@ -101,7 +101,7 @@ export default {
     showAxes: false,
     showVignette: true,
     showTextures: false,
-    showTextureScale: 1,
+    showTextureScale: 5,
     viewRange: [0, 1],
 
     // lights: [

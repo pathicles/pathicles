@@ -1,3 +1,5 @@
+import { PARTICLE_TYPE, RUNNER_MODE } from './constants.js'
+
 let merge = (...theArgs) => {
   let target = {}
   // Merge the object into the target object
@@ -50,4 +52,4 @@ const config = (presetName) => {
   return merge(true, defaultConfig, presets[presetName]) || defaultConfig
 }
 
-export { config, defaultConfig, presets, merge }
+export { PARTICLE_TYPE, config, defaultConfig, presets, merge }
