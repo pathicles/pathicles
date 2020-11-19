@@ -48,10 +48,6 @@ import { unwatchViewport, watchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
-import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
-import storyElectric from '@pathicles/prerendered/files/story-electric.json'
-import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
-
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
 
@@ -224,29 +220,34 @@ export default {
         centerZ: cameraBSplointer(this.story.scenes, s, 'center', 2)
       }
     })
-
-    this.story.scenes.forEach((scene) => {
-      if (scene.pathicles && scene.pathicles.data) {
-        if (scene.pathicles.data === 'story-quadrupole.js') {
-          scene.data = storyQuadrupole
-        } else if (scene.pathicles.data === 'story-dipole.js') {
-          scene.data = storyDipole
-        } else {
-          scene.data = storyElectric
+    Promise.all([
+      import('@pathicles/prerendered/files/story-electric.json'),
+      import('@pathicles/prerendered/files/story-dipole.json'),
+      import('@pathicles/prerendered/files/story-quadrupole.json')
+    ]).then((data) => {
+      this.story.scenes.forEach((scene) => {
+        if (scene.pathicles && scene.pathicles.data) {
+          if (scene.pathicles.data === 'story-quadrupole.js') {
+            scene.data = data[2]
+          } else if (scene.pathicles.data === 'story-dipole.js') {
+            scene.data = data[1]
+          } else {
+            scene.data = data[0]
+          }
         }
-      }
-    })
+      })
 
-    this.$nextTick(() => {
-      watchViewport(this.handleViewportChange)
-      this.reglInstance = new ReglViewerInstance({
-        canvas: this.$refs.canvas,
-        pixelRatio: this.pixelRatio,
-        control: {
-          viewRange: this.viewRange,
-          cameraMode: this.cameraMode,
-          scenes: this.story.scenes
-        }
+      this.$nextTick(() => {
+        watchViewport(this.handleViewportChange)
+        this.reglInstance = new ReglViewerInstance({
+          canvas: this.$refs.canvas,
+          pixelRatio: this.pixelRatio,
+          control: {
+            viewRange: this.viewRange,
+            cameraMode: this.cameraMode,
+            scenes: this.story.scenes
+          }
+        })
       })
     })
   },

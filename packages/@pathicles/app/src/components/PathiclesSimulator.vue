@@ -41,7 +41,7 @@ export default {
       cameraMode: 'free',
       viewRange: [0, 1],
       presets,
-      presetName: 'story-electric',
+      presetName: 'free-electron',
       config: {},
       configModel: {},
       windowHeight: 0,

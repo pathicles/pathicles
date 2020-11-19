@@ -6,7 +6,8 @@
     "build": "vite build",
     "dev": "vite --port $(node -p 'require(\"./package.json\").config.devPort')",
     "lint-fix": "eslint --fix src",
-    "publish": "yarn publish --access=public"
+    "publish": "yarn publish --access=public",
+    "serve": "ws --key /Users/dirk/.localhost-cert/localhost.key.pem --cert /Users/dirk/.localhost-cert/localhost.cert.pem --directory dist"
   },
   "config": {
     "devPort": 9303
@@ -23,12 +24,15 @@
     "vue-router": "^4.0.0-rc.1"
   },
   "devDependencies": {
+    "local-web-server": "^4.2.1",
+    "vite-plugin-pwa": "^0.1.5",
     "@vue/compiler-sfc": "^3.0.2",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "stylus-supremacy": "^2.14.5",
-    "vite": "^1.0.0-rc.9"
+    "vite": "^1.0.0-rc.9",
+    "rollup": "^2.33.2"
   }
 }
