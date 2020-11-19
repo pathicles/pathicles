@@ -3,7 +3,7 @@
 
 import bspline from 'b-spline'
 
-import { colorCorrection } from '../simulation/utils/colorCorrection'
+import { colorCorrection } from '../simulation/utils/color-correction'
 import { variableTexture } from '../simulation/utils/variableTexture'
 
 export default function (regl, scenes, stateVars, onStateChange) {

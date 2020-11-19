@@ -11,7 +11,6 @@ import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
-    console.log('ReglViewerInstance')
     this.config = defaultConfig
     this.control = control
 
