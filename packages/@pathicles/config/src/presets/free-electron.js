@@ -6,7 +6,7 @@ export const freeElectron = {
   view: {
     camera: {
       center: [0, 0, 0.5],
-      distance: 2,
+      distance: 3,
       phi: (15 / 360) * 2 * Math.PI,
       theta: (45 / 360) * 2 * Math.PI
     }
@@ -14,11 +14,11 @@ export const freeElectron = {
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,
     iterationsPerTick: 1,
-    iterationCount: 10
+    iterationCount: 4
   },
 
   model: {
@@ -32,8 +32,8 @@ export const freeElectron = {
           2,
         0
       ],
-      direction: [0, 0, 1],
-      particleSeparation: 0.0,
+      direction: [1, 1, 1],
+      particleSeparation: 1,
       gamma: 10,
       particleCount: 2,
       particleType: 'ELECTRON'

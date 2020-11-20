@@ -100,8 +100,8 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: false,
-    showTextureScale: 5,
+    showTextures: true,
+    showTextureScale: 10,
     viewRange: [0, 1],
 
     // lights: [
