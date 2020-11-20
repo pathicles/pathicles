@@ -105,7 +105,7 @@ export default function (regl, options) {
   aCamera.setCameraUniforms = regl({
     uniforms: {
       projection: (ctx, camera) => {
-        camera.resize(ctx.viewportWidth / ctx.viewportHeight)
+        // camera.resize(ctx.viewportWidth / ctx.viewportHeight)
         return camera.state.projection
       },
       view: (ctx, camera) => camera.state.view,
