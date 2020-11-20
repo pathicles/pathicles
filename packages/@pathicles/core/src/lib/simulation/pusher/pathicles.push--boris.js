@@ -34,8 +34,6 @@ export default function (regl, { variables, model }) {
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         particleCount: variables.particleCount,
         bufferLength: variables.bufferLength,
-        channelsPerValueCount: variables.channelsPerValueCount,
-        channel: regl.prop('channel'),
         iteration: regl.prop('iteration'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 
@@ -78,20 +76,19 @@ export default function (regl, { variables, model }) {
       variables.pingPong = variables.iteration % 2
       variables.position.pingPong = variables.pingPong
       variables.velocity.pingPong = variables.pingPong
-      variables.pingPong = variables.iteration % 2
       variables.referencePoint =
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
-      const jobs = Array(variables.channelsPerValueCount)
-        .fill(0)
-        .map((_, i) => ({
-          iteration: variables.iteration,
-          channel: i
-        }))
+      // const jobs = Array(variables.channelsPerValueCount)
+      //   .fill(0)
+      //   .map((_, i) => ({
+      //     iteration: variables.iteration,
+      //     fourComponent: i
+      //   }))
 
-      pushVelocity(jobs)
-      pushPosition(jobs)
+      pushVelocity({ iteration: variables.iteration })
+      pushPosition({ iteration: variables.iteration })
     }
   }
 }

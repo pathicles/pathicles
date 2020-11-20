@@ -2,20 +2,11 @@
 import { variableTexture } from './variableTexture'
 
 export class VariableBuffers {
-  constructor(
-    regl,
-    particleCount,
-    bufferLength,
-    RTTFloatType,
-    channelsPerValueCount,
-    initialData
-  ) {
-    // console.log(RTTFloatType)
+  constructor(regl, particleCount, bufferLength, type, initialData) {
     this.regl = regl
     this.particleCount = particleCount
     this.bufferLength = bufferLength
-    this.RTTFloatType = RTTFloatType
-    this.channelsPerValueCount = channelsPerValueCount
+    this.type = type
     this.initialData = initialData
     this.height = particleCount
     this.pingPong = 0
@@ -30,7 +21,7 @@ export class VariableBuffers {
         color: variableTexture(
           regl,
           { width: this.width, height: this.particleCount },
-          'uint8'
+          type
         )
       })
     })
@@ -39,31 +30,60 @@ export class VariableBuffers {
   }
 
   testData() {
-    const particles = []
+    const packedFourVectors = []
     for (let p = 0; p < this.particleCount; p++) {
       const steps = []
-      particles.push(steps)
+      packedFourVectors.push(steps)
       for (let s = 0; s < this.bufferLength; s++) {
         const base = p * 10 + s
-        steps.push(...[base + 0.1, base + 0.2, base + 0.3, base + 0.4])
+        steps.push([base + 0.1, base + 0.2, base + 0.3, base + 0.4])
       }
     }
+    let data
 
-    const fourVectorsAsFloat32 = new Float32Array(particles.flat())
-    const data = new Uint8Array(fourVectorsAsFloat32.buffer)
+    if (this.type === 'uint8') {
+      const fourVectorsAsFloat32 = new Float32Array(packedFourVectors.flat(2))
+      data = new Uint8Array(fourVectorsAsFloat32.buffer)
+    } else {
+      const fourVectorsAsFloat32 = new Float32Array(packedFourVectors.flat(2))
+      data = new Uint8Array(fourVectorsAsFloat32.buffer)
+      data = new Float32Array(new Uint8Array(fourVectorsAsFloat32.buffer))
 
+      //
+      // data = new Float32Array(
+      //   packedFourVectors.flat(2).flatMap((d) => [d, 0, 0, 0])
+      // )
+    }
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
-        // width: 4,
-        // height: this.particleCount,
+        width: this.width,
+        height: this.height,
         data
       })
     )
+
+    // const fourVectorsAsFloat32 = new Float32Array(particles.flat())
+    // const data = new Uint8Array(fourVectorsAsFloat32.buffer)
+    //x
+    // this.buffers.forEach((buffer) =>
+    //   buffer.color[0].subimage({
+    //     // width: 4,
+    //     // height: this.particleCount,
+    //     data
+    //   })
+    // )
   }
 
-  load(input) {
-    const fourVectorsAsFloat32 = new Float32Array(input.flat())
-    const data = new Uint8Array(fourVectorsAsFloat32.buffer)
+  load(packedFourVectors) {
+    let data
+    if (this.type === 'uint8') {
+      const fourVectorsAsFloat32 = new Float32Array(packedFourVectors.flat(2))
+      data = new Uint8Array(fourVectorsAsFloat32.buffer)
+    } else {
+      const fourVectorsAsFloat32 = new Float32Array(packedFourVectors.flat(2))
+      data = new Uint8Array(fourVectorsAsFloat32.buffer)
+      data = new Float32Array(new Uint8Array(fourVectorsAsFloat32.buffer))
+    }
 
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
@@ -81,16 +101,30 @@ export class VariableBuffers {
   }
 
   toTypedArray(pingPong = this.pingPong) {
-    const uint8Array = new Uint8Array(
-      this.particleCount * this.bufferLength * 4 * 4
-    )
+    let float32Array, uint8Array
 
-    this.regl({
-      framebuffer: this.buffers[pingPong]
-    })(() => {
-      this.regl.read({ data: uint8Array })
-    })
-    const float32Array = new Float32Array(uint8Array.buffer)
+    if (this.type === 'uint8') {
+      uint8Array = new Uint8Array(
+        this.particleCount * this.bufferLength * 4 * 4
+      )
+      this.regl({
+        framebuffer: this.buffers[pingPong]
+      })(() => {
+        this.regl.read({ data: uint8Array })
+      })
+      float32Array = new Float32Array(uint8Array.buffer)
+    } else {
+      const colorFloat32Array = new Float32Array(
+        this.particleCount * this.bufferLength * 4 * 4
+      )
+      this.regl({
+        framebuffer: this.buffers[pingPong]
+      })(() => {
+        this.regl.read({ data: colorFloat32Array })
+      })
+
+      float32Array = colorFloat32Array.filter((d, i) => i % 4 === 0)
+    }
 
     const packedFloat32Array = []
 

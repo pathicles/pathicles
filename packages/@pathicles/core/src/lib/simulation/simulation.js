@@ -44,7 +44,6 @@ export class Simulation {
         particleCount,
         bufferLength,
         RTTFloatType,
-        channelsPerValueCount,
         fourPositions
       ),
       velocity: new VariableBuffers(
@@ -52,7 +51,6 @@ export class Simulation {
         particleCount,
         bufferLength,
         RTTFloatType,
-        channelsPerValueCount,
         fourVelocities
       ),
 
@@ -85,9 +83,17 @@ export class Simulation {
       })
     }
 
+    // console.log({
+    //   fourVelocities,
+    //   fourPositions,
+    //   log: this.log(false)
+    // })
+
     // eslint-disable-next-line no-undef
-    console.log(this.log(false))
-    // console.log(this.variables.position.toTypedArray())
+    // console.log(this.log(false))
+    // console.log(fourVelocities, this.variables.velocity.toTypedArray())
+    this.variables.position.testData()
+    // this.variables.velocity.testData()
 
     // console.log(
     //   variable2NestedArray(this.variables.position.loadedData, {

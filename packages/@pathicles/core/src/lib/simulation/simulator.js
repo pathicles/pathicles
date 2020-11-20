@@ -24,7 +24,7 @@ export class ReglSimulatorInstance {
       canvas,
       profile: this.config.profile,
       attributes: {
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialiasing: true
       },
       pixelRatio,
@@ -121,17 +121,15 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    // if (this.simulate) this.pathiclesRunner.start()
-    // console.log(this.simulation.dump())
     const mainloop = () => {
-      return regl.frame(() => {
+      return regl.frame(({ tick }) => {
         this.performanceLogger.start('pathiclesRunner.next')
         const { changed } = this.simulate && this.pathiclesRunner.next()
         this.performanceLogger.stop()
 
-        if (changed && this.config.logPushing) {
-          console.log(this.simulation.log(false))
-        }
+        // if (tick < 3 && changed && this.config.logPushing) {
+        //   console.log(this.simulation.log(false))
+        // }
         this.camera.doAutorotate()
         this.camera.tick()
 
