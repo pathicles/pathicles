@@ -68,8 +68,6 @@ export default class SimulationFSM {
   next() {
     const tick_0 = this._simulation.variables.iteration
     if (this.fsm.state === STATES.INITIAL) {
-      this._simulation.log()
-
       this._runCount = 1
       this._loopCount = 1
 
@@ -78,7 +76,6 @@ export default class SimulationFSM {
           this._simulation.prerender()
         }
 
-        if (this._simulation.configuration.logPushing) this._simulation.log()
         this.fsm = { state: STATES.PAUSED }
       } else {
         this.fsm = { state: STATES.ACTIVE }
@@ -93,7 +90,6 @@ export default class SimulationFSM {
         }
       } else {
         this._simulation.push(this._iterationsPerTick)
-        this._simulation.log()
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -104,7 +100,6 @@ export default class SimulationFSM {
       this._runCount++
       this._simulation.reset({})
       this._simulation.push(this._iterationsPerTick)
-      this._simulation.log()
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE

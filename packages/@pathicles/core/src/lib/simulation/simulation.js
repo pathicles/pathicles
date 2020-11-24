@@ -7,36 +7,34 @@ import { colorCorrection } from './utils/color-correction.js'
 import { Lattice } from './lattice/lattice'
 
 export class Simulation {
-  constructor(regl, configuration) {
+  constructor(regl, params) {
     this._regl = regl
 
     this._logStore = []
 
-    this.configuration = configuration
-    this.configuration.simulate = true
+    this.params = params
 
-    const channelsPerValueCount = configuration.channelsPerValueCount
+    const channelsPerValueCount = params.channelsPerValueCount
 
-    const RTTFloatType = 'uint8' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
-
-    const { bufferLength } = configuration.model
+    const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
+    const { bufferLength } = this.params.model
     const {
       particleCount,
       particleTypes,
       fourPositions,
       fourVelocities
-    } = (this.initialData = new ParticleCollection(configuration.model.emitter))
+    } = (this.initialData = new ParticleCollection(params.model.emitter))
 
     const colorCorrections = colorCorrection(
       fourPositions,
-      configuration.model.emitter.position
+      params.model.emitter.position
     )
 
     this.variables = {
       particleCount,
       bufferLength,
       particleTypes,
-      iterationCount: configuration.runner.iterationCount,
+      iterationCount: params.runner.iterationCount,
       channelsPerValueCount,
       RTTFloatType,
       position: new VariableBuffers(
@@ -58,7 +56,7 @@ export class Simulation {
       referencePoint: [0, 0, 0],
       pingPong: 0,
       particleColorsAndTypes: regl.texture({
-        data: particleTypes.map((p) => configuration.colors[p].concat(p)),
+        data: particleTypes.map((p) => params.colors[p].concat(p)),
         shape: [particleCount, 1, 4],
         type: 'uint8'
       }),
@@ -72,9 +70,9 @@ export class Simulation {
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
           .map((p) => [
-            configuration.charge[p],
-            configuration.mass[p],
-            configuration.chargeMassRatio[p],
+            params.charge[p],
+            params.mass[p],
+            params.chargeMassRatio[p],
             p
           ])
           .flat(),
@@ -103,28 +101,25 @@ export class Simulation {
     // )
 
     this.model = {
-      halfDeltaTOverC: this.configuration.model.iterationDurationOverC / 2,
-      boundingBoxSize: this.configuration.model.boundingBoxSize,
-      boundingBoxCenter: this.configuration.model.boundingBoxCenter,
-      latticeConfig: this.configuration.model.lattice,
-      lattice: new Lattice(this.configuration.model.lattice),
+      halfDeltaTOverC: this.params.model.iterationDurationOverC / 2,
+      boundingBoxSize: this.params.model.boundingBoxSize,
+      boundingBoxCenter: this.params.model.boundingBoxCenter,
+      latticeConfig: this.params.model.lattice,
+      lattice: new Lattice(this.params.model.lattice),
       interactions: {
-        particleInteraction: this.configuration.model.interactions
-          .particleInteraction,
-        electricField: this.configuration.model.interactions.electricField,
-        magneticField: this.configuration.model.interactions.magneticField
+        particleInteraction: this.params.model.interactions.particleInteraction,
+        electricField: this.params.model.interactions.electricField,
+        magneticField: this.params.model.interactions.magneticField
       }
     }
 
-    if (configuration.simulate) {
-      this.push = pushBoris(this._regl, {
-        variables: this.variables,
-        model: this.model
-      })
-    }
+    this.push = pushBoris(this._regl, {
+      variables: this.variables,
+      model: this.model
+    })
   }
 
-  log(toStore = this.configuration.logPushing) {
+  log(toStore = this.params.logPushing) {
     const positionData = this.variables.position.toTypedArray()
     const velocityData = this.variables.velocity.toTypedArray()
     const entry = {

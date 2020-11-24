@@ -11,14 +11,14 @@ import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
-    this.config = defaultConfig
+    this.params = defaultConfig
     this.control = control
 
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
       attributes: {
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialiasing: true
       },
       pixelRatio,
@@ -62,7 +62,7 @@ export class ReglViewerInstance {
     this.view = boxesViewSimple(regl, {
       variables: this.variables,
       model: this.model,
-      config: this.config
+      params: this.params
     })
   }
 
@@ -91,7 +91,7 @@ export class ReglViewerInstance {
 
   initCameras() {
     this.camera = freeCameraFactory(this.regl, {
-      ...this.config.view.camera,
+      ...this.params.view.camera,
       aspectRatio:
         this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     })

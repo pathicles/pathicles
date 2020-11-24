@@ -12,6 +12,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "lodash-es": "^4.17.15",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
     "@pathicles/config": "^0.2.0",
@@ -33,7 +34,8 @@
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "multi-array-view": "^0.1.5",
-    "primitive-cube": "^2.0.1"
+    "primitive-cube": "^2.0.1",
+    "tweakpane": "^1.5.6"
   },
   "peerDependencies": {
     "regl": "^2.0.1"

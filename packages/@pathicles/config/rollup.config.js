@@ -8,6 +8,7 @@ import cleanup from 'rollup-plugin-cleanup'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
 import notify from 'rollup-plugin-notify'
+import size from 'rollup-plugin-size'
 
 export default {
   input: join('src', 'index.js'),
@@ -36,7 +37,8 @@ export default {
       include: /node_modules/
     }),
     json(),
-    bundleSize()
+    bundleSize(),
+    size({ filename: './bundle-sizes.txt' })
   ],
   external: ['debug', 'regl']
 }

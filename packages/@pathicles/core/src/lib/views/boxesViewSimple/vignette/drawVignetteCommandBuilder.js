@@ -8,18 +8,17 @@ export default function (regl) {
         enable: true,
         func: {
           srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
+          srcAlpha: 0,
+          dstRGB: 'one',
           dstAlpha: 1
         },
         equation: {
           rgb: 'add',
           alpha: 'add'
         },
-        color: [0, 0, 0, 1]
+        color: [1, 0, 0, 1]
       },
       frag: frag,
-
       vert: `
     precision mediump float;
     attribute vec2 position;
@@ -35,14 +34,13 @@ export default function (regl) {
       },
 
       uniforms: {
-        color: [1, 1, 0, 1],
         screenSize: ({ viewportWidth, viewportHeight }) => [
           viewportWidth,
           viewportHeight
         ],
-        size: [0.05, 0.05],
+        size: [0.01, 0.01],
         roundness: 0.5,
-        smoothness: 0.95
+        smoothness: 0.99
       },
 
       // This tells regl the number of vertices to draw in this command

@@ -13,25 +13,38 @@
     "devPort": 9303
   },
   "dependencies": {
+    "vuex": "^4.0.0-rc.1",
+
     "@pathicles/config": "^0.2.0",
     "@pathicles/core": "^0.2.0",
+    "pure-color": "^1.3.0",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
+    "tweakpane": "^1.5.6",
     "typeface-barlow": "^1.1.13",
     "typeface-barlow-condensed": "^1.1.13",
     "typeface-barlow-semi-condensed": "^1.1.13",
     "vue": "^3.0.2",
-    "vue-router": "^4.0.0-rc.1"
+    "vue-router": "^4.0.0-rc.1",
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
     "@vue/compiler-sfc": "^3.0.2",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-vue": "^7.1.0",
     "local-web-server": "^4.2.1",
+    "prettier": "^2.2.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "rollup": "^2.33.2",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "stylus-supremacy": "^2.14.5",
+    "typescript": "^4.1.2",
     "vite": "^1.0.0-rc.9",
     "vite-plugin-pwa": "^0.1.5"
   }

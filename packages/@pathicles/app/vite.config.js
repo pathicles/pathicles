@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 import path from 'path'
-import { VitePWA } from 'vite-plugin-pwa'
+// import { VitePWA } from 'vite-plugin-pwa'
 
 const alias = {
   '/~/': path.resolve(__dirname, 'src')

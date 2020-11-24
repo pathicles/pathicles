@@ -1,6 +1,7 @@
 import { RUNNER_MODE } from '../constants'
 
 export default {
+  name: 'default',
   MAX_CANVAS_SIZE: 512,
   MAX_PARTICLE_COUNT: 512,
   MAX_BUFFER_LENGTH: 256,
@@ -38,9 +39,11 @@ export default {
   channelsPerValueCount: 4,
 
   runner: {
+    run: true,
     prerender: false,
     loops: -1,
     mode: RUNNER_MODE.FRAMEWISE,
+    stepwise: true,
     iterationsPerTick: 1,
     iterationCount: 127
   },
@@ -98,10 +101,16 @@ export default {
     pathicleRelativeHeight: 5,
     pathicleWidth: 0.0025,
 
+    pathicle: {
+      width: 0.0025,
+      relativeHeight: 5,
+      relativeGap: 3
+    },
+
     showAxes: false,
     showVignette: true,
-    showTextures: true,
-    showTextureScale: 10,
+    showTextures: false,
+    showTextureScale: 1,
     viewRange: [0, 1],
 
     // lights: [
@@ -125,20 +134,20 @@ export default {
       theta: (45 / 360) * 2 * Math.PI,
 
       fovY: (2 * Math.PI) / (360 / 35),
-      autorotate: false,
-      autorotateSpeedDistance: 0.1 * 2 * Math.PI,
-      autorotateSpeedTheta: 0.1 * 2 * Math.PI,
-      autorotateSpeedPhi: 0.1 * 2 * Math.PI,
+      autorotate: {
+        enabled: true,
+        dTheta: 0.05 * 2 * Math.PI,
+        dPhi: 0.1 * 2 * Math.PI
+      },
       // rotationDecayTime: 0,
       // rotateAboutCenter: true,
-      // zoomAboutCursor: false,
-      zoomDecayTime: 1,
+      zoomAboutCursor: false,
+      zoomDecayTime: 100,
       // panDecayTime: 0,
       far: 200,
       near: 0.0001,
-
       minDistance: 0.1,
-      maxDistance: 20
+      maxDistance: 10
     }
   },
 

@@ -1,25 +1,21 @@
-/* eslint-env browser */
-
 <template lang="pug">
-.pathicles.pathicles-simulator(ref="scrollContainer")
-  .configurator
-    select(v-model="presetName" v-on:change="onChange($event)")
-      option(v-for="p of presets" :value="p.name" :selected="p === presetName" ) {{p.name}}
-      option(value="story" ) STORY
-    .debug.debug-only {{vp}}
-  .canvas-container(ref="container")
-    canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-    <!--      dat-gui(:model="configModel" @change="onChange")-->
+.pathicles.pathicles-simulator
+  pathicles-params( :presetName="presetName" :prerender="prerender")
+  .debug.debug-only {{vp}}
+  .pathicles.pathicles-simulator(ref="scrollContainer")
+    .canvas-container(ref="container")
+      canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
 </template>
 
 <script>
 import { ReglSimulatorInstance } from '@pathicles/core'
-import { config as loadConfig, presets } from '@pathicles/config'
+import PathiclesParams from './PathiclesParams.vue'
 
 import { unwatchViewport, watchViewport } from 'tornis'
 
 export default {
   name: 'PathiclesSimulator',
+  components: { 'pathicles-params': PathiclesParams },
 
   props: {
     maxCanvasWidth: {
@@ -33,6 +29,14 @@ export default {
     maxPixelRatio: {
       type: Number,
       default: 2
+    },
+    presetName: {
+      type: String,
+      default: 'free-electron'
+    },
+    prerender: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => {
@@ -40,8 +44,6 @@ export default {
       progress: 0.5,
       cameraMode: 'free',
       viewRange: [0, 1],
-      presets,
-      presetName: 'free-electron',
       config: {},
       configModel: {},
       windowHeight: 0,
@@ -73,44 +75,41 @@ export default {
     unwatchViewport(this.handleViewportChange)
     this.reglInstance.destroy()
   },
-  mounted() {
+  async mounted() {
     // getGPUTier().then((tier) => {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
+
+    const presetConfig = await this.$store.dispatch('LOAD_PRESET', {
+      presetName: this.presetName
+    })
+
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
-    const parsedUrl = new URL(window.location.href)
-    if (parsedUrl.searchParams.get('presetName') !== null)
-      this.presetName = parsedUrl.searchParams.get('presetName')
+    // this.params = { ...this.params, ...loadConfig(this.presetName) }
+    // this.config = loadConfig(this.presetName)
+    // const parsedUrl = new URL(window.location.href)
+    // if (parsedUrl.searchParams.get('prerender')) {
+    //   this.config.runner.prerender = true
+    // }
+    // if (parsedUrl.searchParams.get('debug') === '0') {
+    //   this.config.view.showTextures = false
+    // }
 
-    this.config = loadConfig(this.presetName)
-
-    if (parsedUrl.searchParams.get('prerender')) {
-      this.config.runner.prerender = true
-    }
-    if (parsedUrl.searchParams.get('debug') === '0') {
-      this.config.view.showTextures = false
-    }
-
-    this.$nextTick(() => {
+    await this.$nextTick(() => {
       watchViewport(this.handleViewportChange)
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
-        config: this.config,
+        params: presetConfig,
         pixelRatio: this.pixelRatio,
-        simulate: true,
-        control: {
-          viewRange: this.viewRange,
-          progress: this.progress,
-          cameraMode: this.cameraMode
-        }
+        simulate: true
       })
     })
   },
 
   methods: {
-    handleViewportChange({ size }) {
+    handleViewportChange: function ({ size }) {
       if (size.changed) {
         this.windowWidth = size.x
         this.windowHeight = size.y
@@ -118,86 +117,64 @@ export default {
           this.reglInstance.resize()
         }
       }
-    },
-
-    onChange() {
-      const params = { presetName: this.presetName }
-      if (this.presetName !== 'story') {
-        history.pushState(
-          {},
-          null,
-          this.$route.path +
-            '?' +
-            Object.keys(params)
-              .map((key) => {
-                return (
-                  encodeURIComponent(key) +
-                  '=' +
-                  encodeURIComponent(params[key])
-                )
-              })
-              .join('&')
-        )
-      } else {
-        this.$router.push('story')
-        // history.pushState({}, null, '/story')
-      }
-      this.config = loadConfig(this.presetName)
-      this.reglInstance.loadConfig(this.config)
-    },
-    update(configModel) {
-      this.config.model.interactions.electricField = [
-        0,
-        0,
-        parseFloat(configModel.electricField_z)
-      ]
-      this.config.model.interactions.magneticField = [
-        0,
-        parseFloat(configModel.magneticField_y),
-        0
-      ]
-      this.reglInstance.loadConfig(this.config)
     }
-    // initGui(config) {
-    //   config
-    // }
   }
 }
 </script>
 
 <style lang="stylus">
 
-.pathicles
-  position fixed
+//.pathicles
+//
+//  position fixed
+//  top 0
+//  left 0
+//  bottom 0
+//  right 0
+//  overflow hidden
+//
+//  //.configurator
+//  //  padding 1em
+//  //  display none
+//  //
+//  //select
+//  //  position fixed
+//  //  z-index 10000
+//  //  top 0
+//  //  left 0
+//  //  right 0
+//  //  padding 1em
+//  //  font-size 16px
+//  //  width 100%
+//
+//  .canvas-container
+//    height: 100vh
+//    position absolute
+//    top 0
+//    left 0
+//    z-index 1000
+//
+//    canvas
+//      image-rendering crisp-edges
+//
+//  .pathicles-simulator
+//    touch-action pinch-zoom
+
+:root
+  --tp-font-family "Barlow"
+
+.tweakpane
+  position absolute
   top 0
-  left 0
-  bottom 0
   right 0
-  overflow hidden
+  overflow-y scroll
+  width 300px
+  height 100vh
+  z-index 10000
 
-  .configurator
-    padding 1em
 
-  select
-    position fixed
-    z-index 10000
-    top 0
-    left 0
-    right 0
-    padding 1em
-    font-size 16px
-    width 100%
-
-  .canvas-container
-    height: 100vh
-    position absolute
-    top 0
-    left 0
-    z-index 1000
-
-    canvas
-      image-rendering crisp-edges
-
-  .pathicles-simulator
-    touch-action pinch-zoom
+@media screen and (max-width: 600px)
+  .tweakpane
+    width 190px
+    height 100vh
 </style>

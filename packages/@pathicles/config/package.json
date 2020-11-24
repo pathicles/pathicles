@@ -16,9 +16,12 @@
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
-    "@pathicles/core": "^0.2.0"
+    "@pathicles/core": "^0.2.0",
+    "lodash-es": "^4.17.15"
+
   },
   "devDependencies": {
+    "rollup-plugin-size": "^0.2.2",
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",

@@ -1,7 +1,12 @@
 /* eslint-env browser */
 
 <template>
-  <router-view :key="$route.fullPath" :class="{ prerender }"></router-view>
+  <router-view
+    :key="$route.fullPath"
+    :preset-name="presetName"
+    :prerender="prerender"
+    :class="{ prerender }"
+  />
 </template>
 
 <script>
@@ -11,6 +16,10 @@ export default {
     printMode: function () {
       const parsedUrl = new URL(window.location.href)
       return parsedUrl.searchParams.get('print') !== null
+    },
+    presetName: function () {
+      const parsedUrl = new URL(window.location.href)
+      return parsedUrl.searchParams.get('presetName') || 'free-electron'
     },
     prerender: function () {
       const parsedUrl = new URL(window.location.href)

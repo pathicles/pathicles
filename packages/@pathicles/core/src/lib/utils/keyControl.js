@@ -5,35 +5,43 @@ import saveCanvas from './saveCanvas'
 const onDocumentKeyDown = (app) => (event) => {
   event.stopPropagation()
   // event.preventDefault()
-  const delta = app.config.view.camera.autorotateSpeedTheta / 50
+  const delta = 1 / 50
   const dDistance = 0.01
   if (event.shiftKey) {
     switch (event.code) {
       case 'ArrowLeft':
-        app.camera.rotate(-delta, 0)
+        app.camera.stopAutorotate()
+        app.camera.rotate(-delta / 2, 0)
         break
       case `ArrowUp`:
-        app.camera.rotate(0, -delta)
+        app.camera.stopAutorotate()
+        app.camera.rotate(0, -delta / 2)
         break
       case 'ArrowRight':
+        app.camera.stopAutorotate()
         app.camera.rotate(+delta, 0)
         break
       case 'ArrowDown':
+        app.camera.stopAutorotate()
         app.camera.rotate(0, delta)
         break
     }
   } else {
     switch (event.code) {
       case 'ArrowLeft':
+        app.camera.stopAutorotate()
         app.camera.pan(dDistance, 0)
         break
       case `ArrowUp`:
+        app.camera.stopAutorotate()
         app.camera.pan(0, -dDistance)
         break
       case 'ArrowRight':
+        app.camera.stopAutorotate()
         app.camera.pan(-dDistance, 0)
         break
       case 'ArrowDown':
+        app.camera.stopAutorotate()
         app.camera.pan(0, dDistance)
         break
     }
@@ -53,10 +61,10 @@ const onDocumentKeyDown = (app) => (event) => {
     app.pathiclesRunner.toggleMode()
   } else if (keyCode === 84) {
     // t for textures
-    app.config.view.showTextures = !app.config.view.showTextures
+    app.params.view.showTextures = !app.params.view.showTextures
   } else if (keyCode === 71) {
     // g for stageGrid
-    app.config.drawGrid = !app.config.drawGrid
+    app.params.drawGrid = !app.params.drawGrid
   } else if (keyCode === 83) {
     // s for image
     saveCanvas(

@@ -11,18 +11,17 @@ import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, config, pixelRatio, control, simulate = true }) {
+  constructor({ canvas, params, pixelRatio, simulate = true }) {
     keyControlMount(this)
-    this.config = config
+    this.params = params
     this.simulate = simulate
-    this.control = control
-    this.performanceLogger = new PerformanceLogger(this.config.logPerformance)
+    this.performanceLogger = new PerformanceLogger(this.params.logPerformance)
     this.performanceLogger.start('xxx')
     this.performanceLogger.stop()
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
-      profile: this.config.profile,
+      profile: this.params.profile,
       attributes: {
         preserveDrawingBuffer: false,
         antialiasing: true
@@ -75,9 +74,9 @@ export class ReglSimulatorInstance {
     this.regl.destroy()
   }
 
-  loadConfig(config) {
+  updateParams(params) {
     this.stop(this.regl)
-    this.config = config
+    this.params = params
     this.init(this.regl)
     this.run(this.regl)
   }
@@ -87,35 +86,28 @@ export class ReglSimulatorInstance {
   }
 
   init(regl) {
-    // console.log(regl._gl.FLOAT)
-    this.camera = freeCameraFactory(regl, {
-      ...this.config.view.camera,
-      aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
-    })
+    this.camera = freeCameraFactory(
+      regl,
+      this.params.view.camera,
+      regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
+    )
 
     this.drawTexture = drawTextureCommand(regl)
 
     this.performanceLogger.start('init.simulation')
-    this.simulation = new Simulation(
-      regl,
-      {
-        ...this.config
-      },
-      this.support
-    )
+    this.simulation = new Simulation(regl, this.params)
     this.performanceLogger.stop()
 
     this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
       variables: this.simulation.variables,
       model: this.simulation.model,
-      config: this.config
+      params: this.params
     })
     this.performanceLogger.stop()
     this.performanceLogger.start('init.runner')
     this.pathiclesRunner = new SimulationFSM(this.simulation, {
-      ...this.config.runner,
-      simulate: this.simulate
+      ...this.params.runner
     })
     this.performanceLogger.stop()
   }
@@ -127,9 +119,6 @@ export class ReglSimulatorInstance {
         const { changed } = this.simulate && this.pathiclesRunner.next()
         this.performanceLogger.stop()
 
-        // if (tick < 3 && changed && this.config.logPushing) {
-        //   console.log(this.simulation.log(false))
-        // }
         this.camera.doAutorotate()
         this.camera.tick()
 
@@ -137,7 +126,7 @@ export class ReglSimulatorInstance {
           this.camera.setCameraUniforms(
             {
               ...this.camera,
-              viewRange: this.control.viewRange
+              viewRange: this.params.viewRange
             },
             () => {
               this.view.drawDiffuse({
@@ -150,13 +139,13 @@ export class ReglSimulatorInstance {
                 viewRange: [0, 1]
               })
 
-              if (this.config.view.showTextures) {
+              if (this.params.view.showTextures) {
                 this.drawTexture({
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
                   ],
                   x0: 0,
-                  scale: this.config.view.showTextureScale
+                  scale: this.params.view.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
@@ -164,14 +153,14 @@ export class ReglSimulatorInstance {
                   ],
                   x0:
                     (this.simulation.variables.particleCount + 1) *
-                    this.config.view.showTextureScale,
-                  scale: this.config.view.showTextureScale
+                    this.params.view.showTextureScale,
+                  scale: this.params.view.showTextureScale
                 })
-                // this.drawTexture({
-                //   texture: this.view.shadow.fbo,
-                //   x0: 400,
-                //   scale: this.config.view.showTexturestTexelSize
-                // })
+                this.drawTexture({
+                  texture: this.view.shadow.fbo,
+                  x0: 400,
+                  scale: this.params.view.showTextureScale
+                })
               }
             }
           )
