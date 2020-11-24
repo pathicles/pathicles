@@ -1,7 +1,6 @@
 <template lang="pug">
 .pathicles.pathicles-simulator
   pathicles-params( :presetName="presetName" :prerender="prerender")
-  .debug.debug-only {{vp}}
   .pathicles.pathicles-simulator(ref="scrollContainer")
     .canvas-container(ref="container")
       canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")

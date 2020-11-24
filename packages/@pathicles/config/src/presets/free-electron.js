@@ -13,10 +13,10 @@ export const freeElectron = {
   },
 
   runner: {
-    prerender: true,
-    mode: RUNNER_MODE.FRAMEWISE,
+    prerender: false,
+    mode: RUNNER_MODE.STEPWISE,
 
-    loops: 20,
+    loops: 1,
     iterationsPerTick: 1,
     iterationCount: 10
   },

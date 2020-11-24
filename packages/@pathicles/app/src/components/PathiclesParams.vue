@@ -8,7 +8,6 @@
 import Tweakpane from 'tweakpane'
 import { config as loadConfig, presets } from '@pathicles/config'
 import { DISTRIBUTIONS } from '@pathicles/core/src/lib/simulation/distributions/distributions'
-import { x } from '@pathicles/docs/.vitepress/dist/_assets/common-e054aef3'
 
 // const log = console.log
 // console.log = function () {
@@ -36,13 +35,7 @@ export default {
   computed: {},
   unmounted() {},
   mounted() {
-    // this.$store.dispatch('LOAD_PRESET', this.presetName)
-    //
     this.model = this.$store.getters['model']
-    // getGPUTier().then((tier) => {
-    //   console.log(tier)
-    // window.addEventListener('resize', this.onWindowResize)
-
     this.createPane()
   },
 

@@ -2,14 +2,14 @@ import { RUNNER_MODE } from '../constants'
 
 export default {
   name: 'default',
-  MAX_CANVAS_SIZE: 512,
-  MAX_PARTICLE_COUNT: 512,
-  MAX_BUFFER_LENGTH: 256,
-  logPushing: true,
-  logPerformance: true,
 
-  stats: false,
-  profile: false,
+  debug: {
+    showTexture: true,
+    showTextureScale: 1,
+    logPushing: true,
+    logPerformance: true,
+    profile: false
+  },
 
   colors_float: [
     [0.92, 0.75, 0.0],
@@ -109,8 +109,6 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: false,
-    showTextureScale: 1,
     viewRange: [0, 1],
 
     // lights: [
@@ -149,7 +147,5 @@ export default {
       minDistance: 0.1,
       maxDistance: 10
     }
-  },
-
-  dumpData: false
+  }
 }

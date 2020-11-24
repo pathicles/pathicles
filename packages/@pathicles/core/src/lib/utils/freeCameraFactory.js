@@ -10,8 +10,6 @@ export default function (regl, params, aspectRatio) {
   const cameraParams = {}
   merge(cameraParams, params)
 
-  console.log('factory', cameraParams)
-
   const aCamera = camera(cameraParams)
   aCamera.updateParams = (newParams) => {
     merge(aCamera.params, newParams)
@@ -41,8 +39,6 @@ export default function (regl, params, aspectRatio) {
   aCamera.autorotateParams = { ...aCamera.params }
   aCamera.startAutorotate = () => {
     aCamera.autorotateParams = { ...aCamera.params }
-    console.log('startAutorotate')
-
     aCamera.autorotateT0 = Date.now()
   }
   aCamera.doAutorotate = () => {
@@ -60,15 +56,6 @@ export default function (regl, params, aspectRatio) {
   }
 
   params.autorotate.enabled && aCamera.startAutorotate()
-
-  // aCamera.updateEyeCenter = (eye, center) => {
-  //   const { phi, theta, distance } = calcPhiThetaDistance(eye, center)
-  //
-  //   aCamera.params.center = center
-  //   aCamera.params.theta = theta
-  //   aCamera.params.phi = phi
-  //   aCamera.params.distance = distance
-  // }
 
   aCamera.setCameraUniforms = regl({
     uniforms: {
@@ -116,9 +103,6 @@ function initializeCameraControls(camera, canvas, options) {
           -ev.dx * radiansPerHalfScreenWidth,
           -ev.dy * radiansPerHalfScreenWidth
         )
-
-        // if (camera.params.phi < 0.1) camera.params.phi = 0.1
-        // if (camera.params.phi > 0.5) camera.params.phi = 0.5
       }
     })
     .on('touchmove', function (ev) {

@@ -15,9 +15,9 @@ export class ReglSimulatorInstance {
     keyControlMount(this)
     this.params = params
     this.simulate = simulate
-    this.performanceLogger = new PerformanceLogger(this.params.logPerformance)
-    this.performanceLogger.start('xxx')
-    this.performanceLogger.stop()
+    this.performanceLogger = new PerformanceLogger(
+      this.params.debug.logPerformance
+    )
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
@@ -116,7 +116,7 @@ export class ReglSimulatorInstance {
     const mainloop = () => {
       return regl.frame(({ tick }) => {
         this.performanceLogger.start('pathiclesRunner.next')
-        const { changed } = this.simulate && this.pathiclesRunner.next()
+        const { changed } = this.pathiclesRunner.next()
         this.performanceLogger.stop()
 
         this.camera.doAutorotate()
@@ -139,13 +139,13 @@ export class ReglSimulatorInstance {
                 viewRange: [0, 1]
               })
 
-              if (this.params.view.showTextures) {
+              if (this.params.debug.showTextures) {
                 this.drawTexture({
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
                   ],
                   x0: 0,
-                  scale: this.params.view.showTextureScale
+                  scale: this.params.debug.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
@@ -153,13 +153,13 @@ export class ReglSimulatorInstance {
                   ],
                   x0:
                     (this.simulation.variables.particleCount + 1) *
-                    this.params.view.showTextureScale,
-                  scale: this.params.view.showTextureScale
+                    this.params.debug.showTextureScale,
+                  scale: this.params.debug.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.view.shadow.fbo,
                   x0: 400,
-                  scale: this.params.view.showTextureScale
+                  scale: this.params.debug.showTextureScale / 2
                 })
               }
             }

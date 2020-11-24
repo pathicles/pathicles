@@ -113,23 +113,30 @@ export class Simulation {
       }
     }
 
-    this.push = pushBoris(this._regl, {
+    this.pusher = pushBoris(this._regl, {
       variables: this.variables,
       model: this.model
     })
   }
 
-  log(toStore = this.params.logPushing) {
-    const positionData = this.variables.position.toTypedArray()
-    const velocityData = this.variables.velocity.toTypedArray()
-    const entry = {
-      iteration: this.variables.iteration,
-      position: positionData,
-      velocity: velocityData
-    }
+  push() {
+    this.pusher()
+    this.log()
+  }
 
-    toStore && this._logStore.push(entry)
-    return entry
+  log(enabled = this.params.debug.logPushing) {
+    if (enabled) {
+      const positionData = this.variables.position.toTypedArray()
+      const velocityData = this.variables.velocity.toTypedArray()
+      const entry = {
+        iteration: this.variables.iteration,
+        position: positionData,
+        velocity: velocityData
+      }
+
+      enabled && this._logStore.push(entry)
+      return entry
+    }
   }
 
   reset() {

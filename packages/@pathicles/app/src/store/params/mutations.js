@@ -9,7 +9,7 @@ export const MUTATION_TYPES = {
 
 export default {
   [MUTATION_TYPES.SET](state, payload) {
-    console.log('merging', state, payload)
+    // console.log('merging', state, payload)
     merge(state, payload)
     // state = payload
   }

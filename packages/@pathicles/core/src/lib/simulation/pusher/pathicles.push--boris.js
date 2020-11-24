@@ -68,7 +68,7 @@ export default function (regl, { variables, model }) {
   const pushVelocity = pushFactory('velocity', 'utVelocityBuffer', 1)
   const pushPosition = pushFactory('position', 'utPositionBuffer', 0)
 
-  return (n) => {
+  return (n = 1) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
       const z = variables.iteration * model.halfDeltaTOverC * 2
