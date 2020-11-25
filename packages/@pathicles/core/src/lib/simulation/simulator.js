@@ -19,8 +19,6 @@ export class ReglSimulatorInstance {
     this.simulate = simulate
     this.control = control
     this.performanceLogger = new PerformanceLogger(this.config.logPerformance)
-    this.performanceLogger.start('xxx')
-    this.performanceLogger.stop()
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
