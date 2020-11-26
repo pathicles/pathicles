@@ -53,7 +53,7 @@ const onDocumentKeyDown = (app) => (event) => {
     app.pathiclesRunner.toggleMode()
   } else if (keyCode === 84) {
     // t for textures
-    app.config.view.showTextures = !app.config.view.showTextures
+    app.config.debug.showTextures = !app.config.debug.showTextures
   } else if (keyCode === 71) {
     // g for stageGrid
     app.config.drawGrid = !app.config.drawGrid

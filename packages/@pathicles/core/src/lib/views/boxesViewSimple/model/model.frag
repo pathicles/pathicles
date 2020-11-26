@@ -25,8 +25,6 @@ uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
 
-#pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: edger = require("@pathicles/core/src/lib/shaders/edger.glsl");
 
 float diffuse(vec3 lightDir, vec3 nrm)

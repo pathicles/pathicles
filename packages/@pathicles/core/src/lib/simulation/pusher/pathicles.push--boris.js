@@ -82,14 +82,12 @@ export default function (regl, { variables, model }) {
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
-      const jobs = Array(1 || variables.channelsPerValueCount)
-        .fill(0)
-        .map((_, i) => ({
-          iteration: variables.iteration,
-          channel: i
-        }))
-      pushVelocity(jobs)
-      pushPosition(jobs)
+      pushVelocity({
+        iteration: variables.iteration
+      })
+      pushPosition({
+        iteration: variables.iteration
+      })
     }
   }
 }

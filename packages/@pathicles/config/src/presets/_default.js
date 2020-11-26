@@ -1,14 +1,13 @@
 import { RUNNER_MODE } from '../constants'
 
 export default {
-  MAX_CANVAS_SIZE: 512,
-  MAX_PARTICLE_COUNT: 512,
-  MAX_BUFFER_LENGTH: 256,
-  logPushing: true,
-  logPerformance: true,
-
-  stats: false,
-  profile: false,
+  debug: {
+    logPushing: false,
+    logPerformance: false,
+    profile: false,
+    showTextures: false,
+    showTextureScale: 10
+  },
 
   colors_float: [
     [0.92, 0.75, 0.0],
@@ -41,7 +40,7 @@ export default {
     prerender: false,
     loops: -1,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
+    iterationsPerTick: 2,
     iterationCount: 127
   },
 
@@ -100,8 +99,6 @@ export default {
 
     showAxes: false,
     showVignette: true,
-    showTextures: false,
-    showTextureScale: 1,
     viewRange: [0, 1],
 
     // lights: [

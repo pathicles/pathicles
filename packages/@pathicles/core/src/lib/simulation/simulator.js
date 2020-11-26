@@ -18,7 +18,9 @@ export class ReglSimulatorInstance {
     this.config = config
     this.simulate = simulate
     this.control = control
-    this.performanceLogger = new PerformanceLogger(this.config.logPerformance)
+    this.performanceLogger = new PerformanceLogger(
+      this.config.debug.logPerformance
+    )
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
@@ -129,20 +131,20 @@ export class ReglSimulatorInstance {
         const { changed } = this.simulate && this.pathiclesRunner.next()
         this.performanceLogger.stop()
 
-        if (changed && this.config.logPushing) {
-          console.log(
-            'iteration',
-            this.simulation.variables.iteration,
-            stringify(
-              variable2NestedArray(
-                this.simulation._logStore[this.simulation._logStore.length - 1]
-                  .position,
-                this.simulation.variables
-              ),
-              { maxLength: 200 }
-            )
-          )
-        }
+        // if (changed && this.config.logPushing) {
+        //   console.log(
+        //     'iteration',
+        //     this.simulation.variables.iteration,
+        //     stringify(
+        //       variable2NestedArray(
+        //         this.simulation._logStore[this.simulation._logStore.length - 1]
+        //           .position,
+        //         this.simulation.variables
+        //       ),
+        //       { maxLength: 200 }
+        //     )
+        //   )
+        // }
         this.camera.doAutorotate()
         this.camera.tick()
 
@@ -163,13 +165,13 @@ export class ReglSimulatorInstance {
                 viewRange: [0, 1]
               })
 
-              if (this.config.view.showTextures) {
+              if (this.config.debug.showTextures) {
                 this.drawTexture({
                   texture: this.simulation.variables.position.buffers[
                     this.simulation.variables.pingPong
                   ],
                   x0: 0,
-                  scale: this.config.view.showTextureScale
+                  scale: this.config.debug.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.buffers[
@@ -177,13 +179,13 @@ export class ReglSimulatorInstance {
                   ],
                   x0:
                     (this.simulation.variables.particleCount + 1) *
-                    this.config.view.showTextureScale,
-                  scale: this.config.view.showTextureScale
+                    this.config.debug.showTextureScale,
+                  scale: this.config.debug.showTextureScale
                 })
                 // this.drawTexture({
                 //   texture: this.view.shadow.fbo,
                 //   x0: 400,
-                //   scale: this.config.view.showTexturestTexelSize
+                //   scale: this.config.debug.showTexturestTexelSize
                 // })
               }
             }

@@ -90,7 +90,7 @@ export default {
       this.config.runner.prerender = true
     }
     if (parsedUrl.searchParams.get('debug') === '0') {
-      this.config.view.showTextures = false
+      this.config.debug.showTextures = false
     }
 
     this.$nextTick(() => {

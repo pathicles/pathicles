@@ -10,7 +10,6 @@ export class VariableBuffers {
     channelsPerValueCount,
     initialData
   ) {
-    // console.log(RTTFloatType)
     this.regl = regl
     this.particleCount = particleCount
     this.bufferLength = bufferLength

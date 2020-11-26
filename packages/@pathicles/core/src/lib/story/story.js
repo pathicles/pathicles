@@ -163,7 +163,7 @@ export class ReglViewerInstance {
                 modelTranslateY: this.modelTranslateY,
                 viewRange
               })
-              if (storyState.scene.configuration.view.showTextures) {
+              if (storyState.scene.configuration.debug.showTextures) {
                 this.drawTexture({
                   texture: storyState.scene.variables.position.buffers[0],
                   x0: 0

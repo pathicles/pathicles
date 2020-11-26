@@ -109,7 +109,7 @@ export class Simulation {
   }
 
   log() {
-    if (this.configuration.logPushing) {
+    if (this.configuration.debug.logPushing) {
       this._logStore.push(
         readData(this._regl, {
           variables: this.variables

@@ -165,63 +165,20 @@ vec4 readVariable(float texelParticleIndex, float texelBufferIndex) {
 
 void main () {
 
-//  gl_FragColor = vec4(texelBufferIndex);
-  float texelParticleIndex, texelBufferIndex, texelChannel;
-  texelChannel = (channelsPerValueCount == 4) ? mod(gl_FragCoord.y, 4.) -.5 : 0.;
+  float texelParticleIndex = gl_FragCoord.x - .5;
+  float texelBufferIndex = floor((gl_FragCoord.y - .5) / 4.);
+  float texelFourComponent = floor(gl_FragCoord.y - .5)  - texelBufferIndex * 4.;
 
+  initLatticeData();
 
-//  if(texelChannel > 0.) {
-//    gl_FragColor = vec4(texelChannel);
-//  } else {
+  vec4 value = (texelBufferIndex  < 0.1)
+    ? push(texelParticleIndex)
+    :  (texelBufferIndex <= iteration)
+      ? readVariable(texelParticleIndex, texelBufferIndex - 1.)
+      : vec4(0.);
 
-    initLatticeData();
+  gl_FragColor = (texelFourComponent == 0.)
+    ? value
+    : value; //vec4(channel, texelChannel, -1., -1.);
 
-
-    texelParticleIndex = gl_FragCoord.x - .5;
-    texelBufferIndex = floor((gl_FragCoord.y - .5) / float(channelsPerValueCount));
-    texelChannel = floor(gl_FragCoord.y - .5)  - floor((gl_FragCoord.y - .5) / float(channelsPerValueCount)) * float(channelsPerValueCount);
-
-    float nextBufferPosition = floor(mod(iteration, bufferLength + 1.));
-    float bufferPosition = (texelBufferIndex == 0.) ? bufferLength : texelBufferIndex - 1.;
-
-    nextBufferPosition = 0.;
-    bufferPosition = 1.;
-
-    vec4 value = (texelBufferIndex  < 0.1)
-      ? push(texelParticleIndex)
-      :  (texelBufferIndex <= iteration)
-        ? readVariable(texelParticleIndex, texelBufferIndex - 1.)
-        : vec4(0.);
-
-    gl_FragColor = (texelChannel == 0.)
-      ? value
-      : value; //vec4(channel, texelChannel, -1., -1.);
-
-//  gl_FragColor = vec4(gl_FragCoord.y  - .5  - 0. * texelBufferIndex * float(channelsPerValueCount));
-//  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, -1.);
-//  gl_FragColor = vec4(gl_FragCoord.x);
-//
-//  gl_FragColor = vec4(texelParticleIndex, texelBufferIndex, texelChannel, -1.);
-
-//
-//  if (texelBufferIndex  < 0.1) {
-//      gl_FragColor = push(texelParticleIndex);
-//      gl_FragColor = (channel == 0.)
-//        ? vec4(readVariable(texelParticleIndex, texelBufferIndex).xyz, iteration)
-//        : vec4(channel);
-//      //    gl_FragColor = vec4(readVariable(texelParticleIndex, texelBufferIndex).xyz, iteration);
-//    } else if (texelBufferIndex <= iteration)  {
-//      gl_FragColor = readVariable(texelParticleIndex, texelBufferIndex - 1.);
-//    } else {
-//      gl_FragColor = vec4(0.);
-
-
-//    }
-//  }
-
-//    gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
-//
-  //gl_FragColor = vec4(texelBufferIndex, texelChannel/10., -1., -1.);
-//    gl_FragColor = vec4(channel);
-//  *111., texelBufferIndex*10., texelChannel/100.);
 }

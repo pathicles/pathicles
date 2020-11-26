@@ -78,7 +78,8 @@ export default class SimulationFSM {
           this._simulation.prerender()
         }
 
-        if (this._simulation.configuration.logPushing) this._simulation.log()
+        if (this._simulation.configuration.debug.INITIALlogPushing)
+          this._simulation.log()
         this.fsm = { state: STATES.PAUSED }
       } else {
         this.fsm = { state: STATES.ACTIVE }
