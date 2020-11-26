@@ -13,10 +13,9 @@ import { variable2NestedArray } from './utils/variable2NestedArray'
 import stringify from '@aitodotai/json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, config, pixelRatio, control, simulate = true }) {
+  constructor({ canvas, config, pixelRatio, control }) {
     keyControlMount(this)
     this.config = config
-    this.simulate = simulate
     this.control = control
     this.performanceLogger = new PerformanceLogger(
       this.config.debug.logPerformance
@@ -47,24 +46,16 @@ export class ReglSimulatorInstance {
 
           this.run(regl)
         } catch (e) {
-          // alert(e)
           console.error(e)
         }
       },
-      extensions: simulate
-        ? [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'OES_texture_half_float',
-            'WEBGL_depth_texture'
-          ]
-        : [
-            'angle_instanced_arrays',
-            'oes_texture_float',
-            'OES_standard_derivatives',
-            'WEBGL_depth_texture'
-          ]
+      extensions: [
+        'angle_instanced_arrays',
+        'oes_texture_float',
+        'OES_standard_derivatives',
+        'OES_texture_half_float',
+        'WEBGL_depth_texture'
+      ]
     })
   }
 
@@ -116,19 +107,16 @@ export class ReglSimulatorInstance {
     this.performanceLogger.stop()
     this.performanceLogger.start('init.runner')
     this.pathiclesRunner = new SimulationFSM(this.simulation, {
-      ...this.config.runner,
-      simulate: this.simulate
+      ...this.config.runner
     })
     this.performanceLogger.stop()
   }
 
   run(regl) {
-    // if (this.simulate) this.pathiclesRunner.start()
-    // console.log(this.simulation.dump())
     const mainloop = () => {
       return regl.frame(() => {
         this.performanceLogger.start('pathiclesRunner.next')
-        const { changed } = this.simulate && this.pathiclesRunner.next()
+        const { changed } = this.pathiclesRunner.next()
         this.performanceLogger.stop()
 
         // if (changed && this.config.logPushing) {

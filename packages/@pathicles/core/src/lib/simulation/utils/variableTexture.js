@@ -1,15 +1,18 @@
 export const variableTexture = (
   regl,
-  { width, height, channelsPerValueCount = 1 },
+  { width, height },
   type,
   data = undefined
-) =>
+) => {
+  console.log(width, height)
+
   regl.texture({
     width,
-    height: height * channelsPerValueCount,
+    height,
     min: 'nearest',
     mag: 'nearest',
     format: 'rgba',
     type,
     data
   })
+}

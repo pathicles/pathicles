@@ -99,7 +99,6 @@ export default {
         canvas: this.$refs.canvas,
         config: this.config,
         pixelRatio: this.pixelRatio,
-        simulate: true,
         control: {
           viewRange: this.viewRange,
           progress: this.progress,

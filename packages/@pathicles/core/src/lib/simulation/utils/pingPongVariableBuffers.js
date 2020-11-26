@@ -1,23 +1,17 @@
 import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
 import { variableTexture } from './variableTexture'
 
+const FOUR_VECTOR_COMPONENT_COUNT = 4
+
 export class VariableBuffers {
-  constructor(
-    regl,
-    particleCount,
-    bufferLength,
-    RTTFloatType,
-    channelsPerValueCount,
-    initialData
-  ) {
+  constructor(regl, particleCount, bufferLength, RTTFloatType, initialData) {
     this.regl = regl
     this.particleCount = particleCount
     this.bufferLength = bufferLength
     this.RTTFloatType = RTTFloatType
-    this.channelsPerValueCount = channelsPerValueCount
     this.initialData = initialData
     this.width = particleCount
-    this.height = bufferLength * channelsPerValueCount
+    this.height = bufferLength * FOUR_VECTOR_COMPONENT_COUNT
     this.buffers = [0, 1].map(() => {
       return regl.framebuffer({
         height: this.height,
@@ -40,27 +34,27 @@ export class VariableBuffers {
     const typedData =
       this.RTTFloatType === 'float'
         ? new Float32Array(
-            new Array(this.channelsPerValueCount)
+            new Array(FOUR_VECTOR_COMPONENT_COUNT)
               .fill(data)
               .flat()
               .concat(
                 new Array(
                   this.width *
                     (this.height - 1) *
-                    this.channelsPerValueCount *
+                    FOUR_VECTOR_COMPONENT_COUNT *
                     4
                 ).fill(0)
               )
           )
         : new Uint8Array(
-            new Array(this.channelsPerValueCount)
+            new Array(FOUR_VECTOR_COMPONENT_COUNT)
               .fill(convertToHalfFloat(data))
               .flat()
               .concat(
                 new Array(
                   this.width *
                     (this.height - 1) *
-                    this.channelsPerValueCount *
+                    FOUR_VECTOR_COMPONENT_COUNT *
                     4
                 ).fill(0)
               )

@@ -1,6 +1,6 @@
 import { distribution } from './distributions/distributions.js'
 import { boundedRandom } from '../utils/random'
-import ParticleTypes from './particleTypes'
+import ParticleTypes from './particle-types'
 
 function normalize(a) {
   let x = a[0]
@@ -127,11 +127,20 @@ export function ParticleCollection({
       ]
     })
     .reduce((acc, val) => acc.concat(val), [])
+
   return {
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
-    // fourMomenta,
     particleCount,
-    particleTypes: particles.map((p) => p.id)
+    particles,
+    particleTypes: particles.map((p) => p.id),
+    particleChargesMassesChargeMassRatios: particles.map(
+      ({ charge__qe, mass__eVc_2, chargeMassRatio__Ckg_1 }) => [
+        charge__qe,
+        mass__eVc_2,
+        chargeMassRatio__Ckg_1,
+        0
+      ]
+    )
   }
 }

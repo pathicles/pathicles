@@ -15,11 +15,8 @@ export class Simulation {
     this._logStore = []
 
     this.configuration = configuration
-    this.configuration.simulate = true
 
-    const channelsPerValueCount = configuration.channelsPerValueCount
-
-    const RTTFloatType = 'float' //configuration.simulateHalfFloat ? 'half float' : 'float' //support.RTTFloatType
+    const RTTFloatType = 'float'
 
     const { bufferLength } = configuration.model
     const {
@@ -38,14 +35,12 @@ export class Simulation {
       bufferLength,
       particleTypes,
       iterationCount: configuration.runner.iterationCount,
-      channelsPerValueCount,
       RTTFloatType,
       position: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
         RTTFloatType,
-        channelsPerValueCount,
         fourPositions
       ),
       velocity: new VariableBuffers(
@@ -53,7 +48,6 @@ export class Simulation {
         particleCount,
         bufferLength,
         RTTFloatType,
-        channelsPerValueCount,
         fourVelocities
       ),
 
@@ -100,12 +94,10 @@ export class Simulation {
       }
     }
 
-    if (configuration.simulate) {
-      this.push = pushBoris(this._regl, {
-        variables: this.variables,
-        model: this.model
-      })
-    }
+    this.push = pushBoris(this._regl, {
+      variables: this.variables,
+      model: this.model
+    })
   }
 
   log() {

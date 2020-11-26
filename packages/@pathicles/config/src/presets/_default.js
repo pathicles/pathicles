@@ -31,14 +31,9 @@ export default {
     9.57883323113770929296814695637e7
   ],
 
-  pusher: 'boris', // "boris", "euler"
-  simulateHalfFloat: false,
-  renderToFloat: true,
-  channelsPerValueCount: 4,
-
   runner: {
     prerender: false,
-    loops: -1,
+    loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 2,
     iterationCount: 127

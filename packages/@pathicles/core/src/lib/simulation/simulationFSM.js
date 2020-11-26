@@ -22,11 +22,9 @@ export default class SimulationFSM {
       iterationCount = -1,
       iterationsPerTick = 1,
       loops = 0,
-      mode = RUNNER_MODE.STEPWISE,
-      simulate = false
+      mode = RUNNER_MODE.STEPWISE
     }
   ) {
-    this.simulate = simulate
     this._simulation = simulation
     this._prerender = prerender
     this._iterationCount =
@@ -74,9 +72,7 @@ export default class SimulationFSM {
       this._loopCount = 1
 
       if (this._prerender) {
-        if (this.simulate) {
-          this._simulation.prerender()
-        }
+        this._simulation.prerender()
 
         if (this._simulation.configuration.debug.INITIALlogPushing)
           this._simulation.log()

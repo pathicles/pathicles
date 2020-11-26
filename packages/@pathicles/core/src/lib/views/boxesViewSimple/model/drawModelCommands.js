@@ -106,7 +106,6 @@ export default function (regl, { variables, view }, shadow) {
           return props.viewRange || [0, 1]
         },
         bufferLength: variables.bufferLength,
-        channelsPerValueCount: variables.channelsPerValueCount,
         particleCount: variables.particleCount,
         iterationCount: variables.iterationCount,
         iteration: () => variables.iteration,

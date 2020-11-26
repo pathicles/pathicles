@@ -11,7 +11,6 @@ attribute float aFourIndex;
 uniform float particleCount;
 uniform float bufferLength;
 uniform float iterationCount;
-uniform int channelsPerValueCount;
 
 uniform float iteration;
 uniform float dt;

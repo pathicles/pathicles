@@ -36,7 +36,6 @@ export default function (regl, { variables, model }) {
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         particleCount: variables.particleCount,
         bufferLength: variables.bufferLength,
-        channelsPerValueCount: variables.channelsPerValueCount,
         channel: regl.prop('channel'),
         iteration: regl.prop('iteration'),
         halfDeltaTOverC: model.halfDeltaTOverC,

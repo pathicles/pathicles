@@ -5,71 +5,77 @@ import saveCanvas from './saveCanvas'
 const onDocumentKeyDown = (app) => (event) => {
   event.stopPropagation()
   // event.preventDefault()
-  const delta = app.config.view.camera.autorotateSpeedTheta / 50
+  const delta = 1 / 150
   const dDistance = 0.01
   if (event.shiftKey) {
     switch (event.code) {
       case 'ArrowLeft':
-        app.camera.rotate(-delta, 0)
+        app.camera.stopAutorotate()
+        app.camera.rotate(delta / 2, 0)
         break
       case `ArrowUp`:
-        app.camera.rotate(0, -delta)
+        app.camera.stopAutorotate()
+        app.camera.rotate(0, delta / 2)
         break
       case 'ArrowRight':
-        app.camera.rotate(+delta, 0)
+        app.camera.stopAutorotate()
+        app.camera.rotate(-delta, 0)
         break
       case 'ArrowDown':
-        app.camera.rotate(0, delta)
+        app.camera.stopAutorotate()
+        app.camera.rotate(0, -delta)
         break
     }
   } else {
     switch (event.code) {
       case 'ArrowLeft':
+        app.camera.stopAutorotate()
         app.camera.pan(dDistance, 0)
         break
       case `ArrowUp`:
+        app.camera.stopAutorotate()
         app.camera.pan(0, -dDistance)
         break
       case 'ArrowRight':
+        app.camera.stopAutorotate()
         app.camera.pan(-dDistance, 0)
         break
       case 'ArrowDown':
+        app.camera.stopAutorotate()
         app.camera.pan(0, dDistance)
         break
     }
   }
-  const keyCode = event.keyCode
-  if (keyCode === 65) {
+  const code = event.code
+
+  if (code === 'KeyA') {
     // a for autorotate
     app.camera.toggleAutorotate()
-  } else if (keyCode === 67) {
+  } else if (code === 'KeyC') {
     const cameraConfig = app.camera.toConfig()
     console.log(JSON.stringify({ camera: cameraConfig }, null, 2))
-  } else if (keyCode === 68) {
+  } else if (code === 'KeyD') {
     // d for dump
     console.log(app.simulation.dump())
-  } else if (keyCode === 77) {
+  } else if (code === 'KeyM') {
     // m for mode
     app.pathiclesRunner.toggleMode()
-  } else if (keyCode === 84) {
+  } else if (code === 'KeyT') {
     // t for textures
     app.config.debug.showTextures = !app.config.debug.showTextures
-  } else if (keyCode === 71) {
-    // g for stageGrid
-    app.config.drawGrid = !app.config.drawGrid
-  } else if (keyCode === 83) {
+  } else if (code === 'KeyS') {
     // s for image
     saveCanvas(
       app.regl._gl.canvas,
       'pathicles' + (app.presetName ? '--' + app.presetName : '')
     )
-  } else if (keyCode === 78) {
+  } else if (code === 'KeyL') {
     // n for loop
     app.pathiclesRunner.next()
-  } else if (keyCode === 76) {
+  } else if (code === 'KeyL') {
     // l for loop
     app.pathiclesRunner.toggleLooping()
-  } else if (keyCode === 32) {
+  } else if (code === 'Space') {
     // SPACE for Start/stop or nextStep
 
     app.pathiclesRunner.toggleActivity()
