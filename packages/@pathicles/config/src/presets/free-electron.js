@@ -18,7 +18,7 @@ export const freeElectron = {
 
     loops: 0,
     iterationsPerTick: 1,
-    iterationCount: 20
+    iterationCount: 10
   },
 
   model: {

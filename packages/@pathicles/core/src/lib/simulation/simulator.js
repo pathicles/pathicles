@@ -131,6 +131,8 @@ export class ReglSimulatorInstance {
 
         if (changed && this.config.logPushing) {
           console.log(
+            'iteration',
+            this.simulation.variables.iteration,
             stringify(
               variable2NestedArray(
                 this.simulation._logStore[this.simulation._logStore.length - 1]
