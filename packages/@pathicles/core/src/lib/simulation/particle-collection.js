@@ -40,8 +40,7 @@ export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
 
 export function jitterDirection({
   direction = [0, 0, 1],
-  directionJitter = [0, 0, 0],
-  localPosition = [0, 0, 0]
+  directionJitter = [0, 0, 0]
 }) {
   const jitteredDirection = [
     ...direction.map(

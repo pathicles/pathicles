@@ -1,5 +1,5 @@
 export function colorCorrection(fourPositions, emitterPosition) {
-  const initialParticleDistances = fourPositions.map((fourPosition, i) => {
+  const initialParticleDistances = fourPositions.map((fourPosition) => {
     return Math.sqrt(
       Math.pow(fourPosition[0] - emitterPosition[0], 2) +
         Math.pow(fourPosition[1] - emitterPosition[1], 2) +

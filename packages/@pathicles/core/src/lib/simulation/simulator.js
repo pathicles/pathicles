@@ -11,10 +11,10 @@ import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, config, pixelRatio, control }) {
+  constructor({ canvas, config }) {
     keyControlMount(this)
     this.config = config
-    this.control = control
+
     this.performanceLogger = new PerformanceLogger(
       this.config.debug.logPerformance
     )
@@ -26,7 +26,6 @@ export class ReglSimulatorInstance {
         preserveDrawingBuffer: true,
         antialiasing: true
       },
-      pixelRatio: 1,
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {

@@ -69,7 +69,7 @@ const onDocumentKeyDown = (app) => (event) => {
       app.regl._gl.canvas,
       'pathicles' + (app.presetName ? '--' + app.presetName : '')
     )
-  } else if (code === 'KeyL') {
+  } else if (code === 'KeyN') {
     // n for loop
     app.pathiclesRunner.next()
   } else if (code === 'KeyL') {

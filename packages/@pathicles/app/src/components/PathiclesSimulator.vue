@@ -98,7 +98,6 @@ export default {
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
         config: this.config,
-        pixelRatio: this.pixelRatio,
         control: {
           viewRange: this.viewRange,
           progress: this.progress,
