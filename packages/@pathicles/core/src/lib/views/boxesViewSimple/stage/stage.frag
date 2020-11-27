@@ -87,7 +87,5 @@ void main(void) {
   gl_FragColor =vec4(color.rgb, fogAmount*opacity)
     + vec4(vec3(-.1*amountInLight), fogAmount);
 
-//  gl_FragColor = vec4(vec3(texture2D(shadowMap, vShadowCoord.xy).r), 1.);
-
 }
 

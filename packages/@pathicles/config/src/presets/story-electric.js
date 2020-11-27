@@ -2,10 +2,10 @@ export const storyElectric = {
   name: 'story-electric',
   view: {
     camera: {
-      center: [-0.5, 1.5, 0],
+      center: [-0, 1.5, 0],
       distance: 5,
-      theta: (1 / 360) * 2 * Math.PI,
-      phi: (0 / 360) * 2 * Math.PI
+      theta: (-3 / 360) * 2 * Math.PI,
+      phi: (-1 / 360) * 2 * Math.PI
     }
   },
 
