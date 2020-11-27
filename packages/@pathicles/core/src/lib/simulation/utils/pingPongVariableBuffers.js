@@ -110,7 +110,6 @@ export class VariableBuffers {
         })(() => {
           this.regl.read({ data: colorFloat32Array })
         })
-
         float32Array = colorFloat32Array //.filter((d, i) => i % 4 === 0)
       } catch (e) {
         // eslint-disable-next-line no-undef
@@ -118,6 +117,12 @@ export class VariableBuffers {
       }
     }
 
+    return {
+      float32Array
+    }
+  }
+
+  pack(float32Array) {
     const packedFloat32Array = []
 
     for (let p = 0; p < this.particleCount; p++) {
@@ -130,10 +135,6 @@ export class VariableBuffers {
         particle.push(float32Array.slice(offset, offset + 4))
       }
     }
-
-    return {
-      float32Array,
-      packedFloat32Array
-    }
+    return packedFloat32Array
   }
 }

@@ -6,7 +6,7 @@ export default {
     logPerformance: false,
     profile: false,
     showTextures: false,
-    showTextureScale: 10
+    showTextureScale: 2
   },
 
   colors_float: [

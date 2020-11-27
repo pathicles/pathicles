@@ -118,6 +118,23 @@ export class Simulation {
     }
   }
 
+  dump(precision = 3) {
+    const logEntry = this.logEntry()
+    const position = Array.from(logEntry.position.float32Array).map((d) =>
+      precision
+        ? Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
+        : d
+    )
+    return JSON.parse(
+      JSON.stringify({
+        logEntry: this.logEntry(),
+        position,
+        configuration: this.configuration,
+        particleTypes: this.variables.particleTypes
+      })
+    )
+  }
+
   reset() {
     this.variables.position.load(this.initialData.fourPositions)
     this.variables.velocity.load(this.initialData.fourVelocities)

@@ -4,10 +4,10 @@ export const storyDipole = {
   name: 'story-dipole',
   view: {
     camera: {
-      center: [0, 1.5, 0],
+      center: [-0, 1.5, 0],
       distance: 5,
-      theta: (-2 / 360) * 2 * Math.PI,
-      phi: (0 / 360) * 2 * Math.PI
+      theta: (-3 / 360) * 2 * Math.PI,
+      phi: (-1 / 360) * 2 * Math.PI
     }
   },
 
@@ -21,7 +21,7 @@ export const storyDipole = {
       elements: {
         l: {
           type: LatticeElementTypes.DRIF,
-          l: 5
+          l: 8
         },
         l1: {
           type: LatticeElementTypes.DRIF,
@@ -30,12 +30,12 @@ export const storyDipole = {
         d1: {
           type: LatticeElementTypes.SBEN,
           l: 1,
-          strength: -0.0002
+          strength: -0.0001
         },
         d2: {
           type: LatticeElementTypes.SBEN,
           l: 1,
-          strength: 0.0002
+          strength: 0.0001
         }
       },
       beamline: ['l', 'd1', 'l1', 'd2', 'l'],

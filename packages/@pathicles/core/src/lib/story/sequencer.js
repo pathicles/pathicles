@@ -46,11 +46,10 @@ export default function (regl, scenes, stateVars, onStateChange) {
             regl,
             {
               width: particleCount,
-              height: bufferLength,
-              channelsPerValueCount
+              height: bufferLength * 4
             },
             variableType,
-            new Float32Array(data.position.map((d) => d / 1))
+            new Float32Array(data.position)
           )
         ]
       }
@@ -64,8 +63,18 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
+    const initialPosition = data.position.slice(-particleCount * 4)
+    const particles = new Array(particleCount)
+      .fill(0)
+      .map((_, i) => [
+        initialPosition[i * 4],
+        initialPosition[i * 4 + 1],
+        initialPosition[i * 4 + 2],
+        initialPosition[i * 4 + 3]
+      ])
+    console.log(particles)
     const colorCorrectionData = colorCorrection(
-      data.position.slice(-particleCount * 4),
+      particles,
       configuration.model.emitter.position
     )
     // console.log(
