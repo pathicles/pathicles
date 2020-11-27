@@ -26,7 +26,7 @@ export class ReglSimulatorInstance {
         preserveDrawingBuffer: true,
         antialiasing: true
       },
-      pixelRatio,
+      pixelRatio: 1,
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
@@ -36,11 +36,9 @@ export class ReglSimulatorInstance {
 
           this.performanceLogger.start('checkSupport')
           this.checkSupport(regl)
-          this.performanceLogger.stop()
 
           this.performanceLogger.start('init')
           this.init(regl)
-          this.performanceLogger.stop()
 
           this.run(regl)
         } catch (e) {
@@ -52,7 +50,8 @@ export class ReglSimulatorInstance {
         'oes_texture_float',
         'OES_standard_derivatives',
         'OES_texture_half_float',
-        'WEBGL_depth_texture'
+        'WEBGL_depth_texture',
+        'EXT_color_buffer_half_float'
       ]
     })
   }
@@ -94,7 +93,6 @@ export class ReglSimulatorInstance {
       },
       this.support
     )
-    this.performanceLogger.stop()
 
     this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
@@ -102,12 +100,10 @@ export class ReglSimulatorInstance {
       model: this.simulation.model,
       config: this.config
     })
-    this.performanceLogger.stop()
     this.performanceLogger.start('init.runner')
     this.pathiclesRunner = new SimulationFSM(this.simulation, {
       ...this.config.runner
     })
-    this.performanceLogger.stop()
   }
 
   run(regl) {
@@ -115,30 +111,14 @@ export class ReglSimulatorInstance {
       return regl.frame(() => {
         this.performanceLogger.start('pathiclesRunner.next')
         const { changed } = this.pathiclesRunner.next()
-        this.performanceLogger.stop()
 
-        // if (changed && this.config.logPushing) {
-        //   console.log(
-        //     'iteration',
-        //     this.simulation.variables.iteration,
-        //     stringify(
-        //       variable2NestedArray(
-        //         this.simulation._logStore[this.simulation._logStore.length - 1]
-        //           .position,
-        //         this.simulation.variables
-        //       ),
-        //       { maxLength: 200 }
-        //     )
-        //   )
-        // }
         this.camera.doAutorotate()
         this.camera.tick()
 
         if (changed || this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {
-              ...this.camera,
-              viewRange: this.control.viewRange
+              ...this.camera
             },
             () => {
               this.view.drawDiffuse({
@@ -164,7 +144,10 @@ export class ReglSimulatorInstance {
                 })
                 this.drawTexture({
                   texture: this.view.shadow.fbo,
-                  x0: 400,
+                  x0:
+                    2 *
+                    (this.simulation.variables.particleCount + 1) *
+                    this.config.debug.showTextureScale,
                   scale: 0.5
                 })
               }

@@ -1,18 +1,12 @@
 export function rowDistribution({ n = 0, d = 0 }) {
   const dOffset = (d * (n - 1)) / 2
 
-  return [...Array(n)]
-    .fill(0)
-    .map((zero, i) => [i * d - dOffset, 0, 0])
-    .reduce((acc, val) => acc.concat(val), [])
+  return [...Array(n)].fill(0).map((zero, i) => [i * d - dOffset, 0, 0])
 }
 
 export function columnDistribution({ n = 0, d = 0 }) {
   const dOffset = (d * (n - 1)) / 2
-  return [...Array(n)]
-    .fill(0)
-    .map((zero, i) => [0, i * d - dOffset, 0])
-    .reduce((acc, val) => acc.concat(val), [])
+  return [...Array(n)].fill(0).map((zero, i) => [0, i * d - dOffset, 0])
 }
 
 export function squareDistribution({
@@ -26,14 +20,11 @@ export function squareDistribution({
   const dOffsetX = (d * (nx - 1)) / 2
   const dOffsetY = (d * (ny - 1)) / 2
 
-  return [...Array(n)]
-    .fill(0)
-    .map((zero, i) => {
-      const ix = i % nx
-      const iy = Math.floor(i / nx)
-      return mixer(ix * d - dOffsetX, iy * d - dOffsetY)
-    })
-    .reduce((acc, val) => acc.concat(val), [])
+  return [...Array(n)].fill(0).map((zero, i) => {
+    const ix = i % nx
+    const iy = Math.floor(i / nx)
+    return mixer(ix * d - dOffsetX, iy * d - dOffsetY)
+  })
 }
 
 // export function squareDistributionXZ({ n = 0, d = 0 }) {
@@ -84,7 +75,6 @@ export function spiralDistribution({
       const r = (Math.sqrt(i) / Math.sqrt(n)) * d * 3
       return mixer(r, theta)
     })
-    .reduce((acc, val) => acc.concat(val), [])
 }
 
 export function cubeDistribution({ n = 0, d = 0 }) {
@@ -95,7 +85,6 @@ export function cubeDistribution({ n = 0, d = 0 }) {
       const r = d
       return [r * Math.sin(theta), r * Math.cos(theta), r * Math.sin(theta)]
     })
-    .reduce((acc, val) => acc.concat(val), [])
 }
 
 export function distribution({ shape, count, separation }) {

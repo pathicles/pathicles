@@ -46,11 +46,7 @@ export function jitterDirection({
   const jitteredDirection = [
     ...direction.map(
       (d, i) =>
-        d +
-        Math.floor(
-          boundedRandom(0, 1) * directionJitter[i] * localPosition[i] * 100
-        ) /
-          100
+        d + Math.floor(boundedRandom(-1, 1) * directionJitter[i] * 100) / 100
     )
   ]
 
@@ -82,15 +78,15 @@ export function ParticleCollection({
     separation: particleSeparation
   })
 
-  const fourPositions = particles.map((particle, p) => {
+  const fourPositions = localPositions.map((localPosition) => {
     const jitteredPosition = jitterPosition({
       position: position,
       jitter: positionJitter
     })
     return [
-      localPositions[p * 3] + jitteredPosition[0],
-      localPositions[p * 3 + 1] + jitteredPosition[1],
-      localPositions[p * 3 + 2] + jitteredPosition[2],
+      localPosition[0] + jitteredPosition[0],
+      localPosition[1] + jitteredPosition[1],
+      localPosition[2] + jitteredPosition[2],
       0
     ]
   })
@@ -100,11 +96,7 @@ export function ParticleCollection({
     const jitteredDirection = jitterDirection({
       direction,
       directionJitter,
-      localPosition: [
-        localPositions[p * 3],
-        localPositions[p * 3 + 1],
-        localPositions[p * 3 + 2]
-      ]
+      localPosition: localPositions[p]
     })
     return [
       beta * jitteredDirection[0],
@@ -113,7 +105,6 @@ export function ParticleCollection({
       gamma
     ]
   })
-  //  .reduce((acc, val) => acc.concat(val), [])
 
   // const fourMomenta = particles
   //   .map((particle, p) => {
@@ -130,15 +121,6 @@ export function ParticleCollection({
     fourPositions,
     fourVelocities,
     particleCount,
-    // particles,
     particleTypes: particles.map((p) => p.id)
-    // particleChargesMassesChargeMassRatios: particles.map(
-    //   ({ charge__qe, mass__eVc_2, chargeMassRatio__Ckg_1 }) => [
-    //     charge__qe,
-    //     mass__eVc_2,
-    //     chargeMassRatio__Ckg_1,
-    //     0
-    //   ]
-    // )
   }
 }
