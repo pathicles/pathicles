@@ -1,6 +1,6 @@
 <template lang="pug">
 .pathicles.pathicles-simulator
-  pathicles-params( :presetName="presetName" :prerender="prerender")
+<!--  pathicles-params( :presetName="presetName" :prerender="prerender")-->
   .pathicles.pathicles-simulator(ref="scrollContainer")
     .canvas-container(ref="container")
       canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
@@ -8,13 +8,13 @@
 
 <script>
 import { ReglSimulatorInstance } from '@pathicles/core'
-import PathiclesParams from './PathiclesParams.vue'
+// import PathiclesParams from './PathiclesParams.vue'
 
 import { unwatchViewport, watchViewport } from 'tornis'
 
 export default {
   name: 'PathiclesSimulator',
-  components: { 'pathicles-params': PathiclesParams },
+  // components: { 'pathicles-params': PathiclesParams },
 
   props: {
     maxCanvasWidth: {

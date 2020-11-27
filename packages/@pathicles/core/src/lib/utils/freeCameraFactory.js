@@ -6,7 +6,7 @@ import interactionEvents from './normalized-interaction-events'
 import { Lethargy } from './Lethargy.js'
 import merge from 'lodash-es/merge'
 
-export default function (regl, params, aspectRatio) {
+export default function (regl, params) {
   const cameraParams = {}
   merge(cameraParams, params)
 

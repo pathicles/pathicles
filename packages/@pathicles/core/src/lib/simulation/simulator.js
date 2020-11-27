@@ -114,7 +114,7 @@ export class ReglSimulatorInstance {
 
   run(regl) {
     const mainloop = () => {
-      return regl.frame(({ tick }) => {
+      return regl.frame(() => {
         this.performanceLogger.start('pathiclesRunner.next')
         const { changed } = this.pathiclesRunner.next()
         this.performanceLogger.stop()

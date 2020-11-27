@@ -12,7 +12,6 @@
     "test:unit": "jest"
   },
   "dependencies": {
-    "lodash-es": "^4.17.15",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
     "@pathicles/config": "^0.2.0",
@@ -31,6 +30,7 @@
     "glsl-rgba-to-float": "^1.0.0",
     "glsl-transpose": "^1.0.0",
     "lethargy": "^1.0.9",
+    "lodash-es": "^4.17.15",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "multi-array-view": "^0.1.5",

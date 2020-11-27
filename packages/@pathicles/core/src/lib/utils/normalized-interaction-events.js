@@ -36,17 +36,15 @@ export default function normalizedInteractionEvents(element) {
   let mouseX,
     mouseY,
     mods = {}
-  const changeListener = mouseChange(element, function (
-    pbuttons,
-    px,
-    py,
-    pmods
-  ) {
-    mouseX = px
-    mouseY = py
-    buttons = pbuttons
-    mods = pmods
-  })
+  const changeListener = mouseChange(
+    element,
+    function (pbuttons, px, py, pmods) {
+      mouseX = px
+      mouseY = py
+      buttons = pbuttons
+      mods = pmods
+    }
+  )
 
   function onWheel(event) {
     eventOffset(event, element, currentPosition)

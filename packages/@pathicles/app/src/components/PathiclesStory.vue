@@ -55,9 +55,9 @@ export default {
   name: 'PathiclesStory',
   props: {
     story: {
-      type: Object,
-      default: {
-        scenes: [
+      type: Array,
+      default: () => {
+        return [
           {
             type: 'caption',
             title: '<strong>Wir&nbsp;beschleunigen</strong>',
@@ -75,7 +75,6 @@ export default {
               }
             }
           },
-
           {
             type: 'caption',
             title: 'Beschleunigung<br><strong>macht&nbsp;schneller</strong>.',
@@ -166,6 +165,28 @@ export default {
     }
   },
 
+  computed: {
+    pixelRatio() {
+      return Math.min(
+        this.maxPixelRatio,
+        window.devicePixelRatio,
+        this.maxCanvasWidth / this.windowHeight
+      )
+    },
+    canvasStyles() {
+      return {
+        width: this.windowWidth + 'px',
+        height: this.windowHeight + 'px'
+      }
+    },
+    canvasWidth() {
+      return this.windowWidth * this.pixelRatio
+    },
+    canvasHeight() {
+      return this.windowHeight * this.pixelRatio
+    }
+  },
+
   mounted() {
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
@@ -174,6 +195,7 @@ export default {
       scene.duration =
         scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
     })
+    // eslint-disable-next-line vue/no-mutating-props
     this.story.scenes.duration = this.story.scenes.reduce(
       (acc, scene) => acc + scene.duration,
       0
@@ -250,28 +272,6 @@ export default {
         })
       })
     })
-  },
-
-  computed: {
-    pixelRatio() {
-      return Math.min(
-        this.maxPixelRatio,
-        window.devicePixelRatio,
-        this.maxCanvasWidth / this.windowHeight
-      )
-    },
-    canvasStyles() {
-      return {
-        width: this.windowWidth + 'px',
-        height: this.windowHeight + 'px'
-      }
-    },
-    canvasWidth() {
-      return this.windowWidth * this.pixelRatio
-    },
-    canvasHeight() {
-      return this.windowHeight * this.pixelRatio
-    }
   },
   unmounted() {
     this.reglInstance.destroy()
