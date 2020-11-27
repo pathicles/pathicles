@@ -27,7 +27,8 @@ export class ReglViewerInstance {
         'angle_instanced_arrays',
         'oes_texture_float',
         'OES_standard_derivatives',
-        'OES_texture_half_float'
+        'OES_texture_half_float',
+        'EXT_color_buffer_half_float'
       ],
 
       onDone: (err, regl) => {

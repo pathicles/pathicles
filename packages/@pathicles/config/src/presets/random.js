@@ -4,34 +4,33 @@ export const random = {
   name: 'random',
   view: {
     camera: {
-      eye: [5, 2, -5],
-      center: [0, 2, 0]
+      distance: 5
     }
   },
 
   runner: {
-    prerender: true,
-    loops: 0,
+    prerender: false,
+    loops: 5,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 4,
-    iterationCount: 127
+    iterationsPerTick: 2,
+    iterationCount: 512
   },
 
   model: {
-    // boundingBoxSize: 2,
+    boundingBoxSize: 1,
     // boundingBoxCenter: [0, 2, 0],
     bufferLength: 256,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [0, 1, 0],
-      direction: [1, 0, 0],
+      direction: [0, 0, 0],
       bunchShape: 'CUBE',
-      particleSeparation: 0.0,
+      particleSeparation: 0.01,
       directionJitter: [1, 1, 1],
       positionJitter: [0.1, 0, 0.1],
       gamma: 2,
-      particleCount: 128,
+      particleCount: 64,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }
