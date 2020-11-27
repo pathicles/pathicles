@@ -4,8 +4,7 @@ export const freePhotons = {
   name: 'free-photons',
   view: {
     camera: {
-      eye: [2, 1.25, 2],
-      center: [0, 1, 0.5]
+      center: [0, 0, 0.5]
     }
   },
 
@@ -15,7 +14,7 @@ export const freePhotons = {
 
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 11
+    iterationCount: 10
   },
 
   model: {
@@ -25,7 +24,7 @@ export const freePhotons = {
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',
       direction: [0, 0, 1],
-      position: [0, 1, -1],
+      position: [0, 0, -1],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1

@@ -32,12 +32,11 @@ export class VariableBuffers {
   }
 
   load(data) {
-    debugger
     const typedData =
       this.colorType === 'float'
         ? new Float32Array(
             new Array(FOUR_VECTOR_COMPONENT_COUNT)
-              .fill(data)
+              .fill(data.reduce((acc, val) => acc.concat(val), []))
               .flat()
               .concat(
                 new Array(
@@ -50,7 +49,11 @@ export class VariableBuffers {
           )
         : new Uint8Array(
             new Array(FOUR_VECTOR_COMPONENT_COUNT)
-              .fill(convertToHalfFloat(data))
+              .fill(
+                convertToHalfFloat(
+                  data.reduce((acc, val) => acc.concat(val), [])
+                )
+              )
               .flat()
               .concat(
                 new Array(
@@ -118,7 +121,6 @@ export class VariableBuffers {
     const packedFloat32Array = []
 
     for (let p = 0; p < this.particleCount; p++) {
-      // debugger
       const particle = []
       packedFloat32Array.push(particle)
 

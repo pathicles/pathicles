@@ -9,8 +9,6 @@ import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
-import { variable2NestedArray } from './utils/variable2NestedArray'
-import stringify from '@aitodotai/json-stringify-pretty-compact'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config, pixelRatio, control }) {

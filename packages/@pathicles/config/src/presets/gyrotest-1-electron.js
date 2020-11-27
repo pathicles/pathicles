@@ -19,7 +19,7 @@ export default {
     prerender: true,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 2
+    iterationCount: 17
   },
 
   model: {

@@ -14,7 +14,7 @@ export const freePhoton = {
 
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 11
+    iterationCount: 10
   },
 
   model: {
