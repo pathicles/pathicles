@@ -132,15 +132,15 @@ export function ParticleCollection({
     fourPositions,
     fourVelocities: fourMomenta.reduce((acc, val) => acc.concat(val), []),
     particleCount,
-    particles,
-    particleTypes: particles.map((p) => p.id),
-    particleChargesMassesChargeMassRatios: particles.map(
-      ({ charge__qe, mass__eVc_2, chargeMassRatio__Ckg_1 }) => [
-        charge__qe,
-        mass__eVc_2,
-        chargeMassRatio__Ckg_1,
-        0
-      ]
-    )
+    // particles,
+    particleTypes: particles.map((p) => p.id)
+    // particleChargesMassesChargeMassRatios: particles.map(
+    //   ({ charge__qe, mass__eVc_2, chargeMassRatio__Ckg_1 }) => [
+    //     charge__qe,
+    //     mass__eVc_2,
+    //     chargeMassRatio__Ckg_1,
+    //     0
+    //   ]
+    // )
   }
 }

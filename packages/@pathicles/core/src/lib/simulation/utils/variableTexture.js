@@ -3,9 +3,7 @@ export const variableTexture = (
   { width, height },
   type,
   data = undefined
-) => {
-  console.log(width, height)
-
+) =>
   regl.texture({
     width,
     height,
@@ -15,4 +13,3 @@ export const variableTexture = (
     type,
     data
   })
-}

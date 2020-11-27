@@ -35,6 +35,10 @@ export function boxesViewSimple(regl, { variables, config }) {
   const drawVignette = drawVignetteCommandBuilder(regl)
 
   function drawDiffuse(props) {
+    regl.clear({
+      color: [0, 0, 0, 0],
+      depth: 1
+    })
     // eslint-disable-next-line no-unused-vars
     setParams(config.view, () => {
       regl.clear({

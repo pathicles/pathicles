@@ -16,6 +16,8 @@ export class Simulation {
 
     this.configuration = configuration
 
+    const channelsPerValueCount = configuration.channelsPerValueCount
+
     const RTTFloatType = 'float'
 
     const { bufferLength } = configuration.model
@@ -35,12 +37,14 @@ export class Simulation {
       bufferLength,
       particleTypes,
       iterationCount: configuration.runner.iterationCount,
+      channelsPerValueCount,
       RTTFloatType,
       position: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
         RTTFloatType,
+        channelsPerValueCount,
         fourPositions
       ),
       velocity: new VariableBuffers(
@@ -48,6 +52,7 @@ export class Simulation {
         particleCount,
         bufferLength,
         RTTFloatType,
+        channelsPerValueCount,
         fourVelocities
       ),
 
@@ -100,26 +105,19 @@ export class Simulation {
     })
   }
 
-  log() {
-    if (this.configuration.debug.logPushing) {
-      this._logStore.push(
-        readData(this._regl, {
-          variables: this.variables
-        })
-      )
+  logEntry() {
+    const positionData = this.variables.position.toTypedArray()
+    const velocityData = this.variables.velocity.toTypedArray()
+    return {
+      iteration: this.variables.iteration,
+      position: positionData,
+      velocity: velocityData
     }
   }
 
-  dump() {
-    return {
-      configuration: JSON.parse(JSON.stringify(this.configuration)),
-      ...readData(
-        this._regl,
-        {
-          variables: this.variables
-        },
-        1000
-      )
+  log() {
+    if (this.configuration.debug.logPushing) {
+      this._logStore.push(this.logEntry())
     }
   }
 

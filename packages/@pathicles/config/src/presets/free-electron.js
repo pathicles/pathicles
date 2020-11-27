@@ -13,7 +13,7 @@ export const freeElectron = {
   },
 
   runner: {
-    prerender: false,
+    prerender: true,
     mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,

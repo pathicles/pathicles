@@ -1,6 +1,6 @@
 /* eslint-env node, browser */
 
-const prerender = require('puppeteer')
+const prerender = require('puppeteer-core')
 const path = require('path')
 const fs = require('fs-extra-plus')
 
@@ -32,9 +32,9 @@ const queryString = '&debug=false&print=true&prerender=true'
 // eslint-disable-next-line no-unused-vars
 const createImages = async () => {
   const browser = await prerender.launch({
-    headless: false
-    // executablePath:
-    //   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    headless: false,
+    executablePath:
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   })
 
   for (let i = 0; i < jobs.length; i++) {
@@ -57,7 +57,7 @@ const createImages = async () => {
     })
 
     const dump = await page.evaluate(() => {
-      return window.pathicles.simulation.dump()
+      return window.pathicles.simulation.logEntry()
     })
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
       iteration: dump.iteration,
@@ -139,6 +139,6 @@ const convertImagesSharp = async () => {
 }
 
 ;(async () => {
-  // await createImages()
+  await createImages()
   await convertImagesSharp()
 })()
