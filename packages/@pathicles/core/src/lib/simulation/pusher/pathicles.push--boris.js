@@ -16,18 +16,6 @@ export default function (regl, { variables, model }) {
       count: 3,
       attributes: {
         aXY: [-4, -4, 4, -4, 0, 4]
-        // aParticle: {
-        //   buffer: regl.buffer(particleAttributes(variables)),
-        //   divisor: 1
-        // },
-        // aStep: {
-        //   buffer: regl.buffer(stepAttributes(variables)),
-        //   divisor: 1
-        // },
-        // aFourIndex: {
-        //   buffer: regl.buffer(aFourIndexAttributes(variables)),
-        //   divisor: 1
-        // }
       },
 
       uniforms: {
@@ -77,7 +65,9 @@ export default function (regl, { variables, model }) {
       variables.iteration++
       const z = variables.iteration * model.halfDeltaTOverC * 2
 
-      variables.pingPong = variables.iteration % 2
+      // variables.pingPong = variables.iteration % 2
+      variables.position.pingPong = variables.iteration % 2
+      variables.velocity.pingPong = variables.iteration % 2
       variables.referencePoint =
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start

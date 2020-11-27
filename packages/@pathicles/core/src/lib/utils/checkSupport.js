@@ -53,7 +53,7 @@ function test_canRTT(glContext, internalFormat, pixelType) {
   return fbStatus === glContext.FRAMEBUFFER_COMPLETE
 }
 
-function getRTTFloatType(glContext) {
+function getcolorType(glContext) {
 
   if (
     glContext.getExtension('WEBGL_color_buffer_float') &&
@@ -85,7 +85,7 @@ export function checkSupport() {
       const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
-      support.RTTFloatType = getRTTFloatType(glContext)
+      support.colorType = getcolorType(glContext)
       //
       // console.log(gl)
       // var testFloat = getExt(

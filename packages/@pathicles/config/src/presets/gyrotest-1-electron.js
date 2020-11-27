@@ -16,14 +16,14 @@ export default {
   },
 
   runner: {
-    prerender: false,
-    mode: RUNNER_MODE.STEPWISE,
+    prerender: true,
+    mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 18
+    iterationCount: 2
   },
 
   model: {
-    bufferLength: 19,
+    bufferLength: 18,
     iterationDurationOverC: (2 * Math.PI) / 1,
     emitter: {
       particleCount: 1,

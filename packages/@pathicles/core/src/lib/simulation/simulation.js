@@ -3,7 +3,6 @@
 import { ParticleCollection } from './particle-collection'
 import pushBoris from './pusher/pathicles.push--boris'
 
-import readData from './pathicles.variables.read'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { colorCorrection } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
@@ -18,7 +17,7 @@ export class Simulation {
 
     const channelsPerValueCount = configuration.channelsPerValueCount
 
-    const RTTFloatType = 'float'
+    const colorType = 'float'
 
     const { bufferLength } = configuration.model
     const {
@@ -38,27 +37,25 @@ export class Simulation {
       particleTypes,
       iterationCount: configuration.runner.iterationCount,
       channelsPerValueCount,
-      RTTFloatType,
+      colorType,
       position: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
-        RTTFloatType,
-        channelsPerValueCount,
+        colorType,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
         bufferLength,
-        RTTFloatType,
-        channelsPerValueCount,
+        colorType,
         fourVelocities
       ),
 
       iteration: 0,
       referencePoint: [0, 0, 0],
-      pingPong: 0,
+      // pingPong: 0,
       particleColorsAndTypes: regl.texture({
         data: particleTypes.map((p) => configuration.colors[p].concat(p)),
         shape: [particleCount, 1, 4],
@@ -69,7 +66,7 @@ export class Simulation {
           .map((p, i) => [colorCorrections[i], 0, 0, 0])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: RTTFloatType
+        type: colorType
       }),
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
@@ -81,7 +78,7 @@ export class Simulation {
           ])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: RTTFloatType
+        type: colorType
       })
     }
 

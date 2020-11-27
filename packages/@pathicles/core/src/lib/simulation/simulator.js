@@ -147,24 +147,18 @@ export class ReglSimulatorInstance {
                 colorCorrections: this.simulation.variables.colorCorrections,
                 particleColorsAndTypes: this.simulation.variables
                   .particleColorsAndTypes,
-                position: this.simulation.variables.position.buffers[
-                  this.simulation.variables.pingPong
-                ],
+                position: this.simulation.variables.position.value(),
                 viewRange: [0, 1]
               })
 
               if (this.config.debug.showTextures) {
                 this.drawTexture({
-                  texture: this.simulation.variables.position.buffers[
-                    this.simulation.variables.pingPong
-                  ],
+                  texture: this.simulation.variables.position.value(),
                   x0: 0,
                   scale: this.config.debug.showTextureScale
                 })
                 this.drawTexture({
-                  texture: this.simulation.variables.velocity.buffers[
-                    this.simulation.variables.pingPong
-                  ],
+                  texture: this.simulation.variables.velocity.value(),
                   x0:
                     (this.simulation.variables.particleCount + 1) *
                     this.config.debug.showTextureScale,

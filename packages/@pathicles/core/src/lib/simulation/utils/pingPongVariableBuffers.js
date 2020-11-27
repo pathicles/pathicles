@@ -4,19 +4,13 @@ import { variableTexture } from './variableTexture'
 const FOUR_VECTOR_COMPONENT_COUNT = 4
 
 export class VariableBuffers {
-  constructor(
-    regl,
-    particleCount,
-    bufferLength,
-    RTTFloatType,
-    channelsPerValueCount,
-    initialData
-  ) {
+  constructor(regl, particleCount, bufferLength, colorType, initialData) {
     this.regl = regl
     this.particleCount = particleCount
     this.bufferLength = bufferLength
-    this.RTTFloatType = RTTFloatType
+    this.colorType = colorType
     this.initialData = initialData
+    this.pingPong = 0
     this.width = particleCount
     this.height = bufferLength * FOUR_VECTOR_COMPONENT_COUNT
     this.buffers = [0, 1].map(() => {
@@ -24,12 +18,12 @@ export class VariableBuffers {
         height: this.height,
         width: this.width,
         format: 'rgba',
-        colorType: RTTFloatType,
+        colorType: colorType,
         depthStencil: false,
         color: variableTexture(
           regl,
           { width: this.width, height: this.height },
-          RTTFloatType
+          colorType
         )
       })
     })
@@ -38,8 +32,9 @@ export class VariableBuffers {
   }
 
   load(data) {
+    debugger
     const typedData =
-      this.RTTFloatType === 'float'
+      this.colorType === 'float'
         ? new Float32Array(
             new Array(FOUR_VECTOR_COMPONENT_COUNT)
               .fill(data)
@@ -76,42 +71,48 @@ export class VariableBuffers {
     return this
   }
 
+  value() {
+    return this.buffers[this.pingPong]
+  }
+
   reset() {
     return this.load(this.initialData)
   }
 
   toTypedArray(pingPong = this.pingPong) {
-    let float32Array, uint8Array
+    let float32Array
 
-    // if (this.type === 'uint8') {
+    if (this.type === 'uint8') {
+      //
+      // try {
+      //   uint8Array = new Uint8Array(
+      //     this.particleCount * this.bufferLength * 4 * 4 * 4
+      //   )
+      //   this.regl({
+      //     framebuffer: this.buffers[pingPong]
+      //   })(() => {
+      //     this.regl.read({ data: uint8Array })
+      //   })
+      //   float32Array = new Float32Array(uint8Array.buffer)
+      // } catch (e) {
+      //   console.log(e)
+      // }
+    } else {
+      try {
+        const colorFloat32Array = new Float32Array(
+          this.particleCount * this.bufferLength * 4 * 4
+        )
+        this.regl({
+          framebuffer: this.buffers[pingPong]
+        })(() => {
+          this.regl.read({ data: colorFloat32Array })
+        })
 
-    try {
-      uint8Array = new Uint8Array(
-        this.particleCount * this.bufferLength * 4 * 4 * 4
-      )
-      this.regl({
-        framebuffer: this.buffers[pingPong]
-      })(() => {
-        this.regl.read({ data: uint8Array })
-      })
-      float32Array = new Float32Array(uint8Array.buffer)
-    } catch (e) {
-      console.err(e)
-    }
-
-    try {
-      const colorFloat32Array = new Float32Array(
-        this.particleCount * this.bufferLength * 4 * 4
-      )
-      this.regl({
-        framebuffer: this.buffers[pingPong]
-      })(() => {
-        this.regl.read({ data: colorFloat32Array })
-      })
-
-      float32Array = colorFloat32Array.filter((d, i) => i % 4 === 0)
-    } catch (e) {
-      console.err(e)
+        float32Array = colorFloat32Array //.filter((d, i) => i % 4 === 0)
+      } catch (e) {
+        // eslint-disable-next-line no-undef
+        console.log(e)
+      }
     }
 
     const packedFloat32Array = []
