@@ -79,7 +79,8 @@ export class VariableBuffers {
   }
 
   reset() {
-    return this.load(this.initialData)
+    this.pingPong = 0
+    this.load(this.initialData)
   }
 
   toTypedArray(pingPong = this.pingPong) {

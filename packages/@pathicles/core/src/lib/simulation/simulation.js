@@ -25,16 +25,12 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(configuration.model.emitter))
 
-    const colorCorrections = colorCorrection(
-      fourPositions,
-      configuration.model.emitter.position
-    )
     this.variables = {
       particleCount,
       bufferLength,
+      colorType,
       particleTypes,
       iterationCount: configuration.runner.iterationCount,
-      colorType,
       position: new VariableBuffers(
         regl,
         particleCount,
@@ -58,13 +54,13 @@ export class Simulation {
         shape: [particleCount, 1, 4],
         type: 'uint8'
       }),
-      colorCorrections: regl.texture({
-        data: particleTypes
-          .map((p, i) => [colorCorrections[i], 0, 0, 0])
-          .flat(),
-        shape: [particleCount, 1, 4],
-        type: colorType
-      }),
+      colorCorrections: colorCorrection(
+        regl,
+        'float',
+        fourPositions,
+        configuration.model.emitter.position
+      ),
+
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
           .map((p) => [
@@ -93,10 +89,15 @@ export class Simulation {
       }
     }
 
-    this.push = pushBoris(this._regl, {
+    this.pusher = pushBoris(this._regl, {
       variables: this.variables,
       model: this.model
     })
+  }
+
+  push(n) {
+    this.pusher(n)
+    this.log()
   }
 
   logEntry() {
@@ -133,8 +134,8 @@ export class Simulation {
   }
 
   reset() {
-    this.variables.position.load(this.initialData.fourPositions)
-    this.variables.velocity.load(this.initialData.fourVelocities)
+    this.variables.position.reset()
+    this.variables.velocity.reset()
     this.variables.iteration = 0
   }
 

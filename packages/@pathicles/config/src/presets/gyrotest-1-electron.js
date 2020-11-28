@@ -16,7 +16,8 @@ export default {
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
+    loops: 10,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationCount: 17

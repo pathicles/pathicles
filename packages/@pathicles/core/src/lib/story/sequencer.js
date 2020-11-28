@@ -23,15 +23,15 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
-    const colorCorrections = regl.texture({
-      data: Array(particleCount * 4),
-      shape: [particleCount, 1, 4],
-      type: variableType
-    })
+    // const colorCorrections = regl.texture({
+    //   data: Array(particleCount * 4),
+    //   shape: [particleCount, 1, 4],
+    //   type: variableType
+    // })
 
     scene.variables = {
       referencePoint: [0, 0, 0],
-      colorCorrections,
+      // colorCorrections,
       bufferLength,
       particleCount,
       iterationCount: 128,
@@ -70,24 +70,31 @@ export default function (regl, scenes, stateVars, onStateChange) {
         initialPosition[i * 4 + 2],
         initialPosition[i * 4 + 3]
       ])
-    console.log(particles)
-    const colorCorrectionData = colorCorrection(
-      particles,
-      configuration.model.emitter.position
-    )
+    // // console.log(particles)
+    // const colorCorrectionData = colorCorrection(
+    //   particles,
+    //   configuration.model.emitter.position
+    // )
     // console.log(
     //   data.position,
     //   configuration.model.emitter.position,
     //   colorCorrectionData
     // )
 
-    scene.variables.colorCorrections({
-      data: data.particleTypes
-        .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
-        .flat(),
-      shape: [particleCount, 1, 4],
-      type: variableType
-    })
+    scene.variables.colorCorrections = colorCorrection(
+      regl,
+      'float',
+      particles,
+      configuration.model.emitter.position
+    )
+
+    // ({
+    //   data: data.particleTypes
+    //     .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
+    //     .flat(),
+    //   shape: [particleCount, 1, 4],
+    //   type: variableType
+    // })
 
     scene.model = {
       boundingBoxSize: configuration.model.boundingBoxSize,

@@ -64,18 +64,13 @@ export default class SimulationFSM {
   }
 
   next() {
-    const tick_0 = this._simulation.variables.iteration
+    const tick_before = this._simulation.variables.iteration
     if (this.fsm.state === STATES.INITIAL) {
-      this._simulation.log()
-
-      this._runCount = 1
       this._loopCount = 1
 
       if (this._prerender) {
         this._simulation.prerender()
 
-        if (this._simulation.configuration.debug.INITIALlogPushing)
-          this._simulation.log()
         this.fsm = { state: STATES.PAUSED }
       } else {
         this.fsm = { state: STATES.ACTIVE }
@@ -90,7 +85,6 @@ export default class SimulationFSM {
         }
       } else {
         this._simulation.push(this._iterationsPerTick)
-        this._simulation.log()
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -98,17 +92,15 @@ export default class SimulationFSM {
       }
     } else if (this.fsm.state === STATES.RESTART) {
       this._loopCount++
-      this._runCount++
-      this._simulation.reset({})
+      this._simulation.reset()
       this._simulation.push(this._iterationsPerTick)
-      this._simulation.log()
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE
       )
     }
-    const tick = this._simulation.variables.iteration
-    const changed = tick !== tick_0
-    return { changed, tick }
+    const tick_after = this._simulation.variables.iteration
+    const changed = tick_after !== tick_before
+    return { changed, tick: tick_after }
   }
 }

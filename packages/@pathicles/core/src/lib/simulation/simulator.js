@@ -124,8 +124,7 @@ export class ReglSimulatorInstance {
                 colorCorrections: this.simulation.variables.colorCorrections,
                 particleColorsAndTypes: this.simulation.variables
                   .particleColorsAndTypes,
-                position: this.simulation.variables.position.value(),
-                viewRange: [0, 1]
+                position: this.simulation.variables.position.value()
               })
 
               if (this.config.debug.showTextures) {
