@@ -11,7 +11,6 @@ attribute float aFourIndex;
 uniform float particleCount;
 uniform float bufferLength;
 uniform float iterationCount;
-uniform int channelsPerValueCount;
 
 uniform float iteration;
 uniform float dt;
@@ -51,7 +50,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength, channelsPerValueCount=channelsPerValueCount);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
 
 
 

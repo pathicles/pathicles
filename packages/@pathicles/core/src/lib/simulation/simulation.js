@@ -15,8 +15,6 @@ export class Simulation {
 
     this.configuration = configuration
 
-    const channelsPerValueCount = configuration.channelsPerValueCount
-
     const colorType = 'float'
 
     const { bufferLength } = configuration.model
@@ -36,7 +34,6 @@ export class Simulation {
       bufferLength,
       particleTypes,
       iterationCount: configuration.runner.iterationCount,
-      channelsPerValueCount,
       colorType,
       position: new VariableBuffers(
         regl,

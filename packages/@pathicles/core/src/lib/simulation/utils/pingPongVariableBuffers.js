@@ -86,20 +86,6 @@ export class VariableBuffers {
     let float32Array
 
     if (this.type === 'uint8') {
-      //
-      // try {
-      //   uint8Array = new Uint8Array(
-      //     this.particleCount * this.bufferLength * 4 * 4 * 4
-      //   )
-      //   this.regl({
-      //     framebuffer: this.buffers[pingPong]
-      //   })(() => {
-      //     this.regl.read({ data: uint8Array })
-      //   })
-      //   float32Array = new Float32Array(uint8Array.buffer)
-      // } catch (e) {
-      //   console.log(e)
-      // }
     } else {
       try {
         const colorFloat32Array = new Float32Array(
@@ -113,7 +99,7 @@ export class VariableBuffers {
         float32Array = colorFloat32Array //.filter((d, i) => i % 4 === 0)
       } catch (e) {
         // eslint-disable-next-line no-undef
-        console.log(e)
+        console.error(e)
       }
     }
 

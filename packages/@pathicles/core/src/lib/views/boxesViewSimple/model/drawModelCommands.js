@@ -44,14 +44,8 @@ export default function (regl, { variables, view }, shadow) {
       instances: () => {
         return (
           variables.particleCount *
-          // variables.channelsPerValueCount *
           Math.min(variables.iteration, variables.bufferLength)
         )
-        // console.log(
-        //   variables.iteration,
-        //   variables.particleCount *
-        //     Math.min(variables.iteration, variables.bufferLength)
-        // )
       },
       attributes: {
         aPosition: geometry.positions,
@@ -106,7 +100,6 @@ export default function (regl, { variables, view }, shadow) {
           return props.viewRange || [0, 1]
         },
         bufferLength: variables.bufferLength,
-        channelsPerValueCount: variables.channelsPerValueCount,
         particleCount: variables.particleCount,
         iterationCount: variables.iterationCount,
         iteration: () => variables.iteration,

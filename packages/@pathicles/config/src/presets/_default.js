@@ -31,8 +31,6 @@ export default {
     9.57883323113770929296814695637e7
   ],
 
-  channelsPerValueCount: 4,
-
   runner: {
     prerender: false,
     loops: 0,

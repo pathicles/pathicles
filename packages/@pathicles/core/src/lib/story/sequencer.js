@@ -15,7 +15,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.configuration = configuration
 
     const variableType = 'float32'
-    const channelsPerValueCount = scene.configuration.channelsPerValueCount
     const particleCount = scene.configuration.model.emitter.particleCount
     const bufferLength = scene.configuration.model.bufferLength
 
@@ -32,7 +31,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     scene.variables = {
       referencePoint: [0, 0, 0],
-      channelsPerValueCount,
       colorCorrections,
       bufferLength,
       particleCount,
