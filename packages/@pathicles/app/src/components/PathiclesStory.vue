@@ -191,7 +191,6 @@ export default {
         ...scene.configuration.view.camera,
         ...scene.pathicles.camera
       }
-      // console.log(scene.configuration.view.camera)
     })
 
     const cameraBSplointer = (scenes, s, key, index) => {

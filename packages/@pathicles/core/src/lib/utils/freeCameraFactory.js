@@ -77,14 +77,12 @@ export default function (regl, options) {
   aCamera.startAutorotate = () => {
     aCamera.autorotate = true
     aCamera.autorotateParams = { ...aCamera.params }
-    console.log('startAutorotate')
 
     aCamera.autorotateT0 = Date.now()
   }
   aCamera.stopAutorotate = () => {
     aCamera.autorotate = false
     aCamera.autorotateParams = { ...aCamera.params }
-    console.log('startAutorotate')
 
     aCamera.autorotateT0 = Date.now()
   }
