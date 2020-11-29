@@ -18,9 +18,9 @@ export const random = {
   },
 
   model: {
-    boundingBoxSize: 1,
+    boundingBoxSize: 1.1,
     // boundingBoxCenter: [0, 2, 0],
-    bufferLength: 256,
+    bufferLength: 128,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [0, 1, 0],

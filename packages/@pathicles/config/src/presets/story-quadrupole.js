@@ -10,25 +10,29 @@ export const storyQuadrupole = {
       phi: (0 / 360) * 2 * Math.PI
     }
   },
+  runner: {},
   model: {
     emitter: {
+      // particleCount: 484,
       particleType: 'PROTON',
-      particleSeparation: 0.05,
+      // particleSeparation: 0.2,
       direction: [0, 0, -1],
-      position: [0, 1.5, 10],
-      directionJitter: [0.2, 0.2, 0]
+      position: [0, 1.5, 8],
+      directionJitter: [0.1, 0.1, 0],
+      positionJitter: [0.0, 0.0, 0],
+      gamma: 10
     },
 
     lattice: {
       elements: {
         q1: {
           type: LatticeElementTypes.QUAD,
-          strength: -0.5,
+          strength: 0.5,
           l: 1
         },
         q2: {
           type: LatticeElementTypes.QUAD,
-          strength: 0.5,
+          strength: -0.5,
           l: 1
         },
         l_5: {
@@ -56,7 +60,7 @@ export const storyQuadrupole = {
       ],
       origin: {
         phi: (-Math.PI / 4) * 3,
-        position: [0, 1.5, 10]
+        position: [0, 1.5, 8]
       }
     }
   }

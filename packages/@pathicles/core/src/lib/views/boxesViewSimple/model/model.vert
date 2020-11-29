@@ -70,8 +70,13 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
   float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
   float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterationCount) ? 1.0 : 0.0;
   float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterationCount) ? 1.0 : 0.0;
-  return (
-  beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
+
+  float outsideGrid = (fourPosition.x > stageGrid_size || fourPosition.x < -stageGrid_size
+  || fourPosition.y > stageGrid_size || fourPosition.y < -stageGrid_size
+  || fourPosition.z > stageGrid_size || fourPosition.z < -stageGrid_size) ? 1.0 : 0.0;
+
+
+  return (outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
 }
 
 void main () {
@@ -89,6 +94,8 @@ void main () {
   #ifdef shadow
   vScale = vec3(pathicleWidth*5., pathicleHeight, length(previousFourPosition.xyz - fourPosition.xyz) - 0.*pathicleGap);
   #endif
+
+
 
   vec3 scaledPosition = aPosition * vScale;
 

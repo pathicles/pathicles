@@ -43,10 +43,7 @@ export function jitterDirection({
   directionJitter = [0, 0, 0]
 }) {
   const jitteredDirection = [
-    ...direction.map(
-      (d, i) =>
-        d + Math.floor(boundedRandom(-1, 1) * directionJitter[i] * 100) / 100
-    )
+    ...direction.map((d, i) => d + boundedRandom(0, 1) * directionJitter[i])
   ]
 
   return normalize(jitteredDirection)
@@ -94,9 +91,9 @@ export function ParticleCollection({
     const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
     const jitteredDirection = jitterDirection({
       direction,
-      directionJitter,
-      localPosition: localPositions[p]
-    })
+      directionJitter
+    }).map((d, i) => d * Math.sign(fourPositions[p][i]))
+
     return [
       beta * jitteredDirection[0],
       beta * jitteredDirection[1],

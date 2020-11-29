@@ -127,6 +127,9 @@ export class Simulation {
       JSON.stringify({
         logEntry: this.logEntry(),
         position,
+        packedPosition: this.variables.position.pack(
+          this.variables.position.toTypedArray().float32Array
+        ),
         configuration: this.configuration,
         particleTypes: this.variables.particleTypes
       })

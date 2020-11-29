@@ -177,7 +177,17 @@ void main () {
       : vec4(0.);
 
   gl_FragColor = (texelFourComponent == 0.)
-    ? value
-    : value; //vec4(channel, texelChannel, -1., -1.);
+  ? vec4(value.x)
+  : (texelFourComponent == 1.)
+  ? vec4(value.y)
+  : (texelFourComponent == 2.)
+  ? vec4(value.z)
+  : value;
+
+
+
+//  gl_FragColor = (texelFourComponent == 0.)
+//    ? vec4(value.x)
+//    : value; //vec4(channel, texelChannel, -1., -1.);
 
 }

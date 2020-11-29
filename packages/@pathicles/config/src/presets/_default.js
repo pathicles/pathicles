@@ -35,7 +35,7 @@ export default {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 2,
+    iterationsPerTick: 1,
     iterationCount: 127
   },
 
@@ -48,11 +48,11 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleCount: 121,
-      particleSeparation: 0.075,
+      particleSeparation: 0.1,
       gamma: 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      positionJitter: [0.1, 0.1, 0.1]
+      positionJitter: [0.0, 0.0, 0.0]
     },
     interactions: {
       particleInteraction: false,

@@ -32,6 +32,33 @@ export class VariableBuffers {
   }
 
   load(data) {
+    // console.log(fourVectors)
+    const transformed = data.reduce((acc, fourVector) => {
+      return acc.concat(
+        ...new Array(FOUR_VECTOR_COMPONENT_COUNT)
+          .fill(0)
+          .map((v, i) => [
+            fourVector[i],
+            fourVector[i],
+            fourVector[i],
+            fourVector[i]
+          ])
+      )
+    }, [])
+    // console.log(transformed)
+
+    // console.log(
+    //   new Array(FOUR_VECTOR_COMPONENT_COUNT)
+    //     .fill(0)
+    //     .map((v, i) => {})
+    //     .fill(fourVectors.reduce((acc, val) => acc.concat(val), []))
+    //     .flat()
+    //     .concat(
+    //       new Array(
+    //         this.width * (this.height - 1) * FOUR_VECTOR_COMPONENT_COUNT * 4
+    //       ).fill(0)
+    //     )
+    // )
     const typedData =
       this.colorType === 'float'
         ? new Float32Array(
@@ -64,6 +91,7 @@ export class VariableBuffers {
                 ).fill(0)
               )
           )
+    // console.log({ transformed, typedData })
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
         width: this.width,
@@ -115,9 +143,10 @@ export class VariableBuffers {
     for (let p = 0; p < this.particleCount; p++) {
       const particle = []
       packedFloat32Array.push(particle)
+      // debugger
 
       for (let b = 0; b < this.bufferLength; b++) {
-        const offset = (p * this.bufferLength + b) * 4
+        const offset = (p * this.bufferLength + b) * 4 * 4
 
         particle.push(float32Array.slice(offset, offset + 4))
       }

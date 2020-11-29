@@ -25,6 +25,7 @@ uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
 
+
 #pragma glslify: edger = require("@pathicles/core/src/lib/shaders/edger.glsl");
 
 float diffuse(vec3 lightDir, vec3 nrm)
@@ -81,8 +82,9 @@ void main () {
     finalColor += shadow * specCol * sceneLight;
   }
 
+
   float fogDistance = length(vPosition);
-  float fogAmount = smoothstep(stageSize/2., stageSize/2.-1., fogDistance);
+  float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
 
   gl_FragColor =vec4(finalColor, fogAmount);
   gl_FragColor =vec4(finalColor, 1.);
