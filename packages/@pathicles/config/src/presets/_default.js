@@ -9,13 +9,6 @@ export default {
     showTextureScale: 2
   },
 
-  colors_float: [
-    [0.92, 0.75, 0.0],
-    [0.12, 0.45, 0.65],
-    [0.12, 0.45, 0.65],
-    [0.77, 0.2, 0.2]
-  ],
-
   colors: [
     [235, 192, 0],
     [31, 115, 166],
@@ -35,7 +28,7 @@ export default {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
+    iterationsPerTick: 2,
     iterationCount: 127
   },
 
@@ -46,13 +39,13 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_XY',
+      bunchShape: 'SQUARE_XY',
       particleCount: 121,
-      particleSeparation: 0.1,
+      particleSeparation: 0.05,
       gamma: 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      positionJitter: [0.0, 0.0, 0.0]
+      positionJitter: [0.02, 0.02, 0.02]
     },
     interactions: {
       particleInteraction: false,

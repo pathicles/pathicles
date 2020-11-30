@@ -6,7 +6,6 @@ attribute vec2 aUV;
 
 attribute float aParticle;
 attribute float aStep;
-attribute float aFourIndex;
 
 uniform float particleCount;
 uniform float bufferLength;
@@ -32,7 +31,7 @@ uniform mat4 shadowProjectionMatrix;
 uniform mat4 shadowViewMatrix;
 uniform vec3 shadowDirection;
 
-varying float toBeDiscarded;
+varying float v_visibility;
 varying vec3 vScale;
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -76,7 +75,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
   || fourPosition.z > stageGrid_size || fourPosition.z < -stageGrid_size) ? 1.0 : 0.0;
 
 
-  return (outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 1.0 : 0.0;
+  return (bufferLength-aStep-iteration)/bufferLength * ((outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
 }
 
 void main () {
@@ -112,7 +111,7 @@ void main () {
   vColor = get_color(aParticle).rgb;
   vColorCorrection = get_colorCorrection(aParticle);
 
-  toBeDiscarded = calculateToBeDiscarded(previousFourPosition, fourPosition);
+  v_visibility = calculateToBeDiscarded(previousFourPosition, fourPosition);
 
   vShadowCoord = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
 

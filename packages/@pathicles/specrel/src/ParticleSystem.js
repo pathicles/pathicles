@@ -11,7 +11,7 @@ import { extent } from 'd3-array'
 export class ParticleSystem {
   constructor(particleCollection) {
     if (!particleCollection) {
-      throw 'The constructor of class System has a wmandatory argument'
+      throw 'The constructor of class System has a mandatory argument'
     }
     this._particleCollectionHistory = []
 

@@ -101,7 +101,7 @@ export class ReglViewerInstance {
 
   run(regl) {
     const mainloop = () => {
-      return regl.frame(({ time }) => {
+      return regl.frame(({ tick, time }) => {
         const storyState = this.story.getState()
 
         let sceneProgress
@@ -141,6 +141,8 @@ export class ReglViewerInstance {
           storyState.scene.cameraBSplines.centerY(sceneProgress)[0],
           storyState.scene.cameraBSplines.centerZ(sceneProgress)[0]
         ]
+
+        // if (tick % 13 === 0) console.log(viewRange)
 
         this.camera.tick()
         if (this.camera.state.dirty) {

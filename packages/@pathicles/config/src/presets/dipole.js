@@ -14,7 +14,7 @@ export const dipole = {
     iterationDurationOverC: 0.1,
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_XY',
+      bunchShape: 'SQUARE_XY',
       position: [0, 0.15, 0],
       direction: [0, 0.1, 1],
       directionJitter: [0, 0, 0],

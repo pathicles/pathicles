@@ -18,7 +18,7 @@
     "packages/@pathicles/core",
     "packages/@pathicles/docs",
     "packages/@pathicles/prerendered",
-    "packages/@pathicles/specrel__"
+    "packages/@pathicles/specrel"
   ],
   "scripts": {
     "build": "yarn run build:libs; yarn run build:app",

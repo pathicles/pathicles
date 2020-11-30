@@ -83,7 +83,7 @@ vec3 getB(vec3 position) {
     B += abs(ble.strength)  *
     ((ble.strength > 0.)
     ? vec3(localPosition.y, localPosition.x, 0)
-    : vec3(-(localPosition.y), -localPosition.x, 0.));
+    : vec3(-localPosition.y, -localPosition.x, 0.));
   }
   return B;
 }

@@ -1,5 +1,4 @@
-import pkg from 'mathjs'
-const { create, all } = pkg
+const { create, all } = require('mathjs')
 
 // import { create, all } from 'mathjs'
 

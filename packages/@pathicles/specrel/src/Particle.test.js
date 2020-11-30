@@ -1,6 +1,6 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, test } from '@jest/globals'
 
-import { bigNumberMath, format6, speedOfLight__ms_1 } from './index'
+import { bigNumberMath, format30, format6, speedOfLight__ms_1 } from './index'
 
 import Particle from './Particle'
 import ParticleTypes from './ParticleTypes'
@@ -20,34 +20,34 @@ describe('Particle constructor must be called with argument', () => {
 
 describe('electron at rest', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
-  it('mass__eVc_2 is 510998.94', () => {
+  test('mass__eVc_2 is 510998.94', () => {
     expect(electron.mass__eVc_2.toNumber()).toEqual(510998.94)
   })
-  it('charge__C is 510998.94', () => {
+  test('charge__C is 510998.94', () => {
     expect(electron.charge__C.toNumber()).toEqual(-1.602176634e-19)
   })
-  it('chargeMassRatio__Ckg_1 is 510998.94', () => {
+  test('chargeMassRatio__Ckg_1 is 510998.94', () => {
     expect(electron.chargeMassRatio__Ckg_1.toNumber()).toEqual(-175882001076)
   })
-  it('position is [0,0,0]', () => {
+  test('position is [0,0,0]', () => {
     expect(numberify(electron.position)).toEqual([0, 0, 0])
   })
-  it('momentum is [0,0,0]', () => {
+  test('momentum is [0,0,0]', () => {
     expect(numberify(electron.momentum)).toEqual([0, 0, 0])
   })
-  it('energy__eV is 1', () => {
+  test('energy__eV is 1', () => {
     expect(electron.energy__eV.toNumber()).toEqual(510998.94)
   })
-  it('gamma is 1', () => {
+  test('gamma is 1', () => {
     expect(electron.gamma.toNumber()).toEqual(1)
   })
-  it('velocity__c is [0,0,0]', () => {
+  test('velocity__c is [0,0,0]', () => {
     expect(numberify(electron.velocity__c)).toEqual([0, 0, 0])
   })
-  it('velocity__ms_1 is [0,0,0]', () => {
+  test('velocity__ms_1 is [0,0,0]', () => {
     expect(numberify(electron.velocity__ms_1)).toEqual([0, 0, 0])
   })
-  it('beta is [0,0,0]', () => {
+  test('beta is [0,0,0]', () => {
     expect(electron.beta.toNumber()).toEqual(0)
   })
 })
@@ -57,23 +57,23 @@ describe('electron with gamma = 2', () => {
 
   electron.setMomentumFromGamma(2)
 
-  it('position is [0,0,0]', () => {
+  test('position is [0,0,0]', () => {
     expect(numberify(electron.position)).toEqual([0, 0, 0])
   })
-  it('momentum is [0, 0, 885076.1266938403]', () => {
+  test('momentum is [0, 0, 885076.1266938403]', () => {
     expect(numberify(electron.momentum)).toEqual([0, 0, 885076.1266938403])
   })
-  it('momentumNormalized is [0,0,1]', () => {
+  test('momentumNormalized is [0,0,1]', () => {
     expect(numberify(electron.momentumNormalized)).toEqual([0, 0, 1])
   })
-  it('gamma is 2', () => {
+  test('gamma is 2', () => {
     expect(electron.gamma.toNumber()).toEqual(2)
   })
 
-  it('velocity__c is [0,0,0]', () => {
+  test('velocity__c is [0,0,0]', () => {
     expect(numberify(electron.velocity__c)).toEqual([0, 0, 0.8660254037844386])
   })
-  it('beta is [0,0,0]', () => {
+  test('beta is [0,0,0]', () => {
     expect(electron.beta.toNumber()).toEqual(0.8660254037844386)
   })
 })
@@ -81,14 +81,14 @@ describe('electron with gamma = 2', () => {
 describe('electron: calculateGammaForVelocity', () => {
   const electron = new Particle.create(ParticleTypes.ELECTRON)
 
-  it('[0c, 0c, 0.8660254038c] => 2', () => {
+  test('[0c, 0c, 0.8660254038c] => 2', () => {
     const gamma1 = electron.calculateGammaForVelocity(
       bigNumberMath.evaluate('[0c, 0c, 0.8660254038c]')
     )
     expect(format6(gamma1)).toEqual('2')
   })
 
-  it('beta(0.86602540389  => 2', () => {
+  test('beta(0.86602540389  => 2', () => {
     const gamma2 = electron.calculateGammaForBeta(
       bigNumberMath.bignumber(0.8660254038)
     )
@@ -105,35 +105,29 @@ describe('electron: calculateGammaForVelocity', () => {
 describe('Particle factory: Particle.create(ParticleTypes.PHOTON)', () => {
   const photon = new Particle.create(ParticleTypes.PHOTON)
 
-  it('is of particle type: ' + ParticleTypes.PHOTON.name, () =>
+  test('is of particle type: ' + ParticleTypes.PHOTON.name, () =>
     expect(photon.particleType.name).toEqual(ParticleTypes.PHOTON.name)
   )
 
-  it('has mass of 0 eV / c^2', () =>
+  test('has mass of 0 eV / c^2', () =>
     expect(format6(photon.mass)).toEqual('0 eV / c^2'))
 
-  it('has charge of 0C', () =>
+  test('has charge of 0C', () =>
     expect(format6(photon.charge.to('C'))).toEqual('0 C'))
 
-  it('has location at [0 m, 0 m, 0 m]', () =>
+  test('has location at [0 m, 0 m, 0 m]', () =>
     expect(format6(photon.position)).toEqual('[0 m, 0 m, 0 m]'))
 
-  it('has default momentum of [0 eV / c, 0 eV / c, 1 eV / c]', () =>
+  test('has default momentum of [0 eV / c, 0 eV / c, 1 eV / c]', () =>
     expect(format6(photon.momentum)).toEqual('[0 eV / c, 0 eV / c, 1 eV / c]'))
-
-  it('has default momentum 2 of [0 eV / c, 0 eV / c, 1 eV / c]', () =>
-    expect(
-      photon.momentum
-        .equals(bigNumberMath.evaluate('[0 eV / c, 0 eV / c, 1 eV / c]'))
-        .toBeTruthy()
-    ))
 
   expect(format6(photon.momentumNormalized)).toEqual('[0, 0, 1]')
 
   // console.log(photon.beta)
   // console.log("photon.beta", photon.beta.toNumber())
-  it('has default velocity of [0 c, 0 c, 1c]', () =>
-    expect(format6(photon.velocity)).toEqual([0, 0, 2.99792e8]))
+  test('has default velocity of [0 c, 0 c, 1c]', () => {
+    expect(photon.velocity).toEqual([0, 0, 2.99792e8])
+  })
 
   expect(format6(photon.chargeMassRatio)).toEqual('0 C / kg')
 
@@ -262,7 +256,7 @@ test('Particle factory: POSITRON', () => {
 })
 
 describe('Relativitic electrons ', () => {
-  it('Relativitic electrons ', () => {
+  test('Relativitic electrons ', () => {
     const electron = new Particle.create(ParticleTypes.ELECTRON)
 
     electron.setMomentumFromBeta(0.985, [0, 0, 1])
@@ -300,7 +294,7 @@ test('Particle factory: PROTON', () => {
 })
 
 describe('Particle.clone', () => {
-  it('creates a new particle from the given one', () => {
+  test('creates a new particle from the given one', () => {
     const proton1 = new Particle.create(ParticleTypes.PROTON)
     expect(proton1.particleType).toEqual(ParticleTypes.PROTON)
     proton1.position = bigNumberMath.evaluate('[1, 2, 3]')

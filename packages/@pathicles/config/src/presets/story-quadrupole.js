@@ -1,50 +1,54 @@
 import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
 
+const quadLength = 1 // m
+const quadF = 1 // m
+const quadStrength = 1 / quadF / quadLength // m^-2
+
 export const storyQuadrupole = {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [0.3, 1.5, 0],
+      center: [-0, 1.5, 0],
       distance: 5,
-      theta: (0 / 360) * 2 * Math.PI,
-      phi: (0 / 360) * 2 * Math.PI
+      theta: (-10 / 360) * 2 * Math.PI,
+      phi: (-3 / 360) * 2 * Math.PI
     }
   },
   runner: {},
   model: {
     emitter: {
-      // particleCount: 484,
+      particleCount: 121,
       particleType: 'PROTON',
-      // particleSeparation: 0.2,
+      // particleSeparation: 0.25,
       direction: [0, 0, -1],
-      position: [0, 1.5, 8],
-      directionJitter: [0.1, 0.1, 0],
-      positionJitter: [0.0, 0.0, 0],
-      gamma: 10
+      position: [0, 1.5, 10],
+      directionJitter: [0.05, 0.05, 0],
+      positionJitter: [0.0, 0.0, 0.0],
+      gamma: 2
     },
 
     lattice: {
       elements: {
         q1: {
           type: LatticeElementTypes.QUAD,
-          strength: 0.5,
-          l: 1
+          strength: quadStrength,
+          l: quadLength
         },
         q2: {
           type: LatticeElementTypes.QUAD,
-          strength: -0.5,
-          l: 1
+          strength: -quadStrength,
+          l: quadLength
         },
         l_5: {
           type: LatticeElementTypes.DRIF,
-          l: 5
+          l: 0 //(20 - 5 * quadLength) / 2
         },
         l_1: {
           type: LatticeElementTypes.DRIF,
-          l: 1
+          l: quadLength
         }
       },
-      // beamline: ['l_6', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_6'],
+      // beamline: ['l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1'],
       beamline: [
         'l_5',
         'q1',
@@ -56,11 +60,26 @@ export const storyQuadrupole = {
         'q2',
         'l_1',
         'q1',
+        'l_1',
+        'q2',
+        'l_1',
+        'q1',
+        'l_1',
+        'q2',
+        'l_1',
+        'q1',
+        'l_1',
+        'q2',
+        'l_1',
+        'q1',
+        'l_1',
+        'q2',
+        'l_1',
         'l_5'
       ],
       origin: {
         phi: (-Math.PI / 4) * 3,
-        position: [0, 1.5, 8]
+        position: [0, 1.5, 10]
       }
     }
   }

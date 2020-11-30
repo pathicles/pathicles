@@ -1,7 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
 import {
-  betaSquareFromVelocity__c,
-  betaSquareFromVelocityPrime,
   bigNumberMath,
   speedOfLight,
   speedOfLight__ms_1,
@@ -13,7 +11,6 @@ import {
   gammaFromBetaSquare
 } from './index'
 import ParticleTypes from './ParticleTypes'
-import prettyjson from 'prettyjson'
 
 describe('beta', () => {
   it('betaSquareFromVelocity', () => {

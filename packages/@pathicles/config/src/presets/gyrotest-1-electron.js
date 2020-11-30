@@ -20,7 +20,7 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
-    iterationCount: 10
+    iterationCount: 17
   },
 
   model: {
@@ -31,14 +31,14 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_XY',
       direction: [0, 0, 1],
-      position: [1, 2, 3],
-      // [
-      //   -1,
-      //   defaultConfig.view.pathicleWidth *
-      //     defaultConfig.view.pathicleRelativeHeight *
-      //     5,
-      //   0
-      // ],
+      // position: [1, 2, 3],
+      position: [
+        -1,
+        defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight *
+          1,
+        0
+      ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1 / Math.sqrt(1 - 0.05867 * 0.05867) //1.55

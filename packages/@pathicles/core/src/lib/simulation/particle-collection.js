@@ -75,14 +75,14 @@ export function ParticleCollection({
   })
 
   const fourPositions = localPositions.map((localPosition) => {
-    const jitteredPosition = jitterPosition({
+    const jitter = jitterPosition({
       position: position,
       jitter: positionJitter
     })
     return [
-      localPosition[0] + jitteredPosition[0],
-      localPosition[1] + jitteredPosition[1],
-      localPosition[2] + jitteredPosition[2],
+      localPosition[0] + jitter[0],
+      localPosition[1] + jitter[1],
+      localPosition[2] + jitter[2],
       0
     ]
   })
@@ -92,7 +92,7 @@ export function ParticleCollection({
     const jitteredDirection = jitterDirection({
       direction,
       directionJitter
-    }).map((d, i) => d * Math.sign(fourPositions[p][i]))
+    }).map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
 
     return [
       beta * jitteredDirection[0],

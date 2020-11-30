@@ -14,7 +14,6 @@ const config = {
 const math = create(all, config)
 
 test('dssdss', () => {
-  console.log('round-off errors with numbers')
   print(math.add(0.1, 0.2)) // number, 0.30000000000000004
   print(math.divide(0.3, 0.2)) // number, 1.4999999999999998
   console.log()

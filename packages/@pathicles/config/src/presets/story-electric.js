@@ -26,7 +26,7 @@ export const storyElectric = {
       beamline: [],
       origin: {
         phi: 0,
-        position: [0, 1, -6]
+        position: [0, 1.5, -8]
       }
     }
   }

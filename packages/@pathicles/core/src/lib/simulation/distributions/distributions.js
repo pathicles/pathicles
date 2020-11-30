@@ -1,3 +1,5 @@
+const round = (x) => Math.round((x + Number.EPSILON) * 100) / 100
+
 export function rowDistribution({ n = 0, d = 0 }) {
   const dOffset = (d * (n - 1)) / 2
 
@@ -20,11 +22,13 @@ export function squareDistribution({
   const dOffsetX = (d * (nx - 1)) / 2
   const dOffsetY = (d * (ny - 1)) / 2
 
-  return [...Array(n)].fill(0).map((zero, i) => {
-    const ix = i % nx
-    const iy = Math.floor(i / nx)
-    return mixer(ix * d - dOffsetX, iy * d - dOffsetY)
-  })
+  return Array(n)
+    .fill(0)
+    .map((zero, i) => {
+      const ix = i % nx
+      const iy = Math.floor(i / nx)
+      return mixer(round(ix * d - dOffsetX), round(iy * d - dOffsetY))
+    })
 }
 
 // export function squareDistributionXZ({ n = 0, d = 0 }) {
