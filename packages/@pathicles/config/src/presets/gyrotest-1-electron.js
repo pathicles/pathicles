@@ -18,8 +18,8 @@ export const gyrotest_1_electron = {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
-    iterationCount: 17
+    iterationsPerSnapshots: 1,
+    iterations: 17
   },
 
   model: {

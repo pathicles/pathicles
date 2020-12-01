@@ -34,7 +34,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       // colorCorrections,
       bufferLength,
       particleCount,
-      iterationCount: 128,
+      iterations: 128,
       pingPong: 0,
       iteration: bufferLength,
       particleColorsAndTypes,

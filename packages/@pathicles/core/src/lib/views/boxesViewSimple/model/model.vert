@@ -9,7 +9,7 @@ attribute float aStep;
 
 uniform float particleCount;
 uniform float bufferLength;
-uniform float iterationCount;
+uniform float iterations;
 
 uniform float iteration;
 uniform float dt;
@@ -67,8 +67,8 @@ vec4 get_color(float p) {
 float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
 
   float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
-  float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterationCount) ? 1.0 : 0.0;
-  float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterationCount) ? 1.0 : 0.0;
+  float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterations) ? 1.0 : 0.0;
+  float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterations) ? 1.0 : 0.0;
 
   float outsideGrid = (fourPosition.x > stageGrid_size || fourPosition.x < -stageGrid_size
   || fourPosition.y > stageGrid_size || fourPosition.y < -stageGrid_size

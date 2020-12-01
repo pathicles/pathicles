@@ -31,7 +31,7 @@ export class Simulation {
       bufferLength,
       colorType,
       particleTypes,
-      iterationCount: configuration.runner.iterationCount,
+      iterations: configuration.runner.iterations,
       position: new VariableBuffers(
         regl,
         particleCount,
@@ -144,6 +144,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.variables.iterationCount)
+    this.push(this.variables.iterations)
   }
 }

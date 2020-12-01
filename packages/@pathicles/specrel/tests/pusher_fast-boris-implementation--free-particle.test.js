@@ -50,7 +50,7 @@ import { ParticleSystem } from '../ParticleSystem'
 //     stepHistoryLength: configuration.stepcount
 //   })
 //   const computeStart = performance.now()
-//   pusher.push(configuration.iterationCount, round)
+//   pusher.push(configuration.iterations, round)
 //   const computeEnd = performance.now()
 //
 //   const { boundingBox, steps } = pusher.toData()

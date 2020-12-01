@@ -32,7 +32,7 @@ const logbook = []
 
 // let gamma = 2;
 // let electricFieldStrength = -10000000;
-const iterationCount = 10
+const iterations = 10
 
 // for (let particleType of ["PHOTON", "ELECTRON", "PROTON"]) {
 for (let particleType of ['ELECTRON']) {
@@ -47,7 +47,7 @@ for (let particleType of ['ELECTRON']) {
           particleType,
           electricFieldStrength,
           gamma,
-          iterationCount
+          iterations
         })
 
         // console.log(prettyjson.render(report.result));
@@ -58,7 +58,7 @@ for (let particleType of ['ELECTRON']) {
           // E_x: 0,
           // E_y: 0,
           E_z: electricFieldStrength,
-          iterationCount,
+          iterations,
           // z_boundingBoxWidth: report.result.boundingBox.z.width,
           z_10__m: report.result.steps[10].particles[0].position__m[2],
           v_10__c: report.result.steps[10].particles[0].velocity__c[2],
@@ -93,7 +93,7 @@ function simulate(configuration = {}) {
   console.log(prettyjson.render(system))
   const dt__s = bigNumberMath
     .divide(
-      bigNumberMath.bignumber(1 / configuration.iterationCount),
+      bigNumberMath.bignumber(1 / configuration.iterations),
       Specrel.speedOfLight
     )
     .toNumeric()
@@ -104,7 +104,7 @@ function simulate(configuration = {}) {
   })
 
   const computeStart = performance.now()
-  borisPusher.push(configuration.iterationCount)
+  borisPusher.push(configuration.iterations)
   const computeEnd = performance.now()
 
   // analysis

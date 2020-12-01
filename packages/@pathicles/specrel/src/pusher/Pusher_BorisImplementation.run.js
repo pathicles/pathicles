@@ -69,7 +69,7 @@ const borisPusher = new Pusher_BorisImplementation({
   dt__s: dt__s
 })
 
-for (let i = 0; i < configGyrotest.iterationCount; i++) {
+for (let i = 0; i < configGyrotest.iterations; i++) {
   const result = borisPusher.push()
 
   // logger.info(

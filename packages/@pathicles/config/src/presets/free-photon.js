@@ -13,8 +13,8 @@ export const freePhoton = {
     loops: 0,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
-    iterationCount: 10
+    iterationsPerSnapshots: 1,
+    iterations: 10
   },
 
   model: {

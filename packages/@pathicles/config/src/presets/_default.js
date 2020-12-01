@@ -13,8 +13,8 @@ export const defaultConfig = {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 2,
-    iterationCount: 127
+    iterationsPerSnapshots: 2,
+    iterations: 127
   },
 
   model: {

@@ -17,8 +17,8 @@ export const freeElectron = {
     mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,
-    iterationsPerTick: 1,
-    iterationCount: 10
+    iterationsPerSnapshots: 1,
+    iterations: 10
   },
 
   model: {

@@ -99,7 +99,7 @@ export default function (regl, { variables, view }, shadow) {
         },
         bufferLength: variables.bufferLength,
         particleCount: variables.particleCount,
-        iterationCount: variables.iterationCount,
+        iterations: variables.iterations,
         iteration: () => variables.iteration,
 
         pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,

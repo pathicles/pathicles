@@ -45,7 +45,7 @@ function simulate(presetName, overwrite = {}) {
   })
 
   const computeStart = performance.now()
-  borisPusher.push(configuration.iterationCount)
+  borisPusher.push(configuration.iterations)
   const computeEnd = performance.now()
 
   // analysis

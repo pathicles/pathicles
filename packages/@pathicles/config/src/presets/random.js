@@ -13,8 +13,8 @@ export const random = {
     loops: 5,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 2,
-    iterationCount: 512
+    iterationsPerSnapshots: 2,
+    iterations: 512
   },
 
   model: {

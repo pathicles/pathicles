@@ -19,19 +19,17 @@ export default class SimulationFSM {
     simulation,
     {
       prerender = false,
-      iterationCount = -1,
-      iterationsPerTick = 1,
+      iterations = -1,
+      iterationsPerSnapshots = 1,
       loops = 0,
       mode = RUNNER_MODE.STEPWISE
     }
   ) {
     this._simulation = simulation
     this._prerender = prerender
-    this._iterationCount =
-      iterationCount <= 0
-        ? this._simulation.variables.bufferLength - 1
-        : iterationCount
-    this._iterationsPerTick = iterationsPerTick
+    this._iterations =
+      iterations <= 0 ? this._simulation.variables.bufferLength - 1 : iterations
+    this._iterationsPerSnapshots = iterationsPerSnapshots
 
     this._loopCountMax = loops
     this._isLooping = loops > 0
@@ -78,14 +76,14 @@ export default class SimulationFSM {
       }
     }
     if (this.fsm.state === STATES.ACTIVE) {
-      if (this._simulation.variables.iteration > this._iterationCount - 1) {
+      if (this._simulation.variables.iteration > this._iterations - 1) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
           this.fsm.state = 'restart'
         } else {
           this.fsm.state = STATES.PAUSED
         }
       } else {
-        this._simulation.push(this._iterationsPerTick)
+        this._simulation.push(this._iterationsPerSnapshots)
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -94,7 +92,7 @@ export default class SimulationFSM {
     } else if (this.fsm.state === STATES.RESTART) {
       this._loopCount++
       this._simulation.reset()
-      this._simulation.push(this._iterationsPerTick)
+      this._simulation.push(this._iterationsPerSnapshots)
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE
