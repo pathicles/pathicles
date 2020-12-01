@@ -8,7 +8,7 @@ attribute float aParticle;
 attribute float aStep;
 
 uniform float particleCount;
-uniform float bufferLength;
+uniform float snapshots;
 uniform float iterations;
 
 uniform float iteration;
@@ -49,7 +49,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshots=snapshots);
 
 
 
@@ -75,7 +75,7 @@ float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
   || fourPosition.z > stageGrid_size || fourPosition.z < -stageGrid_size) ? 1.0 : 0.0;
 
 
-  return (bufferLength-aStep-iteration)/bufferLength * ((outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
+  return (snapshots-aStep-iteration)/snapshots * ((outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
 }
 
 void main () {

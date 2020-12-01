@@ -10,7 +10,7 @@ export const dipole = {
   },
 
   model: {
-    bufferLength: 512,
+    snapshots: 512,
     iterationDurationOverC: 0.1,
     emitter: {
       particleType: 'ELECTRON',

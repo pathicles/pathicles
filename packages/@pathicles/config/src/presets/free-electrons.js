@@ -22,7 +22,7 @@ export const freeElectrons = {
   },
 
   model: {
-    bufferLength: 11,
+    snapshots: 11,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [

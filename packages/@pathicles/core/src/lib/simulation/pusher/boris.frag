@@ -21,7 +21,7 @@ uniform float halfDeltaTOverC;
 uniform float boundingBoxSize;
 uniform vec3 boundingBoxCenter;
 uniform float particleCount;
-uniform float bufferLength;
+uniform float snapshots;
 uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
@@ -34,7 +34,7 @@ uniform float particleInteraction;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, bufferLength=bufferLength);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshots=snapshots);
 
 
 

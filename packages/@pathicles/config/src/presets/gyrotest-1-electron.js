@@ -23,7 +23,7 @@ export const gyrotest_1_electron = {
   },
 
   model: {
-    bufferLength: 18,
+    snapshots: 18,
     iterationDurationOverC: (2 * Math.PI) / 1,
     emitter: {
       particleCount: 1,

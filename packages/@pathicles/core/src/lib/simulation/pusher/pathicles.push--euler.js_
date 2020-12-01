@@ -20,7 +20,7 @@ export  function(regl, { variables, constants }) {
         uniform float halfDeltaT;
         uniform float boundingBoxSize;
         uniform float particleCount;
-        uniform float bufferLength;
+        uniform float snapshots;
 
         uniform float particleInteraction;
         uniform float electricFieldStrength;
@@ -83,11 +83,11 @@ export  function(regl, { variables, constants }) {
         }
 
         vec4 readVariable(utPositionBuffer, float p, float b) {
-          vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
+          vec2 coords = vec2(p, b) / vec2(particleCount, snapshots);
           return texture2D(utPositionBuffer, coords);
         }
         vec4 get_velocity(float p, float b) {
-          vec2 coords = vec2(p, b) / vec2(particleCount, bufferLength);
+          vec2 coords = vec2(p, b) / vec2(particleCount, snapshots);
           return texture2D(utVelocityBuffer, coords);
         }
 
@@ -226,9 +226,9 @@ export  function(regl, { variables, constants }) {
     b = floor(gl_FragCoord.y)
 
     float
-    nextBufferPosition = floor(mod(tick, bufferLength))
+    nextBufferPosition = floor(mod(tick, snapshots))
     float
-    bufferPosition = (b == 0.) ? bufferLength : b - 1.
+    bufferPosition = (b == 0.) ? snapshots : b - 1.
 
     if (nextBufferPosition == b) {
 
@@ -252,7 +252,7 @@ export  function(regl, { variables, constants }) {
       framebuffer: () => variables[variableName][iteration % 2],
       uniforms: {
         boundingBoxSize: constants.boundingBoxSize,
-        bufferLength: constants.variables.bufferLength,
+        snapshots: constants.variables.snapshots,
         particleCount: constants.model.particleCount,
         tick: iteration,
         halfDeltaT: constants.halfDeltaTOverC,

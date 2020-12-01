@@ -18,7 +18,7 @@ export class Simulation {
 
     const colorType = 'float'
 
-    const { bufferLength } = configuration.model
+    const { snapshots } = configuration.model
     const {
       particleCount,
       particleTypes,
@@ -28,21 +28,21 @@ export class Simulation {
 
     this.variables = {
       particleCount,
-      bufferLength,
+      snapshots,
       colorType,
       particleTypes,
       iterations: configuration.runner.iterations,
       position: new VariableBuffers(
         regl,
         particleCount,
-        bufferLength,
+        snapshots,
         colorType,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
-        bufferLength,
+        snapshots,
         colorType,
         fourVelocities
       ),

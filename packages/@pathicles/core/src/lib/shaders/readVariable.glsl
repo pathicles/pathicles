@@ -2,7 +2,7 @@
 
 vec4 readVariable(sampler2D tex, float p, float b) {
 
-  vec2 resolution = vec2(particleCount, 4.*bufferLength);
+  vec2 resolution = vec2(particleCount, 4.*snapshots);
 
   return vec4(
     texture2D(tex, vec2(p, 4.*b) / resolution).x,

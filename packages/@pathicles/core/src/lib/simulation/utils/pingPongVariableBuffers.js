@@ -4,15 +4,15 @@ import { variableTexture } from './variableTexture'
 const FOUR_VECTOR_COMPONENT_COUNT = 4
 
 export class VariableBuffers {
-  constructor(regl, particleCount, bufferLength, colorType, initialData) {
+  constructor(regl, particleCount, snapshots, colorType, initialData) {
     this.regl = regl
     this.particleCount = particleCount
-    this.bufferLength = bufferLength
+    this.snapshots = snapshots
     this.colorType = colorType
     this.initialData = initialData
     this.pingPong = 0
     this.width = particleCount
-    this.height = bufferLength * FOUR_VECTOR_COMPONENT_COUNT
+    this.height = snapshots * FOUR_VECTOR_COMPONENT_COUNT
     this.buffers = [0, 1].map(() => {
       return regl.framebuffer({
         height: this.height,
@@ -117,7 +117,7 @@ export class VariableBuffers {
     if (this.type === 'float') {
       try {
         const colorFloat32Array = new Float32Array(
-          this.particleCount * this.bufferLength * 4 * 4
+          this.particleCount * this.snapshots * 4 * 4
         )
         this.regl({
           framebuffer: this.buffers[pingPong]
@@ -144,8 +144,8 @@ export class VariableBuffers {
       packedFloat32Array.push(particle)
       // debugger
 
-      for (let b = 0; b < this.bufferLength; b++) {
-        const offset = (p * this.bufferLength + b) * 4 * 4
+      for (let b = 0; b < this.snapshots; b++) {
+        const offset = (p * this.snapshots + b) * 4 * 4
 
         particle.push(float32Array.slice(offset, offset + 4))
       }

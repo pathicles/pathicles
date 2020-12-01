@@ -4,13 +4,13 @@ import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
-export const stepAttributes = ({ particleCount, bufferLength }) => {
-  return Array(particleCount * bufferLength)
+export const stepAttributes = ({ particleCount, snapshots }) => {
+  return Array(particleCount * snapshots)
     .fill(0)
     .map((_, i) => Math.floor(i / particleCount))
 }
-export const particleAttributes = ({ particleCount, bufferLength }) => {
-  return Array(particleCount * bufferLength)
+export const particleAttributes = ({ particleCount, snapshots }) => {
+  return Array(particleCount * snapshots)
     .fill(0)
     .map((_, i) => i % particleCount)
 }
@@ -46,7 +46,7 @@ export default function (regl, { variables, view }, shadow) {
       instances: () => {
         return (
           variables.particleCount *
-          Math.min(variables.iteration, variables.bufferLength)
+          Math.min(variables.iteration, variables.snapshots)
         )
       },
       attributes: {
@@ -97,7 +97,7 @@ export default function (regl, { variables, view }, shadow) {
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
-        bufferLength: variables.bufferLength,
+        snapshots: variables.snapshots,
         particleCount: variables.particleCount,
         iterations: variables.iterations,
         iteration: () => variables.iteration,

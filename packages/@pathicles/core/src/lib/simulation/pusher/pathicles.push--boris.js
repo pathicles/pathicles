@@ -23,7 +23,7 @@ export default function (regl, { variables, model }) {
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         particleCount: variables.particleCount,
-        bufferLength: variables.bufferLength,
+        snapshots: variables.snapshots,
         iteration: regl.prop('iteration'),
         halfDeltaTOverC: model.halfDeltaTOverC,
 

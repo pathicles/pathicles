@@ -28,7 +28,7 @@ export default class SimulationFSM {
     this._simulation = simulation
     this._prerender = prerender
     this._iterations =
-      iterations <= 0 ? this._simulation.variables.bufferLength - 1 : iterations
+      iterations <= 0 ? this._simulation.variables.snapshots - 1 : iterations
     this._iterationsPerSnapshots = iterationsPerSnapshots
 
     this._loopCountMax = loops

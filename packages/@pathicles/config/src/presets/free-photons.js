@@ -18,7 +18,7 @@ export const freePhotons = {
   },
 
   model: {
-    bufferLength: 11,
+    snapshots: 11,
     iterationDurationOverC: 0.2,
     emitter: {
       particleType: 'PHOTON',

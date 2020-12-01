@@ -16,7 +16,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     const variableType = 'float32'
     const particleCount = scene.configuration.model.emitter.particleCount
-    const bufferLength = scene.configuration.model.bufferLength
+    const snapshots = scene.configuration.model.snapshots
 
     const particleColorsAndTypes = regl.texture({
       data: Array(particleCount * 4),
@@ -32,11 +32,11 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene.variables = {
       referencePoint: [0, 0, 0],
       // colorCorrections,
-      bufferLength,
+      snapshots,
       particleCount,
       iterations: 128,
       pingPong: 0,
-      iteration: bufferLength,
+      iteration: snapshots,
       particleColorsAndTypes,
       position: {
         buffers: [
@@ -44,7 +44,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
             regl,
             {
               width: particleCount,
-              height: bufferLength * 4
+              height: snapshots * 4
             },
             variableType,
             new Float32Array(data.position)

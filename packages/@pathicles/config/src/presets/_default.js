@@ -19,7 +19,7 @@ export const defaultConfig = {
 
   model: {
     iterationDurationOverC: 0.25,
-    bufferLength: 128,
+    snapshots: 128,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
