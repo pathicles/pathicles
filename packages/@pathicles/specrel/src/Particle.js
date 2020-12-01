@@ -356,7 +356,7 @@ Particle.create = (particleType, position, momentum) => {
   //   throw new Error(`argument typeName must be of type String`)
   // }
 
-  // const particleType = ParticleTypes.byName(particleTypeName)
+  // const particleType = PARTICLE_TYPES.byName(particleTypeName)
   if (!particleType) {
     throw new Error(`particleType ${particleType} unknown`)
   }

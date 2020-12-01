@@ -25,8 +25,8 @@ export const random = {
     emitter: {
       position: [0, 1, 0],
       direction: [0, 0, 0],
-      bunchShape: 'CUBE',
-      particleSeparation: 0.01,
+      bunchShape: 'ROW',
+      particleSeparation: 0,
       directionJitter: [1, 1, 1],
       positionJitter: [0.1, 0, 0.1],
       gamma: 2,

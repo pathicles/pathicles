@@ -21,7 +21,7 @@ export function colorCorrection(
   })
 
   return regl.texture({
-    data: corrections.map((c, i) => [c, 0, 0, 0]).flat(),
+    data: corrections.map((c) => [c, 0, 0, 0]).flat(),
     shape: [particleCount, 1, 4],
     type: colorType
   })

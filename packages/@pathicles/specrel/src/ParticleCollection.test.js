@@ -19,7 +19,7 @@ test('ParticleCollection.create({particleCount: 1})', () => {
   expect(pCollection.particles[0].charge.to('C').toString()).toEqual('0 C')
 })
 
-test('new ParticleCollection({count: 2, particleTypeDistribution: [ParticleTypes.ELECTRON]})', () => {
+test('new ParticleCollection({count: 2, particleTypeDistribution: [PARTICLE_TYPES.ELECTRON]})', () => {
   const pCollection = ParticleCollection.create({
     particleCount: 2,
     particleTypeDistribution: [ParticleTypes.ELECTRON]

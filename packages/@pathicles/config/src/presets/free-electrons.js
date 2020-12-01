@@ -1,8 +1,8 @@
-import defaultConfig from './_default'
+import { defaultConfig } from './_default'
 import { RUNNER_MODE } from '../constants'
 
-export const freeElectron = {
-  name: 'free-electron',
+export const freeElectrons = {
+  name: 'free-electrons',
   view: {
     camera: {
       center: [0, 0, 0.5],
@@ -14,14 +14,15 @@ export const freeElectron = {
 
   runner: {
     prerender: true,
-    loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
+
+    loops: 0,
     iterationsPerTick: 1,
     iterationCount: 10
   },
 
   model: {
-    bufferLength: 5,
+    bufferLength: 11,
     iterationDurationOverC: 0.1,
     emitter: {
       position: [
@@ -34,8 +35,10 @@ export const freeElectron = {
       direction: [0, 0, 1],
       particleSeparation: 0.0,
       gamma: 10,
-      particleCount: 1,
-      particleType: 'ELECTRON'
+      particleCount: 20,
+      bunchShape: 'ROW',
+      particleType: 'ELECTRON',
+      positionJitter: [0, 0, 0]
     }
   }
 }

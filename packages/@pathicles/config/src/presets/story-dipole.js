@@ -1,4 +1,4 @@
-import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
+import { LATTICE_ELEMENT_TYPES } from '../constants'
 
 export const storyDipole = {
   name: 'story-dipole',
@@ -20,20 +20,20 @@ export const storyDipole = {
     lattice: {
       elements: {
         l: {
-          type: LatticeElementTypes.DRIF,
+          type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 8
         },
         l1: {
-          type: LatticeElementTypes.DRIF,
+          type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 0
         },
         d1: {
-          type: LatticeElementTypes.SBEN,
+          type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
           strength: -0.0001
         },
         d2: {
-          type: LatticeElementTypes.SBEN,
+          type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
           strength: 0.0001
         }

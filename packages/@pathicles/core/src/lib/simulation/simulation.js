@@ -1,11 +1,12 @@
 'use strict'
 
-import { ParticleCollection } from './particle-collection'
+import { ParticleCollection } from '../particle-collection/particle-collection'
 import pushBoris from './pusher/pathicles.push--boris'
 
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { colorCorrection } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
+import { PARTICLE_TYPES } from '@pathicles/config'
 
 export class Simulation {
   constructor(regl, configuration) {
@@ -50,7 +51,7 @@ export class Simulation {
       referencePoint: [0, 0, 0],
       // pingPong: 0,
       particleColorsAndTypes: regl.texture({
-        data: particleTypes.map((p) => configuration.colors[p].concat(p)),
+        data: particleTypes.map((p) => PARTICLE_TYPES[p].color.concat(p)),
         shape: [particleCount, 1, 4],
         type: 'uint8'
       }),
@@ -64,9 +65,9 @@ export class Simulation {
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
           .map((p) => [
-            configuration.charge[p],
-            configuration.mass[p],
-            configuration.chargeMassRatio[p],
+            PARTICLE_TYPES[p].charge__qe,
+            PARTICLE_TYPES[p].mass__eVc_2,
+            PARTICLE_TYPES[p].chargeMassRatio__Ckg_1,
             p
           ])
           .flat(),

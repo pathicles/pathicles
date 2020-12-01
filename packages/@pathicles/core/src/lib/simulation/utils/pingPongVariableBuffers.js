@@ -33,18 +33,18 @@ export class VariableBuffers {
 
   load(data) {
     // console.log(fourVectors)
-    const transformed = data.reduce((acc, fourVector) => {
-      return acc.concat(
-        ...new Array(FOUR_VECTOR_COMPONENT_COUNT)
-          .fill(0)
-          .map((v, i) => [
-            fourVector[i],
-            fourVector[i],
-            fourVector[i],
-            fourVector[i]
-          ])
-      )
-    }, [])
+    // const transformed = data.reduce((acc, fourVector) => {
+    //   return acc.concat(
+    //     ...new Array(FOUR_VECTOR_COMPONENT_COUNT)
+    //       .fill(0)
+    //       .map((v, i) => [
+    //         fourVector[i],
+    //         fourVector[i],
+    //         fourVector[i],
+    //         fourVector[i]
+    //       ])
+    //   )
+    // }, [])
     // console.log(transformed)
 
     // console.log(
@@ -114,8 +114,7 @@ export class VariableBuffers {
   toTypedArray(pingPong = this.pingPong) {
     let float32Array
 
-    if (this.type === 'uint8') {
-    } else {
+    if (this.type === 'float') {
       try {
         const colorFloat32Array = new Float32Array(
           this.particleCount * this.bufferLength * 4 * 4

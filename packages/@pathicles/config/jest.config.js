@@ -9,7 +9,7 @@ export default {
     '^.+\\.mjs$': 'babel-jest'
   },
 
-  testRegex: '((\\.|/*.)(test))\\.js?$'
+  testRegex: '((\\.|/*.)(\\.test))\\.js?$'
 }
 
 // {

@@ -1,6 +1,6 @@
-import { distribution } from './distributions/distributions.js'
+import { DISTRIBUTIONS } from '@pathicles/config'
 import { boundedRandom } from '../utils/random'
-import ParticleTypes from './particle-types'
+import { particleByName } from '@pathicles/config'
 
 function normalize(a) {
   let x = a[0]
@@ -18,7 +18,7 @@ export function particleTypesFromDescriptor(particleTypeDescriptor, n = 0) {
     .trim()
     .split(/\s+/)
     .map((d) => {
-      return ParticleTypes.byName(d)
+      return particleByName(d)
     })
 
   if (n === 0) {
@@ -68,10 +68,9 @@ export function ParticleCollection({
   // create particle collection
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 
-  const localPositions = distribution({
-    shape: bunchShape,
-    count: particleCount,
-    separation: particleSeparation
+  const localPositions = DISTRIBUTIONS[bunchShape]({
+    n: particleCount,
+    d: particleSeparation
   })
 
   const fourPositions = localPositions.map((localPosition) => {

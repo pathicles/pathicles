@@ -102,7 +102,7 @@ describe('electron: calculateGammaForVelocity', () => {
   // expect(format6(gamma3)).toEqual('2')
 })
 
-describe('Particle factory: Particle.create(ParticleTypes.PHOTON)', () => {
+describe('Particle factory: Particle.create(PARTICLE_TYPES.PHOTON)', () => {
   const photon = new Particle.create(ParticleTypes.PHOTON)
 
   test('is of particle type: ' + ParticleTypes.PHOTON.name, () =>

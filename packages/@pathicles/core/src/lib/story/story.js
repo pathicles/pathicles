@@ -101,7 +101,7 @@ export class ReglViewerInstance {
 
   run(regl) {
     const mainloop = () => {
-      return regl.frame(({ tick, time }) => {
+      return regl.frame(({ time }) => {
         const storyState = this.story.getState()
 
         let sceneProgress

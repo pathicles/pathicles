@@ -1,6 +1,4 @@
-import { particleTypeArrayDefintion } from './utils'
-
-export default function (regl, { variables, constants }) {
+export  function(regl, { variables, constants }) {
   const push = (variableName, iteration) =>
     regl({
       vert: `
@@ -137,82 +135,120 @@ export default function (regl, { variables, constants }) {
           mass_unit_eVc_2[2] = 510998.94;
           mass_unit_eVc_2[3] = 938272081.;
 
-          ${particleTypeArrayDefintion(constants.model.particleTypes)};
-        }
+           ` + //${particleTypeArrayDefintion(constants.model.particleTypes)};
+        + `
+    }
 
-        vec4 push_position(float p, float bufferHead, float bufferPosition) {
+  vec4
+  push_position(float
+  p, float
+  bufferHead, float
+  bufferPosition
+)
+  {
 
-          vec4 previousValue = readVariable(utPositionBuffer, p, bufferPosition);
+    vec4
+    previousValue = readVariable(utPositionBuffer, p, bufferPosition)
 
-          vec3 previousPosition = previousValue.xyz;
-          float previousTime  = previousValue.w;
+    vec3
+    previousPosition = previousValue.xyz
+    float
+    previousTime = previousValue.w
 
-          vec3 previousVelocity = get_velocity(p, bufferPosition).xyz;
-          vec3 currentVelocity = get_velocity(p, bufferHead).xyz;
+    vec3
+    previousVelocity = get_velocity(p, bufferPosition).xyz
+    vec3
+    currentVelocity = get_velocity(p, bufferHead).xyz
 
-          return vec4(
-            previousPosition + halfDeltaT * previousVelocity + currentVelocity * halfDeltaT,
-            previousTime + 2. * halfDeltaT);
-        }
+    return vec4(
+      previousPosition + halfDeltaT * previousVelocity + currentVelocity * halfDeltaT,
+      previousTime + 2. * halfDeltaT)
+  }
 
 
-        vec4 push_velocity(float p, float bufferHead, float bufferPosition) {
+  vec4
+  push_velocity(float
+  p, float
+  bufferHead, float
+  bufferPosition
+)
+  {
 
-          ParticleData particleData = getParticleData(p);
+    ParticleData
+    particleData = getParticleData(p)
 
-          vec4 previousPosition = readVariable(utPositionBuffer, p, bufferPosition);
+    vec4
+    previousPosition = readVariable(utPositionBuffer, p, bufferPosition)
 
-          vec4 previousVelocity = get_velocity(p, bufferPosition);
+    vec4
+    previousVelocity = get_velocity(p, bufferPosition)
 
-          vec3 intermediatePosition = previousPosition.xyz + previousVelocity.xyz  * halfDeltaT;
+    vec3
+    intermediatePosition = previousPosition.xyz + previousVelocity.xyz * halfDeltaT
 
-          vec3 E = get_efield(intermediatePosition);
-          vec3 B = get_bfield(intermediatePosition);
-          // vec3 G = vec3(0., -gravityConstant, 0.);
+    vec3
+    E = get_efield(intermediatePosition)
+    vec3
+    B = get_bfield(intermediatePosition)
+    // vec3 G = vec3(0., -gravityConstant, 0.);
 
-          vec3 velocity = previousVelocity.xyz;
+    vec3
+    velocity = previousVelocity.xyz
 
-          // velocity += particleData.mass * G * halfDeltaT;
+    // velocity += particleData.mass * G * halfDeltaT;
 
-          #ifdef BOUNDING_BOX_SIZE
-          if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
-            velocity.x *= -1.0;
-          }
-          if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
-            velocity.y *= -1.0;
-          }
-          if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
-            velocity.z *= -1.0;
-          }
-          #endif
+    #ifdef
+    BOUNDING_BOX_SIZE
+    if (intermediatePosition.x < -boundingBoxSize || intermediatePosition.x > boundingBoxSize) {
+      velocity.x *= -1.0
+    }
+    if (intermediatePosition.y < -boundingBoxSize || intermediatePosition.y > boundingBoxSize) {
+      velocity.y *= -1.0
+    }
+    if (intermediatePosition.z < -boundingBoxSize || intermediatePosition.z > boundingBoxSize) {
+      velocity.z *= -1.0
+    }
+    #endif
 
-          velocity += particleData.mass * G * halfDeltaT;
+    velocity += particleData.mass * G * halfDeltaT
 
-          return vec4(velocity, previousVelocity.w);
-        }
+    return vec4(velocity, previousVelocity.w)
+  }
 
-        void main () {
+  void main()
+  {
 
-          constants();
-          float p, b;
+    constants()
+    float
+    p, b
 
-          p = floor(gl_FragCoord.x);
-          b = floor(gl_FragCoord.y);
+    p = floor(gl_FragCoord.x)
+    b = floor(gl_FragCoord.y)
 
-          float nextBufferPosition = floor(mod(tick, bufferLength));
-          float bufferPosition = (b == 0.) ? bufferLength : b - 1.;
+    float
+    nextBufferPosition = floor(mod(tick, bufferLength))
+    float
+    bufferPosition = (b == 0.) ? bufferLength : b - 1.
 
-          if (nextBufferPosition == b) {
+    if (nextBufferPosition == b) {
 
-            gl_FragColor = push_${variableName}(p, nextBufferPosition, bufferPosition);
+      gl_FragColor = push_$
+      {
+        variableName
+      }
+      (p, nextBufferPosition, bufferPosition)
 
-          } else {
+    } else {
 
-            gl_FragColor = get_${variableName}(p, b);
+      gl_FragColor = get_$
+      {
+        variableName
+      }
+      (p, b)
 
-          }
-        }
-        `,
+    }
+  }
+  `,
       framebuffer: () => variables[variableName][iteration % 2],
       uniforms: {
         boundingBoxSize: constants.boundingBoxSize,
@@ -254,7 +290,9 @@ export default function (regl, { variables, constants }) {
   return () => {
     variables.iteration++
     variables.pingPong = variables.iteration % 2
-    // console.log(`push tick: ${variables.iteration}`);
+    // console.log(`
+    push
+      `);
     push('velocity', variables.iteration)({})
     push('position', variables.iteration)({})
   }

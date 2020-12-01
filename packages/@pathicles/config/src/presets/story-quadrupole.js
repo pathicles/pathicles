@@ -1,4 +1,4 @@
-import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
+import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
 const quadLength = 1 // m
 const quadF = 1 // m
@@ -30,21 +30,21 @@ export const storyQuadrupole = {
     lattice: {
       elements: {
         q1: {
-          type: LatticeElementTypes.QUAD,
+          type: LATTICE_ELEMENT_TYPES.QUAD,
           strength: quadStrength,
           l: quadLength
         },
         q2: {
-          type: LatticeElementTypes.QUAD,
+          type: LATTICE_ELEMENT_TYPES.QUAD,
           strength: -quadStrength,
           l: quadLength
         },
         l_5: {
-          type: LatticeElementTypes.DRIF,
+          type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 0 //(20 - 5 * quadLength) / 2
         },
         l_1: {
-          type: LatticeElementTypes.DRIF,
+          type: LATTICE_ELEMENT_TYPES.DRIF,
           l: quadLength
         }
       },

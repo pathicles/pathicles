@@ -1,6 +1,7 @@
 import { RUNNER_MODE } from '../constants'
 
-export default {
+export const defaultConfig = {
+  name: 'default',
   debug: {
     logPushing: false,
     logPerformance: false,
@@ -8,22 +9,6 @@ export default {
     showTextures: false,
     showTextureScale: 2
   },
-
-  colors: [
-    [235, 192, 0],
-    [31, 115, 166],
-    [31, 115, 166],
-    [197, 51, 51]
-  ],
-  mass: [0, 510998.94, 510998.94, 938272081],
-  charge: [0, -1, 1, 1],
-  chargeMassRatio: [
-    0,
-    -1.75882004556243e11,
-    1.75882004556243e11,
-    9.57883323113770929296814695637e7
-  ],
-
   runner: {
     prerender: false,
     loops: 0,
@@ -39,9 +24,9 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
+      bunchShape: 'SPIRAL_XY',
       particleCount: 121,
-      particleSeparation: 0.05,
+      particleSeparation: 0.1,
       gamma: 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -125,7 +110,5 @@ export default {
       minDistance: 0.1,
       maxDistance: 20
     }
-  },
-
-  dumpData: false
+  }
 }

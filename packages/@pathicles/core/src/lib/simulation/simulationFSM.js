@@ -32,6 +32,7 @@ export default class SimulationFSM {
         ? this._simulation.variables.bufferLength - 1
         : iterationCount
     this._iterationsPerTick = iterationsPerTick
+
     this._loopCountMax = loops
     this._isLooping = loops > 0
     this._mode = mode // RUNNER_MODE_FRAMEWISE / RUNNER_MODE_STEPWISE

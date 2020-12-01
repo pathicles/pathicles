@@ -1,4 +1,4 @@
-import defaultConfig from './_default'
+import { defaultConfig } from './_default'
 import { RUNNER_MODE } from '../constants'
 
 export const freeElectron = {

@@ -1,5 +1,3 @@
-'use strict'
-
 import { describe, expect, it } from '@jest/globals'
 
 import {
@@ -8,6 +6,9 @@ import {
   jitterPosition,
   particleTypesFromDescriptor
 } from './particle-collection'
+
+//
+const handleMinus0Equals0 = (x) => JSON.parse(JSON.stringify(x))
 
 describe('jitterPosition', () => {
   it('"0,0,0"', () => {
@@ -114,11 +115,19 @@ describe('betaFromGamma(gamma)', () => {
 describe('ParticleCollection()', () => {
   it('no argument args', () => {
     const particleCollection = ParticleCollection({})
-    expect(particleCollection).toEqual({
+    expect(handleMinus0Equals0(particleCollection)).toEqual({
       particleCount: 3,
       particleTypes: [0, 1, 3],
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
-      fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
+      fourVelocities: [
+        [0, 0, 1, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
+      ]
     })
   })
 
@@ -132,11 +141,19 @@ describe('ParticleCollection()', () => {
       emitterDirection: [0, 0, 1],
       emitterDirectionJitter: [0, 0, 0]
     })
-    expect(particleCollection).toEqual({
+    expect(handleMinus0Equals0(particleCollection)).toEqual({
       particleTypes: [0, 1, 3],
       particleCount: 3,
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
-      fourVelocities: [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
+      fourVelocities: [
+        [0, 0, 1, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
+      ]
     })
   })
 
@@ -150,23 +167,18 @@ describe('ParticleCollection()', () => {
       emitterDirection: [0, 0, 1],
       emitterDirectionJitter: [0, 0, 0]
     })
-    expect(particleCollection).toEqual({
+    expect(handleMinus0Equals0(particleCollection)).toEqual({
       particleTypes: [0, 1, 3],
       particleCount: 3,
-      fourPositions: [-0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0],
+      fourPositions: [
+        [-0.1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0.1, 0, 0, 0]
+      ],
       fourVelocities: [
-        0,
-        0,
-        1,
-        100,
-        0,
-        0,
-        99.99499987499375,
-        100,
-        0,
-        0,
-        99.99499987499375,
-        100
+        [0, 0, 1, 100],
+        [0, 0, 0.9999499987499375, 100],
+        [0, 0, 0.9999499987499375, 100]
       ]
     })
   })
@@ -181,85 +193,30 @@ describe('ParticleCollection()', () => {
       emitterDirection: [0, 0, 1],
       emitterDirectionJitter: [0, 0, 0]
     })
-    expect(particleCollection).toEqual({
+    expect(handleMinus0Equals0(particleCollection)).toEqual({
       particleTypes: Array(9).fill(1),
       particleCount: 9,
       fourPositions: [
-        -1,
-        -1,
-        0,
-        0,
-        //
-        0,
-        -1,
-        0,
-        0, //
-        1,
-        -1,
-        0,
-        0, //
-        -1,
-        0,
-        0,
-        0, //
-        0,
-        0,
-        0,
-        0, //
-        1,
-        0,
-        0,
-        0, //
-        -1,
-        1,
-        0,
-        0, //
-        0,
-        1,
-        0,
-        0, //
-        1,
-        1,
-        0,
-        0 //
+        [-1, -1, 0, 0],
+        [0, -1, 0, 0],
+        [1, -1, 0, 0],
+        [-1, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 0, 0, 0],
+        [-1, 1, 0, 0],
+        [0, 1, 0, 0],
+        [1, 1, 0, 0]
       ],
       fourVelocities: [
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 1]
       ]
     })
   })

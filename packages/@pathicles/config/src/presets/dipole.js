@@ -1,4 +1,4 @@
-import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
+import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
 export const dipole = {
   name: 'dipole',
@@ -28,11 +28,11 @@ export const dipole = {
     lattice: {
       elements: {
         l: {
-          type: LatticeElementTypes.DRIF,
+          type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 5
         },
         d: {
-          type: LatticeElementTypes.SBEN,
+          type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 10,
           strength: 0.0
         }

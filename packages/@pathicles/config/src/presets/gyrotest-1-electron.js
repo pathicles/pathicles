@@ -1,8 +1,7 @@
-import { LatticeElementTypes } from '@pathicles/core/src/lib/simulation/lattice/lattice'
-import { RUNNER_MODE } from '../constants'
-import defaultConfig from './_default'
+import { RUNNER_MODE, LATTICE_ELEMENT_TYPES } from '../constants'
+import { defaultConfig } from './_default'
 
-export default {
+export const gyrotest_1_electron = {
   name: 'gyrotest-1-electron',
   view: {
     camera: {
@@ -47,7 +46,7 @@ export default {
     lattice: {
       elements: {
         l0: {
-          type: LatticeElementTypes.SBEN,
+          type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 20,
           strength: 0.0001
         }
