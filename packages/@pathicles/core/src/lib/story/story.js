@@ -63,8 +63,7 @@ export class ReglViewerInstance {
 
     this.view = boxesViewSimple(regl, {
       variables: this.variables,
-      model: this.model,
-      config: this.config
+      view: this.config.view
     })
   }
 
@@ -113,7 +112,7 @@ export class ReglViewerInstance {
             this.modelTranslateX = boundedRandom() * 0.05
             this.modelTranslateY = boundedRandom() * 0.05
           }
-          viewRange = [autoloopProgress - 0.15, autoloopProgress + 0.15]
+          viewRange = [autoloopProgress - 0.25, autoloopProgress + 0.25]
           // sceneProgress <= 0.5
           //   ? [0, sceneProgress]
           //   : [0.5 + sceneProgress, 1 - sceneProgress]
@@ -141,8 +140,6 @@ export class ReglViewerInstance {
           storyState.scene.cameraBSplines.centerY(sceneProgress)[0],
           storyState.scene.cameraBSplines.centerZ(sceneProgress)[0]
         ]
-
-        // if (tick % 13 === 0) console.log(viewRange)
 
         this.camera.tick()
         if (this.camera.state.dirty) {

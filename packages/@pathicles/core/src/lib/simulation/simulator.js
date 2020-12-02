@@ -95,9 +95,10 @@ export class ReglSimulatorInstance {
 
     this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
+      runner: this.simulation.runner,
       variables: this.simulation.variables,
       model: this.simulation.model,
-      config: this.config
+      view: this.config.view
     })
     this.performanceLogger.start('init.runner')
     this.pathiclesRunner = new SimulationFSM(this.simulation, {

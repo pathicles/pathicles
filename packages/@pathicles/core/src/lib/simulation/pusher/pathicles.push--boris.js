@@ -2,7 +2,7 @@ import vert from './boris.vert'
 import frag from './boris.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
 
-export default function (regl, { variables, model }) {
+export default function (regl, { runner, variables, model }) {
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
@@ -19,20 +19,24 @@ export default function (regl, { variables, model }) {
       },
 
       uniforms: {
-        variableIdx: variableSlot,
-        boundingBoxSize: model.boundingBoxSize,
-        boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        particleCount: variables.particleCount,
-        snapshots: variables.snapshots,
-        iteration: regl.prop('iteration'),
-        halfDeltaTOverC: model.halfDeltaTOverC,
+        snapshotCount: runner.snapshotCount,
+        iterationsPerSnapshot: runner.iterationsPerSnapshot,
+        halfDeltaTOverC: runner.halfDeltaTOverC,
 
+        variableIdx: variableSlot,
+        particleCount: variables.particleCount,
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
+
+        boundingBoxSize: model.boundingBoxSize,
+        boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
+        iteration: regl.prop('iteration'),
+        takeSnapshot: regl.prop('takeSnapshot'),
+
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
-        utPositionBuffer: (context, props) =>
+        ut_position: (context, props) =>
           variables.position.buffers[(props.iteration + 1) % 2],
         utVelocityBuffer: (context, props) =>
           variableName === 'position'
@@ -56,14 +60,13 @@ export default function (regl, { variables, model }) {
   }
 
   const pushVelocity = pushFactory('velocity', 'utVelocityBuffer', 1)
-  const pushPosition = pushFactory('position', 'utPositionBuffer', 0)
+  const pushPosition = pushFactory('position', 'ut_position', 0)
 
   return (n = 1) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
-      const z = variables.iteration * model.halfDeltaTOverC * 2
+      const z = variables.iteration * runner.halfDeltaTOverC * 2
 
-      // variables.pingPong = variables.iteration % 2
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
       variables.referencePoint =
@@ -71,10 +74,14 @@ export default function (regl, { variables, model }) {
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
       pushVelocity({
-        iteration: variables.iteration
+        iteration: variables.iteration,
+        takeSnapshot:
+          variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
       })
       pushPosition({
-        iteration: variables.iteration
+        iteration: variables.iteration,
+        takeSnapshot:
+          variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
       })
     }
   }

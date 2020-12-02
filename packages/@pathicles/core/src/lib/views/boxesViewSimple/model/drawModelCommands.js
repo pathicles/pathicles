@@ -4,17 +4,17 @@ import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
-export const stepAttributes = ({ particleCount, snapshots }) => {
-  return Array(particleCount * snapshots)
+export const stepAttributes = ({ particleCount, snapshotCount }) => {
+  return Array(particleCount * snapshotCount)
     .fill(0)
     .map((_, i) => Math.floor(i / particleCount))
 }
-export const particleAttributes = ({ particleCount, snapshots }) => {
-  return Array(particleCount * snapshots)
+export const particleAttributes = ({ particleCount, snapshotCount }) => {
+  return Array(particleCount * snapshotCount)
     .fill(0)
     .map((_, i) => i % particleCount)
 }
-export default function (regl, { variables, view }, shadow) {
+export default function (regl, { runner, variables, view }, shadow) {
   const geometry = createCube()
 
   let modelMatrix = identity([])
@@ -46,18 +46,18 @@ export default function (regl, { variables, view }, shadow) {
       instances: () => {
         return (
           variables.particleCount *
-          Math.min(variables.iteration, variables.snapshots)
+          Math.min(variables.iteration, variables.snapshotCount)
         )
       },
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,
         aUV: geometry.uvs,
-        aParticle: {
+        a_particle: {
           buffer: regl.buffer(particleAttributes(variables)),
           divisor: 1
         },
-        aStep: {
+        a_snapshot: {
           buffer: regl.buffer(stepAttributes(variables)),
           divisor: 1
         }
@@ -91,15 +91,17 @@ export default function (regl, { variables, view }, shadow) {
         utParticleColorAndType: (ctx, props) => {
           return props.particleColorsAndTypes
         },
-        utPositionBuffer: (ctx, props) => {
+        ut_position: (ctx, props) => {
           return props.position
         },
         viewRange: (ctx, props) => {
           return props.viewRange || [0, 1]
         },
-        snapshots: variables.snapshots,
-        particleCount: variables.particleCount,
+        snapshotCount: variables.snapshotCount,
         iterations: variables.iterations,
+
+        particleCount: variables.particleCount,
+
         iteration: () => variables.iteration,
 
         pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,

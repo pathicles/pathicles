@@ -10,13 +10,11 @@ export const dipole = {
   },
 
   model: {
-    snapshots: 512,
-    iterationDurationOverC: 0.1,
     emitter: {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_XY',
       position: [0, 0.15, 0],
-      direction: [0, 0.1, 1],
+      direction: [0, 0.1, -1],
       directionJitter: [0, 0, 0],
       positionJitter: [0.01, 0.05, 0.1],
       gamma: 12.05

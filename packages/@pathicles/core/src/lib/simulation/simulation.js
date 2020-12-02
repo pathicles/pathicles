@@ -9,40 +9,45 @@ import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES } from '@pathicles/config'
 
 export class Simulation {
-  constructor(regl, configuration) {
+  constructor(regl, { model, runner, debug }) {
     this._regl = regl
+
+    this.configuration = { model, runner, debug }
 
     this._logStore = []
 
-    this.configuration = configuration
-
     const colorType = 'float'
 
-    const { snapshots } = configuration.model
+    const { snapshotCount } = runner
     const {
       particleCount,
       particleTypes,
       fourPositions,
       fourVelocities
-    } = (this.initialData = new ParticleCollection(configuration.model.emitter))
+    } = (this.initialData = new ParticleCollection(model.emitter))
+
+    this.runner = {
+      ...runner,
+      halfDeltaTOverC: runner.iterationDurationOverC / 2
+    }
 
     this.variables = {
+      iterations: runner.iterations,
       particleCount,
-      snapshots,
+      snapshotCount,
       colorType,
       particleTypes,
-      iterations: configuration.runner.iterations,
       position: new VariableBuffers(
         regl,
         particleCount,
-        snapshots,
+        snapshotCount,
         colorType,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
-        snapshots,
+        snapshotCount,
         colorType,
         fourVelocities
       ),
@@ -59,7 +64,7 @@ export class Simulation {
         regl,
         'float',
         fourPositions,
-        configuration.model.emitter.position
+        model.emitter.position
       ),
 
       particleChargesMassesChargeMassRatios: regl.texture({
@@ -77,20 +82,19 @@ export class Simulation {
     }
 
     this.model = {
-      halfDeltaTOverC: this.configuration.model.iterationDurationOverC / 2,
-      boundingBoxSize: this.configuration.model.boundingBoxSize,
-      boundingBoxCenter: this.configuration.model.boundingBoxCenter,
-      latticeConfig: this.configuration.model.lattice,
-      lattice: new Lattice(this.configuration.model.lattice),
+      boundingBoxSize: model.boundingBoxSize,
+      boundingBoxCenter: model.boundingBoxCenter,
+      latticeConfig: model.lattice,
+      lattice: new Lattice(model.lattice),
       interactions: {
-        particleInteraction: this.configuration.model.interactions
-          .particleInteraction,
-        electricField: this.configuration.model.interactions.electricField,
-        magneticField: this.configuration.model.interactions.magneticField
+        particleInteraction: model.interactions.particleInteraction,
+        electricField: model.interactions.electricField,
+        magneticField: model.interactions.magneticField
       }
     }
 
     this.pusher = pushBoris(this._regl, {
+      runner: this.runner,
       variables: this.variables,
       model: this.model
     })
@@ -112,7 +116,7 @@ export class Simulation {
   }
 
   log() {
-    if (this.configuration.debug.logPushing) {
+    if (this.configuration.logPushing) {
       this._logStore.push(this.logEntry())
     }
   }
@@ -144,6 +148,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.variables.iterations)
+    this.push(this.runner.iterations)
   }
 }

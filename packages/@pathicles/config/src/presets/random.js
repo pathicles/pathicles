@@ -13,15 +13,15 @@ export const random = {
     loops: 5,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshots: 2,
-    iterations: 512
+    iterationsPerSnapshot: 1,
+    iterations: 512,
+    snapshotCount: 16,
+    iterationDurationOverC: 0.1
   },
 
   model: {
     boundingBoxSize: 1.1,
     // boundingBoxCenter: [0, 2, 0],
-    snapshots: 128,
-    iterationDurationOverC: 0.1,
     emitter: {
       position: [0, 1, 0],
       direction: [0, 0, 0],

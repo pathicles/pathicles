@@ -4,17 +4,17 @@ import { Shadow } from './shadow/Shadow'
 import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 
-export function boxesViewSimple(regl, { variables, config }) {
-  const lightPosition = config.view.lights[0].position
-  const shadow = new Shadow(regl, config.view.lights[0])
+export function boxesViewSimple(regl, { runner, variables, view }) {
+  const lightPosition = view.lights[0].position
+  const shadow = new Shadow(regl, view.lights[0])
 
   const uniforms = {
     //model
-    stageGrid_size: config.view.stageGrid.size / 2,
+    stageGrid_size: view.stageGrid.size / 2,
     viewRange: regl.prop('viewRange'),
-    ambientLightAmount: config.view.ambientLightAmount,
-    diffuseLightAmount: config.view.diffuseLightAmount,
-    dt: 2 * config.model.iterationDurationOverC
+    ambientLightAmount: view.ambientLightAmount,
+    diffuseLightAmount: view.diffuseLightAmount
+    // dt: 2 * runner.iterationDurationOverC
   }
 
   const setParams = regl({
@@ -24,12 +24,13 @@ export function boxesViewSimple(regl, { variables, config }) {
   const drawModel = drawModelCommands(
     regl,
     {
+      runner,
       variables,
-      view: config.view
+      view
     },
     shadow
   )
-  const drawStage = drawStageCommands(regl, config.view, shadow)
+  const drawStage = drawStageCommands(regl, view, shadow)
 
   const drawAxis = drawAxesCommand(regl, 0.5)
   const drawVignette = drawVignetteCommandBuilder(regl)
@@ -40,7 +41,7 @@ export function boxesViewSimple(regl, { variables, config }) {
       depth: 1
     })
     // eslint-disable-next-line no-unused-vars
-    setParams(config.view, () => {
+    setParams(view, () => {
       regl.clear({
         color: [0, 0, 0, 0],
         depth: 1,
@@ -53,17 +54,17 @@ export function boxesViewSimple(regl, { variables, config }) {
         lightPosition[2]
       ])
 
-      config.view.isShadowEnabled && drawModel.shadow(props)
-      config.view.showAxes &&
+      view.isShadowEnabled && drawModel.shadow(props)
+      view.showAxes &&
         drawAxis([
           { axis: [1, 0, 0] },
           { axis: [0, 1, 0] },
           { axis: [0, 0, 1] }
         ])
 
-      config.view.isStageVisible && drawStage.lighting(props)
+      view.isStageVisible && drawStage.lighting(props)
       drawModel.lighting(props)
-      config.view.showVignette && drawVignette.lighting(props)
+      view.showVignette && drawVignette.lighting(props)
     })
   }
 

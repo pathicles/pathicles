@@ -3,6 +3,7 @@ precision highp float;
 
 /*__latticeSize__*/
 
+
 const highp float c = 2.99792458e+8;
 //uniform sampler2D utParticleColorAndType;
 #pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
@@ -12,19 +13,21 @@ const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 uniform sampler2D utParticleChargesMassesChargeMassRatios;
-uniform sampler2D utPositionBuffer;
+uniform sampler2D ut_position;
 uniform sampler2D utVelocityBuffer;
-uniform float iteration;
+uniform int takeSnapshot;
+uniform int iteration;
 uniform int variableIdx;
-uniform int channel;
+uniform int iterationsPerSnapshot;
 uniform float halfDeltaTOverC;
 uniform float boundingBoxSize;
 uniform vec3 boundingBoxCenter;
-uniform float particleCount;
-uniform float snapshots;
+uniform int particleCount;
+uniform int snapshotCount;
 uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
+
 
 
 
@@ -34,7 +37,7 @@ uniform float particleInteraction;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshots=snapshots);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
 
 
 
@@ -55,7 +58,7 @@ vec3 getE(vec3 position) {
   //     if ( p == float(p2) ) { continue; }
   //       ParticleData particleData2 = getParticleData(float(p2));
   //     if (particleData2.charge > 0.) {
-  //       vec3 position2 = readVariable(utPositionBuffer, float(p2), bufferPosition).xyz;
+  //       vec3 position2 = readVariable(ut_position, float(p2), bufferPosition).xyz;
   //       // float particleCharge2 = 1.; // POSITRON / PROTRON
   //       // if (particleType == 1.) { // ELECTRON
   //       //     particleCharge2 = charge_unit_qe[1];
@@ -90,16 +93,16 @@ vec3 getB(vec3 position) {
 
 
 
-vec4 push_position(float p) {
+vec4 push_position(int p) {
 
   ParticleData particleData = getParticleData(p);
-  vec4 fourPosition = readVariable(utPositionBuffer, p, 0.);
+  vec4 fourPosition = readVariable(ut_position, p, 0);
 
   vec3 position = fourPosition.xyz;
   float time  = fourPosition.w;
 
-  vec3 fourMomentum = readVariable(utVelocityBuffer, p, 1.).xyz;
-  vec3 nextMomentum = readVariable(utVelocityBuffer, p, 0.).xyz;
+  vec3 fourMomentum = readVariable(utVelocityBuffer, p, 1).xyz;
+  vec3 nextMomentum = readVariable(utVelocityBuffer, p, 0).xyz;
 
   float nextTime = time + 2. * halfDeltaTOverC;
 
@@ -112,13 +115,13 @@ vec4 push_position(float p) {
 
 //  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
 
-vec4 push_velocity(float p) {
+vec4 push_velocity(int p) {
 
   ParticleData particleData = getParticleData(p);
   vec3 momentum;
 
-  vec4 fourPosition = readVariable(utPositionBuffer, p, 0.);
-  vec4 fourVelocity = readVariable(utVelocityBuffer, p, 0.);
+  vec4 fourPosition = readVariable(ut_position, p, 0);
+  vec4 fourVelocity = readVariable(utVelocityBuffer, p, 0);
   vec3 velocity = fourVelocity.xyz;
   float gamma = fourVelocity.w;
 
@@ -149,45 +152,51 @@ vec4 push_velocity(float p) {
   return vec4(momentum, gamma);
 }
 
-vec4 push(float p) {
+vec4 push(int p) {
   return (variableIdx == 0)
   ? push_position(p)
   : push_velocity(p);
 }
 
-vec4 readVariable(float texelParticleIndex, float texelBufferIndex) {
+vec4 readVariable(int particle, int snapshot) {
   return (variableIdx == 0)
-  ? readVariable(utPositionBuffer, texelParticleIndex, texelBufferIndex)
-  : readVariable(utVelocityBuffer, texelParticleIndex, texelBufferIndex);
+  ? readVariable(ut_position, particle, snapshot)
+  : readVariable(utVelocityBuffer, particle, snapshot);
 }
 
 
 void main () {
 
-  float texelParticleIndex = gl_FragCoord.x - .5;
-  float texelBufferIndex = floor((gl_FragCoord.y - .5) / 4.);
-  float texelFourComponent = floor(gl_FragCoord.y - .5)  - texelBufferIndex * 4.;
+  int particle = int(gl_FragCoord.x - .5);
+  int snapshot = int(floor((gl_FragCoord.y - .5) / 4.));
+  int fourComponentIndex = int(floor(gl_FragCoord.y - .5))  - snapshot * 4;
 
   initLatticeData();
 
-  vec4 value = (texelBufferIndex  < 0.1)
-    ? push(texelParticleIndex)
-    :  (texelBufferIndex <= iteration)
-      ? readVariable(texelParticleIndex, texelBufferIndex - 1.)
-      : vec4(0.);
+  vec4 value = (snapshot == 0)
+    ? push(particle)
+    : (snapshot  <= iterationsPerSnapshot)
+      ? readVariable(particle, snapshot - 1)
+      : (snapshot * iterationsPerSnapshot < iteration)
+        ? readVariable(particle, snapshot - takeSnapshot)
+        : vec4(0.);
 
-  gl_FragColor = (texelFourComponent == 0.)
+  //  gl_FragColor = (fourComponentIndex == 0.)
+  //  ? vec4(value.x, 0., 0., 0.)
+  //  : (fourComponentIndex == 1.)
+  //  ? vec4(value.y, value.y, 0., 0.)
+  //  : (fourComponentIndex == 2.)
+  //  ? vec4(0., 0., value.z, 0.)
+  //  : vec4(0., 0., 0., value.w);
+
+  gl_FragColor = (fourComponentIndex == 0)
   ? vec4(value.x)
-  : (texelFourComponent == 1.)
+  : (fourComponentIndex == 1)
   ? vec4(value.y)
-  : (texelFourComponent == 2.)
+  : (fourComponentIndex == 2)
   ? vec4(value.z)
   : value;
 
-
-
-//  gl_FragColor = (texelFourComponent == 0.)
-//    ? vec4(value.x)
-//    : value; //vec4(channel, texelChannel, -1., -1.);
-
 }
+
+

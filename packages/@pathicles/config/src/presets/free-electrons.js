@@ -17,13 +17,13 @@ export const freeElectrons = {
     mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,
-    iterationsPerSnapshots: 1,
-    iterations: 10
+    iterationsPerSnapshot: 1,
+    iterations: 10,
+    snapshotCount: 11,
+    iterationDurationOverC: 0.1
   },
 
   model: {
-    snapshots: 11,
-    iterationDurationOverC: 0.1,
     emitter: {
       position: [
         0,

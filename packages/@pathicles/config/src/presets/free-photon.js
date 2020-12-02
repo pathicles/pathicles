@@ -13,13 +13,13 @@ export const freePhoton = {
     loops: 0,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshots: 1,
-    iterations: 10
+    iterationsPerSnapshot: 2,
+    iterations: 10,
+    snapshotCount: 11,
+    iterationDurationOverC: 0.1
   },
 
   model: {
-    snapshots: 11,
-    iterationDurationOverC: 0.1,
     emitter: {
       particleCount: 1,
       particleType: 'PHOTON',

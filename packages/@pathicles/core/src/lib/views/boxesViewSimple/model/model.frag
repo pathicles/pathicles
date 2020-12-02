@@ -2,7 +2,7 @@ precision highp float;
 //#extension GL_OES_standard_derivatives : enable
 
 varying float v_visibility;
-varying vec3 vPosition;
+varying vec3 v_position;
 varying vec3 vScale;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
@@ -24,7 +24,6 @@ uniform vec3 shadowDirection;
 uniform sampler2D shadowMap;
 uniform float minBias;
 uniform float maxBias;
-
 
 #pragma glslify: edger = require("@pathicles/core/src/lib/shaders/edger.glsl");
 
@@ -57,11 +56,11 @@ DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-  //  if (v_visibility < .54) discard;
+    if (v_visibility < .5) discard;
 
   #ifdef lighting
 
-  vec3 viewDir = normalize(eye - vPosition);
+  vec3 viewDir = normalize(eye - v_position);
   vec3 normal = normalize(vNormal);
 
   directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
@@ -69,7 +68,7 @@ void main () {
   directionalLights[2] = DirectionalLight(shadowDirection+vec3(2., 0., -2.), vec3(1.), .25);
   directionalLights[3] = DirectionalLight(vec3(shadowDirection.x, -shadowDirection.y, shadowDirection.z), vec3(.5), .15);
 
-  //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(vPosition-eye))));
+  //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(v_position-eye))));
   vec3 edgedColor = vColor;
   vec3 finalColor = ambientLightAmount * vColor;
 
@@ -80,18 +79,18 @@ void main () {
     float diffAmt = diffuse(light.direction, normal) * light.intensity;
     float specAmt = specular(light.direction, viewDir, normal, 0.0) * light.intensity;
 
-    float shadow = vColorCorrection;//clamp(vColorCorrection + abs(2.+vPosition.y*5.), 0., 1.);
-    float specMask = 0.5 * edger(vUv, vScale, 1. * pathicleWidth, vNormalOrig) * smoothstep(5., 2., length(vPosition-eye));
+    float shadow = vColorCorrection;//clamp(vColorCorrection + abs(2.+v_position.y*5.), 0., 1.);
+    float specMask = 0.5 * edger(vUv, vScale, 1. * pathicleWidth, vNormalOrig) * smoothstep(5., 2., length(v_position-eye));
     vec3 specCol = specMask * sceneLight * specAmt;
     finalColor += shadow * vColor * diffAmt * light.color;
     finalColor += shadow * specCol * sceneLight;
   }
 
 
-  float fogDistance = length(vPosition);
+  float fogDistance = length(v_position);
   float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
 
-  gl_FragColor =vec4(finalColor, map(v_visibility, 0.0, 1., 0.95, 1.));
+  gl_FragColor =vec4(finalColor, map(v_visibility, 0.5, 1., 0.25, 1.));
   //  gl_FragColor =vec4(finalColor, 1.);
 
 

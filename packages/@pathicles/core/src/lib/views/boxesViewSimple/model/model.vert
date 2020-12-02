@@ -4,15 +4,14 @@ attribute vec3 aPosition;
 attribute vec3 aNormal;
 attribute vec2 aUV;
 
-attribute float aParticle;
-attribute float aStep;
+attribute float a_particle;
+attribute float a_snapshot;
 
-uniform float particleCount;
-uniform float snapshots;
-uniform float iterations;
+uniform int particleCount;
+uniform int snapshotCount;
+uniform int iterations;
 
-uniform float iteration;
-uniform float dt;
+
 uniform vec2 viewRange;
 
 uniform float pathicleWidth;
@@ -22,7 +21,7 @@ uniform float stageGrid_size;
 
 uniform sampler2D utColorCorrections;
 uniform sampler2D utParticleColorAndType;
-uniform sampler2D utPositionBuffer;
+uniform sampler2D ut_position;
 uniform sampler2D utVelocityBuffer;
 uniform mat4 projection, view, model;
 uniform vec3 eye;
@@ -33,7 +32,7 @@ uniform vec3 shadowDirection;
 
 varying float v_visibility;
 varying vec3 vScale;
-varying vec3 vPosition;
+varying vec3 v_position;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec2 vUv;
@@ -49,58 +48,52 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshots=snapshots);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
 
 
-
-float get_colorCorrection(float p) {
-  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
+float get_colorCorrection(int p) {
+  vec2 coords = vec2(float(p), 0.) / vec2(float(particleCount), 1.);
   return texture2D(utColorCorrections, coords).r;
 }
 
-vec4 get_color(float p) {
-  vec2 coords = vec2(p, 0.) / vec2(particleCount, 1.);
+vec4 get_color(int p) {
+  vec2 coords = vec2(float(p), 0.) / vec2(float(particleCount), 1.);
   return texture2D(utParticleColorAndType, coords);
 }
 
+float visibility(vec4 fourPosition) {
 
-float calculateToBeDiscarded(vec4 previousFourPosition, vec4 fourPosition) {
-
-  float undefinedBuffer = (fourPosition.w == 0. || previousFourPosition.w > fourPosition.w) ? 1.0 : 0.0;
-  float beyondProgressLower = (fourPosition.w / dt < viewRange[0] * iterations) ? 1.0 : 0.0;
-  float beyondProgressUpper =  (fourPosition.w / dt > viewRange[1] * iterations) ? 1.0 : 0.0;
-
-  float outsideGrid = (fourPosition.x > stageGrid_size || fourPosition.x < -stageGrid_size
-  || fourPosition.y > stageGrid_size || fourPosition.y < -stageGrid_size
-  || fourPosition.z > stageGrid_size || fourPosition.z < -stageGrid_size) ? 1.0 : 0.0;
-
-
-  return (snapshots-aStep-iteration)/snapshots * ((outsideGrid > 0. ||   beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
+  float beyondProgressLower = (viewRange[0] * float(snapshotCount) > float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
+  float beyondProgressUpper =  (viewRange[1] * float(snapshotCount) < float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
+  return  ((beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
 }
 
 void main () {
 
-  float previousStep = aStep + 1.;
-  vec4 previousFourPosition = readVariable(utPositionBuffer, aParticle, previousStep) + vec4(0.,0. *.1, 0., 0.);
-  vec4 fourPosition = readVariable(utPositionBuffer, aParticle, aStep) + vec4(0., 0. *.1, 0., 0.);
+  vec4 fourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot));
+  vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-  #ifdef lighting
-  vScale = vec3(pathicleWidth, pathicleHeight, length(previousFourPosition.xyz - fourPosition.xyz) - pathicleGap);
-  #endif
+#ifdef lighting
+  vScale = vec3(
+    pathicleWidth  * 1.,
+    pathicleHeight,
+    length(previousFourPosition.xyz - fourPosition.xyz) - pathicleGap);
+#endif
 
-  #ifdef shadow
-  vScale = vec3(pathicleWidth*5., pathicleHeight, length(previousFourPosition.xyz - fourPosition.xyz) - 0.*pathicleGap);
-  #endif
-
-
+#ifdef shadow
+  vScale = vec3(
+    pathicleWidth * 10.,
+    pathicleHeight,
+    length(previousFourPosition.xyz - fourPosition.xyz) );
+#endif
 
   vec3 scaledPosition = aPosition * vScale;
 
-  vPosition = vec3(1., 1., 1.) *
-  (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
-  + 0.5 * (fourPosition.xyz + previousFourPosition.xyz)));
+  v_position = vec3(1., 1., 1.) *
+    (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
+    + 0.5 * (fourPosition.xyz + previousFourPosition.xyz)));
 
 
   vNormalOrig = aNormal;
@@ -108,31 +101,27 @@ void main () {
 
   vUv = aUV;
 
-  vColor = get_color(aParticle).rgb;
-  vColorCorrection = get_colorCorrection(aParticle);
+  vColor = get_color(int(a_particle)).rgb;
+  vColorCorrection = get_colorCorrection(int(a_particle));
 
-  v_visibility = calculateToBeDiscarded(previousFourPosition, fourPosition);
+  v_visibility = visibility(fourPosition);
 
-  vShadowCoord = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(vPosition, 1.0)).xyz;
-
-
-  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
+  vShadowCoord = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(v_position, 1.0)).xyz;
 
 
-  vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
+#ifdef lighting
+//  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
+//
+//  vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
+//
+//  //  float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? 1. : 0.;
+//  vColorCorrection = amountInLight;
+  gl_Position = projection * view *  model * vec4(v_position, 1.0);
+#endif// lighting
 
 
-  #ifdef lighting
-
-  float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? .5 : 0.;
-  gl_Position = projection * view *  model * vec4(vPosition, 1.0);
-
-
-  #endif// lighting
-
-  #ifdef shadow
+#ifdef shadow
   gl_Position =vec4(vShadowCoord, 1.0);
-
-  #endif// shadow
+#endif// shadow
 }
 

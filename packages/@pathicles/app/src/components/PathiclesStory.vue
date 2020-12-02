@@ -75,7 +75,10 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                center: [-0.1, 1, 0]
+                center: [-0, 1.5, 0],
+                distance: 5,
+                theta: (-4 / 360) * 2 * Math.PI,
+                phi: (-1 / 360) * 2 * Math.PI
               }
             }
           },
@@ -91,8 +94,10 @@ export default {
               preset: 'story-electric',
               data: 'story-electric.js',
               camera: {
-                // distance: 10,
-                theta: (-45 / 360) * 2 * Math.PI
+                center: [-0, 1.5, 0],
+                distance: 5,
+                theta: (-90 / 360) * 2 * Math.PI,
+                phi: (-1 / 360) * 2 * Math.PI
               }
             }
           },
@@ -106,7 +111,13 @@ export default {
             image: '/images/story/story-dipole.jpg',
             pathicles: {
               preset: 'story-dipole',
-              data: 'story-dipole.js'
+              data: 'story-dipole.js',
+              camera: {
+                center: [-0, 1.5, 0],
+                distance: 5,
+                theta: (0 / 360) * 2 * Math.PI,
+                phi: (10 / 360) * 2 * Math.PI
+              }
             }
           },
           {
@@ -118,7 +129,13 @@ export default {
             image: '/images/story/story-quadrupole.jpg',
             pathicles: {
               preset: 'story-quadrupole',
-              data: 'story-quadrupole.js'
+              data: 'story-quadrupole.js',
+              camera: {
+                center: [-0, 1.5, 0],
+                distance: 5,
+                theta: (90 / 360) * 2 * Math.PI,
+                phi: (-1 / 360) * 2 * Math.PI
+              }
             }
           },
           {
@@ -129,9 +146,9 @@ export default {
               data: 'story-electric.js',
               camera: {
                 center: [0, 1, 0],
-                distance: 5,
+                distance: 2,
                 theta: (0 / 360) * 2 * Math.PI,
-                phi: (95 / 360) * 2 * Math.PI
+                phi: (5 / 360) * 2 * Math.PI
               }
             }
           }

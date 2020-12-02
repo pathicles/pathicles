@@ -14,13 +14,13 @@ export  function(regl, { variables, constants }) {
         ${constants.boundingBoxSize > 0 ? '#define BOUNDING_BOX_SIZE 1' : ''}
         precision highp float;
 
-        uniform sampler2D utPositionBuffer;
+        uniform sampler2D ut_position;
         uniform sampler2D utVelocityBuffer;
         uniform float tick;
         uniform float halfDeltaT;
         uniform float boundingBoxSize;
         uniform float particleCount;
-        uniform float snapshots;
+        uniform float snapshotCount;
 
         uniform float particleInteraction;
         uniform float electricFieldStrength;
@@ -82,12 +82,12 @@ export  function(regl, { variables, constants }) {
           return particleData;
         }
 
-        vec4 readVariable(utPositionBuffer, float p, float b) {
-          vec2 coords = vec2(p, b) / vec2(particleCount, snapshots);
-          return texture2D(utPositionBuffer, coords);
+        vec4 readVariable(ut_position, float p, float b) {
+          vec2 coords = vec2(p, b) / vec2(particleCount, snapshotCount);
+          return texture2D(ut_position, coords);
         }
         vec4 get_velocity(float p, float b) {
-          vec2 coords = vec2(p, b) / vec2(particleCount, snapshots);
+          vec2 coords = vec2(p, b) / vec2(particleCount, snapshotCount);
           return texture2D(utVelocityBuffer, coords);
         }
 
@@ -148,7 +148,7 @@ export  function(regl, { variables, constants }) {
   {
 
     vec4
-    previousValue = readVariable(utPositionBuffer, p, bufferPosition)
+    previousValue = readVariable(ut_position, p, bufferPosition)
 
     vec3
     previousPosition = previousValue.xyz
@@ -178,7 +178,7 @@ export  function(regl, { variables, constants }) {
     particleData = getParticleData(p)
 
     vec4
-    previousPosition = readVariable(utPositionBuffer, p, bufferPosition)
+    previousPosition = readVariable(ut_position, p, bufferPosition)
 
     vec4
     previousVelocity = get_velocity(p, bufferPosition)
@@ -226,9 +226,9 @@ export  function(regl, { variables, constants }) {
     b = floor(gl_FragCoord.y)
 
     float
-    nextBufferPosition = floor(mod(tick, snapshots))
+    nextBufferPosition = floor(mod(tick, snapshotCount))
     float
-    bufferPosition = (b == 0.) ? snapshots : b - 1.
+    bufferPosition = (b == 0.) ? snapshotCount : b - 1.
 
     if (nextBufferPosition == b) {
 
@@ -252,7 +252,7 @@ export  function(regl, { variables, constants }) {
       framebuffer: () => variables[variableName][iteration % 2],
       uniforms: {
         boundingBoxSize: constants.boundingBoxSize,
-        snapshots: constants.variables.snapshots,
+        snapshotCount: constants.variables.snapshotCount,
         particleCount: constants.model.particleCount,
         tick: iteration,
         halfDeltaT: constants.halfDeltaTOverC,
@@ -270,7 +270,7 @@ export  function(regl, { variables, constants }) {
         quadrupole_2_rotated: 0,
         quadrupole_2_minZ: 0,
         quadrupole_2_maxZ: 0,
-        utPositionBuffer: () => variables.position[(iteration + 1) % 2],
+        ut_position: () => variables.position[(iteration + 1) % 2],
         utVelocityBuffer: () =>
           variableName === 'position'
             ? variables.velocity[iteration % 2]

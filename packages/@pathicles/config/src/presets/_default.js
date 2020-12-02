@@ -13,13 +13,13 @@ export const defaultConfig = {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshots: 2,
-    iterations: 127
+    iterationsPerSnapshot: 2,
+    iterations: 127,
+    iterationDurationOverC: 0.25,
+    snapshotCount: 128
   },
 
   model: {
-    iterationDurationOverC: 0.25,
-    snapshots: 128,
     boundingBoxSize: -1,
     emitter: {
       // "electron", "photon", "proton", "mixed"

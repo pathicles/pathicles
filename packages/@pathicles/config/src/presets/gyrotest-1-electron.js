@@ -18,13 +18,13 @@ export const gyrotest_1_electron = {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshots: 1,
-    iterations: 17
+    iterationsPerSnapshot: 2,
+    iterations: 17,
+    snapshotCount: 16,
+    iterationDurationOverC: (2 * Math.PI) / 1
   },
 
   model: {
-    snapshots: 18,
-    iterationDurationOverC: (2 * Math.PI) / 1,
     emitter: {
       particleCount: 1,
       particleType: 'ELECTRON',

@@ -5,6 +5,7 @@ import bspline from 'b-spline'
 
 import { colorCorrection } from '../simulation/utils/colorCorrection'
 import { variableTexture } from '../simulation/utils/variableTexture'
+import { PARTICLE_TYPES } from '@pathicles/config'
 
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
@@ -16,7 +17,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     const variableType = 'float32'
     const particleCount = scene.configuration.model.emitter.particleCount
-    const snapshots = scene.configuration.model.snapshots
+    const snapshotCount = scene.configuration.runner.snapshotCount
 
     const particleColorsAndTypes = regl.texture({
       data: Array(particleCount * 4),
@@ -29,14 +30,17 @@ export default function (regl, scenes, stateVars, onStateChange) {
     //   type: variableType
     // })
 
+    scene.runner = scene.configuration.runner
+    scene.model = scene.configuration.model
+
     scene.variables = {
       referencePoint: [0, 0, 0],
       // colorCorrections,
-      snapshots,
+      snapshotCount,
       particleCount,
       iterations: 128,
       pingPong: 0,
-      iteration: snapshots,
+      iteration: snapshotCount,
       particleColorsAndTypes,
       position: {
         buffers: [
@@ -44,7 +48,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
             regl,
             {
               width: particleCount,
-              height: snapshots * 4
+              height: snapshotCount * 4
             },
             variableType,
             new Float32Array(data.position)
@@ -55,9 +59,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
 
     performance.mark('scene data')
     scene.variables.particleColorsAndTypes({
-      data: data.particleTypes
-        .map((p) => scene.configuration.colors[p].concat(p))
-        .flat(),
+      data: data.particleTypes.map((p) => PARTICLE_TYPES[p].color.concat(p)),
       shape: [particleCount, 1, 4]
     })
 
@@ -87,14 +89,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
       particles,
       configuration.model.emitter.position
     )
-
-    // ({
-    //   data: data.particleTypes
-    //     .map((p, i) => [colorCorrectionData[i], 0, 0, 0])
-    //     .flat(),
-    //   shape: [particleCount, 1, 4],
-    //   type: variableType
-    // })
 
     scene.model = {
       boundingBoxSize: configuration.model.boundingBoxSize,
@@ -152,7 +146,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       ((t - state.scene._t0_normalized) * scenes.duration) /
       state.scene.duration
 
-    state.viewRange = [state.sceneProgress - 0.1, state.sceneProgress + 0.1]
+    state.viewRange = [state.sceneProgress - 0.25, state.sceneProgress + 0.25]
     // state.sceneProgress < 0.5
     //   ? [0, state.sceneProgress * 2]
     //   : [state.sceneProgress * 2 - 1, 1]

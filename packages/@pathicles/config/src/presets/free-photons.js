@@ -9,22 +9,21 @@ export const freePhotons = {
   },
 
   runner: {
-    prerender: true,
-    loops: 0,
-
-    mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshots: 1,
-    iterations: 8
+    prerender: false,
+    loops: 2,
+    mode: RUNNER_MODE.STEPWISE,
+    iterationsPerSnapshot: 2,
+    iterations: 10,
+    snapshotCount: 11,
+    iterationDurationOverC: 0.1
   },
 
   model: {
-    snapshots: 11,
-    iterationDurationOverC: 0.2,
     emitter: {
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',
       direction: [0, 0, 1],
-      position: [0, 0, -1],
+      position: [0, 0, 0],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 1

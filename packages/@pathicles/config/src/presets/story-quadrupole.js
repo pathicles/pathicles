@@ -14,7 +14,6 @@ export const storyQuadrupole = {
       phi: (-3 / 360) * 2 * Math.PI
     }
   },
-  runner: {},
   model: {
     emitter: {
       particleCount: 121,
