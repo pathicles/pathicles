@@ -74,9 +74,28 @@ export default function (regl, { runner, variables, model }) {
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
+      const snapshots = Math.floor(
+        variables.iteration / variables.iterationsPerSnapshot
+      )
+
+      const segments = (variables.segments =
+        variables.particleCount *
+        Math.min(
+          // variables.iteration,
+          variables.iteration < variables.iterationsPerSnapshot
+            ? variables.iteration
+            : snapshots +
+                ((variables.iteration + 1) % variables.iterationsPerSnapshot),
+          variables.snapshotCount - 1
+        ))
+      // console.log({
+      //   iteration: variables.iteration,
+      //   segments,
+      //   snapshots
+      // })
+
       const takeSnapshot =
         variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
-      console.log({ takeSnapshot })
       pushVelocity({
         iteration: variables.iteration,
         takeSnapshot

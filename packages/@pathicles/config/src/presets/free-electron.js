@@ -12,14 +12,18 @@ export const freeElectron = {
     }
   },
 
+  debug: {
+    logPushing: true
+  },
+
   runner: {
     prerender: false,
     mode: RUNNER_MODE.STEPWISE,
 
     loops: 0,
-    iterationsPerSnapshot: 1,
-    iterations: 64,
-    snapshotCount: 16,
+    iterationsPerSnapshot: 2,
+    iterations: 20,
+    snapshotCount: 11,
     iterationDurationOverC: 0.1
   },
 

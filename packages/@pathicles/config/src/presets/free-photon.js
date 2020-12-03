@@ -18,7 +18,7 @@ export const freePhoton = {
     loops: 0,
 
     mode: RUNNER_MODE.STEPWISE,
-    iterationsPerSnapshot: 2,
+    iterationsPerSnapshot: 1,
     iterations: 10,
     snapshotCount: 11,
     iterationDurationOverC: 0.1
@@ -30,7 +30,7 @@ export const freePhoton = {
       particleType: 'PHOTON',
       direction: [0, 0, 1],
       position: [
-        0,
+        0.1,
         ((defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
           2) *

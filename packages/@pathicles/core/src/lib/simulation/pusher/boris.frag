@@ -167,9 +167,9 @@ vec4 readVariable(int particle, int snapshot) {
 
 void main () {
 
-  int particle = int(gl_FragCoord.x - .5);
-  int snapshot = int(floor((gl_FragCoord.y - .5) / 4.));
-  int fourComponentIndex = int(floor(gl_FragCoord.y - .5))  - snapshot * 4;
+  int particle = int(gl_FragCoord.y - .5);
+  int snapshot = int(floor((gl_FragCoord.x - .5) / 4.));
+  int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
 
   initLatticeData();
 
@@ -191,12 +191,12 @@ void main () {
   //  : vec4(0., 0., 0., value.w);
 
   gl_FragColor = (fourComponentIndex == 0)
-  ? vec4(value.x)
+  ? vec4(value.x, 0., 0., 0.)
   : (fourComponentIndex == 1)
-  ? vec4(value.y)
+  ? vec4(value.y, 0., 0., 0.)
   : (fourComponentIndex == 2)
-  ? vec4(value.z)
-  : value;
+  ? vec4(value.z, 0., 0., 0.)
+  : vec4(value.w, 0., 0., 0.);
 
 
 //  gl_FragColor = vec4(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);

@@ -22,7 +22,7 @@ export const gyrotest_1_electron = {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.STEPWISE,
-    iterationsPerSnapshot: 1,
+    iterationsPerSnapshot: 2,
     iterations: 17,
     snapshotCount: 16,
     iterationDurationOverC: (2 * Math.PI) / 1
@@ -32,14 +32,15 @@ export const gyrotest_1_electron = {
     emitter: {
       particleCount: 2,
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
+      bunchShape: 'COLUMN',
       direction: [0, 0, 1],
       // position: [1, 2, 3],
       position: [
         -1,
         defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight *
-          1,
+          1 *
+          10,
         0
       ],
       directionJitter: [0, 0, 0],

@@ -11,8 +11,8 @@ export class VariableBuffers {
     this.colorType = colorType
     this.initialData = initialData
     this.pingPong = 0
-    this.width = particleCount
-    this.height = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT
+    const width = (this.width = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT)
+    const height = (this.height = particleCount)
     this.buffers = [0, 1].map(() => {
       return regl.framebuffer({
         height: this.height,
@@ -20,11 +20,7 @@ export class VariableBuffers {
         format: 'rgba',
         colorType: colorType,
         depthStencil: false,
-        color: variableTexture(
-          regl,
-          { width: this.width, height: this.height },
-          colorType
-        )
+        color: variableTexture(regl, { width, height }, colorType)
       })
     })
 
@@ -41,21 +37,21 @@ export class VariableBuffers {
                 ...acc,
                 ...[
                   fourVector[0],
+                  0,
+                  0,
+                  0,
                   fourVector[1],
+                  0,
+                  0,
+                  0,
                   fourVector[2],
+                  0,
+                  0,
+                  0,
                   fourVector[3],
-                  fourVector[0],
-                  fourVector[1],
-                  fourVector[2],
-                  fourVector[3],
-                  fourVector[0],
-                  fourVector[1],
-                  fourVector[2],
-                  fourVector[3],
-                  fourVector[0],
-                  fourVector[1],
-                  fourVector[2],
-                  fourVector[3]
+                  0,
+                  0,
+                  0
                   // fourVector[0],
                   // fourVector[0],
                   // fourVector[0],
@@ -123,12 +119,13 @@ export class VariableBuffers {
               )
           )
 
-    console.log({ data, typedData })
+    // console.log({ width: this.width, height: this.height, data, typedData })
+    // console.log(this.buffers[0].color[0])
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
-        width: this.width,
+        width: 4,
         height: this.height,
-        data: typedData
+        data
       })
     )
 
@@ -179,12 +176,11 @@ export class VariableBuffers {
 
       for (let b = 0; b < this.snapshotCount; b++) {
         const offset = (p * this.snapshotCount + b) * 4 * 4
-
         particle.push([
           float32Array[offset],
-          float32Array[offset + 4 + 1],
-          float32Array[offset + 8 + 2],
-          float32Array[offset + 12 + 3]
+          float32Array[offset + 4],
+          float32Array[offset + 8],
+          float32Array[offset + 12]
         ])
       }
     }

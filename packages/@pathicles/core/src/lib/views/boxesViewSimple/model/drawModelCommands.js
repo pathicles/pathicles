@@ -43,7 +43,7 @@ export default function (regl, { runner, variables, view }, shadow) {
         face: 'back'
       },
       elements: geometry.cells,
-      instances: variables.particleCount * variables.snapshotCount,
+      instances: () => variables.segments,
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,

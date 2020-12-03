@@ -23,6 +23,10 @@ export const freeElectrons = {
     iterationDurationOverC: 0.1
   },
 
+  debug: {
+    logPushing: true
+  },
+
   model: {
     emitter: {
       position: [
