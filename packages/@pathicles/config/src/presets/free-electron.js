@@ -23,7 +23,7 @@ export const freeElectron = {
     loops: 0,
     iterationsPerSnapshot: 2,
     iterations: 20,
-    snapshotCount: 11,
+    snapshotCount: 12,
     iterationDurationOverC: 0.1
   },
 

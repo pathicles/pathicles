@@ -175,9 +175,11 @@ void main () {
 
   vec4 value = (snapshot == 0)
     ? push(particle)
-    : (snapshot  < iterationsPerSnapshot || takeSnapshot == 1)
-      ? readVariable(particle, snapshot - 1)
-      : readVariable(particle, snapshot);
+    : (takeSnapshot == 1)
+      ? readVariable(particle, snapshot)
+      : readVariable(particle, snapshot -1);
+//      : readVariable(particle, snapshot)
+
 //  (snapshot * iterationsPerSnapshot <=  iteration)
 //        ? readVariable(particle, snapshot)
 //        : vec4(1.);

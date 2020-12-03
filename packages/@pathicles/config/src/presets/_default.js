@@ -25,7 +25,7 @@ export const defaultConfig = {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleCount: 16,
+      particleCount: 128,
       particleSeparation: 0.1,
       gamma: 1.25,
       position: [0, 0, 0],
