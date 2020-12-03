@@ -14,8 +14,6 @@ export class Simulation {
 
     this.configuration = { model, runner, debug }
 
-    this._logStore = []
-
     const colorType = 'float'
 
     const { snapshotCount } = runner
@@ -33,6 +31,7 @@ export class Simulation {
 
     this.variables = {
       iterations: runner.iterations,
+      iterationsPerSnapshot: runner.iterationsPerSnapshot,
       particleCount,
       snapshotCount,
       colorType,
@@ -93,6 +92,8 @@ export class Simulation {
       }
     }
 
+    this.log()
+
     this.pusher = pushBoris(this._regl, {
       runner: this.runner,
       variables: this.variables,
@@ -116,8 +117,9 @@ export class Simulation {
   }
 
   log() {
-    if (this.configuration.logPushing) {
-      this._logStore.push(this.logEntry())
+    if (this.configuration.debug.logPushing) {
+      if (!this._logStore) this._logStore = []
+      this._logStore.push(this.dump())
     }
   }
 

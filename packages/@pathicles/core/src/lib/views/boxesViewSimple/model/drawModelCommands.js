@@ -43,12 +43,7 @@ export default function (regl, { runner, variables, view }, shadow) {
         face: 'back'
       },
       elements: geometry.cells,
-      instances: () => {
-        return (
-          variables.particleCount *
-          Math.min(variables.iteration, variables.snapshotCount)
-        )
-      },
+      instances: variables.particleCount * variables.snapshotCount,
       attributes: {
         aPosition: geometry.positions,
         aNormal: geometry.normals,

@@ -2,6 +2,11 @@ import { defaultConfig } from './_default'
 import { RUNNER_MODE } from '../constants'
 export const freePhoton = {
   name: 'free-photon',
+
+  debug: {
+    logPushing: true
+  },
+
   view: {
     camera: {
       eye: [2, 0.25, 2],
@@ -9,10 +14,10 @@ export const freePhoton = {
     }
   },
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
 
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.STEPWISE,
     iterationsPerSnapshot: 2,
     iterations: 10,
     snapshotCount: 11,
@@ -26,9 +31,11 @@ export const freePhoton = {
       direction: [0, 0, 1],
       position: [
         0,
-        (defaultConfig.view.pathicleWidth *
+        ((defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
+          2) *
           2,
+
         0
       ],
       directionJitter: [0, 0, 0],

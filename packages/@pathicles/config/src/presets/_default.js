@@ -7,7 +7,7 @@ export const defaultConfig = {
     logPerformance: false,
     profile: false,
     showTextures: false,
-    showTextureScale: 2
+    showTextureScale: 10
   },
   runner: {
     prerender: false,

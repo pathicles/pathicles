@@ -65,23 +65,25 @@ export default function (regl, { runner, variables, model }) {
   return (n = 1) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
-      const z = variables.iteration * runner.halfDeltaTOverC * 2
-
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
+
+      const z = variables.iteration * runner.halfDeltaTOverC * 2
+
       variables.referencePoint =
         model.lattice.beamline.length &&
         model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
+      const takeSnapshot =
+        variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
+      console.log({ takeSnapshot })
       pushVelocity({
         iteration: variables.iteration,
-        takeSnapshot:
-          variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
+        takeSnapshot
       })
       pushPosition({
         iteration: variables.iteration,
-        takeSnapshot:
-          variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
+        takeSnapshot
       })
     }
   }

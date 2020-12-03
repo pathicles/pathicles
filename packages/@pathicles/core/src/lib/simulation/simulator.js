@@ -2,7 +2,7 @@
 
 import freeCameraFactory from '../utils/freeCameraFactory'
 import { Simulation } from './simulation'
-import SimulationFSM from '../simulation/simulationFSM'
+import { SimulationRunner } from './simulationRunner'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { boxesViewSimple } from '../views/boxesViewSimple'
 import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
@@ -85,13 +85,7 @@ export class ReglSimulatorInstance {
     this.drawTexture = drawTextureCommand(regl)
 
     this.performanceLogger.start('init.simulation')
-    this.simulation = new Simulation(
-      regl,
-      {
-        ...this.config
-      },
-      this.support
-    )
+    this.simulation = new Simulation(regl, this.config, this.support)
 
     this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
@@ -101,9 +95,10 @@ export class ReglSimulatorInstance {
       view: this.config.view
     })
     this.performanceLogger.start('init.runner')
-    this.pathiclesRunner = new SimulationFSM(this.simulation, {
-      ...this.config.runner
-    })
+    this.pathiclesRunner = new SimulationRunner(
+      this.simulation,
+      this.config.runner
+    )
   }
 
   run(regl) {
@@ -111,9 +106,6 @@ export class ReglSimulatorInstance {
       return regl.frame(() => {
         this.performanceLogger.start('pathiclesRunner.next')
         const { changed } = this.pathiclesRunner.next()
-
-        // console.log(this.simulation.dump())
-        // debugger
 
         this.camera.doAutorotate()
         this.camera.tick()

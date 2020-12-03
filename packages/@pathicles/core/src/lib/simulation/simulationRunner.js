@@ -14,7 +14,7 @@ export const STATES = {
   RESTART
 }
 
-export default class SimulationFSM {
+export class SimulationRunner {
   constructor(
     simulation,
     {
@@ -85,7 +85,7 @@ export default class SimulationFSM {
           this.fsm.state = STATES.PAUSED
         }
       } else {
-        this._simulation.push(this._iterationsPerSnapshot)
+        this._simulation.push()
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -94,7 +94,7 @@ export default class SimulationFSM {
     } else if (this.fsm.state === STATES.RESTART) {
       this._loopCount++
       this._simulation.reset()
-      this._simulation.push(this._iterationsPerSnapshot)
+      this._simulation.push()
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE

@@ -63,7 +63,9 @@ vec4 get_color(int p) {
 
 float visibility(vec4 fourPosition) {
 
-  float beyondProgressLower = (viewRange[0] * float(snapshotCount) > float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
+  return 1.;
+
+  float beyondProgressLower = (viewRange[0] * float(snapshotCount) >= float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
   float beyondProgressUpper =  (viewRange[1] * float(snapshotCount) < float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
   return  ((beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
 }
@@ -72,6 +74,10 @@ void main () {
 
   vec4 fourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot));
   vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
+
+
+//  fourPosition.y += a_snapshot/10.;
+//  previousFourPosition.y +=  0.*a_snapshot/10.;
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 

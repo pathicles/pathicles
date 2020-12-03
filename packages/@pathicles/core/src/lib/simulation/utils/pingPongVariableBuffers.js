@@ -31,33 +31,64 @@ export class VariableBuffers {
     if (initialData) this.load(initialData)
   }
 
-  load(data) {
-    // console.log(fourVectors)
-    // const transformed = data.reduce((acc, fourVector) => {
-    //   return acc.concat(
-    //     ...new Array(FOUR_VECTOR_COMPONENT_COUNT)
-    //       .fill(0)
-    //       .map((v, i) => [
-    //         fourVector[i],
-    //         fourVector[i],
-    //         fourVector[i],
-    //         fourVector[i]
-    //       ])
-    //   )
-    // }, [])
-    // console.log(transformed)
-
+  load(fourVectors) {
+    const arrayLength = this.particleCount * FOUR_VECTOR_COMPONENT_COUNT * 4
+    const data =
+      this.colorType === 'float'
+        ? new Float32Array(
+            fourVectors.reduce((acc, fourVector) => {
+              return [
+                ...acc,
+                ...[
+                  fourVector[0],
+                  fourVector[1],
+                  fourVector[2],
+                  fourVector[3],
+                  fourVector[0],
+                  fourVector[1],
+                  fourVector[2],
+                  fourVector[3],
+                  fourVector[0],
+                  fourVector[1],
+                  fourVector[2],
+                  fourVector[3],
+                  fourVector[0],
+                  fourVector[1],
+                  fourVector[2],
+                  fourVector[3]
+                  // fourVector[0],
+                  // fourVector[0],
+                  // fourVector[0],
+                  // fourVector[0],
+                  // fourVector[1],
+                  // fourVector[1],
+                  // fourVector[1],
+                  // fourVector[1],
+                  // fourVector[2],
+                  // fourVector[2],
+                  // fourVector[2],
+                  // fourVector[2],
+                  // fourVector[3],
+                  // fourVector[3],
+                  // fourVector[3],
+                  // fourVector[3]
+                ]
+              ]
+            }, [])
+          )
+        : new Uint8Array(arrayLength).fill(0)
     // console.log(
+    //   fourVectors,
+    //   // new Float32Array(
     //   new Array(FOUR_VECTOR_COMPONENT_COUNT)
-    //     .fill(0)
-    //     .map((v, i) => {})
-    //     .fill(fourVectors.reduce((acc, val) => acc.concat(val), []))
+    //     .fill(data.reduce((acc, val) => acc.concat(val), []))
     //     .flat()
-    //     .concat(
-    //       new Array(
-    //         this.width * (this.height - 1) * FOUR_VECTOR_COMPONENT_COUNT * 4
-    //       ).fill(0)
-    //     )
+    //   // .concat(
+    //   //   new Array(
+    //   //     this.width * (this.height - 1) * FOUR_VECTOR_COMPONENT_COUNT * 4
+    //   //   ).fill(0)
+    //   // )
+    //   // )
     // )
     const typedData =
       this.colorType === 'float'
@@ -91,7 +122,8 @@ export class VariableBuffers {
                 ).fill(0)
               )
           )
-    // console.log({ transformed, typedData })
+
+    console.log({ data, typedData })
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
         width: this.width,
@@ -99,6 +131,7 @@ export class VariableBuffers {
         data: typedData
       })
     )
+
     return this
   }
 

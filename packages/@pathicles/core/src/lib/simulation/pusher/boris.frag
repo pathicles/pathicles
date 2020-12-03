@@ -175,11 +175,12 @@ void main () {
 
   vec4 value = (snapshot == 0)
     ? push(particle)
-    : (snapshot  <= iterationsPerSnapshot)
+    : (snapshot  < iterationsPerSnapshot || takeSnapshot == 1)
       ? readVariable(particle, snapshot - 1)
-      : (snapshot * iterationsPerSnapshot < iteration)
-        ? readVariable(particle, snapshot - takeSnapshot)
-        : vec4(0.);
+      : readVariable(particle, snapshot);
+//  (snapshot * iterationsPerSnapshot <=  iteration)
+//        ? readVariable(particle, snapshot)
+//        : vec4(1.);
 
   //  gl_FragColor = (fourComponentIndex == 0.)
   //  ? vec4(value.x, 0., 0., 0.)
@@ -196,6 +197,9 @@ void main () {
   : (fourComponentIndex == 2)
   ? vec4(value.z)
   : value;
+
+
+//  gl_FragColor = vec4(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);
 
 }
 
