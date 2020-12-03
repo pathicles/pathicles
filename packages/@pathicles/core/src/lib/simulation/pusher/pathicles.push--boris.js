@@ -81,11 +81,14 @@ export default function (regl, { runner, variables, model }) {
         variables.iteration - snapshots * variables.iterationsPerSnapshot
 
       const segments = (variables.segments =
-        variables.particleCount * (snapshots + unsnapshots))
+        variables.particleCount *
+        Math.min(snapshots + unsnapshots, variables.snapshotCount - 1))
 
       const takeSnapshot =
-        variables.iteration % runner.iterationsPerSnapshot === 0 ? 1 : 0
-      console.log({ snapshots, unsnapshots, segments })
+        runner.iterationsPerSnapshot !== 1 &&
+        variables.iteration % runner.iterationsPerSnapshot === 0
+          ? 1
+          : 0
       pushVelocity({
         iteration: variables.iteration,
         takeSnapshot

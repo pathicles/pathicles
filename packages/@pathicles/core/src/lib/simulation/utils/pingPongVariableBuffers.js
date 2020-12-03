@@ -17,7 +17,7 @@ export class VariableBuffers {
       return regl.framebuffer({
         height: this.height,
         width: this.width,
-        format: 'rgba',
+        // format: 'luminance',
         colorType: colorType,
         depthStencil: false,
         color: variableTexture(regl, { width, height }, colorType)
@@ -28,7 +28,7 @@ export class VariableBuffers {
   }
 
   load(fourVectors) {
-    const arrayLength = this.particleCount * FOUR_VECTOR_COMPONENT_COUNT * 4
+    const arrayLength = this.particleCount * FOUR_VECTOR_COMPONENT_COUNT
     const data =
       this.colorType === 'float'
         ? new Float32Array(
@@ -126,6 +126,7 @@ export class VariableBuffers {
         width: 4,
         height: this.height,
         data
+        // channels: 1
       })
     )
 

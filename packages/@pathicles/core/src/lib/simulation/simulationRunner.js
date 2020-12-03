@@ -21,6 +21,7 @@ export class SimulationRunner {
       prerender = false,
       iterations = -1,
       iterationsPerSnapshot = 1,
+      iterationsPerTick = 1,
       loops = 0,
       mode = RUNNER_MODE.STEPWISE
     }
@@ -31,7 +32,7 @@ export class SimulationRunner {
       iterations <= 0
         ? this._simulation.variables.snapshotCount - 1
         : iterations
-    this._iterationsPerSnapshot = iterationsPerSnapshot
+    this._iterationsPerTick = iterationsPerTick
 
     this._loopCountMax = loops
     this._isLooping = loops > 0
@@ -85,7 +86,7 @@ export class SimulationRunner {
           this.fsm.state = STATES.PAUSED
         }
       } else {
-        this._simulation.push()
+        this._simulation.push(this.iterationsPerTick)
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -94,7 +95,7 @@ export class SimulationRunner {
     } else if (this.fsm.state === STATES.RESTART) {
       this._loopCount++
       this._simulation.reset()
-      this._simulation.push()
+      this._simulation.push(this.iterationsPerTick)
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE

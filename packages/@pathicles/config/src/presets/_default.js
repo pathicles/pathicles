@@ -7,13 +7,13 @@ export const defaultConfig = {
     logPerformance: false,
     profile: false,
     showTextures: false,
-    showTextureScale: 10
+    showTextureScale: 2
   },
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshot: 2,
+    iterationsPerSnapshot: 1,
     iterations: 127,
     iterationDurationOverC: 0.25,
     snapshotCount: 128

@@ -13,15 +13,15 @@ export const freeElectron = {
   },
 
   debug: {
-    logPushing: true
+    logPushing: false
   },
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,
-    iterationsPerSnapshot: 2,
+    iterationsPerSnapshot: 1,
     iterations: 20,
     snapshotCount: 12,
     iterationDurationOverC: 0.1

@@ -21,7 +21,7 @@ export const gyrotest_1_electron = {
   runner: {
     prerender: false,
     loops: 0,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 2,
     iterations: 17,
     snapshotCount: 16,
@@ -30,7 +30,7 @@ export const gyrotest_1_electron = {
 
   model: {
     emitter: {
-      particleCount: 2,
+      particleCount: 1,
       particleType: 'ELECTRON',
       bunchShape: 'COLUMN',
       direction: [0, 0, 1],

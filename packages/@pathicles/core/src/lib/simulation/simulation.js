@@ -32,6 +32,7 @@ export class Simulation {
     this.variables = {
       iterations: runner.iterations,
       iterationsPerSnapshot: runner.iterationsPerSnapshot,
+      iterationsPerTick: runner.iterationsPerTick,
       particleCount,
       snapshotCount,
       colorType,

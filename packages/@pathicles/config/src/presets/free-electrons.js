@@ -14,7 +14,7 @@ export const freeElectrons = {
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
 
     loops: 0,
     iterationsPerSnapshot: 2,

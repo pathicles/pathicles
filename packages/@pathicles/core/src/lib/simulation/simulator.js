@@ -136,14 +136,14 @@ export class ReglSimulatorInstance {
                     this.config.debug.showTextureScale,
                   scale: this.config.debug.showTextureScale
                 })
-                this.drawTexture({
-                  texture: this.view.shadow.fbo,
-                  x0:
-                    2 *
-                    (this.simulation.variables.particleCount + 1) *
-                    this.config.debug.showTextureScale,
-                  scale: 0.5
-                })
+                // this.drawTexture({
+                //   texture: this.view.shadow.fbo,
+                //   x0:
+                //     2 *
+                //     (this.simulation.variables.particleCount + 1) *
+                //     this.config.debug.showTextureScale,
+                //   scale: 0.5
+                // })
               }
             }
           )

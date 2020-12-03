@@ -192,13 +192,21 @@ void main () {
   //  ? vec4(0., 0., value.z, 0.)
   //  : vec4(0., 0., 0., value.w);
 
+//  gl_FragColor = (fourComponentIndex == 0)
+//    ? vec4(value.x, 0., 0., 0.)
+//    : (fourComponentIndex == 1)
+//    ? vec4(value.y, 0., 0., 0.)
+//    : (fourComponentIndex == 2)
+//    ? vec4(value.z, 0., 0., 0.)
+//    : vec4(value.w, 0., 0., 0.);
+
   gl_FragColor = (fourComponentIndex == 0)
-  ? vec4(value.x, 0., 0., 0.)
-  : (fourComponentIndex == 1)
-  ? vec4(value.y, 0., 0., 0.)
-  : (fourComponentIndex == 2)
-  ? vec4(value.z, 0., 0., 0.)
-  : vec4(value.w, 0., 0., 0.);
+    ? vec4(value.x)
+    : (fourComponentIndex == 1)
+    ? vec4(value.y)
+    : (fourComponentIndex == 2)
+    ? vec4(value.z)
+    : vec4(value.w);
 
 
 //  gl_FragColor = vec4(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);

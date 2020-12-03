@@ -12,10 +12,11 @@ export const random = {
     prerender: false,
     loops: 5,
 
-    mode: RUNNER_MODE.STEPWISE,
-    iterationsPerSnapshot: 2,
+    mode: RUNNER_MODE.FRAMEWISE,
+    iterationsPerTick: 1,
+    iterationsPerSnapshot: 1,
     iterations: 512,
-    snapshotCount: 16,
+    snapshotCount: 512 / 4,
     iterationDurationOverC: 0.1
   },
 

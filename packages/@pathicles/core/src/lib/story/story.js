@@ -75,16 +75,7 @@ export class ReglViewerInstance {
         sceneId: 0,
         viewRange: [0, 0]
       },
-      () => {
-        // if (state.scene.position) this.variables.position = state.scene.position
-        // if (state.scene.particleColorsAndTypes) {
-        //   this.variables.particleColorsAndTypes =
-        //     state.scene.particleColorsAndTypes
-        // }
-        // if (state.scene.colorCorrections) {
-        //   this.variables.colorCorrections = state.scene.colorCorrections
-        // }
-      }
+      () => {}
     )
     this.variables = this.story.getState().scene.variables
     this.model = this.story.getState().scene.model
@@ -121,6 +112,7 @@ export class ReglViewerInstance {
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
+        viewRange = [0, 1]
 
         sceneProgress = Math.min(sceneProgress, 1)
 
@@ -163,13 +155,11 @@ export class ReglViewerInstance {
                 modelTranslateY: this.modelTranslateY,
                 viewRange
               })
-              if (storyState.scene.configuration.debug.showTextures) {
+              if (true || this.config.debug.showTextures) {
                 this.drawTexture({
                   texture: storyState.scene.variables.position.buffers[0],
                   x0: 0
                 })
-
-                // this.drawTexture({ texture: this.view.shadow.fbo, x0: 400 })
               }
             }
           )

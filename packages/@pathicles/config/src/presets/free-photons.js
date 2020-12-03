@@ -11,7 +11,7 @@ export const freePhotons = {
   runner: {
     prerender: false,
     loops: 2,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 2,
     iterations: 10,
     snapshotCount: 11,
