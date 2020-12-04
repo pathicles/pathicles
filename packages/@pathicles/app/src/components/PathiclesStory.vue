@@ -2,6 +2,9 @@
 <template lang="pug">
 .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
   .debug.debug-only {{vp}}
+  //img#storyDipolePNG(:src="storyDipolePNG")
+  //img#storyElectricPNG(:src="storyElectricPNG")
+  //img#storyQuadrupolePNG(:src="storyQuadrupolePNG")
   .canvas-container(ref="canvasContainer")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--  .scene-backgrounds    -->
@@ -49,8 +52,11 @@ import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
 import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
+// import storyDipolePNG from '@pathicles/prerendered/files/story-dipole.png'
+// import storyElectricPNG from '@pathicles/prerendered/files/story-electric.png'
 import storyElectric from '@pathicles/prerendered/files/story-electric.json'
 import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
+// import storyQuadrupolePNG from '@pathicles/prerendered/files/story-quadrupole.png'
 
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
@@ -77,8 +83,8 @@ export default {
               camera: {
                 center: [-0, 1.5, 0],
                 distance: 5,
-                theta: (-4 / 360) * 2 * Math.PI,
-                phi: (-1 / 360) * 2 * Math.PI
+                theta: (0 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
               }
             }
           },
@@ -95,7 +101,7 @@ export default {
               data: 'story-electric.js',
               camera: {
                 center: [-0, 1.5, 0],
-                distance: 5,
+                distance: 2,
                 theta: (-90 / 360) * 2 * Math.PI,
                 phi: (-1 / 360) * 2 * Math.PI
               }
@@ -114,7 +120,7 @@ export default {
               data: 'story-dipole.js',
               camera: {
                 center: [-0, 1.5, 0],
-                distance: 5,
+                distance: 2,
                 theta: (0 / 360) * 2 * Math.PI,
                 phi: (10 / 360) * 2 * Math.PI
               }
@@ -132,7 +138,7 @@ export default {
               data: 'story-quadrupole.js',
               camera: {
                 center: [-0, 1.5, 0],
-                distance: 5,
+                distance: 2,
                 theta: (90 / 360) * 2 * Math.PI,
                 phi: (-1 / 360) * 2 * Math.PI
               }
@@ -141,14 +147,14 @@ export default {
           {
             type: 'options',
             pathicles: {
-              autoLoop: false,
+              autoLoop: true,
               preset: 'story-empty',
               data: 'story-electric.js',
               camera: {
                 center: [0, 1, 0],
                 distance: 2,
                 theta: (0 / 360) * 2 * Math.PI,
-                phi: (5 / 360) * 2 * Math.PI
+                phi: (10 / 360) * 2 * Math.PI
               }
             }
           }

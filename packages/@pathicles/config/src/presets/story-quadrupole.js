@@ -16,14 +16,12 @@ export const storyQuadrupole = {
   },
   model: {
     emitter: {
-      particleCount: 121,
+      bunchShape: 'SQUARE_XY',
+      particleSeparation: 0.05,
       particleType: 'PROTON',
-      // particleSeparation: 0.25,
       direction: [0, 0, -1],
       position: [0, 1.5, 10],
-      directionJitter: [0.05, 0.05, 0],
-      positionJitter: [0.0, 0.0, 0.0],
-      gamma: 2
+      gamma: 5
     },
 
     lattice: {
@@ -41,6 +39,10 @@ export const storyQuadrupole = {
         l_5: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 0 //(20 - 5 * quadLength) / 2
+        },
+        l_20: {
+          type: LATTICE_ELEMENT_TYPES.DRIF,
+          l: 20 //(20 - 5 * quadLength) / 2
         },
         l_1: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
@@ -63,18 +65,7 @@ export const storyQuadrupole = {
         'q2',
         'l_1',
         'q1',
-        'l_1',
-        'q2',
-        'l_1',
-        'q1',
-        'l_1',
-        'q2',
-        'l_1',
-        'q1',
-        'l_1',
-        'q2',
-        'l_1',
-        'l_5'
+        'l_20'
       ],
       origin: {
         phi: (-Math.PI / 4) * 3,

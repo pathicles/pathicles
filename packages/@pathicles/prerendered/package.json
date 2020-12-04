@@ -7,6 +7,8 @@
     "prerender": "node ./tools/prerender.js"
   },
   "devDependencies": {
+    "save-pixels": "^2.3.4",
+    "ndarray": "^1.0.19",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-chai-friendly": "^0.6.0",

@@ -33,9 +33,7 @@ export function particleTypesFromDescriptor(particleTypeDescriptor, n = 0) {
 }
 
 export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
-  return position.map(
-    (d, i) => d + Math.floor(boundedRandom() * jitter[i] * 100) / 100
-  )
+  return position.map((d, i) => boundedRandom() * jitter[i])
 }
 
 export function jitterDirection({
@@ -66,6 +64,12 @@ export function ParticleCollection({
   directionJitter = [0, 0, 0]
 }) {
   // create particle collection
+  const gammaFn = typeof gamma == 'function' ? gamma : ({ p }) => gamma
+  const directionFn =
+    typeof direction == 'function'
+      ? direction
+      : ({ p, localPosition }) => direction
+
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 
   const localPositions = DISTRIBUTIONS[bunchShape]({
@@ -75,19 +79,21 @@ export function ParticleCollection({
 
   const fourPositions = localPositions.map((localPosition) => {
     const jitter = jitterPosition({
-      position: position,
       jitter: positionJitter
     })
     return [
-      localPosition[0] + jitter[0],
-      localPosition[1] + jitter[1],
-      localPosition[2] + jitter[2],
+      position[0] + localPosition[0] + jitter[0],
+      position[1] + localPosition[1] + jitter[1],
+      position[2] + localPosition[2] + jitter[2],
       0
     ]
   })
 
   const fourVelocities = particles.map((particle, p) => {
-    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
+    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gammaFn({ p }))
+
+    const direction = directionFn({ p, localPositions })
+
     const jitteredDirection = jitterDirection({
       direction,
       directionJitter

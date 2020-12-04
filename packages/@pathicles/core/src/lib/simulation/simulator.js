@@ -104,7 +104,10 @@ export class ReglSimulatorInstance {
   run(regl) {
     const mainloop = () => {
       return regl.frame(() => {
-        this.performanceLogger.start('pathiclesRunner.next')
+        this.performanceLogger.start(
+          'pathiclesRunner.next iteration: ' +
+            this.simulation.variables.iteration
+        )
         const { changed } = this.pathiclesRunner.next()
 
         this.camera.doAutorotate()
@@ -126,13 +129,12 @@ export class ReglSimulatorInstance {
               if (this.config.debug.showTextures) {
                 this.drawTexture({
                   texture: this.simulation.variables.position.value(),
-                  x0: 0,
                   scale: this.config.debug.showTextureScale
                 })
                 this.drawTexture({
                   texture: this.simulation.variables.velocity.value(),
-                  x0:
-                    (this.simulation.variables.particleCount + 1) *
+                  y0:
+                    (this.simulation.variables.snapshotCount * 4 + 1) *
                     this.config.debug.showTextureScale,
                   scale: this.config.debug.showTextureScale
                 })

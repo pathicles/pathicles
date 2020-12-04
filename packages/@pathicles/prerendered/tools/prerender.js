@@ -3,6 +3,8 @@
 const prerender = require('puppeteer-core')
 const path = require('path')
 const fs = require('fs-extra-plus')
+const ndarray = require('ndarray')
+const savePixels = require('save-pixels')
 
 const sharp = require('sharp')
 
@@ -59,14 +61,33 @@ const createImages = async () => {
     const dump = await page.evaluate(() => {
       return window.pathicles.simulation.dump()
     })
+
+    const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
+    const values = every_nth(dump.position, 4)
+
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
       iteration: dump.logEntry.iteration,
       configuration: dump.configuration,
       data: {
         position: dump.position,
+        // position2: values,
+        colorCorrections: dump.colorCorrections.map(
+          (d) => Math.floor(d * 100) / 100
+        ),
+        // positionUint8: Array.from(
+        //   new Uint8Array(new Float32Array(values).buffer)
+        // ),
         particleTypes: dump.particleTypes
       }
     })
+
+    const dataAsNdarray = ndarray(
+      new Uint8Array(new Float32Array(values).buffer),
+      [128, 121, 4]
+    )
+    savePixels(dataAsNdarray, 'PNG').pipe(
+      fs.createWriteStream(path.join(outputFolderPath, preset + '.png'))
+    )
   }
   await browser.close()
 }

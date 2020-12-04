@@ -4,7 +4,7 @@ import { ParticleCollection } from '../particle-collection/particle-collection'
 import pushBoris from './pusher/pathicles.push--boris'
 
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
-import { colorCorrection } from './utils/colorCorrection'
+import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES } from '@pathicles/config'
 
@@ -28,6 +28,12 @@ export class Simulation {
       ...runner,
       halfDeltaTOverC: runner.iterationDurationOverC / 2
     }
+
+    this.colorCorrector = new ColorCorrector(
+      regl,
+      fourPositions,
+      model.emitter.position
+    )
 
     this.variables = {
       iterations: runner.iterations,
@@ -60,13 +66,7 @@ export class Simulation {
         shape: [particleCount, 1, 4],
         type: 'uint8'
       }),
-      colorCorrections: colorCorrection(
-        regl,
-        'float',
-        fourPositions,
-        model.emitter.position
-      ),
-
+      colorCorrections: this.colorCorrector.toTexture(),
       particleChargesMassesChargeMassRatios: regl.texture({
         data: particleTypes
           .map((p) => [
@@ -138,6 +138,7 @@ export class Simulation {
         packedPosition: this.variables.position.pack(
           this.variables.position.toTypedArray().float32Array
         ),
+        colorCorrections: this.colorCorrector.corrections,
         configuration: this.configuration,
         particleTypes: this.variables.particleTypes
       })

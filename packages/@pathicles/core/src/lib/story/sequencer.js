@@ -3,7 +3,7 @@
 
 import bspline from 'b-spline'
 
-import { colorCorrection } from '../simulation/utils/colorCorrection'
+import { ColorCorrector } from '../simulation/utils/colorCorrection'
 import { variableTexture } from '../simulation/utils/variableTexture'
 import { PARTICLE_TYPES } from '@pathicles/config'
 
@@ -24,22 +24,46 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
-    // const colorCorrections = regl.texture({
-    //   data: Array(particleCount * 4),
-    //   shape: [particleCount, 1, 4],
-    //   type: variableType
-    // })
+    // let image = new Image()
+    // image.src =
+    //
+    // document.getElementById('storyDipolePNG')
+
+    // const imageTexture = regl.texture(128, 121)
+
+    // console.log()
+    //
+    // const emptyTextureDimension = {
+    //   width: 128,
+    //   height: 121,
+    //   channels: 4
+    // }
+    //
+    // function loadImageIntoTexture(url, texture) {
+    //   const image = new Image()
+    //   image.crossOrigin = 'anonymous'
+    //   image.src = url
+    //   image.onload = function () {
+    //     texture({ data: image })
+    //     console.log({ texture, image })
+    //   }
+    // }
+    //
+    // const imgTexture = regl.texture(emptyTextureDimension)
+    // loadImageIntoTexture('story-quadrupole.png', imgTexture)
 
     scene.runner = scene.configuration.runner
     scene.model = scene.configuration.model
 
+    // const position = data.position2 //new Float32Array(new Uint8Array(data.position2).buffer)
+    // console.log({ position })
     scene.variables = {
       referencePoint: [0, 0, 0],
-      // colorCorrections,
       snapshotCount,
       particleCount,
-      iterations: 128,
+      iterations: 127,
       pingPong: 0,
+      segments: particleCount * (snapshotCount - 1),
       iteration: snapshotCount,
       particleColorsAndTypes,
       position: {
@@ -47,8 +71,8 @@ export default function (regl, scenes, stateVars, onStateChange) {
           variableTexture(
             regl,
             {
-              width: particleCount,
-              height: snapshotCount * 4
+              width: snapshotCount * 4,
+              height: particleCount
             },
             variableType,
             new Float32Array(data.position)
@@ -63,33 +87,27 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
-    const initialPosition = data.position.slice(-particleCount * 4)
-    const particles = new Array(particleCount)
-      .fill(0)
-      .map((_, i) => [
-        initialPosition[i * 4],
-        initialPosition[i * 4 + 1],
-        initialPosition[i * 4 + 2],
-        initialPosition[i * 4 + 3]
-      ])
-    // // console.log(particles)
-    // const colorCorrectionData = colorCorrection(
+    // const initialPosition = position.slice(-particleCount * 4)
+    // const particles = new Array(particleCount)
+    //   .fill(0)
+    //   .map((_, i) => [
+    //     initialPosition[i * 4],
+    //     initialPosition[i * 4 + 1],
+    //     initialPosition[i * 4 + 2],
+    //     initialPosition[i * 4 + 3]
+    //   ])
+
+    // const colorCorrector = new ColorCorrector(
+    //   regl,
     //   particles,
     //   configuration.model.emitter.position
     // )
-    // console.log(
-    //   data.position,
-    //   configuration.model.emitter.position,
-    //   colorCorrectionData
-    // )
 
-    scene.variables.colorCorrections = colorCorrection(
-      regl,
-      'float',
-      particles,
-      configuration.model.emitter.position
-    )
-
+    scene.variables.colorCorrections = regl.texture({
+      data: data.colorCorrections.map((c) => [c, 0, 0, 0]).flat(),
+      shape: [particleCount, 1, 4],
+      type: 'float'
+    })
     scene.model = {
       boundingBoxSize: configuration.model.boundingBoxSize,
       interactions: {
@@ -146,7 +164,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       ((t - state.scene._t0_normalized) * scenes.duration) /
       state.scene.duration
 
-    state.viewRange = [state.sceneProgress - 0.25, state.sceneProgress + 0.25]
+    state.viewRange = [state.sceneProgress - 0.5, state.sceneProgress]
     // state.sceneProgress < 0.5
     //   ? [0, state.sceneProgress * 2]
     //   : [state.sceneProgress * 2 - 1, 1]

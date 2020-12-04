@@ -163,9 +163,7 @@ describe('ParticleCollection()', () => {
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'ROW',
       particleSeparation: 0.1,
-      gamma: 100,
-      emitterDirection: [0, 0, 1],
-      emitterDirectionJitter: [0, 0, 0]
+      gamma: 100
     })
     expect(handleMinus0Equals0(particleCollection)).toEqual({
       particleTypes: [0, 1, 3],

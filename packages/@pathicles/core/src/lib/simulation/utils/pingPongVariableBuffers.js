@@ -2,6 +2,7 @@ import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
 import { variableTexture } from './variableTexture'
 
 const FOUR_VECTOR_COMPONENT_COUNT = 4
+const COLOR_CHANNEL_COUNT = 4
 
 export class VariableBuffers {
   constructor(regl, particleCount, snapshotCount, colorType, initialData) {
@@ -17,7 +18,7 @@ export class VariableBuffers {
       return regl.framebuffer({
         height: this.height,
         width: this.width,
-        // format: 'luminance',
+        format: 'rgba',
         colorType: colorType,
         depthStencil: false,
         color: variableTexture(regl, { width, height }, colorType)
@@ -28,105 +29,22 @@ export class VariableBuffers {
   }
 
   load(fourVectors) {
-    const arrayLength = this.particleCount * FOUR_VECTOR_COMPONENT_COUNT
     const data =
       this.colorType === 'float'
         ? new Float32Array(
-            fourVectors.reduce((acc, fourVector) => {
-              return [
-                ...acc,
-                ...[
-                  fourVector[0],
-                  0,
-                  0,
-                  0,
-                  fourVector[1],
-                  0,
-                  0,
-                  0,
-                  fourVector[2],
-                  0,
-                  0,
-                  0,
-                  fourVector[3],
-                  0,
-                  0,
-                  0
-                  // fourVector[0],
-                  // fourVector[0],
-                  // fourVector[0],
-                  // fourVector[0],
-                  // fourVector[1],
-                  // fourVector[1],
-                  // fourVector[1],
-                  // fourVector[1],
-                  // fourVector[2],
-                  // fourVector[2],
-                  // fourVector[2],
-                  // fourVector[2],
-                  // fourVector[3],
-                  // fourVector[3],
-                  // fourVector[3],
-                  // fourVector[3]
-                ]
-              ]
-            }, [])
-          )
-        : new Uint8Array(arrayLength).fill(0)
-    // console.log(
-    //   fourVectors,
-    //   // new Float32Array(
-    //   new Array(FOUR_VECTOR_COMPONENT_COUNT)
-    //     .fill(data.reduce((acc, val) => acc.concat(val), []))
-    //     .flat()
-    //   // .concat(
-    //   //   new Array(
-    //   //     this.width * (this.height - 1) * FOUR_VECTOR_COMPONENT_COUNT * 4
-    //   //   ).fill(0)
-    //   // )
-    //   // )
-    // )
-    const typedData =
-      this.colorType === 'float'
-        ? new Float32Array(
-            new Array(FOUR_VECTOR_COMPONENT_COUNT)
-              .fill(data.reduce((acc, val) => acc.concat(val), []))
-              .flat()
-              .concat(
-                new Array(
-                  this.width *
-                    (this.height - 1) *
-                    FOUR_VECTOR_COMPONENT_COUNT *
-                    4
-                ).fill(0)
+            fourVectors
+              .map((fourVector) =>
+                fourVector.map((component) => [component, 0, 0, 0])
               )
+              .flat(2)
           )
-        : new Uint8Array(
-            new Array(FOUR_VECTOR_COMPONENT_COUNT)
-              .fill(
-                convertToHalfFloat(
-                  data.reduce((acc, val) => acc.concat(val), [])
-                )
-              )
-              .flat()
-              .concat(
-                new Array(
-                  this.width *
-                    (this.height - 1) *
-                    FOUR_VECTOR_COMPONENT_COUNT *
-                    4
-                ).fill(0)
-              )
-          )
+        : new Uint8Array(new Float32Array(fourVectors.flat()).buffer)
 
-    // console.log({ width: this.width, height: this.height, data, typedData })
-    // console.log(this.buffers[0].color[0])
     this.buffers.forEach((buffer) =>
       buffer.color[0].subimage({
-        width: 4,
-        height: this.height,
+        width: FOUR_VECTOR_COMPONENT_COUNT,
+        height: this.particleCount,
         data
-        // channels: 1
       })
     )
 

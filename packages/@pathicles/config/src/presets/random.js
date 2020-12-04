@@ -29,7 +29,7 @@ export const random = {
       bunchShape: 'ROW',
       particleSeparation: 0,
       directionJitter: [1, 1, 1],
-      positionJitter: [0.1, 0, 0.1],
+      positionJitter: [0, 0, 0],
       gamma: 2,
       particleCount: 64,
       particleType: 'PHOTON ELECTRON PROTON'

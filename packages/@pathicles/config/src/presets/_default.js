@@ -4,16 +4,17 @@ export const defaultConfig = {
   name: 'default',
   debug: {
     logPushing: false,
-    logPerformance: false,
+    logPerformance: true,
     profile: false,
     showTextures: false,
     showTextureScale: 2
   },
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
+    iterationsPerTick: 1,
     iterations: 127,
     iterationDurationOverC: 0.25,
     snapshotCount: 128
@@ -25,12 +26,12 @@ export const defaultConfig = {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleCount: 128,
+      particleCount: 121,
       particleSeparation: 0.1,
-      gamma: 1.25,
+      gamma: ({ p }) => 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      positionJitter: [0.02, 0.02, 0.02]
+      positionJitter: [0.0, 0.0, 0.5]
     },
     interactions: {
       particleInteraction: false,

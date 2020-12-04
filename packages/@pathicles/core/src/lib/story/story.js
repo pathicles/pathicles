@@ -11,7 +11,7 @@ import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
-    console.log('ReglViewerInstance')
+    // console.log('ReglViewerInstance')
     this.config = defaultConfig
     this.control = control
 
@@ -91,28 +91,24 @@ export class ReglViewerInstance {
 
   run(regl) {
     const mainloop = () => {
-      return regl.frame(({ time }) => {
+      return regl.frame(({ tick }) => {
         const storyState = this.story.getState()
 
         let sceneProgress
         let viewRange
         sceneProgress = storyState.sceneProgress
         if (storyState.scene.pathicles && storyState.scene.pathicles.autoLoop) {
-          const autoloopProgress = (time % 1) / 1
-          if (autoloopProgress < 0.01) {
-            this.modelTranslateX = boundedRandom() * 0.05
-            this.modelTranslateY = boundedRandom() * 0.05
+          const autoloopProgress = (tick % 127) / 127
+          if (tick % 127 === 0) {
+            this.modelTranslateX = boundedRandom() * 0.1
+            this.modelTranslateY = boundedRandom() * 0.1
           }
-          viewRange = [autoloopProgress - 0.25, autoloopProgress + 0.25]
-          // sceneProgress <= 0.5
-          //   ? [0, sceneProgress]
-          //   : [0.5 + sceneProgress, 1 - sceneProgress]
+          viewRange = [autoloopProgress - 0.5, autoloopProgress]
         } else {
           viewRange = storyState.viewRange
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
-        viewRange = [0, 1]
 
         sceneProgress = Math.min(sceneProgress, 1)
 
@@ -155,7 +151,7 @@ export class ReglViewerInstance {
                 modelTranslateY: this.modelTranslateY,
                 viewRange
               })
-              if (true || this.config.debug.showTextures) {
+              if (this.config.debug.showTextures) {
                 this.drawTexture({
                   texture: storyState.scene.variables.position.buffers[0],
                   x0: 0

@@ -51,6 +51,11 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
 
 
+float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
+  vec3 s = step(bottomLeft, v) - step(topRight, v);
+  return s.x * s.y * s.z;
+}
+
 float get_colorCorrection(int p) {
   vec2 coords = vec2(float(p), 0.) / vec2(float(particleCount), 1.);
   return texture2D(utColorCorrections, coords).r;
@@ -63,11 +68,12 @@ vec4 get_color(int p) {
 
 float visibility(vec4 fourPosition) {
 
-  return 1.;
+  bool outsideBox = insideBox3D(fourPosition.xyz, vec3(stageGrid_size), vec3(-stageGrid_size)) == 0.;
 
-  float beyondProgressLower = (viewRange[0] * float(snapshotCount) >= float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
-  float beyondProgressUpper =  (viewRange[1] * float(snapshotCount) < float(snapshotCount)-a_snapshot) ? 1.0 : 0.0;
-  return  ((beyondProgressLower > 0. || beyondProgressUpper > 0.) ? 0. : 1.);
+
+  bool beyondProgressLower = (viewRange[0] * float(snapshotCount) >= float(snapshotCount)-a_snapshot);
+  bool beyondProgressUpper =  (viewRange[1] * float(snapshotCount) < float(snapshotCount)-a_snapshot);
+  return  (outsideBox || beyondProgressLower || beyondProgressUpper ) ? 0. : 1.;
 }
 
 void main () {
