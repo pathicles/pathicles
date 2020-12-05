@@ -94,6 +94,14 @@ export default function (regl, { runner, variables, view }, shadow) {
         },
         snapshotCount: variables.snapshotCount,
         iterations: variables.iterations,
+        packFloat2UInt8: runner.packFloat2UInt8 ? 1 : 0,
+        littleEndian: (function machineIsLittleEndian() {
+          const uint8Array = new Uint8Array([0xaa, 0xbb])
+          const uint16array = new Uint16Array(uint8Array.buffer)
+          return uint16array[0] === 0xbbaa
+        })()
+          ? 1
+          : 0,
 
         particleCount: variables.particleCount,
 

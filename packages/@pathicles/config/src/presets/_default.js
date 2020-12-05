@@ -10,6 +10,9 @@ export const defaultConfig = {
     showTextureScale: 2
   },
   runner: {
+    packFloat2UInt8: true,
+    // numberType: 'float',
+
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,

@@ -2,14 +2,13 @@ import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
 import { variableTexture } from './variableTexture'
 
 const FOUR_VECTOR_COMPONENT_COUNT = 4
-const COLOR_CHANNEL_COUNT = 4
 
 export class VariableBuffers {
-  constructor(regl, particleCount, snapshotCount, colorType, initialData) {
+  constructor(regl, particleCount, snapshotCount, numberType, initialData) {
     this.regl = regl
     this.particleCount = particleCount
     this.snapshotCount = snapshotCount
-    this.colorType = colorType
+    this.numberType = numberType
     this.initialData = initialData
     this.pingPong = 0
     const width = (this.width = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT)
@@ -19,9 +18,9 @@ export class VariableBuffers {
         height: this.height,
         width: this.width,
         format: 'rgba',
-        colorType: colorType,
+        colorType: numberType,
         depthStencil: false,
-        color: variableTexture(regl, { width, height }, colorType)
+        color: variableTexture(regl, { width, height }, numberType)
       })
     })
 
@@ -30,7 +29,7 @@ export class VariableBuffers {
 
   load(fourVectors) {
     const data =
-      this.colorType === 'float'
+      this.numberType === 'float'
         ? new Float32Array(
             fourVectors
               .map((fourVector) =>
@@ -63,7 +62,18 @@ export class VariableBuffers {
   toTypedArray(pingPong = this.pingPong) {
     let float32Array
 
-    if (this.colorType === 'float') {
+    if (this.numberType === 'uint8') {
+      const colorUint8Array = new Uint8Array(
+        this.particleCount * this.snapshotCount * 4 * 4 * 4
+      )
+      this.regl({
+        framebuffer: this.buffers[pingPong]
+      })(() => {
+        this.regl.read({ data: colorUint8Array })
+      })
+      float32Array = new Float32Array(colorUint8Array.buffer) //.filter((d, i) => i % 4 === 0)
+    }
+    if (this.numberType === 'float') {
       try {
         const colorFloat32Array = new Float32Array(
           this.particleCount * this.snapshotCount * 4 * 4
@@ -94,13 +104,23 @@ export class VariableBuffers {
       // debugger
 
       for (let b = 0; b < this.snapshotCount; b++) {
-        const offset = (p * this.snapshotCount + b) * 4 * 4
-        particle.push([
-          float32Array[offset],
-          float32Array[offset + 4],
-          float32Array[offset + 8],
-          float32Array[offset + 12]
-        ])
+        if (this.numberType === 'uint8') {
+          const offset = (p * this.snapshotCount + b) * 4
+          particle.push([
+            float32Array[offset],
+            float32Array[offset + 1],
+            float32Array[offset + 2],
+            float32Array[offset + 3]
+          ])
+        } else {
+          const offset = (p * this.snapshotCount + b) * 4 * 4
+          particle.push([
+            float32Array[offset],
+            float32Array[offset + 4],
+            float32Array[offset + 8],
+            float32Array[offset + 12]
+          ])
+        }
       }
     }
     return packedFloat32Array

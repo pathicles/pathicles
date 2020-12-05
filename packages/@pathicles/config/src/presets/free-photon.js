@@ -14,7 +14,7 @@ export const freePhoton = {
     }
   },
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
 
     mode: RUNNER_MODE.FRAMEWISE,

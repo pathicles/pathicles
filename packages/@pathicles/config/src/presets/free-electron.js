@@ -13,7 +13,7 @@ export const freeElectron = {
   },
 
   debug: {
-    logPushing: false
+    logPushing: true
   },
 
   runner: {
@@ -22,8 +22,8 @@ export const freeElectron = {
 
     loops: 0,
     iterationsPerSnapshot: 1,
-    iterations: 20,
-    snapshotCount: 12,
+    iterations: 10,
+    snapshotCount: 11,
     iterationDurationOverC: 0.1
   },
 

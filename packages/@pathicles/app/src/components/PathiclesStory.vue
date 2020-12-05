@@ -79,13 +79,13 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-electric',
-              data: 'story-electric.js',
-              camera: {
-                center: [-0, 1.5, 0],
-                distance: 5,
-                theta: (0 / 360) * 2 * Math.PI,
-                phi: (-10 / 360) * Math.PI
-              }
+              data: 'story-electric.js'
+              // camera: {
+              //   center: [-0, 1.5, 0],
+              //   distance: 5,
+              //   theta: (0 / 360) * 2 * Math.PI,
+              //   phi: (-10 / 360) * Math.PI
+              // }
             }
           },
 
@@ -98,13 +98,13 @@ export default {
             scene_index: 1,
             pathicles: {
               preset: 'story-electric',
-              data: 'story-electric.js',
-              camera: {
-                center: [-0, 1.5, 0],
-                distance: 2,
-                theta: (-90 / 360) * 2 * Math.PI,
-                phi: (-1 / 360) * 2 * Math.PI
-              }
+              data: 'story-electric.js'
+              // camera: {
+              //   center: [-0, 1.5, 0],
+              //   distance: 2,
+              //   theta: (-90 / 360) * 2 * Math.PI,
+              //   phi: (-1 / 360) * 2 * Math.PI
+              // }
             }
           },
           {
@@ -117,13 +117,13 @@ export default {
             image: '/images/story/story-dipole.jpg',
             pathicles: {
               preset: 'story-dipole',
-              data: 'story-dipole.js',
-              camera: {
-                center: [-0, 1.5, 0],
-                distance: 2,
-                theta: (0 / 360) * 2 * Math.PI,
-                phi: (10 / 360) * 2 * Math.PI
-              }
+              data: 'story-dipole.js'
+              // camera: {
+              //   center: [-0, 1.5, 0],
+              //   distance: 2,
+              //   theta: (0 / 360) * 2 * Math.PI,
+              //   phi: (10 / 360) * 2 * Math.PI
+              // }
             }
           },
           {
@@ -135,13 +135,13 @@ export default {
             image: '/images/story/story-quadrupole.jpg',
             pathicles: {
               preset: 'story-quadrupole',
-              data: 'story-quadrupole.js',
-              camera: {
-                center: [-0, 1.5, 0],
-                distance: 2,
-                theta: (90 / 360) * 2 * Math.PI,
-                phi: (-1 / 360) * 2 * Math.PI
-              }
+              data: 'story-quadrupole.js'
+              // camera: {
+              //   center: [-0, 1.5, 0],
+              //   distance: 2,
+              //   theta: (90 / 360) * 2 * Math.PI,
+              //   phi: (-1 / 360) * 2 * Math.PI
+              // }
             }
           },
           {
@@ -149,13 +149,13 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-empty',
-              data: 'story-electric.js',
-              camera: {
-                center: [0, 1, 0],
-                distance: 2,
-                theta: (0 / 360) * 2 * Math.PI,
-                phi: (10 / 360) * 2 * Math.PI
-              }
+              data: 'story-electric.js'
+              // camera: {
+              //   center: [0, 1, 0],
+              //   distance: 2,
+              //   theta: (0 / 360) * 2 * Math.PI,
+              //   phi: (10 / 360) * 2 * Math.PI
+              // }
             }
           }
         ]

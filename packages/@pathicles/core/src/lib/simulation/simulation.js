@@ -14,8 +14,6 @@ export class Simulation {
 
     this.configuration = { model, runner, debug }
 
-    const colorType = 'float'
-
     const { snapshotCount } = runner
     const {
       particleCount,
@@ -24,8 +22,12 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(model.emitter))
 
+    const packFloat2UInt8 = true
+
     this.runner = {
       ...runner,
+      packFloat2UInt8,
+      numberType: packFloat2UInt8 ? 'uint8' : 'float',
       halfDeltaTOverC: runner.iterationDurationOverC / 2
     }
 
@@ -41,20 +43,20 @@ export class Simulation {
       iterationsPerTick: runner.iterationsPerTick,
       particleCount,
       snapshotCount,
-      colorType,
+
       particleTypes,
       position: new VariableBuffers(
         regl,
         particleCount,
         snapshotCount,
-        colorType,
+        this.runner.numberType,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
         snapshotCount,
-        colorType,
+        this.runner.numberType,
         fourVelocities
       ),
 
@@ -77,7 +79,7 @@ export class Simulation {
           ])
           .flat(),
         shape: [particleCount, 1, 4],
-        type: colorType
+        type: 'float'
       })
     }
 

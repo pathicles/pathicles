@@ -1,7 +1,7 @@
 export const variableTexture = (
   regl,
   { width, height },
-  type,
+  numberType,
   data = undefined
 ) =>
   regl.texture({
@@ -10,6 +10,6 @@ export const variableTexture = (
     min: 'nearest',
     mag: 'nearest',
     format: 'rgba',
-    type,
+    type: numberType,
     data
   })

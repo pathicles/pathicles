@@ -14,7 +14,7 @@ export const freeElectrons = {
 
   runner: {
     prerender: false,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.STEPWISE,
 
     loops: 0,
     iterationsPerSnapshot: 2,
@@ -31,15 +31,16 @@ export const freeElectrons = {
     emitter: {
       position: [
         0,
-        (defaultConfig.view.pathicleWidth *
-          defaultConfig.view.pathicleRelativeHeight) /
+        (0 *
+          (defaultConfig.view.pathicleWidth *
+            defaultConfig.view.pathicleRelativeHeight)) /
           2,
         0
       ],
       direction: [0, 0, 1],
-      particleSeparation: 0.05,
+      particleSeparation: 0.1,
       gamma: 10,
-      particleCount: 2,
+      particleCount: 5,
       bunchShape: 'ROW',
       particleType: 'ELECTRON',
       positionJitter: [0, 0, 0]

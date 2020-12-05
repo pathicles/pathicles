@@ -10,7 +10,7 @@ attribute float a_snapshot;
 uniform int particleCount;
 uniform int snapshotCount;
 uniform int iterations;
-
+uniform int packFloat2UInt8;
 
 uniform vec2 viewRange;
 
@@ -29,7 +29,7 @@ uniform vec3 eye;
 uniform mat4 shadowProjectionMatrix;
 uniform mat4 shadowViewMatrix;
 uniform vec3 shadowDirection;
-
+uniform int littleEndian;
 varying float v_visibility;
 varying vec3 vScale;
 varying vec3 v_position;
@@ -48,13 +48,14 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, packFloat2UInt8=packFloat2UInt8,littleEndian=littleEndian);
 
 
 float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
   vec3 s = step(bottomLeft, v) - step(topRight, v);
   return s.x * s.y * s.z;
 }
+
 
 float get_colorCorrection(int p) {
   vec2 coords = vec2(float(p), 0.) / vec2(float(particleCount), 1.);
@@ -65,7 +66,6 @@ vec4 get_color(int p) {
   vec2 coords = vec2(float(p), 0.) / vec2(float(particleCount), 1.);
   return texture2D(utParticleColorAndType, coords);
 }
-
 float visibility(vec4 fourPosition) {
 
   bool outsideBox = insideBox3D(fourPosition.xyz, vec3(stageGrid_size), vec3(-stageGrid_size)) == 0.;
@@ -131,9 +131,9 @@ void main () {
   gl_Position = projection * view *  model * vec4(v_position, 1.0);
 #endif// lighting
 
-
 #ifdef shadow
   gl_Position =vec4(vShadowCoord, 1.0);
 #endif// shadow
 }
+
 

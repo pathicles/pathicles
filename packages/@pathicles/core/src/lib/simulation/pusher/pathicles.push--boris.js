@@ -22,6 +22,7 @@ export default function (regl, { runner, variables, model }) {
         snapshotCount: runner.snapshotCount,
         iterationsPerSnapshot: runner.iterationsPerSnapshot,
         halfDeltaTOverC: runner.halfDeltaTOverC,
+        packFloat2UInt8: runner.packFloat2UInt8 ? 1 : 0,
 
         variableIdx: variableSlot,
         particleCount: variables.particleCount,
@@ -33,6 +34,13 @@ export default function (regl, { runner, variables, model }) {
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         iteration: regl.prop('iteration'),
         takeSnapshot: regl.prop('takeSnapshot'),
+        littleEndian: (function machineIsLittleEndian() {
+          const uint8Array = new Uint8Array([0xaa, 0xbb])
+          const uint16array = new Uint16Array(uint8Array.buffer)
+          return uint16array[0] === 0xbbaa
+        })()
+          ? 1
+          : 0,
 
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
