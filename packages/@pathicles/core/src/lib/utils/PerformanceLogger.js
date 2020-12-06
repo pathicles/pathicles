@@ -10,40 +10,48 @@
 export class PerformanceLogger {
   constructor(active = true) {
     if (window.performanceLogger) return window.performanceLogger
-
+    performance.clearMarks()
+    performance.clearMeasures()
     this.current = null
     this.active = active
     this.running = false
+    this.markName
     this.entries = []
     window.performanceLogger = this
   }
 
-  start(label) {
+  start(markName) {
+    if (this.markName) console.timeEnd(this.markName)
+    console.time(markName)
     if (this.active) {
-      if (this.running) this.stop()
-      this.running = true
-      this.current = {
-        label: label,
-        t0: performance.now()
-      }
+      // this.stop()
+      this.markName = markName
+      performance.mark(this.markName)
     }
   }
   stop() {
     if (this.active) {
-      this.current.t1 = performance.now()
-      this.current.dt = this.current.t1 - this.current.t0
-
-      this.entries.push(this.current)
+      performance.mark(this.markName + ' (stop)')
+      this.markName = null
       this.running = false
     }
   }
 
   report() {
     if (this.running) this.stop()
-    return this.entries
+
+    const marks = performance.getEntriesByType('mark')
+    const measures = marks.map((mark, m) => ({
+      name: mark.name,
+      t0: mark.startTime,
+      t_next: marks[Math.min(m + 1, marks.length - 1)].startTime,
+      dt: marks[Math.min(m + 1, marks.length - 1)].startTime - mark.startTime
+    }))
+
+    return measures
       .map(
-        ({ label, dt }) => `
-      ${label.padStart(25, ' ')}: ${dt.toFixed(1)}`
+        ({ name, dt }) => `
+      ${name.padStart(25, ' ')}: ${dt.toFixed(1)}`
       )
       .join('\n')
   }

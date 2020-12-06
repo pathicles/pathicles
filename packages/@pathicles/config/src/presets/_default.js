@@ -15,8 +15,8 @@ export const defaultConfig = {
     prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshot: 2,
-    iterationsPerTick: 2,
+    iterationsPerSnapshot: 1,
+    iterationsPerTick: 1,
     iterations: 255,
     iterationDurationOverC: 0.25,
     snapshotCount: 128

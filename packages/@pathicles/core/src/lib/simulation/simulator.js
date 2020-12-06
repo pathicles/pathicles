@@ -87,6 +87,7 @@ export class ReglSimulatorInstance {
     this.performanceLogger.start('init.simulation')
     this.simulation = new Simulation(regl, this.config, this.support)
 
+    this.performanceLogger.stop('init.simulation')
     this.performanceLogger.start('init.view')
     this.view = boxesViewSimple(regl, {
       runner: this.simulation.runner,
@@ -102,64 +103,68 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    const mainloop = () => {
-      return regl.frame(() => {
-        this.performanceLogger.start(
-          'pathiclesRunner.next iteration: ' +
-            this.simulation.variables.iteration
-        )
-        const { changed } = this.pathiclesRunner.next()
+    performance.mark('run')
+    let loop = (this.loop = regl.frame(({ tick }) => {
+      this.performanceLogger.start(
+        'pathiclesRunner.next iteration: ' +
+          this.simulation.variables.iteration +
+          ' ' +
+          tick
+      )
+      const { changed } = this.pathiclesRunner.next()
 
-        this.performanceLogger.start(
-          'pathiclesRunner view iteration: ' +
-            this.simulation.variables.iteration
-        )
-        this.camera.doAutorotate()
-        this.camera.tick()
+      this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
+      this.camera.doAutorotate()
+      this.camera.tick()
 
-        if (changed || this.camera.state.dirty) {
-          this.camera.setCameraUniforms(
-            {
-              ...this.camera
-            },
-            () => {
-              this.view.drawDiffuse({
-                colorCorrections: this.simulation.variables.colorCorrections,
-                particleColorsAndTypes: this.simulation.variables
-                  .particleColorsAndTypes,
-                position: this.simulation.variables.position.value()
+      if (tick === 1 || changed || this.camera.state.dirty) {
+        this.camera.setCameraUniforms(
+          {
+            ...this.camera
+          },
+          () => {
+            this.view.drawDiffuse({
+              colorCorrections: this.simulation.variables.colorCorrections,
+              particleColorsAndTypes: this.simulation.variables
+                .particleColorsAndTypes,
+              position: this.simulation.variables.position.value()
+            })
+
+            if (this.config.debug.showTextures) {
+              this.drawTexture({
+                texture: this.simulation.variables.position.value(),
+                scale: this.config.debug.showTextureScale
               })
-
-              if (this.config.debug.showTextures) {
-                this.drawTexture({
-                  texture: this.simulation.variables.position.value(),
-                  scale: this.config.debug.showTextureScale
-                })
-                this.drawTexture({
-                  texture: this.simulation.variables.velocity.value(),
-                  y0:
-                    (this.simulation.variables.snapshotCount * 4 + 1) *
-                    this.config.debug.showTextureScale,
-                  scale: this.config.debug.showTextureScale
-                })
-                // this.drawTexture({
-                //   texture: this.view.shadow.fbo,
-                //   x0:
-                //     2 *
-                //     (this.simulation.variables.particleCount + 1) *
-                //     this.config.debug.showTextureScale,
-                //   scale: 0.5
-                // })
-              }
+              this.drawTexture({
+                texture: this.simulation.variables.velocity.value(),
+                y0:
+                  (this.simulation.variables.snapshotCount * 4 + 1) *
+                  this.config.debug.showTextureScale,
+                scale: this.config.debug.showTextureScale
+              })
+              // this.drawTexture({
+              //   texture: this.view.shadow.fbo,
+              //   x0:
+              //     2 *
+              //     (this.simulation.variables.particleCount + 1) *
+              //     this.config.debug.showTextureScale,
+              //   scale: 0.5
+              // })
             }
-          )
-        }
-      })
-    }
-    this.loop = mainloop()
+          }
+        )
+      }
+
+      this.performanceLogger.start('idle tick ' + tick)
+
+      if (tick > 10) {
+        if (this.loop) this.loop.cancel()
+      }
+    }))
   }
 
   stop() {
-    this.loop.cancel()
+    console.log(this.loop)
+    if (this.loop) this.loop.cancel()
   }
 }
