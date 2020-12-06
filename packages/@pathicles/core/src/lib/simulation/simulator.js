@@ -110,6 +110,10 @@ export class ReglSimulatorInstance {
         )
         const { changed } = this.pathiclesRunner.next()
 
+        this.performanceLogger.start(
+          'pathiclesRunner view iteration: ' +
+            this.simulation.variables.iteration
+        )
         this.camera.doAutorotate()
         this.camera.tick()
 

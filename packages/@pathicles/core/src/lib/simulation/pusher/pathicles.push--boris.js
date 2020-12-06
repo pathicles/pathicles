@@ -19,10 +19,10 @@ export default function (regl, { runner, variables, model }) {
       },
 
       uniforms: {
-        snapshotCount: runner.snapshotCount,
-        iterationsPerSnapshot: runner.iterationsPerSnapshot,
-        halfDeltaTOverC: runner.halfDeltaTOverC,
-        packFloat2UInt8: runner.packFloat2UInt8 ? 1 : 0,
+        snapshotCount: variables.snapshotCount,
+        iterationsPerSnapshot: variables.iterationsPerSnapshot,
+        halfDeltaTOverC: variables.iterationDurationOverC / 2,
+        packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
 
         variableIdx: variableSlot,
         particleCount: variables.particleCount,
@@ -76,11 +76,11 @@ export default function (regl, { runner, variables, model }) {
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
 
-      const z = variables.iteration * runner.halfDeltaTOverC * 2
+      // const z = variables.iteration * variables.iterationDurationOverC
 
-      variables.referencePoint =
-        model.lattice.beamline.length &&
-        model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
+      // variables.referencePoint =
+      //   model.lattice.beamline.length &&
+      //   model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
       const snapshots = Math.floor(
         variables.iteration / variables.iterationsPerSnapshot
@@ -93,8 +93,8 @@ export default function (regl, { runner, variables, model }) {
         Math.min(snapshots + unsnapshots, variables.snapshotCount - 1))
 
       const takeSnapshot =
-        runner.iterationsPerSnapshot !== 1 &&
-        variables.iteration % runner.iterationsPerSnapshot === 0
+        variables.iterationsPerSnapshot !== 1 &&
+        variables.iteration % variables.iterationsPerSnapshot === 0
           ? 1
           : 0
       pushVelocity({

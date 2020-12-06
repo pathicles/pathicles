@@ -51,12 +51,15 @@ import { unwatchViewport, watchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
-import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
-// import storyDipolePNG from '@pathicles/prerendered/files/story-dipole.png'
-// import storyElectricPNG from '@pathicles/prerendered/files/story-electric.png'
-import storyElectric from '@pathicles/prerendered/files/story-electric.json'
-import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
-// import storyQuadrupolePNG from '@pathicles/prerendered/files/story-quadrupole.png'
+const storyDipole = () =>
+  import('@pathicles/prerendered/files/story-dipole.json')
+const storyElectric = () =>
+  import('@pathicles/prerendered/files/story-electric.json')
+const storyQuadrupole = () =>
+  import('@pathicles/prerendered/files/story-quadrupole.json')
+// import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
+// import storyElectric from '@pathicles/prerendered/files/story-electric.json'
+// import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
 
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)

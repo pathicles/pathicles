@@ -4,7 +4,7 @@ export const freePhoton = {
   name: 'free-photon',
 
   debug: {
-    logPushing: true
+    logPushing: false
   },
 
   view: {

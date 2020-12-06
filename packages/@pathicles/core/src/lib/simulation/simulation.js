@@ -22,14 +22,10 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(model.emitter))
 
-    const packFloat2UInt8 = true
-
-    this.runner = {
-      ...runner,
-      packFloat2UInt8,
-      numberType: packFloat2UInt8 ? 'uint8' : 'float',
-      halfDeltaTOverC: runner.iterationDurationOverC / 2
-    }
+    this.configuration.runner.numberType = this.configuration.runner
+      .packFloat2UInt8
+      ? 'uint8'
+      : 'float'
 
     this.colorCorrector = new ColorCorrector(
       regl,
@@ -38,9 +34,7 @@ export class Simulation {
     )
 
     this.variables = {
-      iterations: runner.iterations,
-      iterationsPerSnapshot: runner.iterationsPerSnapshot,
-      iterationsPerTick: runner.iterationsPerTick,
+      ...this.configuration.runner,
       particleCount,
       snapshotCount,
 
@@ -49,20 +43,19 @@ export class Simulation {
         regl,
         particleCount,
         snapshotCount,
-        this.runner.numberType,
+        this.configuration.runner.numberType,
         fourPositions
       ),
       velocity: new VariableBuffers(
         regl,
         particleCount,
         snapshotCount,
-        this.runner.numberType,
+        this.configuration.runner.numberType,
         fourVelocities
       ),
 
       iteration: 0,
       referencePoint: [0, 0, 0],
-      // pingPong: 0,
       particleColorsAndTypes: regl.texture({
         data: particleTypes.map((p) => PARTICLE_TYPES[p].color.concat(p)),
         shape: [particleCount, 1, 4],
@@ -154,6 +147,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.runner.iterations)
+    this.push(this.configuration.runner.iterations)
   }
 }

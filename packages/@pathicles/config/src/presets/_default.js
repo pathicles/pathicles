@@ -10,15 +10,14 @@ export const defaultConfig = {
     showTextureScale: 2
   },
   runner: {
-    packFloat2UInt8: true,
-    // numberType: 'float',
+    packFloat2UInt8: false,
 
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshot: 1,
-    iterationsPerTick: 1,
-    iterations: 127,
+    iterationsPerSnapshot: 2,
+    iterationsPerTick: 2,
+    iterations: 255,
     iterationDurationOverC: 0.25,
     snapshotCount: 128
   },

@@ -24,7 +24,7 @@ export const freeElectrons = {
   },
 
   debug: {
-    logPushing: true
+    logPushing: false
   },
 
   model: {

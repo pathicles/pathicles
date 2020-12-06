@@ -16,11 +16,11 @@ export const storyQuadrupole = {
   },
   model: {
     emitter: {
-      bunchShape: 'SQUARE_XY',
-      particleSeparation: 0.05,
+      // bunchShape: 'SQUARE_XY',
+      particleSeparation: 0.1,
       particleType: 'PROTON',
       direction: [0, 0, -1],
-      position: [0, 1.5, 10],
+      position: [0, 1.5, 0],
       gamma: 5
     },
 

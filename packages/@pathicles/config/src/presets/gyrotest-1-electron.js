@@ -15,7 +15,7 @@ export const gyrotest_1_electron = {
   },
 
   debug: {
-    logPushing: true
+    logPushing: false
   },
 
   runner: {
