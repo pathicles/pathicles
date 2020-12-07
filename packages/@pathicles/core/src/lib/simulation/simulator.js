@@ -105,19 +105,23 @@ export class ReglSimulatorInstance {
   run(regl) {
     performance.mark('run')
     let loop = (this.loop = regl.frame(({ tick }) => {
-      this.performanceLogger.start(
-        'pathiclesRunner.next iteration: ' +
-          this.simulation.variables.iteration +
-          ' ' +
-          tick
-      )
+      if (tick < 20) {
+        this.performanceLogger.start(
+          'pathiclesRunner.next iteration: ' +
+            this.simulation.variables.iteration +
+            ' ' +
+            tick
+        )
+      }
       const { changed } = this.pathiclesRunner.next()
 
-      this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
+      if (tick < 20) {
+        this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
+      }
       this.camera.doAutorotate()
       this.camera.tick()
 
-      if (tick === 1 || changed || this.camera.state.dirty) {
+      if (changed || this.camera.state.dirty) {
         this.camera.setCameraUniforms(
           {
             ...this.camera
@@ -155,10 +159,8 @@ export class ReglSimulatorInstance {
         )
       }
 
-      this.performanceLogger.start('idle tick ' + tick)
-
-      if (tick > 10) {
-        if (this.loop) this.loop.cancel()
+      if (tick < 20) {
+        this.performanceLogger.start('idle tick ' + tick)
       }
     }))
   }
