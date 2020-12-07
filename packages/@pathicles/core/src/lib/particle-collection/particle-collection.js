@@ -64,11 +64,9 @@ export function ParticleCollection({
   directionJitter = [0, 0, 0]
 }) {
   // create particle collection
-  const gammaFn = typeof gamma == 'function' ? gamma : ({ p }) => gamma
+  const gammaFn = typeof gamma == 'function' ? gamma : () => gamma
   const directionFn =
-    typeof direction == 'function'
-      ? direction
-      : ({ p, localPosition }) => direction
+    typeof direction == 'function' ? direction : () => direction
 
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 

@@ -15,8 +15,8 @@ export const random = {
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 512,
-    snapshotCount: 512 / 4,
+    iterations: 2048,
+    snapshotCount: 64 / 4,
     iterationDurationOverC: 0.1
   },
 
@@ -24,14 +24,14 @@ export const random = {
     boundingBoxSize: 1.1,
     // boundingBoxCenter: [0, 2, 0],
     emitter: {
-      position: [0, 1, 0],
+      position: [0, 0, 0],
       direction: [0, 0, 0],
-      bunchShape: 'ROW',
-      particleSeparation: 0,
+      bunchShape: 'SQUARE_XZ',
+      particleSeparation: 0.01,
       directionJitter: [1, 1, 1],
       positionJitter: [0, 0, 0],
       gamma: 2,
-      particleCount: 64,
+      particleCount: 1024,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

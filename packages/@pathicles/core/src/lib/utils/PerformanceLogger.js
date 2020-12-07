@@ -21,8 +21,6 @@ export class PerformanceLogger {
   }
 
   start(markName) {
-    if (this.markName) console.timeEnd(this.markName)
-    console.time(markName)
     if (this.active) {
       // this.stop()
       this.markName = markName
@@ -48,11 +46,23 @@ export class PerformanceLogger {
       dt: marks[Math.min(m + 1, marks.length - 1)].startTime - mark.startTime
     }))
 
-    return measures
-      .map(
-        ({ name, dt }) => `
+    const measuresSorted = measures.sort((a, b) => b.dt - a.dt)
+    console.log(measuresSorted)
+    let result =
+      'measuresSorted.longest: ' +
+      measuresSorted[0].name +
+      ' ' +
+      measuresSorted[0].dt
+
+    return (
+      result +
+      '\n' +
+      measures
+        .map(
+          ({ name, dt }) => `
       ${name.padStart(25, ' ')}: ${dt.toFixed(1)}`
-      )
-      .join('\n')
+        )
+        .join('\n')
+    )
   }
 }

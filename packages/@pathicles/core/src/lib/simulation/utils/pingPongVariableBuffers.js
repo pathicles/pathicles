@@ -1,4 +1,4 @@
-import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
+// import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
 import { variableTexture } from './variableTexture'
 
 const FOUR_VECTOR_COMPONENT_COUNT = 4

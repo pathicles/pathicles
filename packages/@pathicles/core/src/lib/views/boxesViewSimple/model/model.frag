@@ -90,7 +90,7 @@ void main () {
   float fogDistance = length(v_position);
   float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
 
-  gl_FragColor =vec4(finalColor, map(v_visibility, 0.5, 1., 0.25, 1.));
+  gl_FragColor =vec4(finalColor, 1.); //map(v_visibility, 0.5, 1., 0.75, .9));
   //  gl_FragColor =vec4(finalColor, 1.);
 
 

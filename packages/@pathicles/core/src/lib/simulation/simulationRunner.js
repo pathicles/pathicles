@@ -20,7 +20,6 @@ export class SimulationRunner {
     {
       prerender = false,
       iterations = -1,
-      iterationsPerSnapshot = 1,
       iterationsPerTick = 1,
       loops = 0,
       mode = RUNNER_MODE.STEPWISE

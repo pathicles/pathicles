@@ -29,7 +29,13 @@ export const freeElectron = {
 
   model: {
     emitter: {
-      position: [0, 0, 0],
+      position: [
+        0,
+        (defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight) /
+          2,
+        0
+      ],
       direction: [0, 0, 1],
       particleSeparation: 0.0,
       gamma: 1.1,

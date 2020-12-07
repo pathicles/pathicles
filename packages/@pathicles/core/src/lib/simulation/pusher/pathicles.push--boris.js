@@ -20,12 +20,10 @@ export default function (regl, { runner, variables, model }) {
 
       uniforms: {
         snapshotCount: variables.snapshotCount,
+        particleCount: variables.particleCount,
         iterationsPerSnapshot: variables.iterationsPerSnapshot,
         halfDeltaTOverC: variables.iterationDurationOverC / 2,
-        packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
 
-        variableIdx: variableSlot,
-        particleCount: variables.particleCount,
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
@@ -34,13 +32,8 @@ export default function (regl, { runner, variables, model }) {
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
         iteration: regl.prop('iteration'),
         takeSnapshot: regl.prop('takeSnapshot'),
-        littleEndian: (function machineIsLittleEndian() {
-          const uint8Array = new Uint8Array([0xaa, 0xbb])
-          const uint16array = new Uint16Array(uint8Array.buffer)
-          return uint16array[0] === 0xbbaa
-        })()
-          ? 1
-          : 0,
+
+        variableIdx: variableSlot,
 
         utParticleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
@@ -52,18 +45,28 @@ export default function (regl, { runner, variables, model }) {
             : variables.velocity.buffers[(props.iteration + 1) % 2]
       },
 
-      vert,
-      frag: frag
-        .replace('/*__latticeDefinition__*/', model.lattice.toGLSLDefinition())
-        .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
-        .replace(
-          '/*__latticeSize__*/',
-          `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
-            model.lattice.beamline.length || 1
-          }; const int BEAMLINE_ELEMENT_COUNT = ${
-            model.lattice.beamline.length
-          };`
-        )
+      vert: [
+        ...(variables.packFloat2UInt8
+          ? [`#define LITTLE_ENDIAN ${runner.littleEndian}`]
+          : []),
+        vert
+      ].join('\n'),
+      frag: [
+        frag
+          .replace(
+            '/*__latticeDefinition__*/',
+            model.lattice.toGLSLDefinition()
+          )
+          .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
+          .replace(
+            '/*__latticeSize__*/',
+            `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
+              model.lattice.beamline.length || 1
+            }; const int BEAMLINE_ELEMENT_COUNT = ${
+              model.lattice.beamline.length
+            };`
+          )
+      ].join('\n')
     })
   }
 
@@ -85,12 +88,17 @@ export default function (regl, { runner, variables, model }) {
       const snapshots = Math.floor(
         variables.iteration / variables.iterationsPerSnapshot
       )
-      const unsnapshots =
-        variables.iteration - snapshots * variables.iterationsPerSnapshot
+      // const unsnapshots =
+      //   variables.iteration - snapshots * variables.iterationsPerSnapshot
 
-      const segments = (variables.segments =
+      variables.segments =
         variables.particleCount *
-        Math.min(snapshots + unsnapshots, variables.snapshotCount - 1))
+        Math.min(
+          snapshots +
+            variables.iteration -
+            snapshots * variables.iterationsPerSnapshot,
+          variables.snapshotCount - 1
+        )
 
       const takeSnapshot =
         variables.iterationsPerSnapshot !== 1 &&

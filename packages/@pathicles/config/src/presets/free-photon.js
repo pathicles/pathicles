@@ -31,9 +31,8 @@ export const freePhoton = {
       direction: [0, 0, 1],
       position: [
         0,
-        ((defaultConfig.view.pathicleWidth *
+        (defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
-          2) *
           2,
         0
       ],

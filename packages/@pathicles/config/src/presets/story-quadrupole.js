@@ -20,7 +20,7 @@ export const storyQuadrupole = {
       particleSeparation: 0.1,
       particleType: 'PROTON',
       direction: [0, 0, -1],
-      position: [0, 1.5, 0],
+      position: [0, 1.5, 10],
       gamma: 5
     },
 

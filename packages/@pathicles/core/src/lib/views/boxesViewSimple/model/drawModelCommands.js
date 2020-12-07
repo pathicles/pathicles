@@ -14,7 +14,7 @@ export const particleAttributes = ({ particleCount, snapshotCount }) => {
     .fill(0)
     .map((_, i) => i % particleCount)
 }
-export default function (regl, { runner, variables, view }, shadow) {
+export default function (regl, { variables, view }, shadow) {
   const geometry = createCube()
 
   let modelMatrix = identity([])
@@ -59,6 +59,10 @@ export default function (regl, { runner, variables, view }, shadow) {
       },
 
       vert: [
+        ...(variables.packFloat2UInt8
+          ? [`#define LITTLE_ENDIAN ${variables.littleEndian}`]
+          : []),
+
         `#define ${mode} 1`,
         // `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
         vert
@@ -94,18 +98,11 @@ export default function (regl, { runner, variables, view }, shadow) {
         },
         snapshotCount: variables.snapshotCount,
         iterations: variables.iterations,
+        iteration: () => variables.iteration,
         packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
-        littleEndian: (function machineIsLittleEndian() {
-          const uint8Array = new Uint8Array([0xaa, 0xbb])
-          const uint16array = new Uint16Array(uint8Array.buffer)
-          return uint16array[0] === 0xbbaa
-        })()
-          ? 1
-          : 0,
+        littleEndian: variables.littleEndian,
 
         particleCount: variables.particleCount,
-
-        iteration: () => variables.iteration,
 
         pathicleGap: view.pathicleRelativeGap * view.pathicleWidth,
         pathicleHeight: view.pathicleWidth * view.pathicleRelativeHeight,

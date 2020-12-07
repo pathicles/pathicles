@@ -3,9 +3,9 @@
 
 import bspline from 'b-spline'
 
-import { ColorCorrector } from '../simulation/utils/colorCorrection'
 import { variableTexture } from '../simulation/utils/variableTexture'
 import { PARTICLE_TYPES } from '@pathicles/config'
+import { isLittleEndian } from '../utils/little-endian'
 
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
@@ -24,34 +24,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
       shape: [particleCount, 1, 4]
     })
 
-    // let image = new Image()
-    // image.src =
-    //
-    // document.getElementById('storyDipolePNG')
-
-    // const imageTexture = regl.texture(128, 121)
-
-    // console.log()
-    //
-    // const emptyTextureDimension = {
-    //   width: 128,
-    //   height: 121,
-    //   channels: 4
-    // }
-    //
-    // function loadImageIntoTexture(url, texture) {
-    //   const image = new Image()
-    //   image.crossOrigin = 'anonymous'
-    //   image.src = url
-    //   image.onload = function () {
-    //     texture({ data: image })
-    //     console.log({ texture, image })
-    //   }
-    // }
-    //
-    // const imgTexture = regl.texture(emptyTextureDimension)
-    // loadImageIntoTexture('story-quadrupole.png', imgTexture)
-
     scene.runner = scene.configuration.runner
     scene.model = scene.configuration.model
 
@@ -65,6 +37,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
       pingPong: 0,
       segments: particleCount * (snapshotCount - 1),
       iteration: snapshotCount,
+      littleEndian: isLittleEndian(),
       particleColorsAndTypes,
       position: {
         buffers: [

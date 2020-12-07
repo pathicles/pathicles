@@ -17,7 +17,7 @@ export const defaultConfig = {
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
     iterationsPerTick: 1,
-    iterations: 255,
+    iterations: 127,
     iterationDurationOverC: 0.25,
     snapshotCount: 128
   },
@@ -30,7 +30,7 @@ export const defaultConfig = {
       bunchShape: 'SPIRAL_XY',
       particleCount: 121,
       particleSeparation: 0.1,
-      gamma: ({ p }) => 1.25,
+      gamma: () => 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
       positionJitter: [0.0, 0.0, 0.5]

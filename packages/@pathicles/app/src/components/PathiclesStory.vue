@@ -2,9 +2,6 @@
 <template lang="pug">
 .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
   .debug.debug-only {{vp}}
-  //img#storyDipolePNG(:src="storyDipolePNG")
-  //img#storyElectricPNG(:src="storyElectricPNG")
-  //img#storyQuadrupolePNG(:src="storyQuadrupolePNG")
   .canvas-container(ref="canvasContainer")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--  .scene-backgrounds    -->
@@ -51,15 +48,9 @@ import { unwatchViewport, watchViewport } from 'tornis'
 import { ReglViewerInstance } from '@pathicles/core'
 import { config } from '@pathicles/config'
 
-const storyDipole = () =>
-  import('@pathicles/prerendered/files/story-dipole.json')
-const storyElectric = () =>
-  import('@pathicles/prerendered/files/story-electric.json')
-const storyQuadrupole = () =>
-  import('@pathicles/prerendered/files/story-quadrupole.json')
-// import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
-// import storyElectric from '@pathicles/prerendered/files/story-electric.json'
-// import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
+import storyDipole from '@pathicles/prerendered/files/story-dipole.json'
+import storyElectric from '@pathicles/prerendered/files/story-electric.json'
+import storyQuadrupole from '@pathicles/prerendered/files/story-quadrupole.json'
 
 const clampMax = 1
 const clamp = (p) => (p < 0 ? 0 : p < clampMax ? p : clampMax)
@@ -82,13 +73,13 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-electric',
-              data: 'story-electric.js'
-              // camera: {
-              //   center: [-0, 1.5, 0],
-              //   distance: 5,
-              //   theta: (0 / 360) * 2 * Math.PI,
-              //   phi: (-10 / 360) * Math.PI
-              // }
+              data: 'story-electric.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (0 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
             }
           },
 
@@ -101,13 +92,13 @@ export default {
             scene_index: 1,
             pathicles: {
               preset: 'story-electric',
-              data: 'story-electric.js'
-              // camera: {
-              //   center: [-0, 1.5, 0],
-              //   distance: 2,
-              //   theta: (-90 / 360) * 2 * Math.PI,
-              //   phi: (-1 / 360) * 2 * Math.PI
-              // }
+              data: 'story-electric.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (90 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
             }
           },
           {
@@ -120,13 +111,13 @@ export default {
             image: '/images/story/story-dipole.jpg',
             pathicles: {
               preset: 'story-dipole',
-              data: 'story-dipole.js'
-              // camera: {
-              //   center: [-0, 1.5, 0],
-              //   distance: 2,
-              //   theta: (0 / 360) * 2 * Math.PI,
-              //   phi: (10 / 360) * 2 * Math.PI
-              // }
+              data: 'story-dipole.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (90 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
             }
           },
           {
@@ -138,13 +129,13 @@ export default {
             image: '/images/story/story-quadrupole.jpg',
             pathicles: {
               preset: 'story-quadrupole',
-              data: 'story-quadrupole.js'
-              // camera: {
-              //   center: [-0, 1.5, 0],
-              //   distance: 2,
-              //   theta: (90 / 360) * 2 * Math.PI,
-              //   phi: (-1 / 360) * 2 * Math.PI
-              // }
+              data: 'story-quadrupole.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (135 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
             }
           },
           {
@@ -152,13 +143,13 @@ export default {
             pathicles: {
               autoLoop: true,
               preset: 'story-empty',
-              data: 'story-electric.js'
-              // camera: {
-              //   center: [0, 1, 0],
-              //   distance: 2,
-              //   theta: (0 / 360) * 2 * Math.PI,
-              //   phi: (10 / 360) * 2 * Math.PI
-              // }
+              data: 'story-electric.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (180 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
             }
           }
         ]
@@ -193,6 +184,28 @@ export default {
       cameraMode: 'guided',
       viewRange: [0, 0],
       activeScene: 0
+    }
+  },
+
+  computed: {
+    pixelRatio() {
+      return Math.min(
+        this.maxPixelRatio,
+        window.devicePixelRatio,
+        this.maxCanvasWidth / this.windowHeight
+      )
+    },
+    canvasStyles() {
+      return {
+        width: `${this.windowWidth}px`,
+        height: `${this.windowHeight}px`
+      }
+    },
+    canvasWidth() {
+      return this.windowWidth * this.pixelRatio
+    },
+    canvasHeight() {
+      return this.windowHeight * this.pixelRatio
     }
   },
 
@@ -252,13 +265,11 @@ export default {
 
     this.story.scenes.forEach((scene) => {
       if (scene.pathicles && scene.pathicles.data) {
-        if (scene.pathicles.data === 'story-quadrupole.js') {
+        if (scene.pathicles.data === 'story-quadrupole.js')
           scene.data = storyQuadrupole
-        } else if (scene.pathicles.data === 'story-dipole.js') {
+        else if (scene.pathicles.data === 'story-dipole.js')
           scene.data = storyDipole
-        } else {
-          scene.data = storyElectric
-        }
+        else scene.data = storyElectric
       }
     })
 
@@ -275,28 +286,6 @@ export default {
       })
     })
   },
-
-  computed: {
-    pixelRatio() {
-      return Math.min(
-        this.maxPixelRatio,
-        window.devicePixelRatio,
-        this.maxCanvasWidth / this.windowHeight
-      )
-    },
-    canvasStyles() {
-      return {
-        width: this.windowWidth + 'px',
-        height: this.windowHeight + 'px'
-      }
-    },
-    canvasWidth() {
-      return this.windowWidth * this.pixelRatio
-    },
-    canvasHeight() {
-      return this.windowHeight * this.pixelRatio
-    }
-  },
   unmounted() {
     this.reglInstance.destroy()
     unwatchViewport(this.handleViewportChange)
@@ -308,14 +297,12 @@ export default {
         this.windowWidth = size.x
         this.windowHeight = size.y
         this.storyHeight = this.$refs.scrollContainer.clientHeight
-        if (this.reglInstance) {
-          this.reglInstance.resize()
-        }
+        if (this.reglInstance) this.reglInstance.resize()
       }
 
       if (scroll.changed) {
         this.progress = clamp(
-          (scroll.top + this.windowHeight) / this.storyHeight
+          (scroll.top + 0 * this.windowHeight) / this.storyHeight
         )
         if (this.reglInstance) {
           this.reglInstance.story.setPosition(this.progress)
@@ -397,7 +384,6 @@ export default {
   [data-status="past"] .scene-content-wrapper
     display none
 
-
   #scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
     &[data-status="present"] .scene-content-wrapper
       position fixed
@@ -440,7 +426,6 @@ export default {
 
           display inline-block
           padding 0 5px
-
 
         .proton
           background-color var(--kfb__red)
@@ -524,7 +509,6 @@ export default {
   [data-status="past"] .scene-content-wrapper
     display none
 
-
   #scrolly-story__scene--1, #scrolly-story__scene--2, #scrolly-story__scene--3, #scrolly-story__scene--4
     &[data-status="present"] .scene-content-wrapper
       position fixed
@@ -532,7 +516,6 @@ export default {
       top initial
 
   .pathicles-story__container
-
 
     .title, .subtitle
       font-size: var(--baty__font-size--header-md)
@@ -565,7 +548,6 @@ export default {
 
           display inline-block
           padding 0 5px
-
 
         .proton
           background-color var(--kfb__red)

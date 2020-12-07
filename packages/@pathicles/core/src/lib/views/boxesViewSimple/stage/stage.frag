@@ -20,7 +20,7 @@ varying vec2 vUv;
 
 
 // Can go down to 10 or so, and still be usable, probably...
-#define ITERATIONS 30
+#define ITERATIONS 10
 
 // Set this to 0.0 to stop the pixel movement.
 #define TIME iTime
@@ -129,7 +129,7 @@ void main(void) {
   float grid=clamp(x+y+z, 0., 1.);
 
   vec3 color=mix(mainColor, lineColor, grid);
-  float opacity = clamp(grid, 0.2, gridControl.w*grid);
+  float opacity = clamp(grid, 0.2, gridControl.w*grid)*.5;
   float fogDistance = length(vPosition);
   float fogAmount = smoothstep(stageSize/2.*1., stageSize/2.*.5, fogDistance);
 

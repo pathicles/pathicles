@@ -7,6 +7,7 @@ import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES } from '@pathicles/config'
+import { isLittleEndian } from '../utils/little-endian'
 
 export class Simulation {
   constructor(regl, { model, runner, debug }) {
@@ -27,6 +28,13 @@ export class Simulation {
       ? 'uint8'
       : 'float'
 
+    this.configuration.runner.iterations =
+      this.configuration.runner.iterations > 0
+        ? this.configuration.runner.iterations
+        : snapshotCount - 1
+
+    this.configuration.runner.littleEndian = isLittleEndian()
+
     this.colorCorrector = new ColorCorrector(
       regl,
       fourPositions,
@@ -37,7 +45,7 @@ export class Simulation {
       ...this.configuration.runner,
       particleCount,
       snapshotCount,
-
+      iterations: this.configuration.runner.iterations,
       particleTypes,
       position: new VariableBuffers(
         regl,
@@ -91,7 +99,7 @@ export class Simulation {
     this.log()
 
     this.pusher = pushBoris(this._regl, {
-      runner: this.runner,
+      runner: this.configuration.runner,
       variables: this.variables,
       model: this.model
     })

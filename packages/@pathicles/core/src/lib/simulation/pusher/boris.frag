@@ -12,12 +12,9 @@ const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
 const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
-uniform int littleEndian;
-
 uniform sampler2D utParticleChargesMassesChargeMassRatios;
 uniform sampler2D ut_position;
 uniform sampler2D utVelocityBuffer;
-uniform int packFloat2UInt8;
 uniform int takeSnapshot;
 uniform int iteration;
 uniform int variableIdx;
@@ -31,14 +28,13 @@ uniform vec3 electricField;
 uniform vec3 magneticField;
 uniform float particleInteraction;
 
-
 /*__latticeChunkGLSL__*/
 
 
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, packFloat2UInt8=packFloat2UInt8, littleEndian=littleEndian);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
 
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
@@ -178,51 +174,33 @@ void main () {
     : (takeSnapshot == 1)
       ? readVariable(particle, snapshot)
       : readVariable(particle, snapshot -1);
-//      : readVariable(particle, snapshot)
-
-//  (snapshot * iterationsPerSnapshot <=  iteration)
-//        ? readVariable(particle, snapshot)
-//        : vec4(1.);
-
-  //  gl_FragColor = (fourComponentIndex == 0.)
-  //  ? vec4(value.x, 0., 0., 0.)
-  //  : (fourComponentIndex == 1.)
-  //  ? vec4(value.y, value.y, 0., 0.)
-  //  : (fourComponentIndex == 2.)
-  //  ? vec4(0., 0., value.z, 0.)
-  //  : vec4(0., 0., 0., value.w);
-
-//  value = readVariable(particle, snapshot);
-//  value = value.xxxx;
-
-  gl_FragColor = (packFloat2UInt8 == 0)
-    ? (fourComponentIndex == 0)
-      ? vec4(value.x, 0., 0., 0.)
-      : (fourComponentIndex == 1)
-      ? vec4(value.y, 0., 0., 0.)
-      : (fourComponentIndex == 2)
-      ? vec4(value.z, 0., 0., 0.)
-      : vec4(value.w, 0., 0., 0.)
-    : (fourComponentIndex == 0)
-      ? packFloat(value.x)
-      : (fourComponentIndex == 1)
-      ? packFloat(value.y)
-      : (fourComponentIndex == 2)
-      ? packFloat(value.z)
-      : packFloat(value.w);
 
 
-//  gl_FragColor = encodeFloat(3.);
 
-//  gl_FragColor = (fourComponentIndex == 0)
-//    ? vec4(value.x)
-//    : (fourComponentIndex == 1)
-//    ? vec4(value.y)
-//    : (fourComponentIndex == 2)
-//    ? vec4(value.z)
-//    : vec4(value.w);
+#ifdef LITTLE_ENDIAN
 
 
+  gl_FragColor =
+  (fourComponentIndex == 0)
+  ? packFloat(value.x)
+  : (fourComponentIndex == 1)
+  ? packFloat(value.y)
+  : (fourComponentIndex == 2)
+  ? packFloat(value.z)
+  : packFloat(value.w);
+
+#else
+
+  gl_FragColor =
+  (fourComponentIndex == 0)
+  ? vec4(value.x, 0., 0., 0.)
+  : (fourComponentIndex == 1)
+  ? vec4(value.y, 0., 0., 0.)
+  : (fourComponentIndex == 2)
+  ? vec4(value.z, 0., 0., 0.)
+  : vec4(value.w, 0., 0., 0.);
+
+#endif
 
 
 //  gl_FragColor = packFloat(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);

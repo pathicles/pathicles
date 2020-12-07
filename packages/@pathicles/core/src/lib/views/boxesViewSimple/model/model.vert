@@ -48,7 +48,9 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, packFloat2UInt8=packFloat2UInt8,littleEndian=littleEndian);
+
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
+
 
 
 float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
@@ -82,19 +84,20 @@ void main () {
   vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
 
 
-//  fourPosition.y += a_snapshot/10.;
-//  previousFourPosition.y +=  0.*a_snapshot/10.;
+  //  fourPosition.y += a_snapshot/10.;
+  //  previousFourPosition.y +=  0.*a_snapshot/10.;
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
-#ifdef lighting
+  #ifdef lighting
   vScale = vec3(
-    pathicleWidth  * 1.,
-    pathicleHeight,
-    length(previousFourPosition.xyz - fourPosition.xyz) - pathicleGap);
-#endif
+  pathicleWidth  * 1.,
+  pathicleHeight,
+  length(previousFourPosition.xyz - fourPosition.xyz) - pathicleGap);
+  #endif
 
-#ifdef shadow
+
+  #ifdef shadow
   vScale = vec3(
     pathicleWidth * 10.,
     pathicleHeight,
@@ -122,7 +125,7 @@ void main () {
 
 
 #ifdef lighting
-//  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
+  //  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
 //
 //  vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
 //
@@ -135,5 +138,7 @@ void main () {
   gl_Position =vec4(vShadowCoord, 1.0);
 #endif// shadow
 }
+
+
 
 
