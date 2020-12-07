@@ -103,68 +103,65 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    performance.mark('run')(
-      (this.loop = regl.frame(({ tick }) => {
-        if (tick < 20) {
-          this.performanceLogger.start(
-            'pathiclesRunner.next iteration: ' +
-              this.simulation.variables.iteration +
-              ' ' +
-              tick
-          )
-        }
-        const { changed } = this.pathiclesRunner.next()
+    this.loop = regl.frame(({ tick }) => {
+      if (tick < 20) {
+        this.performanceLogger.start(
+          'pathiclesRunner.next iteration: ' +
+            this.simulation.variables.iteration +
+            ' ' +
+            tick
+        )
+      }
+      const { changed } = this.pathiclesRunner.next()
 
-        if (tick < 20) {
-          this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
-        }
-        this.camera.doAutorotate()
-        this.camera.tick()
+      if (tick < 20) {
+        this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
+      }
+      this.camera.doAutorotate()
+      this.camera.tick()
 
-        if (changed || this.camera.state.dirty) {
-          this.camera.setCameraUniforms(
-            {
-              ...this.camera
-            },
-            () => {
-              this.view.drawDiffuse({
-                colorCorrections: this.simulation.variables.colorCorrections,
-                particleColorsAndTypes: this.simulation.variables
-                  .particleColorsAndTypes,
-                position: this.simulation.variables.position.value()
+      if (changed || this.camera.state.dirty) {
+        this.camera.setCameraUniforms(
+          {
+            ...this.camera
+          },
+          () => {
+            this.view.drawDiffuse({
+              colorCorrections: this.simulation.variables.colorCorrections,
+              particleColorsAndTypes: this.simulation.variables
+                .particleColorsAndTypes,
+              position: this.simulation.variables.position.value()
+            })
+
+            if (this.config.debug.showTextures) {
+              this.drawTexture({
+                texture: this.simulation.variables.position.value(),
+                scale: this.config.debug.showTextureScale
               })
-
-              if (this.config.debug.showTextures) {
-                this.drawTexture({
-                  texture: this.simulation.variables.position.value(),
-                  scale: this.config.debug.showTextureScale
-                })
-                this.drawTexture({
-                  texture: this.simulation.variables.velocity.value(),
-                  y0:
-                    (this.simulation.variables.snapshotCount * 4 + 1) *
-                    this.config.debug.showTextureScale,
-                  scale: this.config.debug.showTextureScale
-                })
-                // this.drawTexture({
-                //   texture: this.view.shadow.fbo,
-                //   x0:
-                //     2 *
-                //     (this.simulation.variables.particleCount + 1) *
-                //     this.config.debug.showTextureScale,
-                //   scale: 0.5
-                // })
-              }
+              this.drawTexture({
+                texture: this.simulation.variables.velocity.value(),
+                y0:
+                  (this.simulation.variables.snapshotCount * 4 + 1) *
+                  this.config.debug.showTextureScale,
+                scale: this.config.debug.showTextureScale
+              })
+              // this.drawTexture({
+              //   texture: this.view.shadow.fbo,
+              //   x0:
+              //     2 *
+              //     (this.simulation.variables.particleCount + 1) *
+              //     this.config.debug.showTextureScale,
+              //   scale: 0.5
+              // })
             }
-          )
-        }
-        this.performanceLogger.stop()
-        // if (tick < 20) {
-        //   this.performanceLogger.start('idle tick ' + tick)
-        // }
-      }))
-    )
-    this.loop()
+          }
+        )
+      }
+      this.performanceLogger.stop()
+      // if (tick < 20) {
+      //   this.performanceLogger.start('idle tick ' + tick)
+      // }
+    })
   }
 
   stop() {

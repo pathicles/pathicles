@@ -2,9 +2,9 @@ import path from 'path'
 import { UserConfig } from 'vite'
 import Voie from 'vite-plugin-voie'
 import PurgeIcons from 'vite-plugin-purge-icons'
-import ViteComponents from 'vite-plugin-components'
+// import ViteComponents from 'vite-plugin-components'
 import Markdown from 'vite-plugin-md'
-import { VitePWA } from 'vite-plugin-pwa'
+// import { VitePWA } from 'vite-plugin-pwa'
 
 const alias = {
   '/~/': path.resolve(__dirname, 'src')
@@ -41,27 +41,27 @@ const config: UserConfig = {
     // }),
 
     // https://github.com/antfu/purge-icons
-    PurgeIcons(),
+    PurgeIcons()
 
     // https://github.com/antfu/vite-plugin-pwa
-    VitePWA({
-      manifest: {
-        name: 'Vitesse',
-        short_name: 'Vitesse',
-        icons: [
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
+    // VitePWA({
+    //   manifest: {
+    //     name: 'Pathicles',
+    //     short_name: 'Pathicles',
+    //     icons: [
+    //       {
+    //         src: '/pwa-192x192.png',
+    //         sizes: '192x192',
+    //         type: 'image/png'
+    //       },
+    //       {
+    //         src: '/pwa-512x512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png'
+    //       }
+    //     ]
+    //   }
+    // })
   ]
 }
 

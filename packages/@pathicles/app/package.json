@@ -4,7 +4,8 @@
   "version": "0.2.0",
   "scripts": {
     "build_": "vite build",
-    "build": "cross-env NODE_ENV=production vite build && esno scripts/ssg.ts",
+    "build__": "cross-env NODE_ENV=production vite build && esno scripts/ssg.ts",
+    "build": "cross-env NODE_ENV=production vite build",
     "dev": "vite --port $(node -p 'require(\"./package.json\").config.devPort')",
     "lint-fix": "eslint --fix src",
     "publish": "yarn publish --access=public"
