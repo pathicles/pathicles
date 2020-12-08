@@ -9,6 +9,7 @@ import { freeElectrons } from './free-electrons'
 import { freePhoton } from './free-photon'
 import { freePhotons } from './free-photons'
 import { gyrotest_1_electron } from './gyrotest-1-electron'
+import gyrotest_128_electrons from './gyrotest-128-electrons'
 
 const merge = (...theArgs) => {
   let target = {}
@@ -45,7 +46,8 @@ const presets = {
   [freePhotons.name]: freePhotons,
   [random.name]: random,
   [dipole.name]: dipole,
-  [gyrotest_1_electron.name]: gyrotest_1_electron
+  [gyrotest_1_electron.name]: gyrotest_1_electron,
+  [gyrotest_128_electrons.name]: gyrotest_128_electrons
 }
 
 export const config = (presetName) => {

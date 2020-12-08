@@ -4,7 +4,7 @@ import freeCameraFactory from '../utils/freeCameraFactory'
 import { Simulation } from './simulation'
 import { SimulationRunner } from './simulationRunner'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
-import { boxesViewSimple } from '../views/boxesViewSimple'
+import { BoxesViewSimple } from '../views/boxesViewSimple'
 import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
@@ -15,6 +15,7 @@ export class ReglSimulatorInstance {
     keyControlMount(this)
     this.config = config
 
+    window.performanceLogger = null
     this.performanceLogger = new PerformanceLogger(
       this.config.debug.logPerformance
     )
@@ -76,7 +77,6 @@ export class ReglSimulatorInstance {
   }
 
   init(regl) {
-    // console.log(regl._gl.FLOAT)
     this.camera = freeCameraFactory(regl, {
       ...this.config.view.camera,
       aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
@@ -84,39 +84,27 @@ export class ReglSimulatorInstance {
 
     this.drawTexture = drawTextureCommand(regl)
 
-    this.performanceLogger.start('init.simulation')
     this.simulation = new Simulation(regl, this.config, this.support)
 
-    this.performanceLogger.stop('init.simulation')
-    this.performanceLogger.start('init.view')
-    this.view = boxesViewSimple(regl, {
+    this.pathiclesRunner = new SimulationRunner(
+      this.simulation,
+      this.config.runner,
+      this.config.debug
+    )
+
+    this.view = new BoxesViewSimple(regl, {
       runner: this.simulation.runner,
       variables: this.simulation.variables,
       model: this.simulation.model,
-      view: this.config.view
+      view: this.config.view,
+      debug: this.config.debug
     })
-    this.performanceLogger.start('init.runner')
-    this.pathiclesRunner = new SimulationRunner(
-      this.simulation,
-      this.config.runner
-    )
   }
 
   run(regl) {
     this.loop = regl.frame(({ tick }) => {
-      if (tick < 20) {
-        this.performanceLogger.start(
-          'pathiclesRunner.next iteration: ' +
-            this.simulation.variables.iteration +
-            ' ' +
-            tick
-        )
-      }
       const { changed } = this.pathiclesRunner.next()
 
-      if (tick < 20) {
-        this.performanceLogger.start('pathiclesRunner view tick: ' + tick)
-      }
       this.camera.doAutorotate()
       this.camera.tick()
 
@@ -145,22 +133,19 @@ export class ReglSimulatorInstance {
                   this.config.debug.showTextureScale,
                 scale: this.config.debug.showTextureScale
               })
-              // this.drawTexture({
-              //   texture: this.view.shadow.fbo,
-              //   x0:
-              //     2 *
-              //     (this.simulation.variables.particleCount + 1) *
-              //     this.config.debug.showTextureScale,
-              //   scale: 0.5
-              // })
+              this.drawTexture({
+                texture: this.view.shadow.fbo,
+                x0:
+                  2 *
+                  (this.simulation.variables.particleCount + 1) *
+                  this.config.debug.showTextureScale,
+                scale: 0.5
+              })
             }
           }
         )
       }
       this.performanceLogger.stop()
-      // if (tick < 20) {
-      //   this.performanceLogger.start('idle tick ' + tick)
-      // }
     })
   }
 

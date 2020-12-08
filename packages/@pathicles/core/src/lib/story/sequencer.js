@@ -10,85 +10,20 @@ import { isLittleEndian } from '../utils/little-endian'
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
-    // scene.data().then(({ data }) => {
-    const { data, configuration } = scene.data
-    scene.presetName = configuration.presetName
-    scene.configuration = configuration
+    console.log('sequencer.start')
+    scene.loaded = false
+    const numberType = 'float'
+    const particleCount = 121 //scene.configuration.model.emitter.particleCount
+    const snapshotCount = 128
 
-    const variableType = 'float32'
-    const particleCount = scene.configuration.model.emitter.particleCount
-    const snapshotCount = scene.configuration.runner.snapshotCount
-
-    const particleColorsAndTypes = regl.texture({
-      data: Array(particleCount * 4),
-      shape: [particleCount, 1, 4]
-    })
-
-    scene.runner = scene.configuration.runner
-    scene.model = scene.configuration.model
-
-    // const position = data.position2 //new Float32Array(new Uint8Array(data.position2).buffer)
-    // console.log({ position })
     scene.variables = {
-      referencePoint: [0, 0, 0],
       snapshotCount,
       particleCount,
       iterations: 127,
       pingPong: 0,
       segments: particleCount * (snapshotCount - 1),
       iteration: snapshotCount,
-      littleEndian: isLittleEndian(),
-      particleColorsAndTypes,
-      position: {
-        buffers: [
-          variableTexture(
-            regl,
-            {
-              width: snapshotCount * 4,
-              height: particleCount
-            },
-            variableType,
-            new Float32Array(data.position)
-          )
-        ]
-      }
-    }
-
-    performance.mark('scene data')
-    scene.variables.particleColorsAndTypes({
-      data: data.particleTypes.map((p) => PARTICLE_TYPES[p].color.concat(p)),
-      shape: [particleCount, 1, 4]
-    })
-
-    // const initialPosition = position.slice(-particleCount * 4)
-    // const particles = new Array(particleCount)
-    //   .fill(0)
-    //   .map((_, i) => [
-    //     initialPosition[i * 4],
-    //     initialPosition[i * 4 + 1],
-    //     initialPosition[i * 4 + 2],
-    //     initialPosition[i * 4 + 3]
-    //   ])
-
-    // const colorCorrector = new ColorCorrector(
-    //   regl,
-    //   particles,
-    //   configuration.model.emitter.position
-    // )
-
-    scene.variables.colorCorrections = regl.texture({
-      data: data.colorCorrections.map((c) => [c, 0, 0, 0]).flat(),
-      shape: [particleCount, 1, 4],
-      type: 'float'
-    })
-    scene.model = {
-      boundingBoxSize: configuration.model.boundingBoxSize,
-      interactions: {
-        particleInteraction:
-          configuration.model.interactions.particleInteraction,
-        electricField: configuration.model.interactions.electricField,
-        magneticField: configuration.model.interactions.magneticField
-      }
+      littleEndian: isLittleEndian()
     }
     scene._s = s
     scene._t0 = t
@@ -96,16 +31,60 @@ export default function (regl, scenes, stateVars, onStateChange) {
     scene._t1 = t + scene.duration
     scene._t1_normalized = scene._t1 / scenes.duration
     t = scene._t1
-    scene.cameraBSplines = {
-      distance: (x) => bspline(x, 2, scene.cameraSploints.distance),
-      phi: (x) => bspline(x, 2, scene.cameraSploints.phi),
-      theta: (x) => bspline(x, 2, scene.cameraSploints.theta),
-      centerX: (x) => bspline(x, 2, scene.cameraSploints.centerX),
-      centerY: (x) => bspline(x, 2, scene.cameraSploints.centerY),
-      centerZ: (x) => bspline(x, 2, scene.cameraSploints.centerZ)
-    }
+
+    scene.data().then(({ data, name, configuration }) => {
+      scene.preset = name
+      scene.configuration = configuration
+      scene.runner = scene.configuration.runner
+      scene.model = scene.configuration.model
+
+      scene.variables.position = {
+        buffers: [
+          variableTexture(
+            regl,
+            {
+              width: scene.runner.snapshotCount * 4,
+              height: scene.model.emitter.particleCount
+            },
+            numberType,
+            new Float32Array(data.position.map((p) => [p, 0, 0, 0]).flat())
+          )
+        ]
+      }
+
+      scene.variables.particleColorsAndTypes = regl.texture({
+        data: data.particleTypes
+          .map((p) => PARTICLE_TYPES[p].color.concat(p))
+          .flat(),
+        shape: [particleCount, 1, 4]
+      })
+
+      scene.variables.colorCorrections = regl.texture({
+        data: data.colorCorrections.map((c) => [c, 0, 0, 0]).flat(),
+        shape: [particleCount, 1, 4],
+        type: 'float'
+      })
+      scene.model = {
+        boundingBoxSize: configuration.model.boundingBoxSize,
+        interactions: {
+          particleInteraction:
+            configuration.model.interactions.particleInteraction,
+          electricField: configuration.model.interactions.electricField,
+          magneticField: configuration.model.interactions.magneticField
+        }
+      }
+
+      scene.cameraBSplines = {
+        distance: (x) => bspline(x, 2, scene.cameraSploints.distance),
+        phi: (x) => bspline(x, 2, scene.cameraSploints.phi),
+        theta: (x) => bspline(x, 2, scene.cameraSploints.theta),
+        centerX: (x) => bspline(x, 2, scene.cameraSploints.centerX),
+        centerY: (x) => bspline(x, 2, scene.cameraSploints.centerY),
+        centerZ: (x) => bspline(x, 2, scene.cameraSploints.centerZ)
+      }
+      scene.loaded = true
+    })
   })
-  // })
 
   const state = {
     sceneIdx: 0,

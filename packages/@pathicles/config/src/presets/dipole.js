@@ -1,23 +1,37 @@
-import { LATTICE_ELEMENT_TYPES } from '../constants.js'
+import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
 
 export const dipole = {
   name: 'dipole',
   view: {
     camera: {
-      eye: [10, 2, 0],
-      center: [0, 2, 0]
+      center: [0, 2, 0],
+      distance: 5,
+      phi: (2 / 360) * 2 * Math.PI,
+      theta: (0 / 360) * 2 * Math.PI
     }
+  },
+  runner: {
+    prerender: true,
+    loops: 0,
+    mode: RUNNER_MODE.FRAMEWISE,
+    iterationsPerSnapshot: 1,
+    iterationsPerTick: 4,
+    iterationDurationOverC: 0.25,
+    snapshotCount: 512,
+    iterations: 128
   },
 
   model: {
     emitter: {
+      particleCount: 121,
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_XY',
-      position: [0, 0.15, 0],
-      direction: [0, 0.1, -1],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0.01, 0.05, 0.1],
-      gamma: 12.05
+      particleSeparation: 0.05,
+      position: [0, 2, 0],
+      direction: [0, 0.1, 1],
+      positionJitter: [0.0, 0.0, 0.5],
+
+      gamma: 2.05
     },
     interactions: {
       magneticField: [0, 0.001, 0],
@@ -35,7 +49,7 @@ export const dipole = {
           strength: 0.0
         }
       },
-      beamline: ['l', 'd', 'l'],
+      beamline: [],
       origin: {
         phi: 0,
         position: [0, 0.5, -9]

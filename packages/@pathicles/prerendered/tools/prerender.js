@@ -68,8 +68,9 @@ const createImages = async () => {
     fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
       iteration: dump.logEntry.iteration,
       configuration: dump.configuration,
+      name: preset,
       data: {
-        position: dump.position,
+        position: values,
         // position2: values,
         colorCorrections: dump.colorCorrections.map(
           (d) => Math.floor(d * 100) / 100

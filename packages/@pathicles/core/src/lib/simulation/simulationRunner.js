@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
 import { RUNNER_MODE } from '@pathicles/config/src/constants.js'
+import { PerformanceLogger } from '../utils/PerformanceLogger'
 
 const INITIAL = 'initial'
 const ACTIVE = 'active'
@@ -23,8 +24,11 @@ export class SimulationRunner {
       iterationsPerTick = 1,
       loops = 0,
       mode = RUNNER_MODE.STEPWISE
-    }
+    },
+    debug
   ) {
+    this.performanceLogger = new PerformanceLogger(debug.logPerformance)
+
     this._simulation = simulation
     this._prerender = prerender
     this._iterations =
@@ -72,7 +76,10 @@ export class SimulationRunner {
       if (this._prerender) {
         this._simulation.prerender()
 
-        this.fsm = { state: STATES.PAUSED }
+        this.fsm =
+          this._loopCountMax === 0
+            ? { state: STATES.PAUSED }
+            : { state: STATES.ACTIVE }
       } else {
         this.fsm = { state: STATES.ACTIVE }
       }

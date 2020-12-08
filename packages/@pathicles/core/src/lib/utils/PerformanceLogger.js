@@ -8,21 +8,22 @@
 // export { log, error, PerformanceLogger }
 
 export class PerformanceLogger {
-  constructor(active = true) {
+  constructor(active = true, maxEntries = 100) {
     if (window.performanceLogger) return window.performanceLogger
     performance.clearMarks()
     performance.clearMeasures()
     this.current = null
     this.active = active
     this.running = false
-    this.markName
+    this.maxEntries = maxEntries
+    this.entryCount = 0
     this.entries = []
     window.performanceLogger = this
   }
 
   start(markName) {
-    if (this.active) {
-      // this.stop()
+    if (this.active && this.entryCount < this.maxEntries) {
+      this.entryCount++
       this.markName = markName
       performance.mark(this.markName)
     }
@@ -38,31 +39,37 @@ export class PerformanceLogger {
   report() {
     if (this.running) this.stop()
 
+    const round = (x) => x.toFixed(1) * 1
+
     const marks = performance.getEntriesByType('mark')
     const measures = marks.map((mark, m) => ({
       name: mark.name,
-      t0: mark.startTime,
-      t_next: marks[Math.min(m + 1, marks.length - 1)].startTime,
-      dt: marks[Math.min(m + 1, marks.length - 1)].startTime - mark.startTime
+      dt: round(
+        marks[Math.min(m + 1, marks.length - 1)].startTime - mark.startTime
+      ),
+      t0: round(mark.startTime),
+      t_next: round(marks[Math.min(m + 1, marks.length - 1)].startTime)
     }))
 
-    const measuresSorted = measures.sort((a, b) => b.dt - a.dt)
-    console.log(measuresSorted)
-    let result =
-      'measuresSorted.longest: ' +
-      measuresSorted[0].name +
-      ' ' +
-      measuresSorted[0].dt
+    return measures.filter((m) => m.name.indexOf('stop') === -1)
 
-    return (
-      result +
-      '\n' +
-      measures
-        .map(
-          ({ name, dt }) => `
-      ${name.padStart(25, ' ')}: ${dt.toFixed(1)}`
-        )
-        .join('\n')
-    )
+    // const measuresSorted = measures.sort((a, b) => b.dt - a.dt)
+    // console.table(measures)
+    // let result =
+    //   'measuresSorted.longest: ' +
+    //   measuresSorted[0].name +
+    //   ' ' +
+    //   measuresSorted[0].dt
+    //
+    // return (
+    //   result +
+    //   // '\n' +
+    //   measures
+    //     .map(
+    //       ({ name, dt }) => `
+    //   ${name.padStart(25, ' ')}: ${dt.toFixed(1)}`
+    //     )
+    //     .join('')
+    // )
   }
 }

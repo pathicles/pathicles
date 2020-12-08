@@ -9,7 +9,7 @@ export const random = {
   },
 
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 5,
 
     mode: RUNNER_MODE.FRAMEWISE,

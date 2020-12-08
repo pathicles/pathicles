@@ -2,6 +2,8 @@ import { DISTRIBUTIONS } from '@pathicles/config'
 import { boundedRandom } from '../utils/random'
 import { particleByName } from '@pathicles/config'
 
+const functionalize = (x) => (typeof x == 'function' ? x : () => x)
+
 function normalize(a) {
   let x = a[0]
   let y = a[1]
@@ -64,9 +66,9 @@ export function ParticleCollection({
   directionJitter = [0, 0, 0]
 }) {
   // create particle collection
-  const gammaFn = typeof gamma == 'function' ? gamma : () => gamma
-  const directionFn =
-    typeof direction == 'function' ? direction : () => direction
+  const gammaFn = functionalize(gamma)
+  const directionFn = functionalize(direction)
+  const positionFn = functionalize(position)
 
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 
@@ -75,14 +77,14 @@ export function ParticleCollection({
     d: particleSeparation
   })
 
-  const fourPositions = localPositions.map((localPosition) => {
+  const fourPositions = localPositions.map((localPosition, p) => {
     const jitter = jitterPosition({
       jitter: positionJitter
     })
     return [
-      position[0] + localPosition[0] + jitter[0],
-      position[1] + localPosition[1] + jitter[1],
-      position[2] + localPosition[2] + jitter[2],
+      positionFn({ p })[0] + localPosition[0] + jitter[0],
+      positionFn({ p })[1] + localPosition[1] + jitter[1],
+      positionFn({ p })[2] + localPosition[2] + jitter[2],
       0
     ]
   })
@@ -95,7 +97,7 @@ export function ParticleCollection({
     const jitteredDirection = jitterDirection({
       direction,
       directionJitter
-    }).map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
+    }) //.map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
 
     return [
       beta * jitteredDirection[0],

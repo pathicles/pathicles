@@ -3,76 +3,78 @@ import drawStageCommands from './stage/drawStageCommands'
 import { Shadow } from './shadow/Shadow'
 import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
+import { PerformanceLogger } from '../../utils/PerformanceLogger'
 
-export function boxesViewSimple(regl, { runner, variables, view }) {
-  const lightPosition = view.lights[0].position
-  const shadow = new Shadow(regl, view.lights[0])
+export class BoxesViewSimple {
+  constructor(regl, { runner, variables, view, debug }) {
+    this.regl = regl
+    this.performanceLogger = new PerformanceLogger(debug.logPerformance)
 
-  const uniforms = {
-    //model
-    stageGrid_size: view.stageGrid.size / 2,
-    viewRange: regl.prop('viewRange'),
-    ambientLightAmount: view.ambientLightAmount,
-    diffuseLightAmount: view.diffuseLightAmount
-    // dt: 2 * runner.iterationDurationOverC
+    this.performanceLogger.start('BoxesViewSimple()')
+
+    this.lightPosition = view.lights[0].position
+
+    this.config = view
+
+    this.shadow = new Shadow(regl, this.config.lights[0])
+
+    //
+    this.setParams = regl({
+      uniforms: {
+        stageGrid_size: this.config.stageGrid.size / 2,
+        viewRange: regl.prop('viewRange'),
+        ambientLightAmount: this.config.ambientLightAmount,
+        diffuseLightAmount: this.config.diffuseLightAmount
+      }
+    })
+
+    this.drawModel = drawModelCommands(
+      regl,
+      {
+        runner,
+        variables,
+        view
+      },
+      this.shadow
+    )
+    this.drawStage = drawStageCommands(regl, view, this.shadow)
+
+    this.drawAxis = drawAxesCommand(regl, 0.5)
+    this.drawVignette = drawVignetteCommandBuilder(regl)
   }
 
-  const setParams = regl({
-    uniforms
-  })
-
-  const drawModel = drawModelCommands(
-    regl,
-    {
-      runner,
-      variables,
-      view
-    },
-    shadow
-  )
-  const drawStage = drawStageCommands(regl, view, shadow)
-
-  const drawAxis = drawAxesCommand(regl, 0.5)
-  const drawVignette = drawVignetteCommandBuilder(regl)
-
-  function drawDiffuse(props) {
-    regl.clear({
+  drawDiffuse(props) {
+    this.regl.clear({
       color: [0, 0, 0, 0],
       depth: 1
     })
     // eslint-disable-next-line no-unused-vars
-    setParams(view, () => {
-      regl.clear({
+    this.setParams({}, () => {
+      this.regl.clear({
         color: [0, 0, 0, 0],
         depth: 1,
-        framebuffer: shadow.fbo
+        framebuffer: this.shadow.fbo
       })
 
-      shadow.update([
-        lightPosition[0],
-        lightPosition[1], // Math.sin(time * 2),
-        lightPosition[2]
-      ])
+      // this.shadow.update([
+      //   this.config.lightPosition[0],
+      //   this.config.lightPosition[1], // Math.sin(time * 2),
+      //   this.config.lightPosition[2]
+      // ])
 
-      view.isShadowEnabled && drawModel.shadow(props)
-      view.showAxes &&
-        drawAxis([
+      this.config.isShadowEnabled && this.drawModel.shadow(props)
+      this.config.showAxes &&
+        this.drawAxis([
           { axis: [1, 0, 0] },
           { axis: [0, 1, 0] },
           { axis: [0, 0, 1] }
         ])
 
-      view.isStageVisible && drawStage.lighting(props)
-      drawModel.lighting(props)
-      view.showVignette && drawVignette.lighting(props)
+      this.config.isStageVisible && this.drawStage.lighting(props)
+      this.drawModel.lighting(props)
+      this.config.showVignette && this.drawVignette.lighting(props)
     })
   }
 
-  const destroy = () => {}
-
-  return {
-    destroy,
-    drawDiffuse,
-    shadow
-  }
+  destroy() {}
 }

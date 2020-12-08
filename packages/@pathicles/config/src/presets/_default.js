@@ -77,19 +77,6 @@ export const defaultConfig = {
     showVignette: true,
     viewRange: [0, 1],
 
-    // lights: [
-    //   {
-    //     position: [0, 1, 0],
-    //     direction: [1, 1, 0],
-    //     color: new Array(3).fill(0)
-    //   },
-    //   {
-    //     position: [0, 1, 0],
-    //     direction: [-1, -1, 0],
-    //     color: new Array(3).fill(0)
-    //   }
-    // ],ª
-
     camera: {
       center: [0, 1, 0],
 

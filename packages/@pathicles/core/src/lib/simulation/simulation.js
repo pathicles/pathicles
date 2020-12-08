@@ -8,9 +8,13 @@ import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES } from '@pathicles/config'
 import { isLittleEndian } from '../utils/little-endian'
+import { PerformanceLogger } from '../utils/PerformanceLogger'
 
 export class Simulation {
   constructor(regl, { model, runner, debug }) {
+    this.performanceLogger = new PerformanceLogger(debug.logPerformance)
+
+    this.performanceLogger.start('Simulation()')
     this._regl = regl
 
     this.configuration = { model, runner, debug }
@@ -103,11 +107,14 @@ export class Simulation {
       variables: this.variables,
       model: this.model
     })
+    this.performanceLogger.stop()
   }
 
-  push(n) {
+  push(n = 1) {
+    this.performanceLogger.start(`simulation.push (n=${n}`)
     this.pusher(n)
     this.log()
+    this.performanceLogger.stop()
   }
 
   logEntry() {
