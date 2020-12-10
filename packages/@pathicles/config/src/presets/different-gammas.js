@@ -1,16 +1,17 @@
 import { defaultConfig } from './_default'
 import { RUNNER_MODE } from '../constants'
 
-export const freeElectrons = {
-  name: 'free-electrons',
+export const differentGammas = {
+  name: 'different-gammas',
   view: {
+    pathicleRelativeGap: 12,
+    pathicleRelativeHeight: 10,
+    pathicleWidth: 0.01,
     camera: {
-      center: [0, 1, 0],
-      distance: 4,
-      //   center: [0.5, 0, 0],
+      center: [0, 0.8, 0],
+      distance: 3,
       theta: -(2 * Math.PI) / (360 / 0),
       phi: (2 * Math.PI) / (360 / 10)
-      //   distance: 0.5
     }
   },
 
@@ -22,7 +23,7 @@ export const freeElectrons = {
     iterationsPerSnapshot: 1,
     iterations: 10,
     snapshotCount: 32,
-    iterationDurationOverC: 0.1
+    iterationDurationOverC: 0.5
   },
 
   debug: {
@@ -31,13 +32,13 @@ export const freeElectrons = {
 
   model: {
     emitter: {
-      particleCount: 3,
+      particleCount: 66,
       particleSeparation: 0.0,
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'ROW',
       direction: [0, 0, -1],
       position: ({ p }) => [
-        (p - 16) / 2 / 10,
+        (Math.floor(p / 3) - 11) / 5 + (p % 3) * 0.05,
         (defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
           2,
@@ -45,7 +46,7 @@ export const freeElectrons = {
       ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: ({ p }) => 1 + Math.floor(p / 3) / 20 //1.55
+      gamma: ({ p }) => 1 + Math.floor(p / 3) / 50 //1.55
     }
   }
 }

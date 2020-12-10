@@ -38,7 +38,7 @@ export const freeElectron = {
       ],
       direction: [0, 0, 1],
       particleSeparation: 0.0,
-      gamma: 1.1,
+      gamma: 11,
       particleCount: 1,
       bunchShape: 'ROW',
       particleType: 'ELECTRON',
