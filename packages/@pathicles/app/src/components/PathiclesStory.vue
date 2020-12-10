@@ -1,7 +1,11 @@
 /* eslint-env browser */
 <template lang="pug">
 .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
-  .debug.debug-only {{vp}}
+
+  dl.debug.debug-only
+    div(v-for="(value, key) in vp" :key="key")
+      dt {{ key }}
+      dd {{ value }}
   .canvas-container(ref="canvasContainer")
     canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--  .scene-backgrounds    -->
@@ -81,7 +85,7 @@ export default {
                 center: [0, 1.5, 0],
                 distance: 5,
                 theta: (0 / 360) * 2 * Math.PI,
-                phi: (-10 / 360) * Math.PI
+                phi: (10 / 360) * Math.PI
               }
             }
           },
@@ -276,7 +280,6 @@ export default {
       }
     })
 
-    console.log({ scenes: this.story.scenes })
     this.$nextTick(() => {
       watchViewport(this.handleViewportChange)
       this.reglInstance = new ReglViewerInstance({
@@ -317,20 +320,16 @@ export default {
         }
 
         if (scroll.changed || size.changed) {
-          this.vp = JSON.stringify(
-            {
-              scenceCount: this.story.scenes.length,
-              activeScene: this.activeScene,
-              sceneProgress: this.sceneProgress,
-              progress: this.progress.toFixed(2),
-              storyHeight: this.storyHeight,
-              duration: this.story.scenes.duration,
-              dt: this.duration,
-              scrollTop: scroll.top + this.screenHeight
-            },
-            null,
-            2
-          )
+          this.vp = {
+            // sceneCount: this.story.scenes.length,
+            scene: this.activeScene + '/' + this.story.scenes.length,
+            sceneProgress: this.sceneProgress,
+            progress: this.progress.toFixed(2)
+            // storyHeight: this.storyHeight,
+            // duration: this.story.scenes.duration,
+            // dt: this.duration,
+            // scrollTop: scroll.top + this.screenHeight
+          }
         }
       }
     }
@@ -349,6 +348,9 @@ export default {
     top 0
     left 0
     z-index 1000000
+
+    dd, dt
+      font-family  monospace
 
   .canvas-container
     z-index 1000

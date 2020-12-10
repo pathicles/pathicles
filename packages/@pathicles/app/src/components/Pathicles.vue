@@ -5,7 +5,6 @@
   .debug.debug-only {{vp}}
   .canvas-container(ref="container")
     canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-    <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>
@@ -14,7 +13,7 @@ import { config as loadConfig } from '@pathicles/config'
 import { unwatchViewport, watchViewport } from 'tornis'
 
 export default {
-  name: 'PathiclesSimulator',
+  name: 'Pathicles',
 
   props: {
     presetName: {
@@ -47,7 +46,6 @@ export default {
       progress: 0.5,
       viewRange: [0, 1],
       config: {},
-      configModel: {},
       windowHeight: 0,
       windowWidth: 0,
       vp: null
@@ -82,7 +80,6 @@ export default {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
 
-    console.log(this.$route)
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
@@ -115,51 +112,10 @@ export default {
   },
   watch: {
     presetName(presetName) {
-      this.config = loadConfig(this.presetName)
+      this.config = loadConfig(presetName)
       this.reglInstance.loadConfig(this.config)
     }
   }
-  // onChange() {
-  //   const params = { presetName: this.presetName }
-  //   if (this.presetName !== 'story') {
-  //     history.pushState(
-  //       {},
-  //       null,
-  //       this.$route.path +
-  //         '?' +
-  //         Object.keys(params)
-  //           .map((key) => {
-  //             return (
-  //               encodeURIComponent(key) +
-  //               '=' +
-  //               encodeURIComponent(params[key])
-  //             )
-  //           })
-  //           .join('&')
-  //     )
-  //   } else {
-  //     this.$router.push('story')
-  //     // history.pushState({}, null, '/story')
-  //   }
-  //   this.config = loadConfig(this.presetName)
-  //   this.reglInstance.loadConfig(this.config)
-  // }
-  // update(configModel) {
-  //   this.config.model.interactions.electricField = [
-  //     0,
-  //     0,
-  //     parseFloat(configModel.electricField_z)
-  //   ]
-  //   this.config.model.interactions.magneticField = [
-  //     0,
-  //     parseFloat(configModel.magneticField_y),
-  //     0
-  //   ]
-  //   this.reglInstance.loadConfig(this.config)
-  // }
-  // initGui(config) {
-  //   config
-  // }
 }
 </script>
 

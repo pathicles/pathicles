@@ -99,7 +99,7 @@ void main () {
 
   #ifdef shadow
   vScale = vec3(
-    pathicleWidth * 10.,
+    pathicleWidth * 1.,
     pathicleHeight,
     length(previousFourPosition.xyz - fourPosition.xyz) );
 #endif

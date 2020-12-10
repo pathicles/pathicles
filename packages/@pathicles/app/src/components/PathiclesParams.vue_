@@ -7,7 +7,7 @@
 <script>
 import Tweakpane from 'tweakpane'
 import { presets } from '@pathicles/config'
-import { DISTRIBUTIONS } from '@pathicles/core/src/lib/simulation/distributions/distributions'
+import { DISTRIBUTIONS } from '@pathicles/config/src/distributions/distributions'
 
 // const log = console.log
 // console.log = function () {
@@ -36,6 +36,7 @@ export default {
   unmounted() {},
   mounted() {
     this.model = this.$store.getters['model']
+    console.log(this.model)
     this.createPane()
   },
 
@@ -60,15 +61,15 @@ export default {
           }
         }, {})
 
-      const presetInput = fPresets.addInput(this.model, 'name', {
         options: propsMap(presets)
       })
 
       presetInput.on('change', () => {
-        // this.$vuex.dispatch('LOAD_PRESET', this.presetName)
+        this.$store.dispatch('LOAD_PRESET', this.presetName)
+        // console.log((this.$store._state.name = this.presetName))
         // // if (preset) this.model = { ...this.model, ...preset }
         //
-        // console.log('params', this.$vuex.getters['params'])
+        console.log('params', this.$store.getters['params'])
         // // Object.assign(this.model, preset)
         // // Object.assign(this.model, preset)
         //
@@ -86,11 +87,11 @@ export default {
         min: 1,
         max: 512
       })
-      fEmitter.addInput(this.model.model.emitter, 'gamma', {
-        step: 0.1,
-        min: 1,
-        max: 10
-      })
+      // fEmitter.addInput(this.model.model.emitter, 'gamma', {
+      //   step: 0.1,
+      //   min: 1,
+      //   max: 10
+      // })
 
       fEmitter.addInput(this.model.model.emitter, 'bunchShape', {
         options: propsMap(DISTRIBUTIONS)
@@ -139,21 +140,19 @@ export default {
       })
 
       fAutorotate
-        .addInput(this.model.view.camera.autorotate, 'enabled')
+        .addInput(this.model.view.camera, 'autorotate')
         .on('change', (ev) => {
-          this.$store._modules.root.state.view.camera.autorotate.enabled = ev
+          this.$store._modules.root.state.view.camera.autorotate = ev
 
-          console.log(
-            this.$store._modules.root.state.view.camera.autorotate.enabled
-          )
+          console.log(this.$store._modules.root.state.view.camera.autorotate)
         })
-      fAutorotate.addInput(this.model.view.camera.autorotate, 'dPhi', {
+      fAutorotate.addInput(this.model.view.camera, 'autorotateSpeedPhi', {
         label: 'dɸ [2π]',
         step: 0.1,
         min: 0,
         max: 1
       })
-      fAutorotate.addInput(this.model.view.camera.autorotate, 'dTheta', {
+      fAutorotate.addInput(this.model.view.camera, 'autorotateSpeedTheta', {
         label: 'dθ [2π]',
         step: 0.1,
         min: 0,
@@ -165,28 +164,28 @@ export default {
         expanded: false
       })
 
-      fPathicles.addInput(this.model.view.pathicle, 'width')
-      fPathicles.addInput(this.model.view.pathicle, 'relativeHeight')
-      fPathicles.addInput(this.model.view.pathicle, 'relativeGap')
+      fPathicles.addInput(this.model.view, 'pathicleWidth')
+      fPathicles.addInput(this.model.view, 'pathicleRelativeHeight')
+      fPathicles.addInput(this.model.view, 'pathicleRelativeGap')
 
       const fSimulation = tweakpane.addFolder({
         title: 'Simulation',
         expanded: false
       })
-      fSimulation.addInput(this.model.runner, 'run')
-      fSimulation.addInput(this.model.model, 'iterationDurationOverC', {
+      fSimulation.addInput(this.model.runner, 'enabled')
+      fSimulation.addInput(this.model.runner, 'iterationDurationOverC', {
         step: 0.1,
         min: 0,
         max: 2
       })
-      fSimulation.addInput(this.model.model, 'bufferLength', {
+      fSimulation.addInput(this.model.runner, 'snapshotCount', {
         step: 1,
         min: 1,
         max: 512
       })
 
       const toggleRunnerRun = () => {
-        this.model.runner.run = !this.model.runner.run
+        this.model.runner.run = !this.model.runner.enabled
         tweakpane.refresh()
       }
       const pauseBtn = tweakpane.addButton({
@@ -201,7 +200,7 @@ export default {
 
       fSimulation.addInput(this.model.runner, 'stepwise')
 
-      fSimulation.addInput(this.model.runner, 'iterationCount', {
+      fSimulation.addInput(this.model.runner, 'iterations', {
         step: 1,
         min: 1,
         max: 512

@@ -10,8 +10,9 @@ export const defaultConfig = {
     showTextureScale: 2
   },
   runner: {
+    enabled: true,
     packFloat2UInt8: false,
-
+    stepwise: false,
     prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
