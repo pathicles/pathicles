@@ -4,10 +4,10 @@ export const dipole = {
   name: 'dipole',
   view: {
     camera: {
-      center: [0, 2, 0],
-      distance: 5,
-      phi: (2 / 360) * 2 * Math.PI,
-      theta: (0 / 360) * 2 * Math.PI
+      center: [0, 1.5, 0],
+      distance: 8,
+      phi: (0 / 360) * 2 * Math.PI,
+      theta: (90 / 360) * 2 * Math.PI
     }
   },
   runner: {
@@ -18,7 +18,7 @@ export const dipole = {
     iterationsPerTick: 4,
     iterationDurationOverC: 0.25,
     snapshotCount: 512,
-    iterations: 128
+    iterations: 512
   },
 
   model: {
@@ -27,11 +27,11 @@ export const dipole = {
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_XY',
       particleSeparation: 0.05,
-      position: [0, 2, 0],
+      position: [-1.5, 0, 0],
       direction: [0, 0.1, 1],
       positionJitter: [0.0, 0.0, 0.5],
 
-      gamma: 2.05
+      gamma: 2.5
     },
     interactions: {
       magneticField: [0, 0.001, 0],

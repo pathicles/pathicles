@@ -120,7 +120,6 @@ export default {
 </script>
 
 <style lang="stylus">
-
 .pathicles
   position fixed
   top 0

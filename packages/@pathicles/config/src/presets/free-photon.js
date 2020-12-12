@@ -9,8 +9,10 @@ export const freePhoton = {
 
   view: {
     camera: {
-      eye: [2, 0.25, 2],
-      center: [0, 0, 0.5]
+      center: [0, 0.25, 0.5],
+      distance: 2,
+      phi: (5 / 360) * 2 * Math.PI,
+      theta: (45 / 360) * 2 * Math.PI
     }
   },
   runner: {

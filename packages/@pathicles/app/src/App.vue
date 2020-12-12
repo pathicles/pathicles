@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
 <template lang="pug">
-.app
+.app(:class="{print: printMode}")
   .configurator
     select(v-model="presetName" v-on:change="onPresetChange($event)")
       option(v-for="(preset, name) of presets" :value="name" :selected="name === presetName" ) {{name}}
@@ -19,46 +19,41 @@ export default {
   data: () => {
     return {
       presets,
-      presetName: 'free-photons'
+      presetName: 'story-electric'
     }
   },
 
   computed: {
-    parsedUrl: () => new URL(window.location.href),
+    urlSearchParams: () => {
+      let url = new URL(window.location.href)
+      return new URLSearchParams(url.search)
+    },
     printMode: function () {
-      return this.parsedUrl.searchParams.get('print') !== null
+      return this.urlSearchParams.get('print') !== null
     },
 
     prerender: function () {
       const parsedUrl = new URL(window.location.href)
-      return parsedUrl.searchParams.get('prerender') !== null
+      return urlSearchParams.get('prerender') !== null
     }
   },
   beforeMount() {
-    if (this.parsedUrl.searchParams.get('presetName'))
-      this.presetName = this.parsedUrl.searchParams.get('presetName')
+    if (this.urlSearchParams.get('presetName'))
+      this.presetName = this.urlSearchParams.get('presetName')
   },
   mounted() {
     this.onPresetChange()
   },
   methods: {
     onPresetChange() {
-      const params = { presetName: this.presetName }
+      let params = this.urlSearchParams
+      params.set('presetName', this.presetName)
+      console.log(this.presetName, params.toString())
       if (this.presetName !== 'story') {
         history.pushState(
           {},
           null,
-          document.location.pathname +
-            '?' +
-            Object.keys(params)
-              .map((key) => {
-                return (
-                  encodeURIComponent(key) +
-                  '=' +
-                  encodeURIComponent(params[key])
-                )
-              })
-              .join('&')
+          document.location.pathname + '?' + params.toString()
         )
       } else {
         this.$router.push('story')
@@ -69,18 +64,17 @@ export default {
 </script>
 
 <style lang="stylus">
-//html
-//  -webkit-text-size-adjust: none;
-//  touch-action pan-y; /*prevent user scaling*/
+html
+  -webkit-text-size-adjust: none;
+  touch-action pan-y; /*prevent user scaling*/
 body, #app
   margin 0
   padding 0
   font-family: 'Barlow Semi Condensed', sans-serif;
 
-.prerender
+.prerender, .print
   select
     display none
-
 
 .configurator
   padding 1em

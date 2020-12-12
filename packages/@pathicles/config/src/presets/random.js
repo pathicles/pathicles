@@ -4,7 +4,9 @@ export const random = {
   name: 'random',
   view: {
     camera: {
-      distance: 5
+      distance: 6,
+      phi: (5 / 360) * 2 * Math.PI,
+      theta: (45 / 360) * 2 * Math.PI
     }
   },
 
@@ -13,11 +15,11 @@ export const random = {
     loops: 5,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 1,
+    iterationsPerTick: 2,
     iterationsPerSnapshot: 1,
     iterations: 2048,
-    snapshotCount: 64 / 4,
-    iterationDurationOverC: 0.1
+    snapshotCount: 128 / 4,
+    iterationDurationOverC: 0.05
   },
 
   model: {

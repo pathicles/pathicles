@@ -24,9 +24,17 @@ const outputFolderPath = path.join(
 )
 
 const jobs = [
-  { preset: 'story-electric' },
-  { preset: 'story-quadrupole' },
-  { preset: 'story-dipole' }
+  { preset: 'dipole' },
+  { preset: 'random' },
+  { preset: 'free-electron' },
+  { preset: 'free-electron' },
+  { preset: 'free-photon' },
+  { preset: 'free-photons' },
+  { preset: 'story-electric', data: true },
+  { preset: 'story-quadrupole', data: true },
+  { preset: 'story-dipole', data: true },
+  { preset: 'gyrotest-1-electron' },
+  { preset: 'gyrotest-128-electron' }
 ]
 
 const queryString = '&debug=false&print=true&prerender=true'
@@ -58,37 +66,39 @@ const createImages = async () => {
       path: path.join(outputFolderPath, 'orig', preset + '.png')
     })
 
-    const dump = await page.evaluate(() => {
-      return window.pathicles.simulation.dump()
-    })
+    if (jobs[i].data) {
+      const dump = await page.evaluate(() => {
+        return window.pathicles.simulation.dump()
+      })
 
-    const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
-    const values = every_nth(dump.position, 4)
+      const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
+      const values = every_nth(dump.position, 4)
 
-    fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
-      iteration: dump.logEntry.iteration,
-      configuration: dump.configuration,
-      name: preset,
-      data: {
-        position: values,
-        // position2: values,
-        colorCorrections: dump.colorCorrections.map(
-          (d) => Math.floor(d * 100) / 100
-        ),
-        // positionUint8: Array.from(
-        //   new Uint8Array(new Float32Array(values).buffer)
-        // ),
-        particleTypes: dump.particleTypes
-      }
-    })
+      fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
+        iteration: dump.logEntry.iteration,
+        configuration: dump.configuration,
+        name: preset,
+        data: {
+          position: values,
+          // position2: values,
+          colorCorrections: dump.colorCorrections.map(
+            (d) => Math.floor(d * 100) / 100
+          ),
+          // positionUint8: Array.from(
+          //   new Uint8Array(new Float32Array(values).buffer)
+          // ),
+          particleTypes: dump.particleTypes
+        }
+      })
 
-    const dataAsNdarray = ndarray(
-      new Uint8Array(new Float32Array(values).buffer),
-      [128, 121, 4]
-    )
-    savePixels(dataAsNdarray, 'PNG').pipe(
-      fs.createWriteStream(path.join(outputFolderPath, preset + '.png'))
-    )
+      const dataAsNdarray = ndarray(
+        new Uint8Array(new Float32Array(values).buffer),
+        [128, 121, 4]
+      )
+      savePixels(dataAsNdarray, 'PNG').pipe(
+        fs.createWriteStream(path.join(outputFolderPath, preset + '.png'))
+      )
+    }
   }
   await browser.close()
 }
@@ -98,7 +108,8 @@ const imagePaths = async () => {
 }
 
 const convertImagesSharp = async () => {
-  const qualities = [20, 40, 60, 80]
+  const qualities = [40]
+  // const qualities = [20, 40, 60, 80]
 
   await Promise.all(
     (await imagePaths()).map(async (imgPath) => {
@@ -134,27 +145,27 @@ const convertImagesSharp = async () => {
             (err, info) => {
               console.log(err, info)
             }
-          )
-        image_1
-          .toFormat('webp', { quality })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@1x')
-              .replace('.png', `_${quality}.webp`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
-        image_2
-          .toFormat('webp', { quality })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@2x')
-              .replace('.png', `_${quality}.webp`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
+          )'
+        // image_1
+        //   .toFormat('webp', { quality })
+        //   .toFile(
+        //     imgPath
+        //       .replace('orig', 'compressed@1x')
+        //       .replace('.png', `_${quality}.webp`),
+        //     (err, info) => {
+        //       console.log(err, info)
+        //     }
+        //   )
+        // image_2
+        //   .toFormat('webp', { quality })
+        //   .toFile(
+        //     imgPath
+        //       .replace('orig', 'compressed@2x')
+        //       .replace('.png', `_${quality}.webp`),
+        //     (err, info) => {
+        //       console.log(err, info)
+        //     }
+        //   )
       })
     })
   )

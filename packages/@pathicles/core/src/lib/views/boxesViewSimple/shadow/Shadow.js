@@ -8,7 +8,7 @@ import shadowBlurFrag from './shadow.blur.frag'
 import shadowDecodeFloatVert from './shadow.decodeFloat.vert'
 import shadowDecodeFloatFrag from './shadow.decodeFloat.frag'
 
-export const SHADOW_MAP_SIZE = 1024
+export const SHADOW_MAP_SIZE = 2048
 export const TEXEL_SIZE = 0.5
 
 const UINT8_VIEW = new Uint8Array(4)

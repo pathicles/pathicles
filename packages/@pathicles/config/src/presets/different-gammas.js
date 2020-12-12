@@ -4,8 +4,8 @@ import { RUNNER_MODE } from '../constants'
 export const differentGammas = {
   name: 'different-gammas',
   view: {
-    pathicleRelativeGap: 12,
-    pathicleRelativeHeight: 10,
+    pathicleRelativeGap: 1,
+    pathicleRelativeHeight: 5,
     pathicleWidth: 0.01,
     camera: {
       center: [0, 0.8, 0],
@@ -23,7 +23,7 @@ export const differentGammas = {
     iterationsPerSnapshot: 1,
     iterations: 10,
     snapshotCount: 32,
-    iterationDurationOverC: 0.5
+    iterationDurationOverC: 0.1
   },
 
   debug: {
@@ -32,15 +32,16 @@ export const differentGammas = {
 
   model: {
     emitter: {
-      particleCount: 66,
+      particleCount: 60,
       particleSeparation: 0.0,
       particleType: 'PHOTON ELECTRON PROTON',
       bunchShape: 'ROW',
       direction: [0, 0, -1],
       position: ({ p }) => [
-        (Math.floor(p / 3) - 11) / 5 + (p % 3) * 0.05,
-        (defaultConfig.view.pathicleWidth *
+        (Math.floor(p / 3) - 10) / 10 + (p % 3) * 0.025,
+        ((defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
+          2) *
           2,
         0
       ],

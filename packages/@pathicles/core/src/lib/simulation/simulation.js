@@ -27,8 +27,8 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(model.emitter))
 
-    console.log(fourPositions)
-    console.log(fourVelocities)
+    // console.log(fourPositions)
+    // console.log(fourVelocities)
 
     this.configuration.runner.numberType = this.configuration.runner
       .packFloat2UInt8

@@ -7,7 +7,7 @@ export const storyDipole = {
       center: [-0, 1.5, 0],
       distance: 5,
       theta: (-3 / 360) * 2 * Math.PI,
-      phi: (-1 / 360) * 2 * Math.PI
+      phi: (5 / 360) * 2 * Math.PI
     }
   },
 

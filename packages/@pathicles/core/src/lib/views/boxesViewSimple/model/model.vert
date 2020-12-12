@@ -71,8 +71,6 @@ vec4 get_color(int p) {
 float visibility(vec4 fourPosition) {
 
   bool outsideBox = insideBox3D(fourPosition.xyz, vec3(stageGrid_size), vec3(-stageGrid_size)) == 0.;
-
-
   bool beyondProgressLower = (viewRange[0] * float(snapshotCount) >= float(snapshotCount)-a_snapshot);
   bool beyondProgressUpper =  (viewRange[1] * float(snapshotCount) < float(snapshotCount)-a_snapshot);
   return  (outsideBox || beyondProgressLower || beyondProgressUpper ) ? 0. : 1.;
@@ -82,10 +80,6 @@ void main () {
 
   vec4 fourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot));
   vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
-
-
-  //  fourPosition.y += a_snapshot/10.;
-  //  previousFourPosition.y +=  0.*a_snapshot/10.;
 
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
@@ -98,11 +92,11 @@ void main () {
 
 
   #ifdef shadow
-  vScale = vec3(
-    pathicleWidth * 1.,
-    pathicleHeight,
-    length(previousFourPosition.xyz - fourPosition.xyz) );
-#endif
+    vScale = vec3(
+      pathicleWidth * 5.,
+      pathicleHeight,
+      length(previousFourPosition.xyz - fourPosition.xyz) );
+  #endif
 
   vec3 scaledPosition = aPosition * vScale;
 

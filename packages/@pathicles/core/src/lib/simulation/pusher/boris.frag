@@ -39,11 +39,6 @@ uniform float particleInteraction;
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
 
-float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
-  vec3 s = step(bottomLeft, v) - step(topRight, v);
-  return s.x * s.y * s.z;
-}
-
 vec3 getE(vec3 position) {
 
   vec3 E = electricField;
@@ -126,8 +121,9 @@ vec4 push_velocity(int p) {
   vec3 B = getB(intermediatePosition);
 
   momentum = velocity;
-  if (particleData.particleType < .1) {
-  } else {
+
+  // for all particles with  mass
+  if (particleData.particleType > .1) {
 
     float chargeMassRatio = particleData.chargeMassRatio;
     float charge = particleData.charge;
@@ -142,7 +138,9 @@ vec4 push_velocity(int p) {
   }
 
   if (boundingBoxSize > 0.) {
-    vec3 reflect = step(boundingBoxCenter-vec3(boundingBoxSize), intermediatePosition) - step(boundingBoxCenter+vec3(boundingBoxSize), intermediatePosition);
+    vec3 reflect =
+      step(boundingBoxCenter-vec3(boundingBoxSize), intermediatePosition)
+      - step(boundingBoxCenter+vec3(boundingBoxSize), intermediatePosition);
     momentum *= 2. * reflect * reflect - 1.;
   }
   return vec4(momentum, gamma);
