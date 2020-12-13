@@ -11,7 +11,7 @@ export const defaultConfig = {
   },
   runner: {
     enabled: true,
-    packFloat2UInt8: false,
+    packFloat2UInt8: true,
     stepwise: false,
     prerender: true,
     loops: 0,

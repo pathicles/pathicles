@@ -12,28 +12,28 @@ export const random = {
 
   runner: {
     prerender: true,
-    loops: 5,
+    loops: 0,
 
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerTick: 2,
+    iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 2048,
+    iterations: 32,
     snapshotCount: 128 / 4,
-    iterationDurationOverC: 0.05
+    iterationDurationOverC: 0.2
   },
 
   model: {
-    boundingBoxSize: 1.1,
+    boundingBoxSize: 1,
     // boundingBoxCenter: [0, 2, 0],
     emitter: {
       position: [0, 0, 0],
-      direction: [0, 0, 0],
+      direction: [0, 1, 0],
       bunchShape: 'SQUARE_XZ',
-      particleSeparation: 0.01,
-      directionJitter: [1, 1, 1],
+      particleSeparation: 0.0,
+      directionJitter: [1, 0, 1],
       positionJitter: [0, 0, 0],
       gamma: 2,
-      particleCount: 1024,
+      particleCount: 128,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

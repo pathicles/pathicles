@@ -2,7 +2,7 @@
 
 #ifdef LITTLE_ENDIAN
 
-#pragma glslify: unpackFloat = require("@pathicles/core/src/lib/shaders/unpackFloat.glsl");
+//#pragma glslify: unpackFloat = require("@pathicles/core/src/lib/shaders/unpackFloat.glsl");
 #pragma glslify: rgbaToFloat = require('glsl-rgba-to-float')
 bool bLittleEndian = LITTLE_ENDIAN == 1;
 

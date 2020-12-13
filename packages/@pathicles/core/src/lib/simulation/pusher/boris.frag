@@ -171,8 +171,7 @@ void main () {
     ? push(particle)
     : (takeSnapshot == 1)
       ? readVariable(particle, snapshot)
-      : readVariable(particle, snapshot -1);
-
+      : readVariable(particle, snapshot-1);
 
 
 #ifdef LITTLE_ENDIAN
@@ -186,13 +185,8 @@ void main () {
   ? packFloat(value.z)
   : packFloat(value.w);
 
-  gl_FragColor = packFloat(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);
-  gl_FragColor = packFloat(13.);
-  gl_FragColor = vec4(particle, snapshot,  fourComponentIndex, 9.);
 
-
-
-  #else
+#else
 
   gl_FragColor =
   (fourComponentIndex == 0)

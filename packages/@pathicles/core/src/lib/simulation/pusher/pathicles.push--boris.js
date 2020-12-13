@@ -45,13 +45,11 @@ export default function (regl, { runner, variables, model }) {
             : variables.velocity.buffers[(props.iteration + 1) % 2]
       },
 
-      vert: [
+      vert,
+      frag: [
         ...(variables.packFloat2UInt8
           ? [`#define LITTLE_ENDIAN ${runner.littleEndian}`]
           : []),
-        vert
-      ].join('\n'),
-      frag: [
         frag
           .replace(
             '/*__latticeDefinition__*/',
