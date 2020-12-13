@@ -114,7 +114,7 @@ export class Simulation {
   }
 
   push(n = 1) {
-    this.performanceLogger.start(`simulation.push (n=${n}`)
+    this.performanceLogger.start(`simulation.push (n=${n})`)
     this.pusher(n)
     this.log()
     this.performanceLogger.stop()
