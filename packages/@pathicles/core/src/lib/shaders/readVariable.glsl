@@ -7,11 +7,8 @@
 bool bLittleEndian = LITTLE_ENDIAN == 1;
 
 #endif
-
+vec2 resolution = vec2(4*snapshotCount, particleCount);
 vec4 readVariable(sampler2D tex, int p, int s) {
-
-  vec2 resolution = vec2(4*snapshotCount, particleCount);
-
 
   #ifdef LITTLE_ENDIAN
   return vec4(

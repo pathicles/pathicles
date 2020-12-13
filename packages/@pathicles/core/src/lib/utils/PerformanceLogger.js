@@ -52,24 +52,5 @@ export class PerformanceLogger {
     }))
 
     return measures.filter((m) => m.name.indexOf('stop') === -1)
-
-    // const measuresSorted = measures.sort((a, b) => b.dt - a.dt)
-    // console.table(measures)
-    // let result =
-    //   'measuresSorted.longest: ' +
-    //   measuresSorted[0].name +
-    //   ' ' +
-    //   measuresSorted[0].dt
-    //
-    // return (
-    //   result +
-    //   // '\n' +
-    //   measures
-    //     .map(
-    //       ({ name, dt }) => `
-    //   ${name.padStart(25, ' ')}: ${dt.toFixed(1)}`
-    //     )
-    //     .join('')
-    // )
   }
 }

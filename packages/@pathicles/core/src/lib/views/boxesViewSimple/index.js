@@ -44,6 +44,9 @@ export class BoxesViewSimple {
   }
 
   drawDiffuse(props) {
+    this.performanceLogger.start(
+      `BoxesViewSimple.drawDiffuse (t=${props.tick})`
+    )
     this.regl.clear({
       color: [0, 0, 0, 0],
       depth: 1
@@ -74,6 +77,7 @@ export class BoxesViewSimple {
       this.drawModel.lighting(props)
       this.config.showVignette && this.drawVignette.lighting(props)
     })
+    this.performanceLogger.stop('BoxesViewSimple.drawDiffuse')
   }
 
   destroy() {}

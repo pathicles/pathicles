@@ -22,9 +22,9 @@ export class ReglSimulatorInstance {
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
-      profile: this.config.profile,
+      profile: this.config.debug.profile,
       attributes: {
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialiasing: true
       },
       onDone: (err, regl) => {
@@ -51,6 +51,7 @@ export class ReglSimulatorInstance {
         'OES_standard_derivatives',
         'OES_texture_half_float',
         'WEBGL_depth_texture',
+        'EXT_disjoint_timer_query',
         'EXT_color_buffer_half_float'
       ]
     })
@@ -104,7 +105,6 @@ export class ReglSimulatorInstance {
   run(regl) {
     this.loop = regl.frame(({ tick }) => {
       const { changed } = this.pathiclesRunner.next()
-
       this.camera.doAutorotate()
       this.camera.tick()
 
@@ -115,6 +115,7 @@ export class ReglSimulatorInstance {
           },
           () => {
             this.view.drawDiffuse({
+              tick,
               colorCorrections: this.simulation.variables.colorCorrections,
               particleColorsAndTypes: this.simulation.variables
                 .particleColorsAndTypes,

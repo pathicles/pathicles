@@ -4,7 +4,7 @@ const quadLength = 1 // m
 const quadF = 1 // m
 const quadStrength = 1 / quadF / quadLength // m^-2
 
-export const storyQuadrupole = {
+export default {
   name: 'story-quadrupole',
   view: {
     camera: {

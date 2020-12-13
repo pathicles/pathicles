@@ -1,4 +1,4 @@
-export const storyElectric = {
+export default {
   name: 'story-electric',
   view: {
     camera: {

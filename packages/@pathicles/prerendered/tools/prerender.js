@@ -145,7 +145,7 @@ const convertImagesSharp = async () => {
             (err, info) => {
               console.log(err, info)
             }
-          )'
+          )
         // image_1
         //   .toFormat('webp', { quality })
         //   .toFile(

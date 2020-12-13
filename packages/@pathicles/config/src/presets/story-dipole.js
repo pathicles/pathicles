@@ -1,6 +1,6 @@
 import { LATTICE_ELEMENT_TYPES } from '../constants'
 
-export const storyDipole = {
+export default {
   name: 'story-dipole',
   view: {
     camera: {

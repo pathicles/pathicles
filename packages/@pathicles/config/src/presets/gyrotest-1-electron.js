@@ -1,7 +1,7 @@
 import { RUNNER_MODE, LATTICE_ELEMENT_TYPES } from '../constants'
-import { defaultConfig } from './_default'
+import defaultConfig from './_default'
 
-export const gyrotest_1_electron = {
+export default {
   name: 'gyrotest-1-electron',
   view: {
     camera: {
@@ -14,12 +14,8 @@ export const gyrotest_1_electron = {
     }
   },
 
-  debug: {
-    logPushing: false
-  },
-
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 2,

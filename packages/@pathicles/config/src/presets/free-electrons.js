@@ -1,6 +1,6 @@
 import { RUNNER_MODE } from '../constants'
 
-export const freeElectrons = {
+export default {
   name: 'free-electrons',
   view: {
     camera: {

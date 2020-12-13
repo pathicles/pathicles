@@ -1,16 +1,16 @@
-import { defaultConfig } from './_default'
-import { dipole } from './dipole'
-import { csr } from './csr'
-import { storyDipole } from './story-dipole'
-import { storyElectric } from './story-electric'
-import { storyQuadrupole } from './story-quadrupole'
-import { random } from './random'
-import { freeElectron } from './free-electron'
-import { freeElectrons } from './free-electrons'
-import { differentGammas } from './different-gammas'
-import { freePhoton } from './free-photon'
-import { freePhotons } from './free-photons'
-import { gyrotest_1_electron } from './gyrotest-1-electron'
+import defaultConfig from './_default'
+import dipole from './dipole'
+import csr from './csr'
+import storyDipole from './story-dipole'
+import storyElectric from './story-electric'
+import storyQuadrupole from './story-quadrupole'
+import random from './random'
+import freeElectron from './free-electron'
+import freeElectrons from './free-electrons'
+import differentGammas from './different-gammas'
+import freePhoton from './free-photon'
+import freePhotons from './free-photons'
+import gyrotest_1_electron from './gyrotest-1-electron'
 import gyrotest_128_electrons from './gyrotest-128-electrons'
 
 const merge = (...theArgs) => {
@@ -38,6 +38,14 @@ const merge = (...theArgs) => {
   return target
 }
 
+const toUInt8 = (config) => {
+  let clone = JSON.parse(JSON.stringify(config))
+  clone.name = clone.name + '-uint8'
+  if (!clone.runner) clone.runner = {}
+  clone.runner.packFloat2UInt8 = true
+  return clone
+}
+
 const presets = {
   [csr.name]: csr,
   [storyDipole.name]: storyDipole,
@@ -53,6 +61,11 @@ const presets = {
   [gyrotest_1_electron.name]: gyrotest_1_electron,
   [gyrotest_128_electrons.name]: gyrotest_128_electrons
 }
+
+Object.keys(presets).forEach((presetName) => {
+  const preset = presets[presetName]
+  presets[toUInt8(preset).name] = toUInt8(preset)
+})
 
 export const config = (presetName) => {
   return merge(true, defaultConfig, presets[presetName]) || defaultConfig

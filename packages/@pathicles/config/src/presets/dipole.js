@@ -1,6 +1,6 @@
 import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
 
-export const dipole = {
+export default {
   name: 'dipole',
   view: {
     camera: {

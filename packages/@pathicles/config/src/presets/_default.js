@@ -1,17 +1,17 @@
 import { RUNNER_MODE } from '../constants'
 
-export const defaultConfig = {
+export default {
   name: 'default',
   debug: {
     logPushing: false,
     logPerformance: true,
-    profile: false,
+    profile: true,
     showTextures: false,
     showTextureScale: 2
   },
   runner: {
     enabled: true,
-    packFloat2UInt8: true,
+    packFloat2UInt8: false,
     stepwise: false,
     prerender: true,
     loops: 0,

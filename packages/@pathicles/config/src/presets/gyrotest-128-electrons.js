@@ -1,5 +1,5 @@
 import { RUNNER_MODE, LATTICE_ELEMENT_TYPES } from '../constants'
-import { defaultConfig } from './_default'
+import defaultConfig from './_default'
 
 export default {
   name: 'gyrotest-128-electrons',

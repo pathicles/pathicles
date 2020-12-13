@@ -1,7 +1,7 @@
-import { defaultConfig } from './_default'
+import defaultConfig from './_default'
 import { RUNNER_MODE } from '../constants'
 
-export const differentGammas = {
+export default {
   name: 'different-gammas',
   view: {
     pathicleRelativeGap: 1,

@@ -154,10 +154,30 @@ vec4 push(int p) {
 
 vec4 readVariable(int particle, int snapshot) {
   return (variableIdx == 0)
-  ? readVariable(ut_position, particle, snapshot)
-  : readVariable(utVelocityBuffer, particle, snapshot);
+    ? readVariable(ut_position, particle, snapshot)
+    : readVariable(utVelocityBuffer, particle, snapshot);
 }
 
+
+//
+vec4 readVariableRaw(sampler2D tex, int p, int s) {
+  vec2 resolution = vec2(4*snapshotCount, particleCount);
+  return vec4(
+  texture2D(tex, vec2(4*s, p) / resolution).r,
+  texture2D(tex, vec2(4*s+1, p) / resolution).r,
+  texture2D(tex, vec2(4*s+2, p) / resolution).r,
+  texture2D(tex, vec2(4*s+3, p) / resolution).r
+  );
+}
+
+
+vec4 readVariableRaw(int particle, int snapshot) {
+  return (variableIdx == 0)
+  ? readVariableRaw(ut_position, particle, snapshot)
+  : readVariableRaw(utVelocityBuffer, particle, snapshot);
+}
+
+//
 
 void main () {
 
@@ -185,17 +205,35 @@ void main () {
   ? packFloat(value.z)
   : packFloat(value.w);
 
+//
+//
+//  vec4 newValue = push(particle);
+//
+//  gl_FragColor =
+//      (snapshot == 0)
+//    ? (fourComponentIndex == 0)
+//        ? packFloat(newValue.x)
+//        : (fourComponentIndex == 1)
+//        ? packFloat(newValue.y)
+//        : (fourComponentIndex == 2)
+//        ? packFloat(newValue.z)
+//        : packFloat(newValue.w)
+//    : (takeSnapshot == 1)
+//    ? readVariableRaw(particle, snapshot)
+//    : readVariableRaw(particle, snapshot-1);
+//
 
 #else
 
+
   gl_FragColor =
-  (fourComponentIndex == 0)
-  ? vec4(value.x, 0., 0., 0.)
-  : (fourComponentIndex == 1)
-  ? vec4(value.y, 0., 0., 0.)
-  : (fourComponentIndex == 2)
-  ? vec4(value.z, 0., 0., 0.)
-  : vec4(value.w, 0., 0., 0.);
+    (fourComponentIndex == 0)
+    ? vec4(value.x, 0., 0., 0.)
+    : (fourComponentIndex == 1)
+    ? vec4(value.y, 0., 0., 0.)
+    : (fourComponentIndex == 2)
+    ? vec4(value.z, 0., 0., 0.)
+    : vec4(value.w, 0., 0., 0.);
 
 
 #endif

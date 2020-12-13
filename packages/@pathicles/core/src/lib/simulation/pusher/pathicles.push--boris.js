@@ -1,12 +1,16 @@
 import vert from './boris.vert'
 import frag from './boris.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'
+import { PerformanceLogger } from '../../utils/PerformanceLogger'
 
 export default function (regl, { runner, variables, model }) {
+  const performanceLogger = new PerformanceLogger()
+
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
     return regl({
+      profile: true,
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',
@@ -72,6 +76,7 @@ export default function (regl, { runner, variables, model }) {
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
   return (n = 1) => {
+    regl.poll()
     for (let i = 0; i < n; i++) {
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
@@ -112,5 +117,17 @@ export default function (regl, { runner, variables, model }) {
         takeSnapshot
       })
     }
+
+    regl.poll()
+    performanceLogger.entries.push({
+      name: 'pushVelocity',
+      stats: pushVelocity.stats
+    })
+    performanceLogger.entries.push({
+      name: 'pushPosition',
+      stats: pushPosition.stats
+    })
+    // console.log(pushPosition.stats)
+    // console.log(pushVelocity.stats)
   }
 }

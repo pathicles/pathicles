@@ -1,6 +1,6 @@
 import { RUNNER_MODE } from '../constants'
 
-export const freePhotons = {
+export default {
   name: 'free-photons',
   view: {
     camera: {
@@ -11,10 +11,10 @@ export const freePhotons = {
   runner: {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
-    iterationsPerSnapshot: 4,
+    iterationsPerSnapshot: 1,
     snapshotCount: 64,
     iterationDurationOverC: 0.1,
-    iterations: undefined
+    iterations: 63
   },
 
   model: {

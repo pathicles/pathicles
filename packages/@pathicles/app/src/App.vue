@@ -48,7 +48,6 @@ export default {
     onPresetChange() {
       let params = this.urlSearchParams
       params.set('presetName', this.presetName)
-      console.log(this.presetName, params.toString())
       if (this.presetName !== 'story') {
         history.pushState(
           {},

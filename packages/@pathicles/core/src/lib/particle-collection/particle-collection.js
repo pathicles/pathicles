@@ -94,10 +94,13 @@ export function ParticleCollection({
 
     const direction = directionFn({ p, localPositions })
 
-    const jitteredDirection = jitterDirection({
-      direction,
-      directionJitter
-    }) //.map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
+    const jitteredDirection = direction
+
+    //   +
+    //     jitterDirection({
+    //   direction,
+    //   directionJitter
+    // }) //.map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
 
     return [
       beta * jitteredDirection[0],

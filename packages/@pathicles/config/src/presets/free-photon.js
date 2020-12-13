@@ -1,6 +1,6 @@
-import { defaultConfig } from './_default'
+import defaultConfig from './_default'
 import { RUNNER_MODE } from '../constants'
-export const freePhoton = {
+export default {
   name: 'free-photon',
 
   debug: {
