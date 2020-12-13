@@ -36,7 +36,6 @@ uniform float particleInteraction;
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, LITTLE_ENDIAN=LITTLE_ENDIAN);
 
-#pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
 
 vec3 getE(vec3 position) {

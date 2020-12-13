@@ -5,13 +5,13 @@ export default {
   name: 'different-gammas',
   view: {
     pathicleRelativeGap: 1,
-    pathicleRelativeHeight: 5,
-    pathicleWidth: 0.01,
+    pathicleRelativeHeight: 3,
+    pathicleWidth: 0.005,
     camera: {
-      center: [0, 0.8, 0],
-      distance: 3,
+      center: [0, 0.5, 0],
+      distance: 2,
       theta: -(2 * Math.PI) / (360 / 0),
-      phi: (2 * Math.PI) / (360 / 10)
+      phi: (2 * Math.PI) / (360 / 5)
     }
   },
 
