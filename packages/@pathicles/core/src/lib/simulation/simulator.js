@@ -124,14 +124,14 @@ export class ReglSimulatorInstance {
             if (this.config.debug.showTextures) {
               this.drawTexture({
                 texture: this.simulation.variables.position.value(),
-                scale: this.config.debug.showTextureScale
+                scale: 1 * this.config.debug.showTextureScale
               })
               this.drawTexture({
                 texture: this.simulation.variables.velocity.value(),
                 y0:
                   (this.simulation.variables.snapshotCount * 4 + 1) *
                   this.config.debug.showTextureScale,
-                scale: this.config.debug.showTextureScale
+                scale: 1 * this.config.debug.showTextureScale
               })
               this.drawTexture({
                 texture: this.view.shadow.fbo,
@@ -139,7 +139,7 @@ export class ReglSimulatorInstance {
                   2 *
                   (this.simulation.variables.particleCount + 1) *
                   this.config.debug.showTextureScale,
-                scale: 0.5
+                scale: 0.1
               })
             }
           }

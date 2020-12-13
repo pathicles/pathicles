@@ -22,7 +22,7 @@ export const differentGammas = {
     loops: 0,
     iterationsPerSnapshot: 1,
     iterations: 10,
-    snapshotCount: 32,
+    snapshotCount: 11,
     iterationDurationOverC: 0.1
   },
 

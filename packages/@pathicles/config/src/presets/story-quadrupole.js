@@ -9,9 +9,9 @@ export const storyQuadrupole = {
   view: {
     camera: {
       center: [-0, 1.5, 0],
-      distance: 5,
-      theta: (-10 / 360) * 2 * Math.PI,
-      phi: (-3 / 360) * 2 * Math.PI
+      distance: 3,
+      theta: (-25 / 360) * 2 * Math.PI,
+      phi: (0 / 360) * 2 * Math.PI
     }
   },
   model: {

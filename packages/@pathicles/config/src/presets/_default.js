@@ -72,7 +72,7 @@ export const defaultConfig = {
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.0025,
+    pathicleWidth: 0.002,
 
     showAxes: false,
     showVignette: true,

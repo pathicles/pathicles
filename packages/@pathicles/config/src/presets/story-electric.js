@@ -3,7 +3,7 @@ export const storyElectric = {
   view: {
     camera: {
       center: [-0, 1.5, 0],
-      distance: 1,
+      distance: 3,
       theta: (-30 / 360) * 2 * Math.PI,
       phi: (-1 / 360) * 2 * Math.PI
     }

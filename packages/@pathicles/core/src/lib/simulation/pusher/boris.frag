@@ -34,7 +34,7 @@ uniform float particleInteraction;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, utParticleChargesMassesChargeMassRatios=utParticleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, LITTLE_ENDIAN=LITTLE_ENDIAN);
 
 #pragma glslify: encodeFloat = require("@pathicles/core/src/lib/shaders/encodeFloat.glsl");
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
@@ -177,7 +177,6 @@ void main () {
 
 #ifdef LITTLE_ENDIAN
 
-
   gl_FragColor =
   (fourComponentIndex == 0)
   ? packFloat(value.x)
@@ -187,7 +186,13 @@ void main () {
   ? packFloat(value.z)
   : packFloat(value.w);
 
-#else
+  gl_FragColor = packFloat(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);
+  gl_FragColor = packFloat(13.);
+  gl_FragColor = vec4(particle, snapshot,  fourComponentIndex, 9.);
+
+
+
+  #else
 
   gl_FragColor =
   (fourComponentIndex == 0)
@@ -198,10 +203,11 @@ void main () {
   ? vec4(value.z, 0., 0., 0.)
   : vec4(value.w, 0., 0., 0.);
 
+
 #endif
 
 
-//  gl_FragColor = packFloat(float(particle+1)*10.  + float(snapshot) + float(fourComponentIndex)/10.);
+
 
 }
 

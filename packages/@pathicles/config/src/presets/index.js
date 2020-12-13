@@ -1,5 +1,6 @@
 import { defaultConfig } from './_default'
 import { dipole } from './dipole'
+import { csr } from './csr'
 import { storyDipole } from './story-dipole'
 import { storyElectric } from './story-electric'
 import { storyQuadrupole } from './story-quadrupole'
@@ -38,6 +39,7 @@ const merge = (...theArgs) => {
 }
 
 const presets = {
+  [csr.name]: csr,
   [storyDipole.name]: storyDipole,
   [storyElectric.name]: storyElectric,
   [storyQuadrupole.name]: storyQuadrupole,

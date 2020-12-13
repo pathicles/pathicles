@@ -4,10 +4,10 @@ export const freeElectrons = {
   name: 'free-electrons',
   view: {
     camera: {
-      center: [0, 0, 0],
-      theta: 0,
-      phi: -0.1,
-      distance: 1
+      center: [0, 1, 0],
+      // theta: 0,
+      phi: 0,
+      distance: 1.75
     }
   },
 
@@ -15,19 +15,18 @@ export const freeElectrons = {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
-    snapshotCount: 64,
-    iterationDurationOverC: 0.1,
-    iterations: undefined
+    snapshotCount: 128,
+    iterationDurationOverC: 0.1
   },
 
   model: {
     emitter: {
       particleCount: 900,
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
-      particleSeparation: 0.05,
+      bunchShape: 'SPIRAL_XY',
+      particleSeparation: 0.5,
       direction: [0, 0, 1],
-      position: [0, 0, -3],
+      position: [0, 1, -5],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: 10
