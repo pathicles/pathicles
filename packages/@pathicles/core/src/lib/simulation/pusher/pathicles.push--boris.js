@@ -6,6 +6,8 @@ import { PerformanceLogger } from '../../utils/PerformanceLogger'
 export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
 
+  performanceLogger.entries = []
+
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
@@ -75,8 +77,7 @@ export default function (regl, { runner, variables, model }) {
   const pushVelocity = pushFactory('velocity', 'utVelocityBuffer', 1)
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
-  return (n = 1) => {
-    regl.poll()
+  return (n = 1, profile = false) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
@@ -118,16 +119,24 @@ export default function (regl, { runner, variables, model }) {
       })
     }
 
-    regl.poll()
-    performanceLogger.entries.push({
-      name: 'pushVelocity',
-      stats: pushVelocity.stats
-    })
-    performanceLogger.entries.push({
-      name: 'pushPosition',
-      stats: pushPosition.stats
-    })
-    // console.log(pushPosition.stats)
-    // console.log(pushVelocity.stats)
+    if (profile) {
+      regl.poll()
+      performanceLogger.entries.push({
+        name: 'pushVelocity',
+        particleCount: variables.particleCount,
+        snapshotCount: variables.snapshotCount,
+        packFloat2UInt8: variables.packFloat2UInt8,
+        iterations: variables.iteration,
+        stats: pushVelocity.stats
+      })
+      performanceLogger.entries.push({
+        name: 'pushPosition',
+        particleCount: variables.particleCount,
+        snapshotCount: variables.snapshotCount,
+        packFloat2UInt8: variables.packFloat2UInt8,
+        iterations: variables.iteration,
+        stats: pushPosition.stats
+      })
+    }
   }
 }

@@ -3,13 +3,13 @@ import { normalize } from 'gl-vec3'
 
 // import shadowDrawVert from './shadow.draw.vert'
 // import shadowDrawFrag from './shadow.draw.frag'
-// import shadowBlurVert from './shadow.blur.vert'
-// import shadowBlurFrag from './shadow.blur.frag'
+import shadowBlurVert from './shadow.blur.vert'
+import shadowBlurFrag from './shadow.blur.frag'
 // import shadowDecodeFloatVert from './shadow.decodeFloat.vert'
 // import shadowDecodeFloatFrag from './shadow.decodeFloat.frag'
 
 export const SHADOW_MAP_SIZE = 1024
-export const TEXEL_SIZE = 1
+export const TEXEL_SIZE = 0.5
 
 const UINT8_VIEW = new Uint8Array(4)
 const FLOAT_VIEW = new Float32Array(UINT8_VIEW.buffer)
@@ -115,25 +115,25 @@ export class Shadow {
     }
   }
 
-  // blur() {
-  //   return this.regl({
-  //     frag: shadowBlurFrag,
-  //     vert: shadowBlurVert,
-  //     attributes: {
-  //       position: [-4, -4, 4, -4, 0, 4]
-  //     },
-  //     uniforms: {
-  //       minBias: () => 0.0001,
-  //       u_tex: () => this.fbo,
-  //       u_texSize: () => [SHADOW_MAP_SIZE, SHADOW_MAP_SIZE],
-  //       wRcp: () => 1.0 / SHADOW_MAP_SIZE,
-  //       hRcp: () => 1.0 / SHADOW_MAP_SIZE
-  //     },
-  //     depth: { enable: false },
-  //     count: 3,
-  //     framebuffer: () => this.fboBlurred
-  //   })
-  // }
+  blur() {
+    return this.regl({
+      frag: shadowBlurFrag,
+      vert: shadowBlurVert,
+      attributes: {
+        position: [-4, -4, 4, -4, 0, 4]
+      },
+      uniforms: {
+        minBias: () => 0.0001,
+        u_tex: () => this.fbo,
+        u_texSize: () => [SHADOW_MAP_SIZE, SHADOW_MAP_SIZE],
+        wRcp: () => 1.0 / SHADOW_MAP_SIZE,
+        hRcp: () => 1.0 / SHADOW_MAP_SIZE
+      },
+      depth: { enable: false },
+      count: 3,
+      framebuffer: () => this.fboBlurred
+    })()
+  }
 
   // readFBO() {
   //   // const floatBuffer = this.regl.framebuffer({

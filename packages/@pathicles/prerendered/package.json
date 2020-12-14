@@ -7,8 +7,8 @@
     "prerender": "node ./tools/prerender.js"
   },
   "devDependencies": {
-    "save-pixels": "^2.3.4",
-    "ndarray": "^1.0.19",
+    "json2csv": "^5.0.5",
+    "csv-append": "^1.0.0",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-chai-friendly": "^0.6.0",
@@ -18,7 +18,9 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.1.0",
     "fs-extra-plus": "^0.5.19",
+    "ndarray": "^1.0.19",
     "puppeteer-core": "^5.5.0",
+    "save-pixels": "^2.3.4",
     "sharp": "^0.26.2"
   }
 }

@@ -66,6 +66,7 @@ export class BoxesViewSimple {
       // ])
 
       this.config.isShadowEnabled && this.drawModel.shadow(props)
+      // this.config.isShadowEnabled && this.shadow.blur()
       this.config.showAxes &&
         this.drawAxis([
           { axis: [1, 0, 0] },

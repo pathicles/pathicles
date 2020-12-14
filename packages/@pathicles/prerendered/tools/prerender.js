@@ -5,37 +5,65 @@ const path = require('path')
 const fs = require('fs-extra-plus')
 const ndarray = require('ndarray')
 const savePixels = require('save-pixels')
-
 const sharp = require('sharp')
 
 const defaultWidth = 750
 const defaultHeight = 750
 const deviceScaleFactor = 2
 
+const round = (d, precision = 3) =>
+  Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
+
 const port = process.env.npm_package_config_devPort || 9303
 
 const urlBase = 'http://localhost:' + port + '/simulator/'
-const outputFolderPath = path.join(
-  __dirname,
-  '..',
-  '..',
-  'prerendered',
-  'files'
-)
+const OUTPUT_FOLDER_PATH = path.join(__dirname, '..', 'files')
 
-const jobs = [
+fs.ensureDirSync(OUTPUT_FOLDER_PATH)
+fs.ensureDirSync(path.join(OUTPUT_FOLDER_PATH, 'compressed@1x'))
+fs.ensureDirSync(path.join(OUTPUT_FOLDER_PATH, 'compressed@2x'))
+
+const CSV_FILEPATH_NAME = path.join(OUTPUT_FOLDER_PATH, 'performance.csv')
+
+const json2csv = require('json2csv').parse
+const writeCSV = async (data) => {
+  // output file in the same folder
+  let rows
+  // If file doesn't exist, we will create new file and add rows with headers.
+  if (!fs.existsSync(CSV_FILEPATH_NAME)) {
+    rows = json2csv(data, { header: true })
+  } else {
+    // Rows without headers.
+    rows = json2csv(data, { header: false })
+  }
+
+  // Append file function can create new file too.
+  fs.appendFileSync(CSV_FILEPATH_NAME, rows)
+  // Always add new line if file already exists.
+  fs.appendFileSync(CSV_FILEPATH_NAME, '\r\n')
+}
+
+let jobs = [
+  { preset: 'csr' },
   { preset: 'dipole' },
   { preset: 'random' },
+  { preset: 'different-gammas' },
   { preset: 'free-electron' },
-  { preset: 'free-electron' },
+  { preset: 'free-electrons' },
   { preset: 'free-photon' },
   { preset: 'free-photons' },
   { preset: 'story-electric', data: true },
   { preset: 'story-quadrupole', data: true },
   { preset: 'story-dipole', data: true },
   { preset: 'gyrotest-1-electron' },
-  { preset: 'gyrotest-128-electron' }
+  { preset: 'gyrotest-128-electrons' }
 ]
+
+jobs = [
+  ...jobs,
+  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8' }))
+]
+console.log(jobs)
 
 const queryString = '&debug=false&print=true&prerender=true'
 
@@ -60,10 +88,30 @@ const createImages = async () => {
     await page.goto(
       urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
     )
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(3000)
 
     await page.screenshot({
-      path: path.join(outputFolderPath, 'orig', preset + '.png')
+      path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
+    })
+
+    const performanceEntry = await page.evaluate(() => {
+      const entries = window.performanceLogger.entries
+      return {
+        gpuTime: entries.reduce((acc, item) => {
+          acc += item.stats.gpuTime
+          return acc
+        }, 0),
+        packFloat2UInt8: entries[0].packFloat2UInt8,
+        particleCount: entries[0].particleCount,
+        snapshotCount: entries[0].snapshotCount
+      }
+    })
+
+    await writeCSV({
+      date: new Date().toISOString(),
+      preset,
+      ...performanceEntry,
+      gpuTime: round(performanceEntry.gpuTime)
     })
 
     if (jobs[i].data) {
@@ -74,7 +122,7 @@ const createImages = async () => {
       const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
       const values = every_nth(dump.position, 4)
 
-      fs.writeJSONSync(path.join(outputFolderPath, preset + '.json'), {
+      fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, preset + '.json'), {
         iteration: dump.logEntry.iteration,
         configuration: dump.configuration,
         name: preset,
@@ -96,7 +144,7 @@ const createImages = async () => {
         [128, 121, 4]
       )
       savePixels(dataAsNdarray, 'PNG').pipe(
-        fs.createWriteStream(path.join(outputFolderPath, preset + '.png'))
+        fs.createWriteStream(path.join(OUTPUT_FOLDER_PATH, preset + '.png'))
       )
     }
   }
@@ -104,7 +152,7 @@ const createImages = async () => {
 }
 
 const imagePaths = async () => {
-  return await fs.glob(outputFolderPath + '/orig/*.png')
+  return await fs.glob(OUTPUT_FOLDER_PATH + '/orig/*.png')
 }
 
 const convertImagesSharp = async () => {
@@ -113,17 +161,18 @@ const convertImagesSharp = async () => {
 
   await Promise.all(
     (await imagePaths()).map(async (imgPath) => {
-      let image_1 = await sharp(imgPath)
-        .resize(defaultWidth, defaultHeight)
-        .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
-          console.log(err, info)
-        })
+      let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
+      //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
+      //     console.log(err, info)
+      //   })
 
-      let image_2 = await sharp(imgPath)
-        .resize(defaultWidth * 2, defaultHeight * 2)
-        .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
-          console.log(err, info)
-        })
+      let image_2 = await sharp(imgPath).resize(
+        defaultWidth * 2,
+        defaultHeight * 2
+      )
+      // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
+      //   console.log(err, info)
+      // })
 
       qualities.forEach((quality) => {
         image_1
@@ -136,41 +185,19 @@ const convertImagesSharp = async () => {
               console.log(err, info)
             }
           )
-        image_2
-          .toFormat('jpg', { quality })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@2x')
-              .replace('.png', `_${quality}.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
-        // image_1
-        //   .toFormat('webp', { quality })
-        //   .toFile(
-        //     imgPath
-        //       .replace('orig', 'compressed@1x')
-        //       .replace('.png', `_${quality}.webp`),
-        //     (err, info) => {
-        //       console.log(err, info)
-        //     }
-        //   )
-        // image_2
-        //   .toFormat('webp', { quality })
-        //   .toFile(
-        //     imgPath
-        //       .replace('orig', 'compressed@2x')
-        //       .replace('.png', `_${quality}.webp`),
-        //     (err, info) => {
-        //       console.log(err, info)
-        //     }
-        //   )
+        image_2.toFormat('jpg', { quality }).toFile(
+          imgPath
+            .replace('orig', 'compressed@2x')
+            // .replace('.png', `_${quality}.jpg`),
+            .replace('.png', `.jpg`),
+          (err, info) => {
+            console.log(err, info)
+          }
+        )
       })
     })
   )
 }
-
 ;(async () => {
   await createImages()
   await convertImagesSharp()

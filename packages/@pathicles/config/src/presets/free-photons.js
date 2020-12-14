@@ -4,7 +4,9 @@ export default {
   name: 'free-photons',
   view: {
     camera: {
-      center: [0, 0.5, 0.5]
+      center: [0, 0.5, 0.5],
+      phi: (-5 / 360) * 2 * Math.PI,
+      theta: (5 / 360) * 2 * Math.PI
     }
   },
 

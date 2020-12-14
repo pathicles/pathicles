@@ -113,9 +113,9 @@ export class Simulation {
     this.performanceLogger.stop()
   }
 
-  push(n = 1) {
+  push(n = 1, profile = false) {
     this.performanceLogger.start(`simulation.push (n=${n})`)
-    this.pusher(n)
+    this.pusher(n, profile)
     this.log()
     this.performanceLogger.stop()
   }
@@ -165,6 +165,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.configuration.runner.iterations)
+    this.push(this.configuration.runner.iterations, true)
   }
 }

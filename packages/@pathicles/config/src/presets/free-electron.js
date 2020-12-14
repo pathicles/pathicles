@@ -38,7 +38,7 @@ export default {
       ],
       direction: [0, 0, 1],
       particleSeparation: 0.0,
-      gamma: 1.1,
+      gamma: 50,
       particleCount: 1,
       bunchShape: 'ROW',
       particleType: 'ELECTRON',

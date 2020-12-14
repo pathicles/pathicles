@@ -6,7 +6,7 @@ uniform float minBias;
 uniform sampler2D u_tex;
 uniform float wRcp, hRcp;
 const int N = 10;
-const int R = 1;
+const int R = 10;
 uniform vec2 u_texSize;
 void main()
 {
@@ -27,5 +27,5 @@ void main()
   f = 1. - f;
   gl_FragColor = vec4(f, f, f, 1.);
   gl_FragColor = avg;
-//  gl_FragColor = vec4(f, f, f, 1.);;
+//  gl_FragColor = vec4(.5);
 }

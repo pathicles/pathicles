@@ -10,7 +10,7 @@ export default {
     camera: {
       center: [-0, 1.5, 0],
       distance: 3,
-      theta: (-25 / 360) * 2 * Math.PI,
+      theta: (-15 / 360) * 2 * Math.PI,
       phi: (0 / 360) * 2 * Math.PI
     }
   },
