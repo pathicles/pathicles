@@ -43,6 +43,8 @@ const writeCSV = async (data) => {
   fs.appendFileSync(CSV_FILEPATH_NAME, '\r\n')
 }
 
+const date = new Date().toISOString()
+
 let jobs = [
   { preset: 'csr' },
   { preset: 'dipole' },
@@ -108,7 +110,7 @@ const createImages = async () => {
     })
 
     await writeCSV({
-      date: new Date().toISOString(),
+      date,
       preset,
       ...performanceEntry,
       gpuTime: round(performanceEntry.gpuTime)

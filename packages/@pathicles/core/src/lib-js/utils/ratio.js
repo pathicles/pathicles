@@ -17,8 +17,8 @@ const leftPad = (n, s) =>
 /**
  * Memoize.
  * @template F extends Function
- * @param {F} f The function to memoize
- * @returns {F} A memoized version of f.
+ * @param {Function} f The function to memoize
+ * @returns {function(...[*]): (any | undefined)} A memoized version of f.
  */
 function memoize(f) {
   const store = new Map()
@@ -69,6 +69,7 @@ function _gcd(a, b) {
   }
   return b
 }
+
 const gcd = memoize(_gcd)
 
 /**
@@ -87,6 +88,7 @@ function _simplify(numerator, denominator) {
   const f = gcd(n, d)
   return new Ratio((sgn * n) / f, d / f)
 }
+
 const simplify = memoize(_simplify)
 
 /**
@@ -100,7 +102,7 @@ function pm(c) {
 }
 
 /**
- * Exponentiate 10.
+ * Exponentite 10.
  *
  * Take 10 to the power of a number.
  * @param {number} n The power to raise 10 to.
@@ -116,8 +118,46 @@ export default class Ratio {
    * @param {bigint} d The denominator for our ratio.
    */
   constructor(n, d) {
-    this.numerator = n
-    this.denominator = d
+    this.numerator = BigInt(n)
+    this.denominator = BigInt(d)
+  }
+
+  /**
+   * N-th root.
+   * @param {bigint} x The base to take the nth root of.
+   * @param {bigint} n The nth root to calculate.
+   */
+  static nthRoot(x, n) {
+    if (x === BigInt(1)) return new Ratio(BigInt(1), BigInt(1))
+    if (x === BigInt(0)) return new Ratio(BigInt(0), BigInt(1))
+    if (x < 0) return new Ratio(BigInt(1), BigInt(0))
+
+    // Get an initial estimate using floating point math
+    const initialEstimate = Ratio.fromNumber(Math.pow(Number(x), 1 / Number(n)))
+
+    const NUM_ITERATIONS = 3
+    return [...new Array(NUM_ITERATIONS)].reduce((r) => {
+      // x = ((n-1)*x + (num / Math.pow(x, n-1))) * (1/n);
+      return simplify(
+        (n - BigInt(1)) * bigIntPow(r.numerator, n) +
+          x * bigIntPow(r.denominator, n),
+        n * r.denominator * bigIntPow(r.numerator, n - BigInt(1))
+      )
+    }, initialEstimate)
+  }
+
+  /**
+   * Number to Ratio.
+   * @param {number} x A number to convert to a ratio.
+   */
+  static fromNumber(x) {
+    const expParse = /(-?\d)\.(\d+)e([-+])(\d+)/
+    const [, n, decimals, sgn, pow] =
+      x.toExponential(PRECISION).match(expParse) || []
+    const exp = PRECISION - pm(sgn) * +pow
+    return exp < 0
+      ? simplify(BigInt(`${n}${decimals}`) * exp10(-1 * exp), BigInt(1))
+      : simplify(BigInt(`${n}${decimals}`), exp10(exp))
   }
 
   /**
@@ -241,35 +281,11 @@ export default class Ratio {
   /**
    * Ceil.
    *
-   * Round the value away from zerio, returning a whole integer.
+   * Round the value away from zero, returning a whole integer.
    */
   ceil() {
     const one = new Ratio(BigInt(1), BigInt(0))
     return this.equals(this.floor()) ? this : this.floor().add(one)
-  }
-
-  /**
-   * N-th root.
-   * @param {bigint} x The base to take the nth root of.
-   * @param {bigint} n The nth root to calculate.
-   */
-  static nthRoot(x, n) {
-    if (x === BigInt(1)) return new Ratio(BigInt(1), BigInt(1))
-    if (x === BigInt(0)) return new Ratio(BigInt(0), BigInt(1))
-    if (x < 0) return new Ratio(BigInt(1), BigInt(0))
-
-    // Get an initial estimate using floating point math
-    const initialEstimate = Ratio.fromNumber(Math.pow(Number(x), 1 / Number(n)))
-
-    const NUM_ITERATIONS = 3
-    return [...new Array(NUM_ITERATIONS)].reduce((r) => {
-      // x = ((n-1)*x + (num / Math.pow(x, n-1))) * (1/n);
-      return simplify(
-        (n - BigInt(1)) * bigIntPow(r.numerator, n) +
-          x * bigIntPow(r.denominator, n),
-        n * r.denominator * bigIntPow(r.numerator, n - BigInt(1))
-      )
-    }, initialEstimate)
   }
 
   /**
@@ -353,20 +369,6 @@ export default class Ratio {
   }
 
   /**
-   * Number to Ratio.
-   * @param {number} x A number to convert to a ratio.
-   */
-  static fromNumber(x) {
-    const expParse = /(-?\d)\.(\d+)e([-+])(\d+)/
-    const [, n, decimals, sgn, pow] =
-      x.toExponential(PRECISION).match(expParse) || []
-    const exp = PRECISION - pm(sgn) * +pow
-    return exp < 0
-      ? simplify(BigInt(`${n}${decimals}`) * exp10(-1 * exp), BigInt(1))
-      : simplify(BigInt(`${n}${decimals}`), exp10(exp))
-  }
-
-  /**
    * Convert to a string with a fixed number of decimal places.
    * @param {number | bigint} n The number of decimal places to return.
    */
@@ -390,7 +392,7 @@ export default class Ratio {
 }
 
 /**
- * Pre-calcluate pi to a relatively high precision.
+ * Pre-calculate pi to a relatively high precision.
  */
 Ratio.π = new Ratio(
   BigInt(
@@ -400,3 +402,6 @@ Ratio.π = new Ratio(
     147228976005406416456605889545234663708007132214287099502671761731579623900279550136942123575012097144279697449259580107591629642263084558372712139113827838066394827831985133188307694217350562300332574548559348072311957055907621362197137385735341359051650074008136782822625040058828668282141272965120000
   )
 )
+
+Ratio.c__ms_1 = new Ratio(299792458, 1)
+Ratio.qe__C = new Ratio(299792458, 1)
