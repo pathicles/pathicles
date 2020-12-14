@@ -46,7 +46,7 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  { preset: 'csr' },
+  // { preset: 'csr' },
   { preset: 'dipole' },
   { preset: 'random' },
   { preset: 'different-gammas' },
@@ -63,7 +63,7 @@ let jobs = [
 
 jobs = [
   ...jobs,
-  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8' }))
+  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
 ]
 console.log(jobs)
 

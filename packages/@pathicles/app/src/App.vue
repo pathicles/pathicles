@@ -6,16 +6,18 @@
     select(v-model="presetName" v-on:change="onPresetChange($event)")
       option(v-for="(preset, name) of presets" :value="name" :selected="name === presetName" ) {{name}}
       option(value="story" ) STORY
-  pathicles(:preset-name="presetName")
+  pathicles(v-if="presetName != 'story'" :preset-name="presetName")
+  pathiclesStory(v-else :preset-name="presetName")
 </template>
 
 <script>
 import { presets } from '@pathicles/config'
 import Pathicles from './components/Pathicles.vue'
+import PathiclesStory from './components/PathiclesStory.vue'
 
 export default {
   name: 'App',
-  components: { Pathicles },
+  components: { Pathicles, PathiclesStory },
   data: () => {
     return {
       presets,
@@ -48,15 +50,11 @@ export default {
     onPresetChange() {
       let params = this.urlSearchParams
       params.set('presetName', this.presetName)
-      if (this.presetName !== 'story') {
-        history.pushState(
-          {},
-          null,
-          document.location.pathname + '?' + params.toString()
-        )
-      } else {
-        this.$router.push('story')
-      }
+      history.pushState(
+        {},
+        null,
+        document.location.pathname + '?' + params.toString()
+      )
     }
   }
 }
@@ -65,7 +63,9 @@ export default {
 <style lang="stylus">
 html
   -webkit-text-size-adjust: none;
-  touch-action pan-y; /*prevent user scaling*/
+  touch-action pan-y;
+
+/*prevent user scaling*/
 body, #app
   margin 0
   padding 0

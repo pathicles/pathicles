@@ -27,6 +27,7 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(model.emitter))
 
+    // console.log(model.emitter.direction)
     // console.log(fourPositions)
     // console.log(fourVelocities)
 

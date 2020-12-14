@@ -18,9 +18,9 @@ export default {
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 1024,
+    iterations: 16,
     snapshotCount: 128 / 4,
-    iterationDurationOverC: 0.1
+    iterationDurationOverC: 0.05
   },
 
   model: {
@@ -28,15 +28,11 @@ export default {
     // boundingBoxCenter: [0, 2, 0],
     emitter: {
       position: [0, 1, 0],
-      direction: ({ p }) => [
-        boundedRandom(),
-        boundedRandom() + 1,
-        boundedRandom()
-      ],
-      bunchShape: 'SQUARE_XZ',
-      particleSeparation: 0.0,
-      directionJitter: [1, 1, 1],
-      positionJitter: [0, 0, 0],
+      direction: ({ p }) => [boundedRandom(), boundedRandom(), boundedRandom()],
+      // bunchShape: 'SQUARE_XZ',
+      particleSeparation: 0.1,
+      // directionJitter: [1, 1, 1],
+      // positionJitter: [0, 0, 0],
       gamma: 2,
       particleCount: 1024,
       particleType: 'PHOTON ELECTRON PROTON'

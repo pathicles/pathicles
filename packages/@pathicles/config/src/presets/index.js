@@ -1,3 +1,5 @@
+import { deepcopy } from 'deepcopy'
+
 import defaultConfig from './_default'
 import dipole from './dipole'
 import csr from './csr'
@@ -39,7 +41,7 @@ const merge = (...theArgs) => {
 }
 
 const toUInt8 = (config) => {
-  let clone = JSON.parse(JSON.stringify(config))
+  let clone = deepcopy(config)
   clone.name = clone.name + '-uint8'
   if (!clone.runner) clone.runner = {}
   clone.runner.packFloat2UInt8 = true
