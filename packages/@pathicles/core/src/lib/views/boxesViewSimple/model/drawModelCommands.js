@@ -93,9 +93,7 @@ export default function (regl, { variables, view }, shadow) {
         ut_position: (ctx, props) => {
           return props.position
         },
-        viewRange: (ctx, props) => {
-          return props.viewRange || [0, 1]
-        },
+        viewRange: (ctx, props) => props.viewRange || [0, 1],
         snapshotCount: variables.snapshotCount,
         iterations: variables.iterations,
         iteration: () => variables.iteration,

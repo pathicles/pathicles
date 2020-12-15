@@ -88,7 +88,7 @@ export class ReglViewerInstance {
   }
 
   run(regl) {
-    this.loop = regl.frame(({ tick }) => {
+    this.loop = regl.frame(({ time, tick }) => {
       const storyState = this.story.getState()
 
       if (storyState.scene.loaded) {
@@ -101,14 +101,16 @@ export class ReglViewerInstance {
             this.modelTranslateX = boundedRandom() * 0.1
             this.modelTranslateY = boundedRandom() * 0.1
           }
-          viewRange = [autoloopProgress - 0.5, autoloopProgress]
+          viewRange = [1 * (time % 2) - 0.25, (time % 2) + 0.35]
+          // viewRange  [autoloopProgress, 0.9]
+          // console.log(viewRange)
         } else {
           viewRange = storyState.viewRange
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
 
-        sceneProgress = Math.min(sceneProgress, 1)
+        // sceneProgress = Math.min(sceneProgress, 1)
 
         this.camera.params.phi = storyState.scene.cameraBSplines.phi(
           sceneProgress
@@ -128,7 +130,7 @@ export class ReglViewerInstance {
         ]
 
         this.camera.tick()
-        if (this.camera.state.dirty) {
+        if (true || this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {
               ...this.camera,

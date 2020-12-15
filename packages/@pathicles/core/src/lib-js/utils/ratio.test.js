@@ -18,7 +18,7 @@ describe('Ratio', () => {
 
 describe('gyroRadius', () => {
   test('new', () => {
-    const gamma = new Ratio(10n, 1n)
+    const gamma = new Ratio(11n, 1n)
 
     const velocity_squared = Ratio.c__ms_1
       .pow(Ratio.fromNumber(2))
@@ -29,6 +29,8 @@ describe('gyroRadius', () => {
       )
 
     const velocity = velocity_squared.pow(Ratio.fromNumber(0.5))
+
+    console.log(velocity.toFixed(4))
 
     const mass = Ratio.fromNumber(9.10938356e-31)
     const bField = new Ratio(1n, 100n)

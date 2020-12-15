@@ -1,13 +1,13 @@
 import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
 
 export default {
-  name: 'dipole',
+  name: 'spiral',
   view: {
     camera: {
-      center: [0, 1.5, 0],
-      distance: 8,
-      phi: (0 / 360) * 2 * Math.PI,
-      theta: (90 / 360) * 2 * Math.PI
+      center: [0, 2, 0],
+      distance: 10,
+      theta: 90 * (Math.PI / 180),
+      phi: 2 * (Math.PI / 180)
     }
   },
   runner: {
@@ -15,8 +15,8 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
-    iterationsPerTick: 4,
-    iterationDurationOverC: 0.25,
+    iterationsPerTick: 1,
+    iterationDurationOverC: 0.22,
     snapshotCount: 512,
     iterations: 512
   },
@@ -25,10 +25,10 @@ export default {
     emitter: {
       particleCount: 121,
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
+      bunchShape: 'SPIRAL_XY',
       particleSeparation: 0.05,
-      position: [-1.5, 0, 0],
-      direction: [0, 0.1, 1],
+      position: [0, 0, 0],
+      direction: [0, 0.05, 1],
       positionJitter: [0.0, 0.0, 0.5],
 
       gamma: 2.5

@@ -6,8 +6,8 @@
     select(v-model="presetName" v-on:change="onPresetChange($event)")
       option(v-for="(preset, name) of presets" :value="name" :selected="name === presetName" ) {{name}}
       option(value="story" ) STORY
-  pathicles(v-if="presetName != 'story'" :preset-name="presetName")
-  pathiclesStory(v-else :preset-name="presetName")
+  pathiclesStory(v-if="presetName === 'story'" :preset-name="presetName")
+  pathicles(v-else :preset-name="presetName")
 </template>
 
 <script>
@@ -76,8 +76,18 @@ body, #app
     display none
 
 .configurator
-  padding 1em
+  padding .75rem 1rem
   position fixed
   top 0
   z-index 1000
+  select
+    margin-left 1rem
+    width 8.75rem
+    cursor:pointer;
+    display:inline-block;
+    position:relative;
+    font-size 10px
+    color:black;
+    border:0px solid #ccc;
+    font-family monospace
 </style>

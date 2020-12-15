@@ -6,8 +6,8 @@ export default {
   view: {
     camera: {
       distance: 6,
-      phi: (5 / 360) * 2 * Math.PI,
-      theta: (45 / 360) * 2 * Math.PI
+      theta: 45 * (Math.PI / 180),
+      phi: 2 * (Math.PI / 180)
     }
   },
 
@@ -18,9 +18,9 @@ export default {
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 16,
-    snapshotCount: 128 / 4,
-    iterationDurationOverC: 0.05
+    iterations: 64,
+    snapshotCount: 16,
+    iterationDurationOverC: 0.2
   },
 
   model: {

@@ -2,7 +2,10 @@
 
 <template lang="pug">
 .pathicles.pathicles-simulator(ref="scrollContainer")
-  .debug.debug-only {{vp}}
+  dl.debug.debug-only
+    div(v-for="(value, key) in vp" :key="key")
+      dt {{ key }}
+      dd {{ value }}
   .canvas-container(ref="container")
     canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
 </template>
@@ -48,7 +51,10 @@ export default {
       config: {},
       windowHeight: 0,
       windowWidth: 0,
-      vp: null
+      vp: null,
+      story: {
+        scenes: []
+      }
     }
   },
   computed: {
@@ -83,7 +89,7 @@ export default {
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
-    this.config = loadConfig(this.presetName)
+    this.loadConfig()
 
     this.$nextTick(() => {
       watchViewport(this.handleViewportChange)
@@ -100,19 +106,50 @@ export default {
   },
 
   methods: {
-    handleViewportChange({ size }) {
+    loadConfig() {
+      this.config = loadConfig(this.presetName)
+      this.vp = {
+        // sceneCount: this.story.scenes.length,
+        // scene: this.activeScene + '/' + this.story.scenes.length,
+        // sceneProgress: this.sceneProgress,
+        // progress: this.progress.toFixed(2),
+        np: this.config.model.emitter.particleCount,
+        ns: this.config.runner.snapshotCount,
+        n: this.config.runner.iterations,
+        dt: this.config.runner.iterationDurationOverC + ' c',
+        ɣ: this.config.model.emitter.gamma.toString().replace(/=>/, '=>\n')
+        // storyHeight: this.storyHeight,
+        // duration: this.story.scenes.duration,
+        // dt: this.duration,
+        // scrollTop: scroll.top + this.screenHeight
+      }
+    },
+    handleViewportChange({ size, scroll }) {
       if (size.changed) {
         this.windowWidth = size.x
         this.windowHeight = size.y
+        this.storyHeight = this.$refs.scrollContainer.clientHeight
+        if (this.reglInstance) this.reglInstance.resize()
+      }
+
+      if (scroll.changed) {
+        this.progress = scroll.top + this.windowHeight / this.storyHeight
         if (this.reglInstance) {
-          this.reglInstance.resize()
+          // this.reglInstance.story.setPosition(this.progress)
+          // this.activeScene = this.reglInstance.story.getState().sceneIdx
+          // this.sceneProgress = this.reglInstance.story
+          //   .getState()
+          //   .sceneProgress.toFixed(2)
+        }
+
+        if (scroll.changed || size.changed) {
         }
       }
     }
   },
   watch: {
     presetName(presetName) {
-      this.config = loadConfig(presetName)
+      this.loadConfig(presetName)
       this.reglInstance.loadConfig(this.config)
     }
   }
@@ -120,6 +157,35 @@ export default {
 </script>
 
 <style lang="stylus">
+.print dl
+  display none
+dl
+  margin-top 2em
+  margin-left 0em
+  z-index 10000
+  position fixed
+  div
+    width 11rem
+    display flex
+    font-size 10px
+
+    dt
+      flex  0 0 1rem
+      background-color rgba(white, .5)
+      text-align right
+      padding .25em
+      margin .25em
+
+    dd
+      flex 4
+      padding .25em
+      margin .25em
+      background-color rgba(white, .5)
+      white-space pre
+      font-family monospace
+
+
+
 .pathicles
   position fixed
   top 0
@@ -128,15 +194,6 @@ export default {
   right 0
   overflow hidden
 
-  select
-    position fixed
-    z-index 10000
-    top 0
-    left 0
-    right 0
-    padding 1em
-    font-size 16px
-    width 100%
 
   .canvas-container
     height: 100vh

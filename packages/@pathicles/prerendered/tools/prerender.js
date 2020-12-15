@@ -47,7 +47,7 @@ const date = new Date().toISOString()
 
 let jobs = [
   // { preset: 'csr' },
-  { preset: 'dipole' },
+  { preset: 'spiral' },
   { preset: 'random' },
   { preset: 'different-gammas' },
   { preset: 'free-electron' },

@@ -1,7 +1,7 @@
-import { deepcopy } from 'deepcopy'
+import deepcopy from 'deepcopy/src/index.mjs'
 
 import defaultConfig from './_default'
-import dipole from './dipole'
+import spiral from './spiral'
 import csr from './csr'
 import storyDipole from './story-dipole'
 import storyElectric from './story-electric'
@@ -59,7 +59,7 @@ const presets = {
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
   [random.name]: random,
-  [dipole.name]: dipole,
+  [spiral.name]: spiral,
   [gyrotest_1_electron.name]: gyrotest_1_electron,
   [gyrotest_128_electrons.name]: gyrotest_128_electrons
 }

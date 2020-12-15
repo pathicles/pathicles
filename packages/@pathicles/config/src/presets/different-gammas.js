@@ -8,10 +8,10 @@ export default {
     pathicleRelativeHeight: 3,
     pathicleWidth: 0.005,
     camera: {
-      center: [0, 0.5, 0],
-      distance: 2,
-      theta: -(2 * Math.PI) / (360 / 0),
-      phi: (2 * Math.PI) / (360 / 5)
+      center: [0, 0.5, -0.8],
+      distance: 4,
+      theta: 0 * (Math.PI / 180),
+      phi: 20 * (Math.PI / 180)
     }
   },
 

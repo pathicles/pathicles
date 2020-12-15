@@ -2,19 +2,25 @@
 
 <template lang="pug">
 .pathicles.pathicles-simulator(ref="scrollContainer")
-  .debug.debug-only {{vp}}
-  .canvas-container(ref="container")
+  pathicles-params
+  dl.debug.debug-only
+    div(v-for="(value,  key) in vp" :key="key")
+      dt {{ key }}
+.canvas-container(ref="container")
     canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
     <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>
+import PathiclesParams from './PathiclesParams'
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import { unwatchViewport, watchViewport } from 'tornis'
 
 export default {
   name: 'PathiclesSimulator',
+
+  components: { PathiclesParams },
 
   props: {
     presetName: {
@@ -82,7 +88,6 @@ export default {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
 
-    console.log(this.$route)
     this.windowWidth = window.innerWidth
     this.windowHeight = window.innerHeight
 
@@ -103,16 +108,40 @@ export default {
   },
 
   methods: {
-    handleViewportChange({ size }) {
+    handleViewportChange({ size, scroll }) {
       if (size.changed) {
         this.windowWidth = size.x
         this.windowHeight = size.y
+        this.storyHeight = this.$refs.scrollContainer.clientHeight
+        if (this.reglInstance) this.reglInstance.resize()
+      }
+
+      if (scroll.changed) {
+        this.progress = scroll.top + this.windowHeight / this.storyHeight
         if (this.reglInstance) {
-          this.reglInstance.resize()
+          this.reglInstance.story.setPosition(this.progress)
+          this.activeScene = this.reglInstance.story.getState().sceneIdx
+          this.sceneProgress = this.reglInstance.story
+            .getState()
+            .sceneProgress.toFixed(2)
+        }
+
+        if (scroll.changed || size.changed) {
+          this.vp = {
+            // sceneCount: this.story.scenes.length,
+            scene: this.activeScene + '/' + this.story.scenes.length,
+            sceneProgress: this.sceneProgress,
+            progress: this.progress.toFixed(2)
+            // storyHeight: this.storyHeight,
+            // duration: this.story.scenes.duration,
+            // dt: this.duration,
+            // scrollTop: scroll.top + this.screenHeight
+          }
         }
       }
     }
   },
+
   watch: {
     presetName(presetName) {
       this.config = loadConfig(this.presetName)
@@ -165,34 +194,34 @@ export default {
 
 <style lang="stylus">
 
-.pathicles
-  position fixed
-  top 0
-  left 0
-  bottom 0
-  right 0
-  overflow hidden
-
-  select
-    position fixed
-    z-index 10000
-    top 0
-    left 0
-    right 0
-    padding 1em
-    font-size 16px
-    width 100%
-
-  .canvas-container
-    height: 100vh
-    position absolute
-    top 0
-    left 0
-    z-index 1000
-
-    canvas
-      image-rendering crisp-edges
-
-  .pathicles-simulator
-    touch-action pinch-zoom
+//.pathicles
+//  position fixed
+//  top 0
+//  left 0
+//  bottom 0
+//  right 0
+//  overflow hidden
+//
+//  select
+//    position fixed
+//    z-index 10000
+//    top 0
+//    left 0
+//    right 0
+//    padding 1em
+//    font-size 16px
+//    width 100%
+//
+//  .canvas-container
+//    height: 100vh
+//    position absolute
+//    top 0
+//    left 0
+//    z-index 1000
+//
+//    canvas
+//      image-rendering crisp-edges
+//
+//  .pathicles-simulator
+//    touch-action pinch-zoom
 </style>

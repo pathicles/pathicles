@@ -5,12 +5,10 @@ export default {
   name: 'gyrotest-128-electrons',
   view: {
     camera: {
-      center: [1.5, 0, 0],
-      distance: 4,
-      //   center: [0.5, 0, 0],
-      theta: -(2 * Math.PI) / (360 / 90),
-      phi: (2 * Math.PI) / (360 / 10)
-      //   distance: 0.5
+      center: [0, 2, 0],
+      distance: 10,
+      theta: 90 * (Math.PI / 180),
+      phi: 2 * (Math.PI / 180)
     }
   },
 
@@ -23,9 +21,9 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
-    iterations: 170,
-    snapshotCount: 256,
-    iterationDurationOverC: (2 * Math.PI) / 10
+    iterations: 1023,
+    snapshotCount: 1024,
+    iterationDurationOverC: 1 / 10
   },
 
   model: {
@@ -34,18 +32,17 @@ export default {
       particleSeparation: 0.0,
       particleType: 'ELECTRON',
       bunchShape: 'ROW',
-      direction: [0, 0, 1],
+      direction: [0, 0.1, 1],
       position: ({ p }) => [
-        -p / 30,
-        (defaultConfig.view.pathicleWidth *
-          defaultConfig.view.pathicleRelativeHeight) /
-          2 +
-          0 / 200,
+        0,
+        defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight *
+          2,
         0
       ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: ({ p }) => 1 / Math.sqrt(1 - Math.pow(0.0125, 2)) + p / 3000 //1.55
+      gamma: ({ p }) => Math.log10(p + 1)
     },
 
     lattice: {
@@ -53,7 +50,7 @@ export default {
         l0: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 20,
-          strength: 0.0001
+          strength: 0.001
         }
       },
       beamline: ['l0'],

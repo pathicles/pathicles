@@ -158,6 +158,20 @@ export default {
                 phi: (-10 / 360) * Math.PI
               }
             }
+          },
+          {
+            type: 'options',
+            pathicles: {
+              autoLoop: true,
+              preset: 'story-empty',
+              data: 'story-electric.js',
+              camera: {
+                center: [0, 1.5, 0],
+                distance: 5,
+                theta: (180 / 360) * 2 * Math.PI,
+                phi: (-10 / 360) * Math.PI
+              }
+            }
           }
         ]
       }
@@ -245,7 +259,7 @@ export default {
             [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key]],
             [scenes[s].configuration.view.camera[key]],
             [
-              scenes[s < scenes.length - 1 ? s + 1 : s].configuration.view
+              scenes[s < scenes.length - 2 ? s + 1 : s].configuration.view
                 .camera[key]
             ]
           ]
@@ -253,7 +267,7 @@ export default {
             [scenes[s === 0 ? 0 : s - 1].configuration.view.camera[key][index]],
             [scenes[s].configuration.view.camera[key][index]],
             [
-              scenes[s < scenes.length - 1 && s !== 0 ? s + 1 : s].configuration
+              scenes[s < scenes.length - 2 && s !== 0 ? s + 1 : s].configuration
                 .view.camera[key][index]
             ]
           ]
@@ -343,14 +357,7 @@ export default {
 
 .pathicles-story__container
 
-  .debug
-    position fixed
-    top 0
-    left 0
-    z-index 1000000
 
-    dd, dt
-      font-family  monospace
 
   .canvas-container
     z-index 1000
