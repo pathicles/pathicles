@@ -51,7 +51,7 @@ export class ReglSimulatorInstance {
         'OES_standard_derivatives',
         'OES_texture_half_float',
         'WEBGL_depth_texture',
-        'EXT_disjoint_timer_query',
+        // 'EXT_disjoint_timer_query',
         'EXT_color_buffer_half_float'
       ]
     })
