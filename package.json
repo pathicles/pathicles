@@ -16,7 +16,7 @@
     "packages/@pathicles/app",
     "packages/@pathicles/config",
     "packages/@pathicles/core",
-    "packages/@pathicles/docs",
+    "packages/@pathicles/docs__",
     "packages/@pathicles/prerendered",
     "packages/@pathicles/specrel__"
   ],
