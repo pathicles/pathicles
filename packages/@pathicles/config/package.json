@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/config",
   "license": "MIT",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
-    "@pathicles/core": "^0.2.1",
+    "@pathicles/core": "^0.3.0",
     "deepcopy": "^2.1.0"
   },
   "devDependencies": {
