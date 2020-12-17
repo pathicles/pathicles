@@ -2,8 +2,8 @@ import { describe, expect, it } from '@jest/globals'
 
 import {
   betaFromGamma,
-  ParticleCollection,
   jitterPosition,
+  ParticleCollection,
   particleTypesFromDescriptor
 } from './particle-collection'
 

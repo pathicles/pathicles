@@ -109,19 +109,11 @@ export default {
     loadConfig() {
       this.config = loadConfig(this.presetName)
       this.vp = {
-        // sceneCount: this.story.scenes.length,
-        // scene: this.activeScene + '/' + this.story.scenes.length,
-        // sceneProgress: this.sceneProgress,
-        // progress: this.progress.toFixed(2),
         np: this.config.model.emitter.particleCount,
         ns: this.config.runner.snapshotCount,
         n: this.config.runner.iterations,
         dt: this.config.runner.iterationDurationOverC + ' c',
         ɣ: this.config.model.emitter.gamma.toString().replace(/=>/, '=>\n')
-        // storyHeight: this.storyHeight,
-        // duration: this.story.scenes.duration,
-        // dt: this.duration,
-        // scrollTop: scroll.top + this.screenHeight
       }
     },
     handleViewportChange({ size, scroll }) {
@@ -134,16 +126,6 @@ export default {
 
       if (scroll.changed) {
         this.progress = scroll.top + this.windowHeight / this.storyHeight
-        if (this.reglInstance) {
-          // this.reglInstance.story.setPosition(this.progress)
-          // this.activeScene = this.reglInstance.story.getState().sceneIdx
-          // this.sceneProgress = this.reglInstance.story
-          //   .getState()
-          //   .sceneProgress.toFixed(2)
-        }
-
-        if (scroll.changed || size.changed) {
-        }
       }
     }
   },
@@ -159,18 +141,20 @@ export default {
 <style lang="stylus">
 .print dl
   display none
+
 dl
   margin-top 2em
   margin-left 0em
   z-index 10000
   position fixed
+
   div
     width 11rem
     display flex
     font-size 10px
 
     dt
-      flex  0 0 1rem
+      flex 0 0 1rem
       background-color rgba(white, .5)
       text-align right
       padding .25em
@@ -183,7 +167,6 @@ dl
       background-color rgba(white, .5)
       white-space pre
       font-family monospace
-
 
 
 .pathicles

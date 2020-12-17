@@ -1,12 +1,12 @@
 /* eslint-env browser */
 
 <template lang="pug">
-.tweakpane(ref="tp")
+  .tweakpane(ref="tp")
 </template>
 
 <script>
 import Tweakpane from 'tweakpane'
-import { presets } from '@pathicles/config'
+// import { presets } from '@pathicles/config'
 import { DISTRIBUTIONS } from '@pathicles/config/src/distributions/distributions'
 
 // const log = console.log
@@ -49,10 +49,10 @@ export default {
         container: this.$refs.tp
       })
 
-      const fPresets = tweakpane.addFolder({
-        title: 'Presets'
-      })
-
+      // const fPresets = tweakpane.addFolder({
+      //   title: 'Presets'
+      // })
+      //
       const propsMap = (obj) =>
         Object.keys(obj).reduce((sum, el) => {
           return {
@@ -60,22 +60,13 @@ export default {
             [el]: el
           }
         }, {})
-
-        options: propsMap(presets)
-      })
-
-      presetInput.on('change', () => {
-        this.$store.dispatch('LOAD_PRESET', this.presetName)
-        // console.log((this.$store._state.name = this.presetName))
-        // // if (preset) this.model = { ...this.model, ...preset }
-        //
-        console.log('params', this.$store.getters['params'])
-        // // Object.assign(this.model, preset)
-        // // Object.assign(this.model, preset)
-        //
-        // tweakpane.refresh()
-        // console.log(model)
-      })
+      //
+      // propsMap(presets)
+      //
+      // presetInput.on('change', () => {
+      //   this.$store.dispatch('LOAD_PRESET', this.presetName)
+      //   console.log('params', this.$store.getters['params'])
+      // })
 
       const fEmitter = tweakpane.addFolder({
         title: 'Emitter',
@@ -87,11 +78,6 @@ export default {
         min: 1,
         max: 512
       })
-      // fEmitter.addInput(this.model.model.emitter, 'gamma', {
-      //   step: 0.1,
-      //   min: 1,
-      //   max: 10
-      // })
 
       fEmitter.addInput(this.model.model.emitter, 'bunchShape', {
         options: propsMap(DISTRIBUTIONS)
@@ -211,49 +197,49 @@ export default {
         max: 100
       })
     }
-
-    // onChange() {
-    //   const params = { presetName: this.presetName }
-    //   if (this.presetName !== 'story') {
-    //     history.pushState(
-    //       {},
-    //       null,
-    //       this.$route.path +
-    //         '?' +
-    //         Object.keys(params)
-    //           .map((key) => {
-    //             return (
-    //               encodeURIComponent(key) +
-    //               '=' +
-    //               encodeURIComponent(params[key])
-    //             )
-    //           })
-    //           .join('&')
-    //     )
-    //   } else {
-    //     this.$router.push('story')
-    //     // history.pushState({}, null, '/story')
-    //   }
-    //   this.config = loadConfig(this.presetName)
-    //   this.reglInstance.loadConfig(this.config)
-    // },
-    // update(configModel) {
-    //   this.config.model.interactions.electricField = [
-    //     0,
-    //     0,
-    //     parseFloat(configModel.electricField_z)
-    //   ]
-    //   this.config.model.interactions.magneticField = [
-    //     0,
-    //     parseFloat(configModel.magneticField_y),
-    //     0
-    //   ]
-    //   this.reglInstance.loadConfig(this.config)
-    // }
-    // initGui(config) {
-    //   config
-    // }
   }
+
+  // onChange() {
+  //   const params = { presetName: this.presetName }
+  //   if (this.presetName !== 'story') {
+  //     history.pushState(
+  //       {},
+  //       null,
+  //       this.$route.path +
+  //         '?' +
+  //         Object.keys(params)
+  //           .map((key) => {
+  //             return (
+  //               encodeURIComponent(key) +
+  //               '=' +
+  //               encodeURIComponent(params[key])
+  //             )
+  //           })
+  //           .join('&')
+  //     )
+  //   } else {
+  //     this.$router.push('story')
+  //     // history.pushState({}, null, '/story')
+  //   }
+  //   this.config = loadConfig(this.presetName)
+  //   this.reglInstance.loadConfig(this.config)
+  // },
+  // update(configModel) {
+  //   this.config.model.interactions.electricField = [
+  //     0,
+  //     0,
+  //     parseFloat(configModel.electricField_z)
+  //   ]
+  //   this.config.model.interactions.magneticField = [
+  //     0,
+  //     parseFloat(configModel.magneticField_y),
+  //     0
+  //   ]
+  //   this.reglInstance.loadConfig(this.config)
+  // }
+  // initGui(config) {
+  //   config
+  // }
 }
 </script>
 

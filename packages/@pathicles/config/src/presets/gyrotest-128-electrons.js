@@ -33,7 +33,7 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'ROW',
       direction: [0, 0.1, 1],
-      position: ({ p }) => [
+      position: () => [
         0,
         defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight *

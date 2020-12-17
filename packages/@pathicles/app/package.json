@@ -3,9 +3,9 @@
   "license": "MIT",
   "version": "0.2.0",
   "scripts": {
+    "build": "cross-env NODE_ENV=production vite build",
     "build_": "vite build",
     "build__": "cross-env NODE_ENV=production vite build && esno scripts/ssg.ts",
-    "build": "cross-env NODE_ENV=production vite build",
     "dev": "vite --port $(node -p 'require(\"./package.json\").config.devPort')",
     "lint-fix": "eslint --fix src",
     "publish": "yarn publish --access=public"
@@ -14,9 +14,9 @@
     "devPort": 9303
   },
   "dependencies": {
-    "es6-promise": "^4.2.8",
     "@pathicles/config": "^0.2.0",
     "@pathicles/core": "^0.2.0",
+    "es6-promise": "^4.2.8",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
     "tweakpane": "^1.5.7",

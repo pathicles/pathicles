@@ -35,8 +35,7 @@ export default {
     },
 
     prerender: function () {
-      const parsedUrl = new URL(window.location.href)
-      return urlSearchParams.get('prerender') !== null
+      return this.urlSearchParams.get('prerender') !== null
     }
   },
   beforeMount() {

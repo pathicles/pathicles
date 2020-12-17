@@ -95,22 +95,18 @@ export class ReglViewerInstance {
         let sceneProgress
         let viewRange
         sceneProgress = storyState.sceneProgress
-        if (storyState.scene.pathicles && storyState.scene.pathicles.autoLoop) {
-          const autoloopProgress = (tick % 127) / 127
+        const autoLoop =
+          storyState.scene.pathicles && storyState.scene.pathicles.autoLoop
+
+        if (autoLoop) {
           if (tick % 127 === 0) {
             this.modelTranslateX = boundedRandom() * 0.1
             this.modelTranslateY = boundedRandom() * 0.1
           }
-          viewRange = [1 * (time % 2) - 0.5, (time % 2) + 0.1]
-          // viewRange  [autoloopProgress, 0.9]
-          // console.log(viewRange)
-        } else {
-          viewRange = storyState.viewRange
+          viewRange = [(time % 2) - 0.5, (time % 2) + 0.1]
           this.modelTranslateX = 0
           this.modelTranslateY = 0
         }
-
-        // sceneProgress = Math.min(sceneProgress, 1)
 
         this.camera.params.phi = storyState.scene.cameraBSplines.phi(
           sceneProgress
@@ -130,7 +126,7 @@ export class ReglViewerInstance {
         ]
 
         this.camera.tick()
-        if (true || this.camera.state.dirty) {
+        if (autoLoop || this.camera.state.dirty) {
           this.camera.setCameraUniforms(
             {
               ...this.camera,

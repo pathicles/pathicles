@@ -1,6 +1,6 @@
 'use strict'
 
-import { describe, expect, test, beforeAll } from '@jest/globals'
+import { beforeAll, describe, expect, test } from '@jest/globals'
 import freeCameraFactory from './freeCameraFactory'
 import createREGL from 'regl'
 

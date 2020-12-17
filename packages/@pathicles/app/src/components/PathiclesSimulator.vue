@@ -143,7 +143,7 @@ export default {
   },
 
   watch: {
-    presetName(presetName) {
+    presetName() {
       this.config = loadConfig(this.presetName)
       this.reglInstance.loadConfig(this.config)
     }

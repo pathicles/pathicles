@@ -4,6 +4,7 @@ import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
+
 export const stepAttributes = ({ particleCount, snapshotCount }) => {
   return Array(particleCount * snapshotCount)
     .fill(0)

@@ -1,4 +1,4 @@
-import { ortho, lookAt } from 'gl-mat4'
+import { lookAt, ortho } from 'gl-mat4'
 import { normalize } from 'gl-vec3'
 
 // import shadowDrawVert from './shadow.draw.vert'
@@ -11,16 +11,16 @@ import shadowBlurFrag from './shadow.blur.frag'
 export const SHADOW_MAP_SIZE = 1024
 export const TEXEL_SIZE = 0.5
 
-const UINT8_VIEW = new Uint8Array(4)
-const FLOAT_VIEW = new Float32Array(UINT8_VIEW.buffer)
+// const UINT8_VIEW = new Uint8Array(4)
+// const FLOAT_VIEW = new Float32Array(UINT8_VIEW.buffer)
 
-function decodeFloat(x, y, z, w) {
-  UINT8_VIEW[0] = w
-  UINT8_VIEW[1] = z
-  UINT8_VIEW[2] = y
-  UINT8_VIEW[3] = x
-  return FLOAT_VIEW[0]
-}
+// function decodeFloat(x, y, z, w) {
+//   UINT8_VIEW[0] = w
+//   UINT8_VIEW[1] = z
+//   UINT8_VIEW[2] = y
+//   UINT8_VIEW[3] = x
+//   return FLOAT_VIEW[0]
+// }
 
 export class Shadow {
   constructor(regl, { position, size, near, far, filterRadius = 5 }) {

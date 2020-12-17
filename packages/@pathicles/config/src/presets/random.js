@@ -28,7 +28,7 @@ export default {
     // boundingBoxCenter: [0, 2, 0],
     emitter: {
       position: [0, 1, 0],
-      direction: ({ p }) => [boundedRandom(), boundedRandom(), boundedRandom()],
+      direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
       // bunchShape: 'SQUARE_XZ',
       particleSeparation: 0.1,
       // directionJitter: [1, 1, 1],

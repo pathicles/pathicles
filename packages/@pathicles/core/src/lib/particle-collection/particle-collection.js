@@ -1,6 +1,5 @@
-import { DISTRIBUTIONS } from '@pathicles/config'
+import { DISTRIBUTIONS, particleByName } from '@pathicles/config'
 import { boundedRandom } from '../utils/random'
-import { particleByName } from '@pathicles/config'
 
 const functionalize = (x) => (typeof x == 'function' ? x : () => x)
 
@@ -63,6 +62,8 @@ export function ParticleCollection({
   position = [0, 0, 0],
   direction = [0, 0, 1],
   positionJitter = [0, 0, 0],
+  // TODO: restore
+  // eslint-disable-next-line no-unused-vars
   directionJitter = [0, 0, 0]
 }) {
   // create particle collection
@@ -92,9 +93,9 @@ export function ParticleCollection({
   const fourVelocities = particles.map((particle, p) => {
     const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gammaFn({ p }))
 
-    const direction = directionFn({ p, localPositions })
+    const jitteredDirection = directionFn({ p, localPositions })
 
-    const jitteredDirection = direction
+    // const jitteredDirection = direction
 
     //   +
     //     jitterDirection({

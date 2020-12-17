@@ -1,8 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 import Ratio from './ratio'
 
-import { ELECTRON } from '@pathicles/config'
-
 describe('Ratio', () => {
   test('new', () => {
     expect(new Ratio(0, 1).toValue()).toEqual(0)
