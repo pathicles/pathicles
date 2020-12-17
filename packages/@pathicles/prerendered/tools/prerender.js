@@ -47,25 +47,25 @@ const date = new Date().toISOString()
 
 let jobs = [
   // { preset: 'csr' },
-  { preset: 'spiral' },
-  { preset: 'random' },
-  { preset: 'different-gammas' },
-  { preset: 'free-electron' },
-  { preset: 'free-electrons' },
-  { preset: 'free-photon' },
-  { preset: 'free-photons' },
+  // { preset: 'spiral' },
+  // { preset: 'random' },
+  // { preset: 'different-gammas' },
+  // { preset: 'free-electron' },
+  // { preset: 'free-electrons' },
+  // { preset: 'free-photon' },
+  // { preset: 'free-photons' },
   { preset: 'story-electric', data: true },
   { preset: 'story-quadrupole', data: true },
-  { preset: 'story-dipole', data: true },
-  { preset: 'gyrotest-1-electron' },
-  { preset: 'gyrotest-128-electrons' }
+  { preset: 'story-dipole', data: true }
+  // { preset: 'gyrotest-1-electron' },
+  // { preset: 'gyrotest-128-electrons' }
 ]
 
-jobs = [
-  ...jobs,
-  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
-]
-console.log(jobs)
+// jobs = [
+//   ...jobs,
+//   ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
+// ]
+// console.log(jobs)
 
 const queryString = '&debug=false&print=true&prerender=true'
 

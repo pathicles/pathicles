@@ -101,7 +101,7 @@ export class ReglViewerInstance {
             this.modelTranslateX = boundedRandom() * 0.1
             this.modelTranslateY = boundedRandom() * 0.1
           }
-          viewRange = [1 * (time % 2) - 0.25, (time % 2) + 0.35]
+          viewRange = [1 * (time % 2) - 0.5, (time % 2) + 0.1]
           // viewRange  [autoloopProgress, 0.9]
           // console.log(viewRange)
         } else {
