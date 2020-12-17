@@ -38,7 +38,7 @@
     "version:bump-minor": "lerna version minor --no-push --conventional-commits",
     "version:bump-patch": "lerna version patch --no-push --conventional-commits",
     "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md",
-    "release": "release-it --dry-run"
+    "release": "release-it"
   },
   "config": {
     "commitizen": {
