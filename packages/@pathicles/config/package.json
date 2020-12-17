@@ -16,7 +16,7 @@
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
-    "@pathicles/core": "^0.2.0",
+    "@pathicles/core": "^0.1.0",
     "deepcopy": "^2.1.0"
   },
   "devDependencies": {
