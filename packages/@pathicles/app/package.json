@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/app",
   "license": "MIT",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "scripts": {
     "build": "cross-env NODE_ENV=production vite build",
     "build_": "vite build",
@@ -14,8 +14,8 @@
     "devPort": 9303
   },
   "dependencies": {
-    "@pathicles/config": "^0.3.1",
-    "@pathicles/core": "^0.3.1",
+    "@pathicles/config": "^0.3.2",
+    "@pathicles/core": "^0.3.2",
     "es6-promise": "^4.2.8",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
