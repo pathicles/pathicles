@@ -22,7 +22,7 @@ uniform float stageGrid_size;
 uniform sampler2D utColorCorrections;
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D ut_position;
-uniform sampler2D utVelocityBuffer;
+uniform sampler2D ut_velocity;
 uniform mat4 projection, view, model;
 uniform vec3 eye;
 

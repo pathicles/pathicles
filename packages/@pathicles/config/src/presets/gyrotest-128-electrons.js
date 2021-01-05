@@ -8,7 +8,7 @@ export default {
       center: [0, 2, 0],
       distance: 10,
       theta: 90 * (Math.PI / 180),
-      phi: 2 * (Math.PI / 180)
+      phi: 5 * (Math.PI / 180)
     }
   },
 
@@ -21,18 +21,18 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerSnapshot: 1,
-    iterations: 1023,
-    snapshotCount: 1024,
+    iterations: 511,
+    snapshotCount: 512,
     iterationDurationOverC: 1 / 10
   },
 
   model: {
     emitter: {
-      particleCount: 64,
-      particleSeparation: 0.0,
+      particleCount: 128,
+      particleSeparation: 0,
       particleType: 'ELECTRON',
       bunchShape: 'ROW',
-      direction: [0, 0.1, 1],
+      direction: [0, 0.15, 1],
       position: () => [
         0,
         defaultConfig.view.pathicleWidth *
@@ -42,7 +42,7 @@ export default {
       ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: ({ p }) => Math.log10(p + 1)
+      gamma: ({ p }) => Math.log10(1 * p + 1)
     },
 
     lattice: {
@@ -50,7 +50,7 @@ export default {
         l0: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 20,
-          strength: 0.001
+          strength: 0.00075
         }
       },
       beamline: ['l0'],

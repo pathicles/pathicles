@@ -27,6 +27,15 @@ export class ReglSimulatorInstance {
         preserveDrawingBuffer: false,
         antialiasing: true
       },
+      extensions: [
+        'angle_instanced_arrays',
+        'oes_texture_float',
+        'OES_standard_derivatives',
+        'OES_texture_half_float',
+        'WEBGL_depth_texture',
+        'EXT_color_buffer_half_float'
+      ],
+      optionalExtensions: ['EXT_disjoint_timer_query'],
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
@@ -39,21 +48,11 @@ export class ReglSimulatorInstance {
 
           this.performanceLogger.start('init')
           this.init(regl)
-
           this.run(regl)
         } catch (e) {
           console.error(e)
         }
-      },
-      extensions: [
-        'angle_instanced_arrays',
-        'oes_texture_float',
-        'OES_standard_derivatives',
-        'OES_texture_half_float',
-        'WEBGL_depth_texture',
-        // 'EXT_disjoint_timer_query',
-        'EXT_color_buffer_half_float'
-      ]
+      }
     })
   }
 

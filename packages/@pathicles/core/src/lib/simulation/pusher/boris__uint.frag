@@ -1,40 +1,34 @@
 precision highp float;
-//#extension WEBGL_color_buffer_float : enable
 
 /*__latticeSize__*/
 
-
 const highp float c = 2.99792458e+8;
-//uniform sampler2D utParticleColorAndType;
 #pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
 
 const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
 const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
+uniform float boundingBoxSize;
+uniform float halfDeltaTOverC;
+uniform float particleInteraction;
+uniform int takeSnapshot;
+uniform int variableIdx;
 uniform sampler2D ut_particleChargesMassesChargeMassRatios;
 uniform sampler2D ut_position;
 uniform sampler2D ut_velocity;
-uniform int takeSnapshot;
-uniform int iteration;
-uniform int variableIdx;
-uniform int iterationsPerSnapshot;
-uniform float halfDeltaTOverC;
-uniform float boundingBoxSize;
+uniform vec2 resolution;
 uniform vec3 boundingBoxCenter;
-uniform int particleCount;
-uniform int snapshotCount;
 uniform vec3 electricField;
 uniform vec3 magneticField;
-uniform float particleInteraction;
 
 /*__latticeChunkGLSL__*/
 
-
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
-#pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, LITTLE_ENDIAN=LITTLE_ENDIAN);
+#pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable__uint.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN);
+
 
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
 
@@ -42,23 +36,6 @@ vec3 getE(vec3 position) {
 
   vec3 E = electricField;
   return E;
-
-  // if (particleInteraction != 0.) {
-  //   for ( int p2 = 0; p2 < 24; p2++ ) {
-  //     if ( p == float(p2) ) { continue; }
-  //       ParticleData particleData2 = getParticleData(float(p2));
-  //     if (particleData2.charge > 0.) {
-  //       vec3 position2 = readVariable(ut_position, float(p2), bufferPosition).xyz;
-  //       // float particleCharge2 = 1.; // POSITRON / PROTRON
-  //       // if (particleType == 1.) { // ELECTRON
-  //       //     particleCharge2 = charge_unit_qe[1];
-  //       //  }
-  //       vec3 dPosition = position2 - position;
-  //       float distance = length( dPosition );
-  //       E += .000000000001 *  particleData.charge * particleData2.charge / (distance * distance) * normalize(dPosition);
-  //     }
-  //   }
-  // }
 
 }
 
@@ -160,7 +137,7 @@ vec4 readVariable(int particle, int snapshot) {
 
 //
 vec4 readVariableRaw(sampler2D tex, int p, int s) {
-  vec2 resolution = vec2(4*snapshotCount, particleCount);
+
   return vec4(
   texture2D(tex, vec2(4*s, p) / resolution).r,
   texture2D(tex, vec2(4*s+1, p) / resolution).r,
@@ -176,7 +153,6 @@ vec4 readVariableRaw(int particle, int snapshot) {
   : readVariableRaw(ut_velocity, particle, snapshot);
 }
 
-//
 
 void main () {
 
@@ -193,7 +169,6 @@ void main () {
       : readVariable(particle, snapshot-1);
 
 
-#ifdef LITTLE_ENDIAN
 
   gl_FragColor =
   (fourComponentIndex == 0)
@@ -203,41 +178,6 @@ void main () {
   : (fourComponentIndex == 2)
   ? packFloat(value.z)
   : packFloat(value.w);
-
-//
-//
-//  vec4 newValue = push(particle);
-//
-//  gl_FragColor =
-//      (snapshot == 0)
-//    ? (fourComponentIndex == 0)
-//        ? packFloat(newValue.x)
-//        : (fourComponentIndex == 1)
-//        ? packFloat(newValue.y)
-//        : (fourComponentIndex == 2)
-//        ? packFloat(newValue.z)
-//        : packFloat(newValue.w)
-//    : (takeSnapshot == 1)
-//    ? readVariableRaw(particle, snapshot)
-//    : readVariableRaw(particle, snapshot-1);
-//
-
-#else
-
-
-  gl_FragColor =
-    (fourComponentIndex == 0)
-    ? vec4(value.x, 0., 0., 0.)
-    : (fourComponentIndex == 1)
-    ? vec4(value.y, 0., 0., 0.)
-    : (fourComponentIndex == 2)
-    ? vec4(value.z, 0., 0., 0.)
-    : vec4(value.w, 0., 0., 0.);
-
-
-#endif
-
-
 
 
 }

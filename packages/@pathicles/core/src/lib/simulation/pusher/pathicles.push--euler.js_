@@ -15,7 +15,7 @@ export  function(regl, { variables, constants }) {
         precision highp float;
 
         uniform sampler2D ut_position;
-        uniform sampler2D utVelocityBuffer;
+        uniform sampler2D ut_velocity;
         uniform float tick;
         uniform float halfDeltaT;
         uniform float boundingBoxSize;
@@ -88,7 +88,7 @@ export  function(regl, { variables, constants }) {
         }
         vec4 get_velocity(float p, float b) {
           vec2 coords = vec2(p, b) / vec2(particleCount, snapshotCount);
-          return texture2D(utVelocityBuffer, coords);
+          return texture2D(ut_velocity, coords);
         }
 
         vec3 get_efield(vec3 position) {
@@ -271,7 +271,7 @@ export  function(regl, { variables, constants }) {
         quadrupole_2_minZ: 0,
         quadrupole_2_maxZ: 0,
         ut_position: () => variables.position[(iteration + 1) % 2],
-        utVelocityBuffer: () =>
+        ut_velocity: () =>
           variableName === 'position'
             ? variables.velocity[iteration % 2]
             : variables.velocity[(iteration + 1) % 2]

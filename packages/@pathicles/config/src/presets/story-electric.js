@@ -3,7 +3,7 @@ export default {
   view: {
     camera: {
       center: [-0, 1.5, 0],
-      distance: 3,
+      distance: 1,
       theta: (-30 / 360) * 2 * Math.PI,
       phi: (-1 / 360) * 2 * Math.PI
     }

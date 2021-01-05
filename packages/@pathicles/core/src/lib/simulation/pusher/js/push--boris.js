@@ -1,9 +1,4 @@
-import vert from './boris.vert'
-import frag from './boris.frag'
-import frag__float from './boris__float.frag'
-import frag__uint from './boris__uint.frag'
-import { latticeChunk } from '../lattice/lattice.gsls.js'
-import { PerformanceLogger } from '../../utils/PerformanceLogger'
+import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
 export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
@@ -27,10 +22,9 @@ export default function (regl, { runner, variables, model }) {
       },
 
       uniforms: {
-        resolution: [variables.snapshotCount * 4, variables.particleCount],
         snapshotCount: variables.snapshotCount,
         particleCount: variables.particleCount,
-        // iterationsPerSnapshot: variables.iterationsPerSnapshot,
+        iterationsPerSnapshot: variables.iterationsPerSnapshot,
         halfDeltaTOverC: variables.iterationDurationOverC / 2,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -39,7 +33,7 @@ export default function (regl, { runner, variables, model }) {
 
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        // iteration: regl.prop('iteration'),
+        iteration: regl.prop('iteration'),
         takeSnapshot: regl.prop('takeSnapshot'),
 
         variableIdx: variableSlot,
@@ -49,17 +43,12 @@ export default function (regl, { runner, variables, model }) {
         ut_position: (context, props) =>
           variables.position.buffers[(props.iteration + 1) % 2],
         ut_velocity: (context, props) =>
-          variableName === 'position'
-            ? variables.velocity.buffers[props.iteration % 2]
-            : variables.velocity.buffers[(props.iteration + 1) % 2]
+          variables.velocity.buffers[(props.iteration + 1) % 2]
       },
 
       vert,
       frag: [
-        ...(variables.packFloat2UInt8
-          ? [`#define LITTLE_ENDIAN ${runner.littleEndian}`]
-          : []),
-        (variables.packFloat2UInt8 ? frag__uint : frag__float)
+        frag
           .replace(
             '/*__latticeDefinition__*/',
             model.lattice.toGLSLDefinition()
@@ -80,20 +69,16 @@ export default function (regl, { runner, variables, model }) {
   const pushVelocity = pushFactory('velocity', 'ut_velocity', 1)
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
-  return (n = 1, profile = false) => {
+  return (n = 1) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
 
-      // const z = variables.iteration * variables.iterationDurationOverC
-      // variables.referencePoint =
-      //   model.lattice.beamline.length &&
-      //   model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
-
       const snapshots = Math.floor(
         variables.iteration / variables.iterationsPerSnapshot
       )
+
       variables.segments =
         variables.particleCount *
         Math.min(
@@ -115,26 +100,6 @@ export default function (regl, { runner, variables, model }) {
       pushPosition({
         iteration: variables.iteration,
         takeSnapshot
-      })
-    }
-
-    if (profile) {
-      regl.poll()
-      performanceLogger.entries.push({
-        name: 'pushVelocity',
-        particleCount: variables.particleCount,
-        snapshotCount: variables.snapshotCount,
-        packFloat2UInt8: variables.packFloat2UInt8,
-        iterations: variables.iteration,
-        stats: pushVelocity.stats
-      })
-      performanceLogger.entries.push({
-        name: 'pushPosition',
-        particleCount: variables.particleCount,
-        snapshotCount: variables.snapshotCount,
-        packFloat2UInt8: variables.packFloat2UInt8,
-        iterations: variables.iteration,
-        stats: pushPosition.stats
       })
     }
   }

@@ -46,25 +46,33 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  // { preset: 'csr' },
-  // { preset: 'spiral' },
-  // { preset: 'random' },
-  // { preset: 'different-gammas' },
-  // { preset: 'free-electron' },
-  // { preset: 'free-electrons' },
-  // { preset: 'free-photon' },
-  // { preset: 'free-photons' },
+  { preset: 'csr' },
+  { preset: 'spiral' },
+  { preset: 'random' },
+  { preset: 'different-gammas' },
+  { preset: 'free-electron' },
+  { preset: 'free-electrons' },
+  { preset: 'free-photon' },
+  { preset: 'free-photons' },
   { preset: 'story-electric', data: true },
   { preset: 'story-quadrupole', data: true },
-  { preset: 'story-dipole', data: true }
-  // { preset: 'gyrotest-1-electron' },
-  // { preset: 'gyrotest-128-electrons' }
+  { preset: 'story-dipole', data: true },
+  { preset: 'gyrotest-1-electron' },
+  { preset: 'gyrotest-128-electrons' }
 ]
 
-// jobs = [
-//   ...jobs,
-//   ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
-// ]
+jobs = []
+for (let p2 = 0; p2 < 11; p2++) {
+  for (let s2 = 0; s2 < 11; s2++) {
+    jobs.push({ preset: `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}` })
+  }
+}
+console.log(jobs)
+
+jobs = [
+  ...jobs,
+  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
+]
 // console.log(jobs)
 
 const queryString = '&debug=false&print=true&prerender=true'
@@ -76,9 +84,9 @@ const createImages = async () => {
     executablePath:
       '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   })
+  const page = await browser.newPage()
 
   for (let i = 0; i < jobs.length; i++) {
-    const page = await browser.newPage()
     const preset = jobs[i].preset
     const width = jobs[i].width || defaultWidth
     const height = jobs[i].height || defaultHeight
@@ -103,9 +111,11 @@ const createImages = async () => {
           acc += item.stats.gpuTime
           return acc
         }, 0),
+
         packFloat2UInt8: entries[0].packFloat2UInt8,
         particleCount: entries[0].particleCount,
-        snapshotCount: entries[0].snapshotCount
+        snapshotCount: entries[0].snapshotCount,
+        iterations: entries[0].iterations
       }
     })
 
@@ -115,6 +125,8 @@ const createImages = async () => {
       ...performanceEntry,
       gpuTime: round(performanceEntry.gpuTime)
     })
+
+    console.log({ preset, gpuTime: round(performanceEntry.gpuTime) })
 
     if (jobs[i].data) {
       const dump = await page.evaluate(() => {

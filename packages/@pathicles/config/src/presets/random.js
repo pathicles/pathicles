@@ -18,7 +18,7 @@ export default {
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 64,
+    iterations: undefined,
     snapshotCount: 16,
     iterationDurationOverC: 0.2
   },
