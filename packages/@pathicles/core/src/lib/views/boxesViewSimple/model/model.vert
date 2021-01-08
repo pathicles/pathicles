@@ -39,6 +39,7 @@ varying vec2 vUv;
 varying vec3 vShadowCoord;
 varying vec3 vColor;
 varying float vColorCorrection;
+varying vec4 v_lightNDC;
 uniform sampler2D shadowMap;
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
 
@@ -49,6 +50,26 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, LITTLE_ENDIAN=LITTLE_ENDIAN);
+
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+}
+
+float shadowValue() {
+  vec3 tex = texture2D(shadowMap, vUv).rgb;
+
+  vec3 lightPos = v_lightNDC.xyz / v_lightNDC.w;
+
+  float bias = 0.001;
+  float depth = lightPos.z - bias;
+  float occluder = unpackRGBA(texture2D(shadowMap, lightPos.xy));
+
+  // Compare actual depth from light to the occluded depth rendered in the depth map
+  // If the occluded depth is smaller, we must be in shadow
+  return mix(.2, .7, occluder-depth);
+
+}
+
 
 
 
@@ -92,7 +113,7 @@ void main () {
 
   #ifdef shadow
     vScale = vec3(
-      pathicleWidth * 5.,
+      pathicleWidth * 10.,
       pathicleHeight,
       length(previousFourPosition.xyz - fourPosition.xyz) );
   #endif
@@ -109,15 +130,19 @@ void main () {
 
   vUv = aUV;
 
-  vColor = get_color(int(a_particle)).rgb;
-  vColorCorrection = get_colorCorrection(int(a_particle));
-
-  v_visibility = visibility(fourPosition);
 
   vShadowCoord = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(v_position, 1.0)).xyz;
-
+  vColor = get_color(int(a_particle)).rgb;
+  v_visibility = visibility(fourPosition);
 
 #ifdef lighting
+
+  v_lightNDC = texUnitConverter * shadowProjectionMatrix * shadowViewMatrix * model * vec4(v_position, 1.0);
+
+  vColorCorrection = get_colorCorrection(int(a_particle));
+
+
+
   //  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
 //
 //  vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
@@ -129,6 +154,7 @@ void main () {
 
 #ifdef shadow
   gl_Position =vec4(vShadowCoord, 1.0);
+
 #endif// shadow
 }
 

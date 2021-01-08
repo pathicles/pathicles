@@ -7,7 +7,7 @@
       option(v-for="(preset, name) of presets" :value="name" :selected="name === presetName" ) {{name}}
       option(value="story" ) STORY
   pathiclesStory(v-if="presetName === 'story'" :preset-name="presetName")
-  pathicles(v-else :preset-name="presetName")
+  pathicles(v-else :preset-name="presetName" :prerender="prerender")
 </template>
 
 <script>
@@ -75,6 +75,7 @@ body, #app
     display none
 
 .configurator
+  //display none
   padding .75rem 1rem
   position fixed
   top 0

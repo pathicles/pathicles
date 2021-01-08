@@ -2,11 +2,15 @@
 
 <template lang="pug">
 .pathicles.pathicles-simulator(ref="scrollContainer")
-  dl.debug.debug-only
-    div(v-for="(value, key) in vp" :key="key")
+  hotkeys(:shortcuts="['I', 'D']"
+    :debug="true"
+    @triggered="onTriggeredEventHandler")
+
+  dl.info(v-if="showInfoInternal")
+    div(v-for="(value, key) in info" :key="key")
       dt {{ key }}
       dd {{ value }}
-  .canvas-container(ref="container")
+  .canvas-container(ref="canvasContainer")
     canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
 </template>
 
@@ -14,14 +18,20 @@
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import { unwatchViewport, watchViewport } from 'tornis'
+import Hotkeys from './Hotkeys.vue'
 
 export default {
   name: 'Pathicles',
+  components: { Hotkeys },
 
   props: {
     presetName: {
       type: String,
       default: 'story-dipole'
+    },
+    showInfo: {
+      type: Boolean,
+      default: false
     },
     prerender: {
       type: Boolean,
@@ -44,14 +54,15 @@ export default {
       default: 2
     }
   },
-  data: () => {
+  data: function () {
     return {
+      showInfoInternal: this.showInfo,
       progress: 0.5,
       viewRange: [0, 1],
       config: {},
-      windowHeight: 0,
-      windowWidth: 0,
-      vp: null,
+      containerHeight: 0,
+      containerWidth: 0,
+      info: null,
       story: {
         scenes: []
       }
@@ -61,38 +72,30 @@ export default {
     pixelRatio() {
       return Math.min(
         window.devicePixelRatio,
-        this.maxCanvasWidth / this.windowHeight
+        this.maxCanvasWidth / this.containerHeight
       )
     },
     canvasStyles() {
       return {
-        width: this.windowWidth + 'px',
-        height: this.windowHeight + 'px'
+        width: this.containerWidth + 'px',
+        height: this.containerHeight + 'px'
       }
     },
     canvasWidth() {
-      return this.windowWidth * this.pixelRatio
+      return this.containerWidth * this.pixelRatio
     },
     canvasHeight() {
-      return this.windowHeight * this.pixelRatio
+      return this.containerHeight * this.pixelRatio
     }
-  },
-  unmounted() {
-    unwatchViewport(this.handleViewportChange)
-    this.reglInstance.destroy()
   },
   mounted() {
     // getGPUTier().then((tier) => {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
-
-    this.windowWidth = window.innerWidth
-    this.windowHeight = window.innerHeight
-
+    watchViewport(this.handleViewportChange, true)
     this.loadConfig()
 
     this.$nextTick(() => {
-      watchViewport(this.handleViewportChange)
       this.reglInstance = new ReglSimulatorInstance({
         canvas: this.$refs.canvas,
         config: this.config,
@@ -104,11 +107,23 @@ export default {
       })
     })
   },
+  unmounted() {
+    unwatchViewport(this.handleViewportChange)
+    this.reglInstance.destroy()
+  },
 
   methods: {
+    onTriggeredEventHandler(payload) {
+      if (payload.keyString === 'I') {
+        this.showInfoInternal = !this.showInfoInternal
+        console.log(payload.keyString === 'I', this.showInfoInternal)
+      }
+
+      console.log(`You have pressed CMD (CTRL) + ${payload.keyString}`)
+    },
     loadConfig() {
       this.config = loadConfig(this.presetName)
-      this.vp = {
+      this.info = {
         np: this.config.model.emitter.particleCount,
         ns: this.config.runner.snapshotCount,
         n: this.config.runner.iterations,
@@ -118,14 +133,14 @@ export default {
     },
     handleViewportChange({ size, scroll }) {
       if (size.changed) {
-        this.windowWidth = size.x
-        this.windowHeight = size.y
+        this.containerWidth = this.$refs.canvasContainer.clientWidth
+        this.containerHeight = this.$refs.canvasContainer.clientHeight
         this.storyHeight = this.$refs.scrollContainer.clientHeight
         if (this.reglInstance) this.reglInstance.resize()
       }
 
       if (scroll.changed) {
-        this.progress = scroll.top + this.windowHeight / this.storyHeight
+        this.progress = scroll.top + this.containerHeight / this.storyHeight
       }
     }
   },
@@ -139,8 +154,8 @@ export default {
 </script>
 
 <style lang="stylus">
-.print dl
-  display none
+//dl
+//  display none
 
 dl
   margin-top 2em
@@ -180,6 +195,7 @@ dl
 
   .canvas-container
     height: 100vh
+    width: 100vw
     position absolute
     top 0
     left 0

@@ -4,6 +4,7 @@ import defaultConfig from './_default'
 import spiral from './spiral'
 import csr from './csr'
 import storyDipole from './story-dipole'
+import logo from './logo'
 import storyElectric from './story-electric'
 import storyQuadrupole from './story-quadrupole'
 import random from './random'
@@ -50,6 +51,7 @@ const toUInt8 = (config) => {
 
 const presets = {
   [csr.name]: csr,
+  [logo.name]: logo,
   [storyDipole.name]: storyDipole,
   [storyElectric.name]: storyElectric,
   [storyQuadrupole.name]: storyQuadrupole,

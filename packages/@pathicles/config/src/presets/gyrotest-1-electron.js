@@ -28,9 +28,8 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'COLUMN',
       direction: [0, 0, 1],
-      // position: [1, 2, 3],
       position: [
-        0,
+        -1,
         defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight *
           2,

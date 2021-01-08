@@ -1,7 +1,17 @@
 import frag from './drawTextureCommand.frag'
 import vert from './drawTextureCommand.vert'
 
-export function drawTextureCommand(regl) {
+const NONE = 0
+const UNPACK_RGBA = 1
+const R = 2
+
+export const DECODE = {
+  NONE,
+  UNPACK_RGBA,
+  R
+}
+
+export function drawTextureCommand(regl, decode = DECODE.NONE) {
   return regl({
     vert,
     frag,
@@ -9,9 +19,10 @@ export function drawTextureCommand(regl) {
       position: [-4, -4, 4, -4, 0, 4]
     },
     uniforms: {
-      texture: (_, props) => {
-        return props.texture
-      }
+      texture: (_, { texture }) => {
+        return texture
+      },
+      decode: (_, { decode = DECODE.NONE }) => decode
     },
     viewport: {
       x: (_, props) => props.x0 || 50,

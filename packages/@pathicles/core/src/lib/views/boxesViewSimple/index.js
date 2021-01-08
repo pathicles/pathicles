@@ -54,7 +54,7 @@ export class BoxesViewSimple {
     // eslint-disable-next-line no-unused-vars
     this.setParams({}, () => {
       this.regl.clear({
-        color: [0, 0, 0, 0],
+        color: [1, 1, 1, 1],
         depth: 1,
         framebuffer: this.shadow.fbo
       })

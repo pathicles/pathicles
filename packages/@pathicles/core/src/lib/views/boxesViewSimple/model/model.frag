@@ -10,6 +10,7 @@ varying vec2 vUv;
 varying vec4 vAmbientColor;
 varying vec3 vColor;
 varying float vColorCorrection;
+varying vec4 v_lightNDC;
 
 uniform float ambientLightAmount;
 uniform float diffuseLightAmount;
@@ -26,6 +27,34 @@ uniform float minBias;
 uniform float maxBias;
 
 #pragma glslify: edger = require("@pathicles/core/src/lib/shaders/edger.glsl");
+
+vec4 packRGBA (float v) {
+  vec4 pack = fract(vec4(1.0, 255.0, 65025.0, 16581375.0) * v);
+  pack -= pack.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
+  return pack;
+}
+
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+}
+
+float shadowValue() {
+  vec3 tex = texture2D(shadowMap, vUv).rgb;
+
+  vec3 lightPos = v_lightNDC.xyz / v_lightNDC.w;
+
+  float bias = 0.001;
+  float depth = lightPos.z - bias;
+  float occluder = unpackRGBA(texture2D(shadowMap, lightPos.xy));
+
+  // Compare actual depth from light to the occluded depth rendered in the depth map
+  // If the occluded depth is smaller, we must be in shadow
+  return mix(0.2, 1.0, step(depth, occluder));
+
+}
+
+
+
 
 float map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
@@ -51,12 +80,12 @@ struct DirectionalLight
   vec3 color;
   float intensity;
 };
-#define NUM_DIR_LIGHTS 4
+#define NUM_DIR_LIGHTS 3
 DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-    if (v_visibility < .5) discard;
+    if (v_visibility < .9) discard;
 
   #ifdef lighting
 
@@ -66,7 +95,7 @@ void main () {
   directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
   directionalLights[1] = DirectionalLight(shadowDirection+vec3(-2., 0., 2.), vec3(1.), .25);
   directionalLights[2] = DirectionalLight(shadowDirection+vec3(2., 0., -2.), vec3(1.), .25);
-  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x, -shadowDirection.y, shadowDirection.z), vec3(.5), .15);
+//  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x, -shadowDirection.y, shadowDirection.z), vec3(.5), .15);
 
   //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(v_position-eye))));
   vec3 edgedColor = vColor;
@@ -80,15 +109,15 @@ void main () {
     float specAmt = specular(light.direction, viewDir, normal, 0.0) * light.intensity;
 
     float shadow = vColorCorrection;//clamp(vColorCorrection + abs(2.+v_position.y*5.), 0., 1.);
-    float specMask = 0.5 * edger(vUv, vScale, 2. * pathicleWidth, vNormalOrig) * smoothstep(10., 5., length(v_position-eye));
+    float specMask = 0. * edger(vUv, vScale, 2. * pathicleWidth, vNormalOrig) * smoothstep(10., 5., length(v_position-eye));
     vec3 specCol = specMask * sceneLight * specAmt;
     finalColor += shadow * vColor * diffAmt * light.color;
     finalColor += shadow * specCol * sceneLight;
   }
 
 
-  float fogDistance = length(v_position);
-  float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
+//  float fogDistance = length(v_position);
+//  float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
 
   gl_FragColor =vec4(finalColor, 1.); //map(v_visibility, 0.5, 1., 0.75, .9));
   //  gl_FragColor =vec4(finalColor, 1.);
@@ -97,7 +126,9 @@ void main () {
   #endif// lighting
   #ifdef shadow
 
-  gl_FragColor = vec4(vShadowCoord.z*1.);
+  gl_FragColor = vec4(vShadowCoord.z / 2.);
+//  gl_FragColor = packRGBA(.1);
+  gl_FragColor = packRGBA(vShadowCoord.z );
   #endif
 
 

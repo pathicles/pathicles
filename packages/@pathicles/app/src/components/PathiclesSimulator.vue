@@ -4,11 +4,11 @@
 .pathicles.pathicles-simulator(ref="scrollContainer")
   pathicles-params
   dl.debug.debug-only
-    div(v-for="(value,  key) in vp" :key="key")
+    div(v-for="(value,  key) in info" :key="key")
       dt {{ key }}
-.canvas-container(ref="container")
-    canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
-    <!--      dat-gui(:model="configModel" @change="onChange")-->
+  .canvas-container(ref="container")
+      canvas#canvas(ref="canvas" :style="canvasStyles" :width="canvasWidth" :height="canvasHeight")
+      <!--      dat-gui(:model="configModel" @change="onChange")-->
 </template>
 
 <script>

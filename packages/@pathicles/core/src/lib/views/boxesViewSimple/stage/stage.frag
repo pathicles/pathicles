@@ -16,11 +16,12 @@ varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec2 vUv;
 
-#pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
-
+float unpackRGBA (vec4 v) {
+  return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
+}
 
 // Can go down to 10 or so, and still be usable, probably...
-#define ITERATIONS 10
+#define ITERATIONS 5
 
 // Set this to 0.0 to stop the pixel movement.
 #define TIME iTime
@@ -57,11 +58,26 @@ vec3 Blur(sampler2D tex, vec2 uv, float radius)
 
   // Do the blur here...
   vec3 acc = vec3(0.0);
-  for (int i = 0; i < ITERATIONS; i++)
-  {
-//    acc += texture(iChannel0, uv + circle * Sample(random), radius*10.0).xyz;
+  for (int i = 0; i < ITERATIONS; i++) {
+    acc += texture2D(tex, uv+ circle * Sample(random), radius*1.0).xyz;
+  }
+  return acc / float(ITERATIONS);
+}
 
-    acc += texture2D(tex, uv+ circle * Sample(random), radius*10.0).xyz;
+
+float fBlur(sampler2D tex, vec2 uv, float radius)
+{
+  radius = radius * .04;
+
+  vec2 circle = vec2(radius); // * vec2((iResolution.y / iResolution.x), 1.0);
+
+  // Remove the time reference to prevent random jittering if you don't like it.
+  vec2 random = Hash22(uv);
+
+  // Do the blur here...
+  float acc = 0.;
+  for (int i = 0; i < ITERATIONS; i++) {
+    acc += unpackRGBA(texture2D(tex, uv+ circle * Sample(random), radius*1.0));
   }
   return acc / float(ITERATIONS);
 }
@@ -118,6 +134,7 @@ void main(void) {
   //  amountInLight = (blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.)) - vShadowCoord.z > .001) ? 1. : 0.;
 //  amountInLight = decodeFloat(texture2D(shadowMap, vShadowCoord.xy));
   amountInLight = Blur(shadowMap, vShadowCoord.xy, .1).r * 2.;
+  amountInLight = 1.-fBlur(shadowMap, vShadowCoord.xy, .1) * 1.;
 
 
   float gridRatio=gridControl.x;
@@ -134,7 +151,7 @@ void main(void) {
   float fogAmount = smoothstep(stageSize/2.*1., stageSize/2.*.5, fogDistance);
 
   gl_FragColor =vec4(color.rgb, fogAmount*opacity)
-    + vec4(vec3(-.1*amountInLight), fogAmount);
+    + vec4(vec3(-.5*amountInLight), 1.);
 
 }
 

@@ -3,7 +3,7 @@
 .pathicles-story__container(ref="scrollContainer"  :data-active-scene="activeScene")
 
   dl.debug.debug-only
-    div(v-for="(value, key) in vp" :key="key")
+    div(v-for="(value, key) in info" :key="key")
       dt {{ key }}
       dd {{ value }}
   .canvas-container(ref="canvasContainer")

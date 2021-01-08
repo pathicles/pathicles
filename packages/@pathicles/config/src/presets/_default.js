@@ -7,7 +7,7 @@ export default {
     logPerformance: true,
     profile: true,
     showTextures: false,
-    showTextureScale: 2
+    showTextureScale: 1
   },
   runner: {
     enabled: true,
@@ -50,10 +50,10 @@ export default {
   view: {
     lights: [
       {
-        position: [0, 10, 0],
-        near: -10,
-        far: 10,
-        size: 10
+        position: [0, 4, 0],
+        near: -5,
+        far: 5,
+        size: 2
       }
     ],
     ambientLightAmount: 0.5,
@@ -87,7 +87,7 @@ export default {
 
       fovY: (2 * Math.PI) / (360 / 35),
       autorotate: false,
-      autorotateSpeedDistance: 0.1 * 2 * Math.PI,
+      autorotateDistance: 0.1 * 2 * Math.PI,
       autorotateSpeedTheta: 0.1 * 2 * Math.PI,
       autorotateSpeedPhi: 0.1 * 2 * Math.PI,
       // rotationDecayTime: 0,

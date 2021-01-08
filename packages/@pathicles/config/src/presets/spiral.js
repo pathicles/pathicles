@@ -27,9 +27,9 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleSeparation: 0.05,
-      position: [0, 0, 0],
+      position: [-1, 0, 0],
       direction: [0, 0.05, 1],
-      positionJitter: [0.0, 0.0, 0.5],
+      positionJitter: [0.0, 0.0, 0.2],
 
       gamma: 2.5
     },

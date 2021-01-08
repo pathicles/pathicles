@@ -8,7 +8,7 @@ import { BoxesViewSimple } from '../views/boxesViewSimple'
 import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 import createREGL from 'regl'
-import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
+import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config }) {
@@ -102,7 +102,7 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    this.loop = regl.frame(({ tick }) => {
+    this.loop = regl.frame(({ viewportWidth, viewportHeight, tick }) => {
       const { changed } = this.pathiclesRunner.next()
       this.camera.doAutorotate()
       this.camera.tick()
@@ -123,25 +123,31 @@ export class ReglSimulatorInstance {
 
             if (this.config.debug.showTextures) {
               this.drawTexture({
+                decode: this.config.runner.packFloat2UInt8
+                  ? DECODE.UNPACK_RGBA
+                  : DECODE.R,
                 texture: this.simulation.variables.position.value(),
                 scale: 1 * this.config.debug.showTextureScale
               })
               this.drawTexture({
+                decode: this.config.runner.packFloat2UInt8
+                  ? DECODE.UNPACK_RGBA
+                  : DECODE.R,
                 texture: this.simulation.variables.velocity.value(),
                 y0:
-                  (this.simulation.variables.snapshotCount * 4 + 1) *
-                  this.config.debug.showTextureScale,
+                  viewportHeight -
+                  this.simulation.variables.velocity.height *
+                    this.config.debug.showTextureScale,
                 scale: 1 * this.config.debug.showTextureScale
               })
               this.drawTexture({
-                texture: this.view.shadow.fboBlurred,
-                x0:
-                  2 *
-                  (this.simulation.variables.particleCount + 1) *
-                  this.config.debug.showTextureScale,
+                decode: DECODE.UNPACK_RGBA,
+                texture: this.view.shadow.fbo,
+                x0: viewportWidth - this.view.shadow.SHADOW_MAP_SIZE * 0.5,
                 scale: 0.5
               })
             }
+            console.log(viewportHeight)
           }
         )
       }
