@@ -28,7 +28,7 @@ export default function (regl, options) {
     theta,
     distance,
     autorotate,
-    autorotateSpeedDistance,
+    autorotateDistance,
     autorotateSpeedTheta,
     autorotateSpeedPhi
   } = options
@@ -52,7 +52,6 @@ export default function (regl, options) {
   })
 
   const aCamera = camera(cameraOptions)
-  aCamera.autorotate = autorotate
   initializeCameraControls(aCamera, regl && regl._gl.canvas, {
     minDistance: options.minDistance || 0.1,
     maxDistance: options.maxDistance || 50
@@ -91,12 +90,17 @@ export default function (regl, options) {
       const dt = (Date.now() - aCamera.autorotateT0) / 1000
       aCamera.params.distance =
         aCamera.autorotateParams.distance +
-        0.1 * Math.sin(autorotateSpeedDistance * dt)
+        0.1 * Math.sin(autorotateDistance * dt)
       aCamera.params.theta =
         aCamera.autorotateParams.theta + autorotateSpeedTheta * dt
       aCamera.params.phi =
         aCamera.autorotateParams.phi + 0.05 * Math.sin(autorotateSpeedPhi * dt)
     }
+  }
+
+  aCamera.autorotate = autorotate
+  if (autorotate) {
+    aCamera.startAutorotate()
   }
 
   // aCamera.updateEyeCenter = (eye, center) => {
