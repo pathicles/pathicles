@@ -1,11 +1,13 @@
 import path from 'path'
+import vue from '@vitejs/plugin-vue'
+
 import { UserConfig } from 'vite'
-import Voie from 'vite-plugin-voie'
-import PurgeIcons from 'vite-plugin-purge-icons'
+// import Voie from 'vite-plugin-voie'
+// import PurgeIcons from 'vite-plugin-purge-icons'
 // import ViteComponents from 'vite-plugin-components'
 import Markdown from 'vite-plugin-md'
 // import { VitePWA } from 'vite-plugin-pwa'
-
+//
 const alias = {
   '/~/': path.resolve(__dirname, 'src')
 }
@@ -13,16 +15,17 @@ const alias = {
 const config: UserConfig = {
   alias,
   plugins: [
+    vue(),
     // https://github.com/vamplate/vite-plugin-voie
-    Voie({
-      // load index page sync and bundled with the landing page to improve first loading time.
-      // feel free to remove if you don't need it
-      importMode(path: string) {
-        if (path === '/src/pages/index.vue') return 'sync'
-        return 'async'
-      },
-      extensions: ['vue', 'md']
-    }),
+    // Voie({
+    //   // load index page sync and bundled with the landing page to improve first loading time.
+    //   // feel free to remove if you don't need it
+    //   importMode(path: string) {
+    //     if (path === '/src/pages/index.vue') return 'sync'
+    //     return 'async'
+    //   },
+    //   extensions: ['vue', 'md']
+    // }),
 
     // https://github.com/antfu/vite-plugin-md
     Markdown(),
@@ -41,8 +44,28 @@ const config: UserConfig = {
     // }),
 
     // https://github.com/antfu/purge-icons
-    PurgeIcons()
+    // PurgeIcons()
 
+    // https://github.com/antfu/vite-plugin-pwa
+    VitePWA({
+      manifest: {
+        name: 'Vitesse',
+        short_name: 'Vitesse',
+        theme_color: '#ffffff',
+        icons: [
+          {
+            src: '/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
     // https://github.com/antfu/vite-plugin-pwa
     // VitePWA({
     //   manifest: {
