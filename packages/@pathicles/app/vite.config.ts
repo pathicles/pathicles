@@ -1,50 +1,62 @@
-import path from 'path'
-import vue from '@vitejs/plugin-vue'
+/* eslint-env node */
 
+import path from 'path'
 import { UserConfig } from 'vite'
-// import Voie from 'vite-plugin-voie'
-// import PurgeIcons from 'vite-plugin-purge-icons'
-// import ViteComponents from 'vite-plugin-components'
+// import Vue from '@vitejs/plugin-vue'
+// @ts-ignore
+import Voie from 'vite-plugin-voie'
+import ViteComponents from 'vite-plugin-components'
 import Markdown from 'vite-plugin-md'
-// import { VitePWA } from 'vite-plugin-pwa'
-//
-const alias = {
-  '/~/': path.resolve(__dirname, 'src')
-}
+import { VitePWA } from 'vite-plugin-pwa'
 
 const config: UserConfig = {
-  alias,
+  alias: {
+    '/~/': `${path.resolve(__dirname, 'src')}/`
+  },
   plugins: [
-    vue(),
-    // https://github.com/vamplate/vite-plugin-voie
-    // Voie({
-    //   // load index page sync and bundled with the landing page to improve first loading time.
-    //   // feel free to remove if you don't need it
-    //   importMode(path: string) {
-    //     if (path === '/src/pages/index.vue') return 'sync'
-    //     return 'async'
-    //   },
-    //   extensions: ['vue', 'md']
+    // Vue({
+    //   ssr: !!process.env.SSG
     // }),
+
+    // https://github.com/vamplate/vite-plugin-voie
+    Voie({
+      // load index page sync and bundled with the landing page to improve first loading time.
+      // feel free to remove if you don't need it
+      importMode(path: string) {
+        return path === '/src/pages/index.vue' ? 'sync' : 'async'
+      },
+      extensions: ['vue', 'md']
+    }),
 
     // https://github.com/antfu/vite-plugin-md
-    Markdown(),
+    Markdown({
+      // for https://github.com/tailwindlabs/tailwindcss-typography
+      wrapperClasses: 'prose prose-sm m-auto'
+      // markdownItSetup(md) {
+      //   // https://prismjs.com/
+      // }
+    }),
 
     // https://github.com/antfu/vite-plugin-components
-    // ViteComponents({
-    //   // currently, vite does not provide an API for plugins to get the config https://github.com/vitejs/vite/issues/738
-    //   // as the `alias` changes the behavior of middlewares, you have to pass it to ViteComponents to do the resolving
-    //   alias,
-    //
-    //   // allow auto load markdown components under `./src/components/`
-    //   extensions: ['vue', 'md'],
-    //
-    //   // allow auto import and register components used in markdown
-    //   customLoaderMatcher: ({ path }) => path.endsWith('.md')
-    // }),
+    ViteComponents({
+      // allow auto load markdown components under `./src/components/`
+      extensions: ['vue', 'md'],
 
-    // https://github.com/antfu/purge-icons
-    // PurgeIcons()
+      // allow auto import and register components used in markdown
+      customLoaderMatcher: (id) => id.endsWith('.md'),
+
+      // auto import icons
+      customComponentResolvers: [
+        // https://github.com/antfu/vite-plugin-icons
+        // ViteIconsResolver({
+        //   componentPrefix: ''
+        //   // enabledCollections: ['carbon']
+        // })
+      ]
+    }),
+
+    // https://github.com/antfu/vite-plugin-icons
+    // ViteIcons(),
 
     // https://github.com/antfu/vite-plugin-pwa
     VitePWA({
@@ -56,34 +68,20 @@ const config: UserConfig = {
           {
             src: '/pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/png'
           },
           {
             src: '/pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
-    }),
-    // https://github.com/antfu/vite-plugin-pwa
-    // VitePWA({
-    //   manifest: {
-    //     name: 'Pathicles',
-    //     short_name: 'Pathicles',
-    //     icons: [
-    //       {
-    //         src: '/pwa-192x192.png',
-    //         sizes: '192x192',
-    //         type: 'image/png'
-    //       },
-    //       {
-    //         src: '/pwa-512x512.png',
-    //         sizes: '512x512',
-    //         type: 'image/png'
-    //       }
-    //     ]
-    //   }
+            type: 'image/png'
+          }
+        ]
+      }
+    })
+
+    // // https://github.com/intlify/vite-plugin-vue-i18n
+    // VueI18n({
+    //   include: [path.resolve(__dirname, 'locales/**')]
     // })
   ]
 }

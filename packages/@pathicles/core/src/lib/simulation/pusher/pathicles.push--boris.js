@@ -1,5 +1,4 @@
 import vert from './boris.vert'
-import frag from './boris.frag'
 import frag__float from './boris__float.frag'
 import frag__uint from './boris__uint.frag'
 import { latticeChunk } from '../lattice/lattice.gsls.js'

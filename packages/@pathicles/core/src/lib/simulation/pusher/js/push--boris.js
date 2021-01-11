@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
 export default function (regl, { runner, variables, model }) {
@@ -44,25 +45,25 @@ export default function (regl, { runner, variables, model }) {
           variables.position.buffers[(props.iteration + 1) % 2],
         ut_velocity: (context, props) =>
           variables.velocity.buffers[(props.iteration + 1) % 2]
-      },
+      }
 
-      vert,
-      frag: [
-        frag
-          .replace(
-            '/*__latticeDefinition__*/',
-            model.lattice.toGLSLDefinition()
-          )
-          .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
-          .replace(
-            '/*__latticeSize__*/',
-            `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
-              model.lattice.beamline.length || 1
-            }; const int BEAMLINE_ELEMENT_COUNT = ${
-              model.lattice.beamline.length
-            };`
-          )
-      ].join('\n')
+      // vert,
+      // frag: [
+      //   frag
+      //     .replace(
+      //       '/*__latticeDefinition__*/',
+      //       model.lattice.toGLSLDefinition()
+      //     )
+      //     .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
+      //     .replace(
+      //       '/*__latticeSize__*/',
+      //       `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
+      //         model.lattice.beamline.length || 1
+      //       }; const int BEAMLINE_ELEMENT_COUNT = ${
+      //         model.lattice.beamline.length
+      //       };`
+      //     )
+      // ].join('\n')
     })
   }
 

@@ -4,7 +4,7 @@
 .app(:class="{print: printMode}")
   .configurator
     select(v-model="presetName" v-on:change="onPresetChange($event)")
-      option(v-for="(preset, name) of presets" :value="name" :selected="name === presetName" ) {{name}}
+      option(v-for="name of Object.keys(presets)" :value="name" :selected="name === presetName" ) {{name}}
       option(value="story" ) STORY
   pathiclesStory(v-if="presetName === 'story'" :preset-name="presetName")
   pathicles(v-else :preset-name="presetName" :prerender="prerender")
@@ -88,6 +88,6 @@ body, #app
     position:relative;
     font-size 10px
     color:black;
-    border:0px solid #ccc;
+    border: none;
     font-family monospace
 </style>

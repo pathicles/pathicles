@@ -11,7 +11,7 @@ export const DECODE = {
   R
 }
 
-export function drawTextureCommand(regl, decode = DECODE.NONE) {
+export function drawTextureCommand(regl) {
   return regl({
     vert,
     frag,

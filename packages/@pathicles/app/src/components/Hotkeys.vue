@@ -1,3 +1,5 @@
+/*eslint-env browser */
+
 <!-- Vue Hotkeys -->
 <template><div></div></template>
 
@@ -11,7 +13,7 @@ export default {
 
   props: {
     shortcuts: {
-      type: Array as () => Array<string>,
+      type: Array,
       required: true
     },
 
@@ -31,7 +33,7 @@ export default {
         ? evt.metaKey
         : evt.ctrlKey
       const isKeySupported = this.supportedShortcuts.some(
-        ({ keyCode }) => keyCode === key
+        ({ keyCode: keyCode }) => keyCode === key
       )
 
       if (ctr /* CTRL | CMD */ && isKeySupported) {

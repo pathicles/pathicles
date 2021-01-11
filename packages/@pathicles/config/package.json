@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rollup --config",
     "dev": "rollup --config -w",
-    "lint-fix": "eslint --fix src",
+    "lint": "eslint; prettier-package-json --write",
     "prepare": "yarn build",
     "publish": "npm publish --access=public",
     "test": "jest"
@@ -20,37 +20,6 @@
     "deepcopy": "^2.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "@jest/globals": "^26.6.2",
-    "@petamoriken/float16": "^2.0.0",
-    "@rollup/plugin-babel": "^5.2.1",
-    "@rollup/plugin-buble": "^0.21.3",
-    "@rollup/plugin-commonjs": "^16.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^10.0.0",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.6.3",
-    "eslint": "^7.12.1",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-chai-friendly": "^0.6.0",
-    "eslint-plugin-cypress": "^2.11.2",
-    "eslint-plugin-jest": "^24.1.0",
-    "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-vue": "^7.1.0",
-    "gl": "^4.8.0",
-    "jest": "^26.6.3",
-    "json-stringify-pretty-compact": "^2.0.0",
-    "prettier": "^2.1.2",
-    "rollup": "^2.35.1",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-cleanup": "^3.2.1",
-    "rollup-plugin-eslint-bundle": "^5.0.2",
-    "rollup-plugin-notify": "^1.1.0",
-    "rollup-plugin-progress": "^1.1.2",
-    "rollup-plugin-require-context": "^1.0.1",
-    "rollup-plugin-visualizer": "^4.2.0"
+    "@pathicles/dev-config": "^0.3.2"
   }
 }
