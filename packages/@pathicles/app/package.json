@@ -6,7 +6,8 @@
     "build": "cross-env NODE_ENV=production vite build",
     "dev": "vite",
     "lint": "eslint --fix src ; prettier-package-json --write",
-    "publish": "yarn publish --access=public"
+    "publish": "yarn publish --access=public",
+    "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0"
   },
   "config": {
     "devPort": 9303
