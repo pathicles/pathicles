@@ -1,4 +1,5 @@
 import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
+import defaultConfig from './_default'
 
 export default {
   name: 'spiral',
@@ -18,7 +19,7 @@ export default {
     iterationsPerTick: 1,
     iterationDurationOverC: 0.22,
     snapshotCount: 512,
-    iterations: 512
+    iterations: 500
   },
 
   model: {
@@ -27,7 +28,14 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleSeparation: 0.05,
-      position: [-1, 0, 0],
+      position: [
+        -1.5,
+        defaultConfig.view.pathicleWidth *
+          defaultConfig.view.pathicleRelativeHeight *
+          2 +
+          0.02,
+        0
+      ],
       direction: [0, 0.05, 1],
       positionJitter: [0.0, 0.0, 0.2],
 

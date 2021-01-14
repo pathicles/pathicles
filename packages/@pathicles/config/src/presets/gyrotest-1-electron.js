@@ -29,10 +29,11 @@ export default {
       bunchShape: 'COLUMN',
       direction: [0, 0, 1],
       position: [
-        -1,
+        -1.5,
         defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight *
-          2,
+          2 +
+          0.02,
         0
       ],
       directionJitter: [0, 0, 0],

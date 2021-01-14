@@ -9,6 +9,7 @@ import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
 import fs from 'fs-extra-plus'
 import notify from 'rollup-plugin-notify'
+import compiler from '@ampproject/rollup-plugin-closure-compiler'
 
 // eslint-disable-next-line no-undef
 const prod = () => process.env.NODE_ENV === 'production'

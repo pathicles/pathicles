@@ -67,9 +67,7 @@ vec3 Blur(sampler2D tex, vec2 uv, float radius)
 
 float fBlur(sampler2D tex, vec2 uv, float radius)
 {
-  radius = radius * .04;
-
-  vec2 circle = vec2(radius); // * vec2((iResolution.y / iResolution.x), 1.0);
+  vec2 circle = vec2(radius);
 
   // Remove the time reference to prevent random jittering if you don't like it.
   vec2 random = Hash22(uv);
@@ -124,17 +122,8 @@ float normalImpactOnAxis(float x) {
 
 void main(void) {
 
-  vec3 lightDir = normalize(shadowDirection - vPosition);
-  float cosTheta = dot(vNormal, lightDir);
 
-  float shadowAcneRemover = 1.7;
-
-  float amountInLight = 0.0;
-
-  //  amountInLight = (blur13(shadowMap, fragmentDepth.xy, vec2(1024, 1024), vec2(.1, 5.)) - vShadowCoord.z > .001) ? 1. : 0.;
-//  amountInLight = decodeFloat(texture2D(shadowMap, vShadowCoord.xy));
-  amountInLight = Blur(shadowMap, vShadowCoord.xy, .1).r * 2.;
-  amountInLight = 1.-fBlur(shadowMap, vShadowCoord.xy, .1) * 1.;
+  float amountInLight =1.-fBlur(shadowMap, vShadowCoord.xy, .01);
 
 
   float gridRatio=gridControl.x;
@@ -151,7 +140,7 @@ void main(void) {
   float fogAmount = smoothstep(stageSize/2.*1., stageSize/2.*.5, fogDistance);
 
   gl_FragColor =vec4(color.rgb, fogAmount*opacity)
-    + vec4(vec3(-.5*amountInLight), 1.);
+    + vec4(vec3(-.25*amountInLight), 1.);
 
 }
 

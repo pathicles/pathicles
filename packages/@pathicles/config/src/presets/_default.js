@@ -50,10 +50,10 @@ export default {
   view: {
     lights: [
       {
-        position: [0, 4, 0],
+        position: [0, 5, 0],
         near: -5,
-        far: 5,
-        size: 2
+        far: 10,
+        size: 9
       }
     ],
     ambientLightAmount: 0.5,
@@ -86,7 +86,7 @@ export default {
       theta: (45 / 360) * 2 * Math.PI,
 
       fovY: (2 * Math.PI) / (360 / 35),
-      autorotate: false,
+      autorotate: true,
       autorotateDistance: 0.1 * 2 * Math.PI,
       autorotateSpeedTheta: 0.1 * 2 * Math.PI,
       autorotateSpeedPhi: 0.1 * 2 * Math.PI,

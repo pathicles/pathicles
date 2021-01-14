@@ -25,7 +25,7 @@ export class Shadow {
       color: regl.texture({
         radius: SHADOW_MAP_SIZE
       }),
-      depth: false
+      depth: true
     })
 
     this.update(position, this.size, near, far)

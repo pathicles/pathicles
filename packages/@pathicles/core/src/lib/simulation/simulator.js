@@ -147,7 +147,6 @@ export class ReglSimulatorInstance {
                 scale: 0.5
               })
             }
-            console.log(viewportHeight)
           }
         )
       }

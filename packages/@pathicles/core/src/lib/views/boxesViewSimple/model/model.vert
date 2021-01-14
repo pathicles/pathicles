@@ -66,7 +66,7 @@ float shadowValue() {
 
   // Compare actual depth from light to the occluded depth rendered in the depth map
   // If the occluded depth is smaller, we must be in shadow
-  return mix(.2, .7, occluder-depth);
+  return mix(.0, 1., occluder-depth);
 
 }
 
@@ -139,16 +139,10 @@ void main () {
 
   v_lightNDC = texUnitConverter * shadowProjectionMatrix * shadowViewMatrix * model * vec4(v_position, 1.0);
 
+//  vColorCorrection = clamp(shadowValue(), .9, 1.); //get_colorCorrection(int(a_particle));
   vColorCorrection = get_colorCorrection(int(a_particle));
+  v_visibility = v_visibility; // * clamp(shadowValue(), 1., 1.);
 
-
-
-  //  vec3 vShadowCoord2 = (shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
-//
-//  vec3 readShadowProjectionMatrix =  (texUnitConverter * shadowProjectionMatrix *  shadowViewMatrix * model * vec4(fourPosition.xyz, 1.0)).xyz;
-//
-//  //  float amountInLight = (texture2D(shadowMap, readShadowProjectionMatrix.xy).r - vShadowCoord2.z < 0.01) ? 1. : 0.;
-//  vColorCorrection = amountInLight;
   gl_Position = projection * view *  model * vec4(v_position, 1.0);
 #endif// lighting
 

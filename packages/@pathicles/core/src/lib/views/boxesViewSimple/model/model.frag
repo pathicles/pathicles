@@ -93,8 +93,8 @@ void main () {
   vec3 normal = normalize(vNormal);
 
   directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
-  directionalLights[1] = DirectionalLight(shadowDirection+vec3(-2., 0., 2.), vec3(1.), .25);
-  directionalLights[2] = DirectionalLight(shadowDirection+vec3(2., 0., -2.), vec3(1.), .25);
+  directionalLights[1] = DirectionalLight(shadowDirection+vec3(-5., 0., 5.), vec3(1.), .15);
+  directionalLights[2] = DirectionalLight(shadowDirection+vec3(5., 0., -5.), vec3(1.), .15);
 //  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x, -shadowDirection.y, shadowDirection.z), vec3(.5), .15);
 
   //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(v_position-eye))));
@@ -108,26 +108,19 @@ void main () {
     float diffAmt = diffuse(light.direction, normal) * light.intensity;
     float specAmt = specular(light.direction, viewDir, normal, 0.0) * light.intensity;
 
-    float shadow = vColorCorrection;//clamp(vColorCorrection + abs(2.+v_position.y*5.), 0., 1.);
-    float specMask = 0. * edger(vUv, vScale, 2. * pathicleWidth, vNormalOrig) * smoothstep(10., 5., length(v_position-eye));
+    float shadow = .9 * vColorCorrection;//clamp(vColorCorrection + abs(2.+v_position.y*5.), 0., 1.);
+    float specMask = edger(vUv, vScale, 1. * pathicleWidth, vNormalOrig) * smoothstep(5., 2., length(v_position-eye));
     vec3 specCol = specMask * sceneLight * specAmt;
     finalColor += shadow * vColor * diffAmt * light.color;
     finalColor += shadow * specCol * sceneLight;
   }
 
 
-//  float fogDistance = length(v_position);
-//  float fogAmount = smoothstep(stageSize/2.*1.25, stageSize/2.*.5, fogDistance);
-
   gl_FragColor =vec4(finalColor, 1.); //map(v_visibility, 0.5, 1., 0.75, .9));
-  //  gl_FragColor =vec4(finalColor, 1.);
-
 
   #endif// lighting
   #ifdef shadow
 
-  gl_FragColor = vec4(vShadowCoord.z / 2.);
-//  gl_FragColor = packRGBA(.1);
   gl_FragColor = packRGBA(vShadowCoord.z );
   #endif
 

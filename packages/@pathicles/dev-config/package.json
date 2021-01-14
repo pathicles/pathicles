@@ -10,6 +10,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@antfu/eslint-config-vue": "^0.4.3",
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
