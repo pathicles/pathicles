@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@pathicles/config": "^0.5.1",
-    "@pathicles/core": "^0.5.1",
+    "@pathicles/core": "^0.3.2",
     "es6-promise": "^4.2.8",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
