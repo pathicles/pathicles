@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "command": {
     "version": {
-      "allowBranch": "dev"
+      "allowBranch": "main"
     }
   }
 }
