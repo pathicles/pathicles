@@ -50,5 +50,6 @@
     "stylus-supremacy": "^2.14.5",
     "typescript": "^4.1.3",
     "upath": "^2.0.1"
-  }
+  },
+  "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }

@@ -18,5 +18,6 @@
     "puppeteer-core": "^5.5.0",
     "save-pixels": "^2.3.4",
     "sharp": "^0.27.0"
-  }
+  },
+  "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }

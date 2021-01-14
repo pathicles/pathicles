@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.5.0"
-  }
+  },
+  "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }

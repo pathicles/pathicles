@@ -47,5 +47,6 @@
     "vite-plugin-pwa": "^0.3.5",
     "vite-plugin-voie": "^0.7.3",
     "webpack": "^5.10.3"
-  }
+  },
+  "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }

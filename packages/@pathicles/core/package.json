@@ -9,7 +9,8 @@
     "build": "NODE_ENV=production rollup --config ",
     "dev": "rollup --config -w",
     "lint": "eslint --fix src; prettier-package-json --write",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "publish": "npm publish --access=public"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
@@ -36,5 +37,6 @@
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.5.0"
-  }
+  },
+  "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }
