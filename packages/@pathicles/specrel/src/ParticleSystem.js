@@ -1,9 +1,5 @@
 import Specrel, { bigNumberMath, format6 } from '..'
-import {
-  FieldTypes,
-  MagneticConstantField,
-  ElectricConstantField
-} from './ForceField'
+import { ElectricConstantField, FieldTypes, MagneticConstantField } from './ForceField'
 import ParticleCollection from './ParticleCollection'
 import ParticleTypes from './ParticleTypes'
 import { extent } from 'd3-array'

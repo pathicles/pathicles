@@ -1,4 +1,4 @@
-import { csvParse, csvFormat } from 'd3-dsv'
+import { csvFormat, csvParse } from 'd3-dsv'
 import { ascending, sort } from 'd3-array'
 import { readFileSync, writeFileSync } from 'fs'
 

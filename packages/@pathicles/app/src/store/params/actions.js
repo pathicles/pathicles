@@ -3,12 +3,11 @@
 // import { MUTATION_TYPES } from './mutations'
 //
 import { MUTATION_TYPES } from './mutations'
+import { config } from '@pathicles/config'
 
 const ACTION_TYPES = {
   LOAD_PRESET: `LOAD_PRESET`
 }
-
-import { config } from '@pathicles/config'
 
 //
 // // cannot use ES6 classes, the methods are not enumerable, properties are.

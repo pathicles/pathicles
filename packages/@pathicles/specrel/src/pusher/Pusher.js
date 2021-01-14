@@ -1,4 +1,4 @@
-import { speedOfLight__ms_1, bigNumberMath } from './../index.js'
+import { bigNumberMath, speedOfLight__ms_1 } from './../index.js'
 
 export class Pusher {
   /**

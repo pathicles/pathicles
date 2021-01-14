@@ -1,14 +1,14 @@
 import { describe, expect, it } from '@jest/globals'
 import {
   bigNumberMath,
-  speedOfLight,
-  speedOfLight__ms_1,
   elementaryCharge,
   elementaryCharge__C,
   gammaFromBeta,
   gammaFromBetaPrime,
   gammaFromBetaPrimeSquare,
-  gammaFromBetaSquare
+  gammaFromBetaSquare,
+  speedOfLight,
+  speedOfLight__ms_1
 } from './index'
 import ParticleTypes from './ParticleTypes'
 

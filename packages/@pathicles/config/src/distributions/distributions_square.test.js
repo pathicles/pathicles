@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 
-import { square, round } from './distributions.js'
+import { round, square } from './distributions.js'
 
 describe('square (xy)', () => {
   test('{}', () => {

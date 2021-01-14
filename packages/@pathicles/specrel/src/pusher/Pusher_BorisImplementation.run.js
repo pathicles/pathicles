@@ -5,6 +5,7 @@ import { bigNumberMath, format30 } from './../index.js'
 import { Pusher_BorisImplementation } from './Pusher_BorisImplementation.js'
 
 import pkg from '@pathicles/config'
+
 const { config } = pkg
 
 const configGyrotest = config('gyrotest-1-electron')

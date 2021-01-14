@@ -1,15 +1,13 @@
-import Pusher_FastBorisImplementation from './Pusher_FastBorisImplementation'
-
-const epsilon = 0.00001
-
-const { PerformanceObserver, performance } = require('perf_hooks')
-
 import Specrel, { bigNumberMath, format6 } from '../'
 import * as d3 from 'd3'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import prettyjson from 'prettyjson'
 import { ParticleSystem } from '../ParticleSystem'
+
+const epsilon = 0.00001
+
+const { PerformanceObserver, performance } = require('perf_hooks')
 
 const logbook = []
 

@@ -1,8 +1,3 @@
-import { bigNumberMath, format6, speedOfLight__ms_1 } from '..'
-
-import Pusher_FastBorisImplementation from 'pusher/Pusher_FastBorisImplementation'
-
-import { ParticleSystem } from '../ParticleSystem'
 //
 // for (let precision of ['32bit', '64bit']) {
 //   for (let gamma of [1, 2, 5, 10, 100]) {

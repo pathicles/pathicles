@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 
-import { presets, config } from './index.js'
+import { config, presets } from './index.js'
 
 describe('presets', () => {
   test('count presets', () => {

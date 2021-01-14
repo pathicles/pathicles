@@ -1,5 +1,6 @@
 import defaultConfig from './_default'
 import { RUNNER_MODE } from '../constants'
+
 export default {
   name: 'free-photon',
 

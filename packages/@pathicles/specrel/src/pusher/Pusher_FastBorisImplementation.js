@@ -1,9 +1,4 @@
-import Specrel, {
-  cross,
-  format30,
-  gammaFromVelocity__c,
-  gammaFromVelocity__ms_1
-} from '../'
+import Specrel, { cross, format30, gammaFromVelocity__c, gammaFromVelocity__ms_1 } from '../'
 import Pusher from './Pusher'
 import createLogger from '../Logger'
 import * as d3 from 'd3'

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 
-import { bigNumberMath, format30, format6, speedOfLight__ms_1 } from './index'
+import { bigNumberMath, format6, speedOfLight__ms_1 } from './index'
 
 import Particle from './Particle'
 import ParticleTypes from './ParticleTypes'

@@ -1,8 +1,4 @@
-import {
-  Field,
-  MagneticConstantField,
-  MagneticQuadrupoleField
-} from './ForceField'
+import { Field, MagneticConstantField, MagneticQuadrupoleField } from './ForceField'
 
 describe('Field box', () => {
   const field = new Field({

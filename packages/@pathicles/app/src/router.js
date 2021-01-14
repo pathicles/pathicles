@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import PathiclesSimulator from './components/PathiclesSimulator.vue'
 import PathiclesStory from './components/PathiclesStory.vue'
 

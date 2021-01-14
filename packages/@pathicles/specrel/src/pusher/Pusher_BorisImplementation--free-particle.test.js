@@ -1,10 +1,10 @@
 import { config } from '@pathicles/config'
-const { performance } = require('perf_hooks')
-
 import { bigNumberMath, format6, speedOfLight__ms_1 } from '../'
 import Pusher_BorisImplementation from './Pusher_BorisImplementation'
 
 import { ParticleSystem } from '../ParticleSystem'
+
+const { performance } = require('perf_hooks')
 
 describe('Boris Pusher for system of 1 photon ', () => {
   const report = simulate('free--1-photon')

@@ -1,4 +1,4 @@
-import { bigNumberMath, speedOfLight__ms_1, speedOfLight } from './index'
+import { bigNumberMath, speedOfLight, speedOfLight__ms_1 } from './index'
 
 class Particle {
   constructor(particleType) {
