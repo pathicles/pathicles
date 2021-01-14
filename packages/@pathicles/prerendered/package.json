@@ -1,13 +1,13 @@
 {
   "name": "@pathicles/prerendered",
   "license": "MIT",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "scripts": {
     "lint": "eslint --fix tools",
     "prerender": "node ./tools/prerender.js"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.4.0",
+    "@pathicles/dev-config": "^0.5.0",
     "csv-append": "^1.0.0",
     "d3-array": "^2.9.1",
     "d3-dsv": "^2.0.0",
