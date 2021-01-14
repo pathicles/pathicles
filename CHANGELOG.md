@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/pathicles/pathicles/compare/v0.3.2...v0.4.0) (2021-01-14)
+
+
+### Bug Fixes
+
+* auto9rot ([5350573](https://github.com/pathicles/pathicles/commit/5350573ea322fcdf4b25997fffdc1be1e6bd24a7))
+* auto9rot ([4718747](https://github.com/pathicles/pathicles/commit/47187474175b749c025476e63ff5ed52f8d839b0))
+* auto9rot ([ed24a39](https://github.com/pathicles/pathicles/commit/ed24a39b333657af2c0d3b05aa6905f0d482ab40))
+* autorotate from start on ([6e7fcce](https://github.com/pathicles/pathicles/commit/6e7fcce4989f6e6d443e5c80fbe020b7a50ea410))
+* remove WEBGL extension EXT_disjoint_timer_query ([e62d7a3](https://github.com/pathicles/pathicles/commit/e62d7a38a8f9e8a59a922be48c9f6c83bf75c82f))
+
+
+### Features
+
+* improved shadow ([c668f1b](https://github.com/pathicles/pathicles/commit/c668f1bc430783d3be0b631556eaa02a88800a86))
+* no autorotate ([82db4f5](https://github.com/pathicles/pathicles/commit/82db4f5963d58aaa28fad75e16e778eff10a0468))
+* **pathicles/app:** add pwa icons ([87e52ef](https://github.com/pathicles/pathicles/commit/87e52efd8de9908653da64416cbcca3b68e2ff5a))
+* **pathicles/app:** update pwa icons ([9fb05b7](https://github.com/pathicles/pathicles/commit/9fb05b77a6c3bd7fe01de4382ab86470750e61f9))
+* prepare js simulation ([8f0f48f](https://github.com/pathicles/pathicles/commit/8f0f48f42d08059b1b1e1761f640c592281d37e5))
+
+
+
+
+
 # [0.2.0](https://github.com/pathicles/pathicles/compare/v0.1.0...v0.2.0) (2020-11-01)
 
 

@@ -3,12 +3,11 @@
   "description": "eslint, prettier, jest",
   "license": "EUPL-1.2",
   "author": "Dirk Rathje",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "lint": "eslint; prettier-package-json --write"
   },
-  "dependencies": {},
   "devDependencies": {
     "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@antfu/eslint-config-vue": "^0.4.3",

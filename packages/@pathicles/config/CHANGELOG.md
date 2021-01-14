@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/pathicles/pathicles/compare/v0.3.2...v0.4.0) (2021-01-14)
+
+
+### Bug Fixes
+
+* auto9rot ([ed24a39](https://github.com/pathicles/pathicles/commit/ed24a39b333657af2c0d3b05aa6905f0d482ab40))
+
+
+### Features
+
+* improved shadow ([c668f1b](https://github.com/pathicles/pathicles/commit/c668f1bc430783d3be0b631556eaa02a88800a86))
+* no autorotate ([82db4f5](https://github.com/pathicles/pathicles/commit/82db4f5963d58aaa28fad75e16e778eff10a0468))
+* prepare js simulation ([8f0f48f](https://github.com/pathicles/pathicles/commit/8f0f48f42d08059b1b1e1761f640c592281d37e5))
+
+
+
+
+
 # [0.2.0](https://github.com/pathicles/pathicles/compare/v0.1.0...v0.2.0) (2020-11-01)
 
 
