@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/app",
   "license": "MIT",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "scripts": {
     "build": "cross-env NODE_ENV=production vite build",
     "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0",
@@ -14,8 +14,8 @@
     "devPort": 9303
   },
   "dependencies": {
-    "@pathicles/config": "^0.6.0",
-    "@pathicles/core": "^0.6.0",
+    "@pathicles/config": "^0.6.2",
+    "@pathicles/core": "^0.6.2",
     "es6-promise": "^4.2.8",
     "regl": "^2.0.1",
     "tornis": "^0.3.3",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config-vue": "^0.4.3",
-    "@pathicles/dev-config": "^0.6.0",
+    "@pathicles/dev-config": "^0.6.2",
     "@vitejs/plugin-vue": "^1.0.5",
     "@vue/compiler-sfc": "^3.0.4",
     "autoprefixer": "^10.0.4",
