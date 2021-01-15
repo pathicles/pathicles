@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/config",
   "license": "MIT",
-  "version": "0.6.0",
+  "version": "0.5.3",
   "type": "module",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
@@ -10,10 +10,6 @@
     "dev": "rollup --config -w",
     "lint": "eslint; prettier-package-json --write",
     "prepare": "yarn build",
-    "publish": "yarn publish --access=public",
-    "version:bump-major": "yarn version --major --no-push",
-    "version:bump-minor": "yarn version --minor --no-push",
-    "version:bump-patch": "yarn version --patch --no-push",
     "test": "jest"
   },
   "dependencies": {
