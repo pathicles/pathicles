@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/config",
   "license": "MIT",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "type": "module",
   "main": "dist/pathicles-config.min.js",
   "module": "dist/pathicles-config.esm.js",
@@ -19,7 +19,7 @@
     "deepcopy": "^2.1.0"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.5.1"
+    "@pathicles/dev-config": "^0.5.2"
   },
   "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }

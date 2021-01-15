@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/pathicles/pathicles/issues"
   },
-  "version": "0.5.0",
+  "version": "0.5.2",
   "workspaces": [
     "packages/@pathicles/dev-config",
     "packages/@pathicles/app",
