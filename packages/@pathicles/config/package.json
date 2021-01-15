@@ -10,7 +10,10 @@
     "dev": "rollup --config -w",
     "lint": "eslint; prettier-package-json --write",
     "prepare": "yarn build",
-    "publish": "npm publish --access=public",
+    "publish": "yarn publish --access=public",
+    "version:bump-major": "yarn version --major --no-push",
+    "version:bump-minor": "yarn version --minor --no-push",
+    "version:bump-patch": "yarn version --patch --no-push",
     "test": "jest"
   },
   "dependencies": {
@@ -19,7 +22,7 @@
     "deepcopy": "^2.1.0"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.5.2"
+    "@pathicles/dev-config": "^0.5.1"
   },
   "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }
