@@ -9,8 +9,8 @@
     "build": "NODE_ENV=production rollup --config ",
     "dev": "rollup --config -w",
     "lint": "eslint --fix src; prettier-package-json --write",
-    "test:unit": "jest",
-    "publish": "npm publish --access=public"
+    "publish": "npm publish --access=public",
+    "test:unit": "jest"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
