@@ -18,34 +18,30 @@
     "packages/@pathicles/app",
     "packages/@pathicles/config",
     "packages/@pathicles/core",
-    "packages/@pathicles/docs__",
-    "packages/@pathicles/prerendered",
-    "packages/@pathicles/specrel__"
+    "packages/@pathicles/prerendered"
   ],
   "scripts": {
-    "build": "yarn run build:libs; yarn run build:app",
-    "build:app": "yarn workspace @pathicles/app run build",
-    "build:docs": "yarn workspace @pathicles/docs run build",
-    "build:libs": "lerna run --parallel  --scope @pathicles/core  --scope @pathicles/config build",
+    "build": "yarn workspace @pathicles/config run build; yarn workspace @pathicles/config run build; yarn workspace @pathicles/app run build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
-    "dev": "lerna run --parallel  dev:libs dev:app",
-    "dev:all": "lerna run --parallel --scope @pathicles/core --scope @pathicles/config --scope  @pathicles/app  dev",
     "dev:app": "yarn workspace @pathicles/app run dev",
     "dev:config": "yarn workspace @pathicles/config run dev",
     "dev:core": "yarn workspace @pathicles/core run dev",
     "dev:docs": "yarn workspace @pathicles/docs run dev",
     "lint": "npx prettier-package-json --write; yarn workspaces run lint",
     "release": "release-it",
-    "publish": "lerna publish",
-    "version:bump-minor": "lerna version minor --no-push --conventional-commits",
-    "version:bump-patch": "lerna version patch --no-push --conventional-commits",
+    "version:bump-major": "yarn version --major --no-push --conventional-commits",
+    "version:bump-minor": "yarn version --minor --no-push --conventional-commits",
+    "version:bump-patch": "yarn version --patch --no-push --conventional-commits",
     "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "gh-pages": "^3.1.0",
