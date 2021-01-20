@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/core",
   "license": "MIT",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "main": "dist/pathicles-core.min.js",
   "module": "dist/pathicles-core.esm.js",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/polyfill": "^7.12.1",
-    "@pathicles/config": "^0.7.0",
+    "@pathicles/config": "^0.8.0",
     "@petamoriken/float16": "^2.0.0",
     "b-spline": "^2.0.1",
     "detect-it": "^4.0.0",
@@ -36,7 +36,7 @@
     "regl": "^2.0.1"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.7.0"
+    "@pathicles/dev-config": "^0.8.0"
   },
   "gitHead": "963f2759634e061c353423af297200d3c32c1ae1"
 }
