@@ -1,0 +1,19 @@
+{
+  "name": "@pathicles/docs",
+  "license": "MIT",
+  "version": "0.9.0",
+  "scripts": {
+    "build": "vitepress build --emptyOutDir --manifest",
+    "dev": "vitepress",
+    "lint-fix": "echo 'lint-fix'"
+  },
+  "dependencies": {
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^4.13.0",
+    "vite-plugin-pwa": "^0.3.8",
+    "vitepress": "^0.11.3"
+  },
+  "gitHead": "af3cbce46e0f3a2a20594e7f298aa704384334bc"
+}
