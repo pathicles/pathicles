@@ -29,7 +29,7 @@
     "dev:core": "yarn workspace @pathicles/core run dev",
     "dev:docs": "yarn workspace @pathicles/docs run dev",
     "lint": "npx prettier-package-json --write; yarn workspaces run lint",
-    "release": "release-it",
+    "publish": "lerna publish",
     "version:bump-patch": "lerna version patch --no-push --conventional-commits --create-release github",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits --create-release github",
     "version:bump-major": "lerna version major --no-push --conventional-commits --create-release github",
