@@ -3,7 +3,7 @@
   "description": "eslint, prettier, jest",
   "license": "EUPL-1.2",
   "author": "Dirk Rathje",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "type": "module",
   "scripts": {
     "lint": "eslint; prettier-package-json --write"
