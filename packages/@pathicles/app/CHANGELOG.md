@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/pathicles/pathicles/compare/@pathicles/app@0.7.0...@pathicles/app@0.7.0) (2021-01-20)
+
+**Note:** Version bump only for package @pathicles/app
+
+
+
+
+
 # [0.7.0](https://github.com/pathicles/pathicles/compare/@pathicles/app@0.6.3...@pathicles/app@0.7.0) (2021-01-20)
 
 **Note:** Version bump only for package @pathicles/app
