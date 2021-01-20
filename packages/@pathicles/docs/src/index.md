@@ -1,7 +1,0 @@
-
-# Pathicles
-
-* skjfghjkahgfdk
-* khfkjahf
-
-

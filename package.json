@@ -14,7 +14,6 @@
   },
   "workspaces": [
     "packages/@pathicles/dev-config",
-    "packages/@pathicles/docs",
     "packages/@pathicles/app",
     "packages/@pathicles/config",
     "packages/@pathicles/core",
@@ -27,7 +26,8 @@
     "dev:app": "yarn workspace @pathicles/app run dev",
     "dev:config": "yarn workspace @pathicles/config run dev",
     "dev:core": "yarn workspace @pathicles/core run dev",
-    "dev:docs": "yarn workspace @pathicles/docs run dev",
+    "docs:build": "vitepress build docs --emptyOutDir --manifest",
+    "docs:serve": "vitepress serve docs",
     "lint": "npx prettier-package-json --write; yarn workspaces run lint",
     "publish": "lerna publish from-git --force-publish=*",
     "version": "lerna version 0.9.0 --conventional-commits --force-publish=* --create-release github; lerna publish from-git --force-publish=*",
@@ -45,6 +45,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "vitepress": "^0.11.4",
     "gh-pages": "^3.1.0",
     "jest": "^26.6.3",
     "lerna": "^3.22.1",
