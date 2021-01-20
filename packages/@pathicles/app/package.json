@@ -8,7 +8,7 @@
     "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0",
     "dev": "vite",
     "lint": "eslint --fix src ; prettier-package-json --write",
-    "publish": "yarn publish --access=public",
+    "publish": "npm publish --access=public",
     "serve": "ws --http2  --port 443  --compress --key ./../../../.secret/localhost.key.pem --cert ./../../../.secret/localhost.cert.pem --directory ./dist"
   },
   "config": {
