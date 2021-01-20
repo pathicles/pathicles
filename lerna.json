@@ -1,7 +1,7 @@
 {
   "useWorkspaces": true,
   "npmClient": "yarn",
-  "version": "0.5.3",
+  "version": "independent",
   "command": {
     "version": {
       "allowBranch": "main"

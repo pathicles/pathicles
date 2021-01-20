@@ -30,9 +30,9 @@
     "dev:docs": "yarn workspace @pathicles/docs run dev",
     "lint": "npx prettier-package-json --write; yarn workspaces run lint",
     "release": "release-it",
-    "version:bump-major": "lerna version major --no-push --conventional-commits",
-    "version:bump-minor": "lerna version minor --no-push --conventional-commits",
-    "version:bump-patch": "lerna version patch --no-push --conventional-commits",
+    "version:bump-major": "lerna version major --no-push --conventional-commits --create-release github",
+    "version:bump-minor": "lerna version minor --no-push --conventional-commits --create-release github",
+    "version:bump-patch": "lerna version patch --no-push --conventional-commits --create-release github",
     "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md"
   },
   "config": {

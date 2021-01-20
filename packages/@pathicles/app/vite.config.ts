@@ -4,9 +4,9 @@ import path from 'path'
 import { UserConfig } from 'vite'
 // import Vue from '@vitejs/plugin-vue'
 // @ts-ignore
-import Voie from 'vite-plugin-voie'
+// import Voie from 'vite-plugin-voie'
 import ViteComponents from 'vite-plugin-components'
-import Markdown from 'vite-plugin-md'
+// import Markdown from 'vite-plugin-md'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const config: UserConfig = {
@@ -19,23 +19,23 @@ const config: UserConfig = {
     // }),
 
     // https://github.com/vamplate/vite-plugin-voie
-    Voie({
-      // load index page sync and bundled with the landing page to improve first loading time.
-      // feel free to remove if you don't need it
-      importMode(path: string) {
-        return path === '/src/pages/index.vue' ? 'sync' : 'async'
-      },
-      extensions: ['vue', 'md']
-    }),
+    // Voie({
+    //   // load index page sync and bundled with the landing page to improve first loading time.
+    //   // feel free to remove if you don't need it
+    //   importMode(path: string) {
+    //     return path === '/src/pages/index.vue' ? 'sync' : 'async'
+    //   },
+    //   extensions: ['vue', 'md']
+    // }),
 
     // https://github.com/antfu/vite-plugin-md
-    Markdown({
-      // for https://github.com/tailwindlabs/tailwindcss-typography
-      wrapperClasses: 'prose prose-sm m-auto'
-      // markdownItSetup(md) {
-      //   // https://prismjs.com/
-      // }
-    }),
+    // Markdown({
+    //   // for https://github.com/tailwindlabs/tailwindcss-typography
+    //   wrapperClasses: 'prose prose-sm m-auto'
+    //   // markdownItSetup(md) {
+    //   //   // https://prismjs.com/
+    //   // }
+    // }),
 
     // https://github.com/antfu/vite-plugin-components
     ViteComponents({
