@@ -20,9 +20,9 @@
     "packages/@pathicles/vue-app"
   ],
   "scripts": {
-    "build": "yarn workspace @pathicles/config run build; yarn workspace @pathicles/config run build; yarn workspace @pathicles/app run build",
+    "build": "yarn workspace @pathicles/config run build; yarn workspace @pathicles/core run build; yarn workspace @pathicles/vue-app run build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
-    "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/app/dist",
+    "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/vue-app/dist",
     "dev:app": "yarn workspace @pathicles/vue-app run dev",
     "dev:config": "yarn workspace @pathicles/config run dev",
     "dev:core": "yarn workspace @pathicles/core run dev",
@@ -45,13 +45,13 @@
     "access": "public"
   },
   "devDependencies": {
-    "vitepress": "^0.11.4",
     "gh-pages": "^3.1.0",
     "jest": "^26.6.3",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.3",
     "release-it": "^14.2.2",
-    "release-it-yarn-workspaces": "^2.0.0"
+    "release-it-yarn-workspaces": "^2.0.0",
+    "vitepress": "^0.11.4"
   },
   "version": "0.6.2"
 }

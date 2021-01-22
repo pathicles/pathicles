@@ -2,7 +2,7 @@
 
 import path from 'path'
 import { UserConfig } from 'vite'
-// import Vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
 // @ts-ignore
 // import Voie from 'vite-plugin-voie'
 import ViteComponents from 'vite-plugin-components'
@@ -14,9 +14,9 @@ const config: UserConfig = {
     '/~/': `${path.resolve(__dirname, 'src')}/`
   },
   plugins: [
-    // Vue({
-    //   ssr: !!process.env.SSG
-    // }),
+    Vue({
+      ssr: !!process.env.SSG
+    }),
 
     // https://github.com/vamplate/vite-plugin-voie
     // Voie({
@@ -61,17 +61,17 @@ const config: UserConfig = {
     // https://github.com/antfu/vite-plugin-pwa
     VitePWA({
       manifest: {
-        name: 'Vitesse',
-        short_name: 'Vitesse',
+        name: 'Pathicles',
+        short_name: 'Pathicles',
         theme_color: '#ffffff',
         icons: [
           {
-            src: '/pwa-192x192.png',
+            src: '/icons/manifest-icon-192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: '/icons/manifest-icon-512.png',
             sizes: '512x512',
             type: 'image/png'
           }

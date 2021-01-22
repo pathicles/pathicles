@@ -8,8 +8,8 @@ import cleanup from 'rollup-plugin-cleanup'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import visualizer from 'rollup-plugin-visualizer'
 import fs from 'fs-extra-plus'
-import notify from 'rollup-plugin-notify'
-
+// import notify from 'rollup-plugin-notify'
+// import closureCompile from '@ampproject/rollup-plugin-closure-compiler'
 // eslint-disable-next-line no-undef
 const prod = () => process.env.NODE_ENV === 'production'
 
@@ -43,7 +43,7 @@ export default (pkg) => ({
   input: join('src', 'index.js'),
   output: output(pkg),
   plugins: [
-    notify(),
+    // notify(),
     {
       name: 'watch-external',
       async buildStart() {
@@ -62,6 +62,10 @@ export default (pkg) => ({
     json(),
     glslify({ compress: false }),
     bundleSize()
+    // closureCompile({
+    //   debug: true,
+    //   compilation_level: 'SIMPLE' // Or 'ADVANCED' or 'WHITESPACE_ONLY'
+    // })
   ],
   external: ['debug', 'regl']
 })
