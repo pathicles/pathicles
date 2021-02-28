@@ -1,7 +1,7 @@
 import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
 import { Shadow } from './shadow/Shadow'
-import { drawAxesCommand } from './axes'
+// import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 import { PerformanceLogger } from '../../utils/PerformanceLogger'
 
@@ -39,7 +39,7 @@ export class BoxesViewSimple {
     )
     this.drawStage = drawStageCommands(regl, view, this.shadow)
 
-    this.drawAxis = drawAxesCommand(regl, 0.5)
+    // this.drawAxis = drawAxesCommand(regl, 0.5)
     this.drawVignette = drawVignetteCommandBuilder(regl)
   }
 
@@ -48,7 +48,7 @@ export class BoxesViewSimple {
       `BoxesViewSimple.drawDiffuse (t=${props.tick})`
     )
     this.regl.clear({
-      color: [0, 0, 0, 0],
+      color: [1, 1, 1, 1],
       depth: 1
     })
     // eslint-disable-next-line no-unused-vars

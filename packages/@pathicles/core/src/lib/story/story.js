@@ -2,7 +2,8 @@
 
 import sequencer from './sequencer'
 import { defaultConfig } from '@pathicles/config'
-import createREGL from 'regl'
+import createREGL from 'regl/dist/regl.min.js'
+
 // import drawVariableTexture from '@pathicles/core/src/lib/simulation/pathicles.variables.drawTexture'
 import { BoxesViewSimple } from '../views/boxesViewSimple'
 import { boundedRandom } from '../utils/random'

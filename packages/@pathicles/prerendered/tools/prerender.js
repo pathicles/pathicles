@@ -11,7 +11,7 @@ const defaultWidth = 750
 const defaultHeight = 750
 const deviceScaleFactor = 2
 
-const round = (d, precision = 3) =>
+const round = (d, precision = 2) =>
   Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
 
 const port = process.env.npm_package_config_devPort || 9303
@@ -46,33 +46,34 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  { preset: 'csr' },
-  { preset: 'spiral' },
-  { preset: 'random' },
-  { preset: 'different-gammas' },
-  { preset: 'free-electron' },
-  { preset: 'free-electrons' },
-  { preset: 'free-photon' },
-  { preset: 'free-photons' },
-  { preset: 'story-electric', data: true },
-  { preset: 'story-quadrupole', data: true },
-  { preset: 'story-dipole', data: true },
-  { preset: 'gyrotest-1-electron' },
-  { preset: 'gyrotest-128-electrons' }
+  { preset: 'pathicles-logo' }
+  // { preset: 'csr' },
+  // { preset: 'spiral' },
+  // { preset: 'random' },
+  // { preset: 'different-gammas' },
+  // { preset: 'free-electron' },
+  // { preset: 'free-electrons' },
+  // { preset: 'free-photon' },
+  // { preset: 'free-photons' },
+  // { preset: 'story-electric', data: true },
+  // { preset: 'story-quadrupole', data: true },
+  // { preset: 'story-dipole', data: true }
+  // { preset: 'gyrotest-1-electron' },
+  // { preset: 'gyrotest-128-electrons' }
 ]
 
-jobs = []
-for (let p2 = 0; p2 < 11; p2++) {
-  for (let s2 = 0; s2 < 11; s2++) {
-    jobs.push({ preset: `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}` })
-  }
-}
+// jobs = []
+// for (let p2 = 0; p2 < 11; p2++) {
+//   for (let s2 = 0; s2 < 11; s2++) {
+//     jobs.push({ preset: `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}` })
+//   }
+// }
 console.log(jobs)
 
-jobs = [
-  ...jobs,
-  ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
-]
+// jobs = [
+//   ...jobs,
+//   ...jobs.map((job) => ({ ...job, preset: job.preset + '-uint8', data: false }))
+// ]
 // console.log(jobs)
 
 const queryString = '&debug=false&print=true&prerender=true'
@@ -100,8 +101,13 @@ const createImages = async () => {
     )
     await page.waitForTimeout(3000)
 
+    // await page.screenshot({
+    //   path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
+    // })
     await page.screenshot({
-      path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
+      quality: 100,
+      type: 'jpeg',
+      path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.jpg')
     })
 
     const performanceEntry = await page.evaluate(() => {
@@ -134,7 +140,7 @@ const createImages = async () => {
       })
 
       const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
-      const values = every_nth(dump.position, 4)
+      const values = every_nth(dump.position, 4).map((d) => round(d))
 
       fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, preset + '.json'), {
         iteration: dump.logEntry.iteration,
@@ -143,9 +149,7 @@ const createImages = async () => {
         data: {
           position: values,
           // position2: values,
-          colorCorrections: dump.colorCorrections.map(
-            (d) => Math.floor(d * 100) / 100
-          ),
+          colorCorrections: dump.colorCorrections.map((d) => round(d)),
           // positionUint8: Array.from(
           //   new Uint8Array(new Float32Array(values).buffer)
           // ),
@@ -170,18 +174,18 @@ const imagePaths = async () => {
 }
 
 const convertImagesSharp = async () => {
-  const qualities = [40]
-  // const qualities = [20, 40, 60, 80]
+    // const qualities = [40]
+    const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
 
-  await Promise.all(
-    (await imagePaths()).map(async (imgPath) => {
-      let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
-      //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
-      //     console.log(err, info)
-      //   })
+    await Promise.all(
+      (await imagePaths()).map(async (imgPath) => {
+        let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
+        //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
+        //     console.log(err, info)
+        //   })
 
-      let image_2 = await sharp(imgPath).resize(
-        defaultWidth * 2,
+        let image_2 = await sharp(imgPath).resize(
+          defaultWidth * 2,
         defaultHeight * 2
       )
       // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
@@ -190,7 +194,7 @@ const convertImagesSharp = async () => {
 
       qualities.forEach((quality) => {
         image_1
-          .toFormat('jpg', { quality })
+          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
           .toFile(
             imgPath
               .replace('orig', 'compressed@1x')
@@ -199,20 +203,44 @@ const convertImagesSharp = async () => {
               console.log(err, info)
             }
           )
-        image_2.toFormat('jpg', { quality }).toFile(
-          imgPath
-            .replace('orig', 'compressed@2x')
-            // .replace('.png', `_${quality}.jpg`),
-            .replace('.png', `.jpg`),
-          (err, info) => {
-            console.log(err, info)
-          }
-        )
+        image_2
+          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@2x')
+              .replace('.png', `_${quality}.jpg`),
+            // .replace('.png', `.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+
+        image_1
+          .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@1x')
+              .replace('.png', `_${quality}.webp`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+        image_2
+          .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@2x')
+              .replace('.png', `_${quality}.webp`),
+            // .replace('.png', `.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
       })
     })
   )
 }
 ;(async () => {
   await createImages()
-  await convertImagesSharp()
+  // await convertImagesSharp()
 })()

@@ -1,11 +1,12 @@
 /* eslint-env browser */
 
 <template lang="pug">
-.pathicles.pathicles-simulator(ref="scrollContainer")
-  hotkeys(:shortcuts="['I', 'D']"
-    :debug="true"
+.pathicles(:class="{'is-interactive': isInteractive }" ref="scrollContainer")
+  .interaction-overlay
+    .button(@click="isInteractive = !isInteractive") Start
+  hotkeys(:shortcuts="['I', 'D', 'A', 'M', 'N', 'L', 'S', 'T', ' ']"
+    :debug="false"
     @triggered="onTriggeredEventHandler")
-
   dl.info(v-if="showInfoInternal")
     div(v-for="(value, key) in info" :key="key")
       dt {{ key }}
@@ -19,6 +20,7 @@ import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import { unwatchViewport, watchViewport } from 'tornis'
 import Hotkeys from './Hotkeys.vue'
+import saveCanvas from './saveCanvas.js'
 
 export default {
   name: 'Pathicles',
@@ -31,7 +33,7 @@ export default {
     },
     showInfo: {
       type: Boolean,
-      default: false
+      default: true
     },
     prerender: {
       type: Boolean,
@@ -52,10 +54,15 @@ export default {
     maxPixelRatio: {
       type: Number,
       default: 2
+    },
+    clickToInteract: {
+      type: Boolean,
+      default: true
     }
   },
   data: function () {
     return {
+      isInteractive: !this.clickToInteract,
       showInfoInternal: this.showInfo,
       progress: 0.5,
       viewRange: [0, 1],
@@ -89,6 +96,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.clickToInteract)
     // getGPUTier().then((tier) => {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
@@ -116,10 +124,37 @@ export default {
     onTriggeredEventHandler(payload) {
       if (payload.keyString === 'I') {
         this.showInfoInternal = !this.showInfoInternal
-        console.log(payload.keyString === 'I', this.showInfoInternal)
-      }
+      } else if (payload.keyString === 'A') {
+        this.reglInstance.camera.toggleAutorotate()
+      } else if (payload.keyString === 'D') {
+        console.log(this.reglInstance.simulation.dump())
+      } else if (payload.keyString === 'M') {
+        // m for mode
+        this.reglInstance.pathiclesRunner.toggleMode()
+      } else if (payload.keyString === 'T') {
+        // t for textures
+        this.reglInstance.config.debug.showTextures = !this.reglInstance.config
+          .debug.showTextures
+      } else if (payload.keyString === 'S') {
+        // s for image
+        saveCanvas(
+          this.reglInstance.regl._gl.canvas,
+          'pathicles' +
+          (this.reglInstance.presetName
+            ? '--' + this.reglInstance.presetName
+            : '')
+        )
+      } else if (payload.keyString === 'N') {
+        // n for next
+        this.reglInstance.pathiclesRunner.next()
+      } else if (payload.keyString === 'L') {
+        // l for loop
+        this.reglInstance.pathiclesRunner.toggleLooping()
+      } else if (payload.keyString === ' ') {
+        // SPACE for Start/stop or nextStep
 
-      console.log(`You have pressed CMD (CTRL) + ${payload.keyString}`)
+        this.reglInstance.pathiclesRunner.toggleActivity()
+      }
     },
     loadConfig() {
       this.config = loadConfig(this.presetName)
@@ -157,6 +192,52 @@ export default {
 //dl
 //  display none
 
+.is-interactive
+  .interaction-overlay
+    display none
+
+.interaction-overlay
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+  background-color rgba(white, .5)
+  z-index 10000
+  content " "
+  display flex
+  justify-content center
+  align-items center
+
+  .button {
+    //position absolute
+    //top 50%
+    //left 50%
+    box-shadow: inset 0px 1px 0px 0px #ffffff;
+    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    color: #666666;
+    font-family: Arial;
+    font-size: 19px;
+    font-weight: bold;
+    padding: 13px 24px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+  }
+
+  .button:hover {
+    background-color: #f6f6f6;
+  }
+
+  .button:active {
+    position: relative;
+    top: 1px;
+  }
+
+
 dl
   margin-top 2em
   margin-left 0em
@@ -193,17 +274,17 @@ dl
   overflow hidden
 
 
-  .canvas-container
-    height: 100vh
-    width: 100vw
-    position absolute
-    top 0
-    left 0
-    z-index 1000
+.canvas-container
+  height: 100vh
+  width: 100vw
+  position absolute
+  top 0
+  left 0
+  z-index 1000
 
-    canvas
-      image-rendering crisp-edges
+  canvas
+    image-rendering crisp-edges
 
-  .pathicles-simulator
+.pathicles-simulator
     touch-action pinch-zoom
 </style>

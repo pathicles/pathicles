@@ -50,7 +50,7 @@ const onDocumentKeyDown = (app) => (event) => {
 
   if (code === 'KeyA') {
     // a for autorotate
-    app.camera.toggleAutorotate()
+    // app.camera.toggleAutorotate()
   } else if (code === 'KeyC') {
     const cameraConfig = app.camera.toConfig()
     console.log(JSON.stringify({ camera: cameraConfig }, null, 2))

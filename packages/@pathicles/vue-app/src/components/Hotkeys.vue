@@ -1,7 +1,9 @@
 /*eslint-env browser */
 
 <!-- Vue Hotkeys -->
-<template><div></div></template>
+<template>
+  <div></div>
+</template>
 
 <script lang="ts">
 export default {
@@ -29,9 +31,11 @@ export default {
      */
     onUseKeyboardShortcuts(evt: any): void {
       const key = evt.keyCode || evt.which
-      const ctr = window.navigator.platform.match('Mac')
-        ? evt.metaKey
-        : evt.ctrlKey
+      const ctr = true
+      // ||
+      // window.navigator.platform.match('Mac')
+      //   ? evt.metaKey
+      //   : evt.ctrlKey
       const isKeySupported = this.supportedShortcuts.some(
         ({ keyCode: keyCode }) => keyCode === key
       )
@@ -47,7 +51,7 @@ export default {
 
         this.$emit('triggered', { key, keyString })
 
-        evt.preventDefault()
+        // evt.preventDefault()
       }
     } // onUseKeyboardShortcuts
   }, // methods

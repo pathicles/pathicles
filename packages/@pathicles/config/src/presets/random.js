@@ -17,15 +17,15 @@ export default {
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
 
     mode: RUNNER_MODE.FRAMEWISE,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: undefined,
-    snapshotCount: 16,
-    iterationDurationOverC: 0.2
+    iterations: 1024,
+    snapshotCount: 32,
+    iterationDurationOverC: 0.1
   },
 
   model: {
@@ -35,7 +35,8 @@ export default {
       position: [0, 1, 0],
       direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
       // bunchShape: 'SQUARE_XZ',
-      particleSeparation: 0.1,
+      // bunchShape: 'SQUARE_XZ',
+      particleSeparation: 0.00001,
       // directionJitter: [1, 1, 1],
       // positionJitter: [0, 0, 0],
       gamma: 2,

@@ -53,7 +53,7 @@ export default (pkg) => ({
         }
       }
     },
-    visualizer({ filename: 'stats.html' }),
+    visualizer({ filename: 'stats.html', brotliSize: true }),
     cleanup(),
     nodeResolve(),
     commonjs({

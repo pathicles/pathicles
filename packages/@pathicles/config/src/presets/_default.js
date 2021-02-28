@@ -15,11 +15,11 @@ export default {
     stepwise: false,
     prerender: true,
     loops: 0,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.STEPWISE,
     iterationsPerSnapshot: 1,
     iterationsPerTick: 1,
-    iterations: 127,
-    iterationDurationOverC: 0.25,
+    iterations: 62,
+    iterationDurationOverC: 0.5,
     snapshotCount: 128
   },
 
@@ -28,9 +28,9 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_XY',
+      bunchShape: 'SQUARE_XY',
       particleCount: 121,
-      particleSeparation: 0.1,
+      particleSeparation: 0.025,
       gamma: () => 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -87,12 +87,9 @@ export default {
 
       fovY: (2 * Math.PI) / (360 / 35),
       autorotate: false,
-      autorotateDistance: 0.01 * 2 * Math.PI,
-      autorotateSpeedTheta: 0.01 * 2 * Math.PI,
-      autorotateSpeedPhi: 0.01 * 2 * Math.PI,
-      // rotationDecayTime: 0,
-      // rotateAboutCenter: true,
-      // zoomAboutCursor: false,
+      autorotateDistance: 0.1 * 2 * Math.PI,
+      autorotateSpeedTheta: 0.1 * 2 * Math.PI,
+      autorotateSpeedPhi: 0.1 * 2 * Math.PI,
       zoomDecayTime: 1,
       // panDecayTime: 0,
       far: 200,

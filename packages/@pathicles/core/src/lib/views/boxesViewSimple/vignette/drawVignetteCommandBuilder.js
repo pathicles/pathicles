@@ -40,9 +40,9 @@ export default function (regl) {
           viewportWidth,
           viewportHeight
         ],
-        size: [0.05, 0.05],
-        roundness: 0.5,
-        smoothness: 0.95
+        size: [0.1, 0.1],
+        roundness: 0.9,
+        smoothness: 0.9
       },
 
       // This tells regl the number of vertices to draw in this command

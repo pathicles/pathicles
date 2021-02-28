@@ -4,14 +4,19 @@ import path from 'path'
 import { UserConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 // @ts-ignore
-// import Voie from 'vite-plugin-voie'
 import ViteComponents from 'vite-plugin-components'
-// import Markdown from 'vite-plugin-md'
 import { VitePWA } from 'vite-plugin-pwa'
+
+import pkg from './package.json'
 
 const config: UserConfig = {
   alias: {
     '/~/': `${path.resolve(__dirname, 'src')}/`
+  },
+
+  server: {
+    port: pkg.config.devPort,
+    strictPort: true
   },
   plugins: [
     Vue({
@@ -70,6 +75,13 @@ const config: UserConfig = {
             sizes: '192x192',
             type: 'image/png'
           },
+          {
+            src: '/icons/manifest-icon-192-maskable.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+
           {
             src: '/icons/manifest-icon-512.png',
             sizes: '512x512',

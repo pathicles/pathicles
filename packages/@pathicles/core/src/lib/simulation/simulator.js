@@ -5,14 +5,14 @@ import { Simulation } from './simulation'
 import { SimulationRunner } from './simulationRunner'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { BoxesViewSimple } from '../views/boxesViewSimple'
-import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
+// import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
-import createREGL from 'regl'
+import createREGL from 'regl/dist/regl.min.js'
 import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
   constructor({ canvas, config }) {
-    keyControlMount(this)
+    // keyControlMount(this)
     this.config = config
 
     window.performanceLogger = null
@@ -24,7 +24,7 @@ export class ReglSimulatorInstance {
       canvas,
       profile: this.config.debug.profile,
       attributes: {
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         antialiasing: true
       },
       extensions: [
@@ -61,7 +61,7 @@ export class ReglSimulatorInstance {
   }
 
   destroy() {
-    keyControlUnmount(this)
+    // keyControlUnmount(this)
     this.regl.destroy()
   }
 
