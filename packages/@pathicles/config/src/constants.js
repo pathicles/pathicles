@@ -1,5 +1,5 @@
 export const RUNNER_MODE = {
-  FRAMEWISE: 'framewise',
+  NOBREAK: 'nobreak',
   STEPWISE: 'stepwise'
 }
 
