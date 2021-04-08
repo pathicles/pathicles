@@ -12,7 +12,7 @@ export default {
 
   runner: {
     loops: 0,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
     snapshotCount: 64,
     iterationDurationOverC: 0.1,

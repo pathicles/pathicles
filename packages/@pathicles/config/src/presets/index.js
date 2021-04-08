@@ -11,6 +11,9 @@ import random from './random'
 import freeElectron from './free-electron'
 import freeElectrons from './free-electrons'
 import differentGammas from './different-gammas'
+import differentGammas1e_10 from './different-gammas-E-1e-10'
+import differentGammas1e_11 from './different-gammas-E-1e-11'
+import differentGammas1e_12 from './different-gammas-E-1e-12'
 import freePhoton from './free-photon'
 import freePhotons from './free-photons'
 import gyrotest_1_electron from './gyrotest-1-electron'
@@ -53,11 +56,16 @@ const presets = {
   [csr.name]: csr,
   [logo.name]: logo,
   [storyDipole.name]: storyDipole,
+  [storyDipole.name]: storyDipole,
   [storyElectric.name]: storyElectric,
   [storyQuadrupole.name]: storyQuadrupole,
   [freeElectron.name]: freeElectron,
   [freeElectrons.name]: freeElectrons,
   [differentGammas.name]: differentGammas,
+  [differentGammas1e_10.name]: differentGammas1e_10,
+  [differentGammas1e_11.name]: differentGammas1e_11,
+  [differentGammas1e_12.name]: differentGammas1e_12,
+
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
   [random.name]: random,

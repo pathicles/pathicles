@@ -15,7 +15,7 @@ export default {
   runner: {
     prerender: true,
     loops: 0,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
     iterations: 200,
     snapshotCount: 256,

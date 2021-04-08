@@ -13,7 +13,7 @@ export default {
   runner: {
     prerender: true,
     loops: 0,
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
     iterationsPerTick: 4,
     iterationDurationOverC: 0.25,

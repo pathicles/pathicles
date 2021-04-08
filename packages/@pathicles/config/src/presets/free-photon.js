@@ -17,10 +17,10 @@ export default {
     }
   },
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
 
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
     iterations: 10,
     snapshotCount: 11,

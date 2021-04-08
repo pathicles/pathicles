@@ -20,7 +20,7 @@ export default {
     prerender: false,
     loops: 0,
 
-    mode: RUNNER_MODE.FRAMEWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
     iterations: 1024,

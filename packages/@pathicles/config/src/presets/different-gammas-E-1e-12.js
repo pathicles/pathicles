@@ -2,7 +2,7 @@ import defaultConfig from './_default'
 import { RUNNER_MODE } from '../constants'
 
 export default {
-  name: 'different-gammas',
+  name: 'different-gammas-E-1e-12',
   view: {
     pathicleRelativeGap: 1,
     pathicleRelativeHeight: 3,
@@ -42,12 +42,17 @@ export default {
         ((defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
           2) *
-          2,
+        2,
         0
       ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
       gamma: ({ p }) => 1 + Math.floor(p / 3) / 50
+    }, //1.55
+    interactions: {
+      electricField: [0, 0, -1e-12],
+      particleInteraction: false,
+      magneticField: [0.0, 0.0, 0]
     }
   }
 }

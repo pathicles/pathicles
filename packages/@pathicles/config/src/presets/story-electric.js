@@ -14,11 +14,11 @@ export default {
       particleType: 'ELECTRON PHOTON PROTON',
       position: [0, 1.5, -8],
       direction: [0, 0, 1],
-      gamma: () => 1.25
+      gamma: () => 1.05
     },
 
     interactions: {
-      electricField: [0, 0, -0.000000000001],
+      electricField: [0, 0, -1e-11],
       particleInteraction: false,
       magneticField: [0, 0, 0]
     },
