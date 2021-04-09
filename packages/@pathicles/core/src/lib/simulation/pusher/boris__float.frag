@@ -77,7 +77,7 @@ vec4 push_position(int p) {
 vec4 push_velocity(int p) {
 
   ParticleData particleData = getParticleData(p);
-  vec3 momentum;
+
 
   vec4 fourPosition = readVariable(ut_position, p, 0);
   vec4 fourVelocity = readVariable(ut_velocity, p, 0);
@@ -88,29 +88,35 @@ vec4 push_velocity(int p) {
   vec3 E = getE(intermediatePosition);
   vec3 B = getB(intermediatePosition);
 
-  momentum = velocity;
+  vec3 u = velocity;
 
   if (particleData.particleType > .1) {
 
     float chargeMassRatio = particleData.chargeMassRatio;
+
+    float hdtc_m = halfDeltaTOverC * chargeMassRatio;
+
+
     float charge = particleData.charge;
     float mass = particleData.mass;
-    momentum += 0.5 * halfDeltaTOverC * chargeMassRatio * E;
-    float gamma = sqrt(1.0 + dot(momentum, momentum));
+
+
+    u +=  hdtc_m * E;
+    float gamma = sqrt(1.0 + dot(u, u));
     vec3 t_ =  halfDeltaTOverC * charge  * c / (gamma * mass) * B;
-    vec3 w_ = momentum + cross(momentum, t_);
+    u += cross(u, t_);
     vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
-    momentum += cross(w_, s_);
-    momentum +=  halfDeltaTOverC * chargeMassRatio * E;
+    u += cross(u, s_);
+    u += hdtc_m * E;
   }
 
   if (boundingBoxSize > 0.) {
     vec3 reflect =
     step(boundingBoxCenter-vec3(boundingBoxSize), intermediatePosition)
     - step(boundingBoxCenter+vec3(boundingBoxSize), intermediatePosition);
-    momentum *= 2. * reflect * reflect - 1.;
+    u *= 2. * reflect * reflect - 1.;
   }
-  return vec4(momentum, gamma);
+  return vec4(u, gamma);
 }
 
 vec4 push(int p) {

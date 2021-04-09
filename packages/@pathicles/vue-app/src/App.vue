@@ -8,7 +8,7 @@
         option(value="story" ) STORY
         option(v-for="name of Object.keys(presets)" :value="name" :selected="name === presetName" ) {{name}}
   PathiclesStory(v-if="presetName === 'story'" :story="story")
-  pathicles(v-else :preset-name="presetName" :prerender="prerender" :click-to-interact="!printMode")
+  pathicles(v-else :preset-name="presetName" :prerender="prerender" :click-to-interact="false && !printMode")
 </template>
 
 <script>

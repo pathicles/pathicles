@@ -91,7 +91,17 @@ export class Simulation {
         type: 'float'
       })
     }
-
+    // console.log(
+    //   'particleChargesMassesChargeMassRatios',
+    //   particleTypes
+    //     .map((p) => [
+    //       PARTICLE_TYPES[p].charge__qe,
+    //       PARTICLE_TYPES[p].mass__eVc_2,
+    //       PARTICLE_TYPES[p].chargeMassRatio__Ckg_1,
+    //       p
+    //     ])
+    //     .flat()
+    // )
     this.model = {
       boundingBoxSize: model.boundingBoxSize,
       boundingBoxCenter: model.boundingBoxCenter,
@@ -103,6 +113,7 @@ export class Simulation {
         magneticField: model.interactions.magneticField
       }
     }
+    // console.log(this.model)
 
     this.log()
 

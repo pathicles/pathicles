@@ -31,12 +31,12 @@ export default {
       position: [
         -1.5,
         defaultConfig.view.pathicleWidth *
-          defaultConfig.view.pathicleRelativeHeight *
-          2 +
-          0.02,
+        defaultConfig.view.pathicleRelativeHeight *
+        2 +
+        0.02,
         0
       ],
-      direction: [0, 0.05, 1],
+      direction: [0, 2, 1],
       positionJitter: [0.0, 0.0, 0.2],
 
       gamma: 2.5
@@ -49,7 +49,7 @@ export default {
       elements: {
         l: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
-          l: 5
+          l: 20
         },
         d: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
@@ -57,7 +57,7 @@ export default {
           strength: 0.0
         }
       },
-      beamline: [],
+      beamline: ['l'],
       origin: {
         phi: 0,
         position: [0, 0.5, -9]

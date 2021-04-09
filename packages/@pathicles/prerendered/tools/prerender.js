@@ -186,16 +186,16 @@ const convertImagesSharp = async () => {
 
         let image_2 = await sharp(imgPath).resize(
           defaultWidth * 2,
-        defaultHeight * 2
-      )
-      // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
-      //   console.log(err, info)
-      // })
+          defaultHeight * 2
+        )
+        // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
+        //   console.log(err, info)
+        // })
 
-      qualities.forEach((quality) => {
-        image_1
-          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-          .toFile(
+        qualities.forEach((quality) => {
+          image_1
+            .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+            .toFile(
             imgPath
               .replace('orig', 'compressed@1x')
               .replace('.png', `_${quality}.jpg`),

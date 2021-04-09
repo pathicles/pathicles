@@ -57,7 +57,7 @@ export default {
     },
     clickToInteract: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data: function () {

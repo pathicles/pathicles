@@ -2,7 +2,7 @@ import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
 const quadLength = 1 // m
 const quadF = 1 // m
-const quadStrength = 1 / quadF / quadLength // m^-2
+const quadStrength = 0.5 / quadF / quadLength // m^-2
 
 export default {
   name: 'story-quadrupole',

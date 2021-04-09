@@ -28,7 +28,7 @@ describe('gyroRadius', () => {
 
     const velocity = velocity_squared.pow(Ratio.fromNumber(0.5))
 
-    console.log(velocity.toFixed(4))
+    // console.log(velocity.toFixed(4))
 
     const mass = Ratio.fromNumber(9.10938356e-31)
     const bField = new Ratio(1n, 100n)
