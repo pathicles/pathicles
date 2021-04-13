@@ -1,4 +1,4 @@
-import { DISTRIBUTIONS, particleByName } from '@pathicles/config'
+import { DISTRIBUTIONS, particleByName, C } from '@pathicles/config'
 import { boundedRandom } from '../utils/random'
 
 const functionalize = (x) => (typeof x == 'function' ? x : () => x)
@@ -91,24 +91,25 @@ export function ParticleCollection({
   })
 
   const fourVelocities = particles.map((particle, p) => {
-    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gammaFn({ p }))
+    const gamma = gammaFn({ p })
+
+    const beta = particle.mass__eVc_2 === 0 ? 1 : betaFromGamma(gamma)
 
     const jitteredDirection = directionFn({ p, localPositions })
 
-    // const jitteredDirection = direction
-
-    //   +
-    //     jitterDirection({
-    //   direction,
-    //   directionJitter
-    // }) //.map((d, i) => d * (Math.sign(localPositions[p][i]) || 1))
-
-    return [
-      beta * jitteredDirection[0],
-      beta * jitteredDirection[1],
-      beta * jitteredDirection[2],
-      gamma
-    ]
+    return particle.mass__eVc_2 === 0
+      ? [
+        C * jitteredDirection[0],
+        C * jitteredDirection[1],
+        C * jitteredDirection[2],
+        C
+      ]
+      : [
+        gamma * beta * C * jitteredDirection[0],
+        gamma * beta * C * jitteredDirection[1],
+        gamma * beta * C * jitteredDirection[2],
+        gamma * C
+      ]
   })
 
   // const fourMomenta = particles

@@ -59,7 +59,7 @@ export class VariableBuffers {
     this.load(this.initialData)
   }
 
-  toTypedArray(pingPong = this.pingPong) {
+  toTypedArray(pingPong = this.pingPong, precision = 3) {
     let float32Array
 
     if (this.numberType === 'uint8') {
@@ -91,7 +91,11 @@ export class VariableBuffers {
     }
 
     return {
-      float32Array
+      float32Array: Array.from(float32Array).map((d) =>
+        precision
+          ? Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
+          : d
+      )
     }
   }
 

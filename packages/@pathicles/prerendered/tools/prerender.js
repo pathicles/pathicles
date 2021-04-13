@@ -196,16 +196,16 @@ const convertImagesSharp = async () => {
           image_1
             .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
             .toFile(
-            imgPath
-              .replace('orig', 'compressed@1x')
-              .replace('.png', `_${quality}.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
-        image_2
-          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-          .toFile(
+              imgPath
+                .replace('orig', 'compressed@1x')
+                .replace('.png', `_${quality}.jpg`),
+              (err, info) => {
+                console.log(err, info)
+              }
+            )
+          image_2
+            .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+            .toFile(
             imgPath
               .replace('orig', 'compressed@2x')
               .replace('.png', `_${quality}.jpg`),

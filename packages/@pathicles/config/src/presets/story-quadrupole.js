@@ -2,7 +2,7 @@ import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
 const quadLength = 1 // m
 const quadF = 1 // m
-const quadStrength = 0.5 / quadF / quadLength // m^-2
+const quadStrength = 1000 //(2 * 0.5) / quadF / quadLength // m^-2
 
 export default {
   name: 'story-quadrupole',
@@ -21,7 +21,10 @@ export default {
       particleType: 'PROTON',
       direction: [0, 0, -1],
       position: [0, 1.5, 10],
-      gamma: 5
+      gamma: 2
+    },
+    interactions: {
+      magneticField: [0, 0.000000001, 0]
     },
 
     lattice: {

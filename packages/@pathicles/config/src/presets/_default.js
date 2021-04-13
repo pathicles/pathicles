@@ -5,7 +5,6 @@ export default {
   debug: {
     logPushing: false,
     logPerformance: true,
-    profile: true,
     showTextures: false,
     showTextureScale: 1
   },
@@ -14,17 +13,16 @@ export default {
     packFloat2UInt8: false,
     stepwise: false,
     prerender: true,
-    loops: 10,
+    loops: 1,
     mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
-    iterationsPerTick: 1,
-    iterations: 62,
+    // iterationCount: 62,
     iterationDurationOverC: 0.5,
     snapshotCount: 128
   },
 
   model: {
-    boundingBoxSize: -1,
+    boundingBoxSize: 1,
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
@@ -34,7 +32,7 @@ export default {
       gamma: () => 1.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
-      positionJitter: [0.0, 0.0, 0.5]
+      positionJitter: [0.0, 0.0, 0]
     },
     interactions: {
       particleInteraction: false,
@@ -72,7 +70,7 @@ export default {
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.002,
+    pathicleWidth: 0.001,
 
     showAxes: false,
     showVignette: true,

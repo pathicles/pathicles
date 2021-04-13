@@ -6,7 +6,7 @@ import pushBoris from './pusher/pathicles.push--boris'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
-import { PARTICLE_TYPES } from '@pathicles/config'
+import { PARTICLE_TYPES, C } from '@pathicles/config'
 import { isLittleEndian } from '../utils/little-endian'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 
@@ -27,19 +27,20 @@ export class Simulation {
       fourVelocities
     } = (this.initialData = new ParticleCollection(model.emitter))
 
-    // console.log(model.emitter.direction)
-    // console.log(fourPositions)
-    // console.log(fourVelocities)
-
     this.configuration.runner.numberType = this.configuration.runner
       .packFloat2UInt8
       ? 'uint8'
       : 'float'
 
-    this.configuration.runner.iterations =
-      this.configuration.runner.iterations > 0
-        ? this.configuration.runner.iterations
-        : snapshotCount - 1
+    this.configuration.runner.snapshotCount = snapshotCount
+    this.configuration.runner._iterationsPerSnapshot =
+      runner.iterationsPerSnapshot
+
+    this.configuration.runner._iterationsPerRun =
+      this.configuration.runner.iterationCount > 0
+        ? this.configuration.runner.iterationCount
+        : (this.configuration.runner.snapshotCount - 1) *
+        this.configuration.runner._iterationsPerSnapshot
 
     this.configuration.runner.littleEndian = isLittleEndian()
 
@@ -53,7 +54,7 @@ export class Simulation {
       ...this.configuration.runner,
       particleCount,
       snapshotCount,
-      iterations: this.configuration.runner.iterations,
+      iterations: this.configuration.runner._iterationsPerRun,
       particleTypes,
       position: new VariableBuffers(
         regl,
@@ -128,7 +129,7 @@ export class Simulation {
   push(n = 1, profile = false) {
     this.performanceLogger.start(`simulation.push (n=${n})`)
     this.pusher(n, profile)
-    this.log()
+    // this.log()
     this.performanceLogger.stop()
   }
 
@@ -150,22 +151,36 @@ export class Simulation {
   }
 
   dump(precision = 3) {
-    const logEntry = this.logEntry()
-    const position = Array.from(logEntry.position.float32Array).map((d) =>
-      precision
-        ? Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
-        : d
+    // const logEntry = this.logEntry()
+    // const position = Array.from(logEntry.position.float32Array).map((d) =>
+    //   precision
+    //     ? Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)
+    //     : d
+    // )
+
+    const packedPositions = this.variables.position.pack(
+      this.variables.position.toTypedArray().float32Array
     )
+    const packedVelocities = this.variables.position.pack(
+      this.variables.velocity.toTypedArray().float32Array
+    )
+
+    const velocityNorms = packedVelocities.map((p) =>
+      p.map((s) => s[3] * s[3] - s[0] * s[0] - s[1] * s[1] - s[2] * s[2])
+    )
+    const gammas = packedVelocities.map((p) => p.map((s) => s[3] / C))
+
     return JSON.parse(
       JSON.stringify({
         logEntry: this.logEntry(),
-        position,
-        packedPosition: this.variables.position.pack(
-          this.variables.position.toTypedArray().float32Array
-        ),
-        colorCorrections: this.colorCorrector.corrections,
-        configuration: this.configuration,
-        particleTypes: this.variables.particleTypes
+        // position,
+        packedPositions,
+        packedVelocities,
+        velocityNorms,
+        gammas
+        // colorCorrections: this.colorCorrector.corrections,
+        // configuration: this.configuration,
+        // particleTypes: this.variables.particleTypes
       })
     )
   }
@@ -177,6 +192,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.configuration.runner.iterations, true)
+    this.push(this.configuration.runner._iterationsPerRun, true)
   }
 }

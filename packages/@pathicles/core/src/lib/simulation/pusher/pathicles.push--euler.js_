@@ -255,7 +255,7 @@ export  function(regl, { variables, constants }) {
         snapshotCount: constants.variables.snapshotCount,
         particleCount: constants.model.particleCount,
         tick: iteration,
-        halfDeltaT: constants.halfDeltaTOverC,
+        halfDeltaT: constants.deltaTOverC,
 
         particleInteraction: constants.particleInteraction,
         electricFieldStrength: 0,

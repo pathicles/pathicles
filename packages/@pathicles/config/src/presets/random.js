@@ -17,30 +17,30 @@ export default {
   },
 
   runner: {
-    prerender: false,
+    prerender: true,
     loops: 0,
 
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerTick: 1,
     iterationsPerSnapshot: 1,
-    iterations: 1024,
-    snapshotCount: 32,
-    iterationDurationOverC: 0.1
+    iterationCount: 128,
+    snapshotCount: 16,
+    iterationDurationOverC: 0.05
   },
 
   model: {
-    boundingBoxSize: 1,
-    // boundingBoxCenter: [0, 2, 0],
+    boundingBoxSize: 0.5,
+    boundingBoxCenter: [0, 1, 0],
     emitter: {
       position: [0, 1, 0],
+      // direction: () => [0, 1, 1],
       direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
       // bunchShape: 'SQUARE_XZ',
       // bunchShape: 'SQUARE_XZ',
-      particleSeparation: 0.00001,
+      particleSeparation: 0.0001,
       // directionJitter: [1, 1, 1],
       // positionJitter: [0, 0, 0],
-      gamma: 2,
-      particleCount: 1024,
+      gamma: 1000,
+      particleCount: 16,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

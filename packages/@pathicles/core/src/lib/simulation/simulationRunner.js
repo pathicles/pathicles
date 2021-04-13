@@ -18,24 +18,13 @@ export const STATES = {
 export class SimulationRunner {
   constructor(
     simulation,
-    {
-      prerender = false,
-      iterations = -1,
-      iterationsPerTick = 1,
-      loops = 0,
-      mode = RUNNER_MODE.STEPWISE
-    },
+    { prerender = false, loops = 0, mode = RUNNER_MODE.STEPWISE },
     debug
   ) {
     this.performanceLogger = new PerformanceLogger(debug.logPerformance)
 
     this._simulation = simulation
     this._prerender = prerender
-    this._iterations =
-      iterations <= 0
-        ? this._simulation.variables.snapshotCount - 1
-        : iterations
-    this._iterationsPerTick = iterationsPerTick
 
     this._loopCountMax = loops
     this._isLooping = loops > 0
@@ -53,7 +42,7 @@ export class SimulationRunner {
   toggleMode() {
     this._mode =
       this._mode === RUNNER_MODE.STEPWISE
-        ? RUNNER_MODE.FRAMEWISE
+        ? RUNNER_MODE.NOBREAK
         : RUNNER_MODE.STEPWISE
   }
 
@@ -85,14 +74,19 @@ export class SimulationRunner {
       }
     }
     if (this.fsm.state === STATES.ACTIVE) {
-      if (this._simulation.variables.iteration > this._iterations - 1) {
+      if (
+        this._simulation.variables.iteration >
+        this._simulation.configuration.runner._iterationsPerRun - 1
+      ) {
         if (this._isLooping && this._loopCount <= this._loopCountMax) {
           this.fsm.state = 'restart'
         } else {
           this.fsm.state = STATES.PAUSED
         }
       } else {
-        this._simulation.push(this._iterationsPerTick)
+        this._simulation.push(
+          this._simulation.configuration.runner._iterationsPerSnapshot
+        )
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
           this.fsm.state = STATES.PAUSED
@@ -101,7 +95,7 @@ export class SimulationRunner {
     } else if (this.fsm.state === STATES.RESTART) {
       this._loopCount++
       this._simulation.reset()
-      this._simulation.push(this._iterationsPerTick)
+      this._simulation.push(this._iterationsPerSnapshot)
       this.fsm.state = this.fsm.state.replace(
         /restart/,
         this._mode === RUNNER_MODE.STEPWISE ? STATES.PAUSED : STATES.ACTIVE
@@ -109,6 +103,7 @@ export class SimulationRunner {
     }
     const tick_after = this._simulation.variables.iteration
     const changed = tick_after !== tick_before
+    // if (changed) console.log({ tick_after, tick_before })
     return { changed, tick: tick_after }
   }
 }

@@ -6,14 +6,13 @@ import { PerformanceLogger } from '../../utils/PerformanceLogger'
 
 export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
-
   performanceLogger.entries = []
 
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
     return regl({
-      profile: true,
+      profile: false,
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',
@@ -30,7 +29,7 @@ export default function (regl, { runner, variables, model }) {
         snapshotCount: variables.snapshotCount,
         particleCount: variables.particleCount,
         // iterationsPerSnapshot: variables.iterationsPerSnapshot,
-        halfDeltaTOverC: variables.iterationDurationOverC / 2,
+        deltaTOverC: variables.iterationDurationOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
         electricField: model.interactions.electricField || [0, 0, 0],
@@ -80,7 +79,20 @@ export default function (regl, { runner, variables, model }) {
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
   return (n = 1, profile = false) => {
+    // console.log(
+    //   'velocity',
+    //   JSON.stringify(
+    //     variables.velocity.pack(variables.velocity.toTypedArray().float32Array)
+    //   )
+    // )
+    // console.log(
+    //   'position',
+    //   JSON.stringify(
+    //     variables.position.pack(variables.position.toTypedArray().float32Array)
+    //   )
+    // )
     for (let i = 0; i < n; i++) {
+      // debugger
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
@@ -97,16 +109,19 @@ export default function (regl, { runner, variables, model }) {
         variables.particleCount *
         Math.min(
           snapshots +
-            variables.iteration -
-            snapshots * variables.iterationsPerSnapshot,
+          variables.iteration -
+          snapshots * variables.iterationsPerSnapshot,
           variables.snapshotCount - 1
         )
 
       const takeSnapshot =
-        variables.iterationsPerSnapshot !== 1 &&
-        variables.iteration % variables.iterationsPerSnapshot === 0
+        variables.iterationsPerSnapshot === 1 ||
+        variables.iteration % variables.iterationsPerSnapshot === 1
           ? 1
           : 0
+
+      // console.log('variables.iteration', variables.iteration)
+      // console.log('takeSnapshot', takeSnapshot)
       pushVelocity({
         iteration: variables.iteration,
         takeSnapshot
@@ -115,6 +130,23 @@ export default function (regl, { runner, variables, model }) {
         iteration: variables.iteration,
         takeSnapshot
       })
+
+      // console.log(
+      //   'velocity**',
+      //   JSON.stringify(
+      //     variables.velocity.pack(
+      //       variables.velocity.toTypedArray().float32Array
+      //     )
+      //   )
+      // )
+      // console.log(
+      //   'position**',
+      //   JSON.stringify(
+      //     variables.position.pack(
+      //       variables.position.toTypedArray().float32Array
+      //     )
+      //   )
+      // )
     }
 
     if (profile) {

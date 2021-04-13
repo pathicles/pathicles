@@ -16,7 +16,7 @@ export default {
     iterationsPerSnapshot: 1,
     snapshotCount: 64,
     iterationDurationOverC: 0.1,
-    iterations: 63
+    iterationCount: 63
   },
 
   model: {
@@ -24,10 +24,10 @@ export default {
       particleCount: 512,
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',
-      direction: [0, 0, 1],
+      // direction: [0, 0, 1],
       position: [0, 0.5, -5],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0],
+      // directionJitter: [0, 0, 0],
+      // positionJitter: [0, 0, 0],
       gamma: 1
     },
 

@@ -10,7 +10,7 @@ const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 uniform float boundingBoxSize;
-uniform float halfDeltaTOverC;
+uniform float deltaTOverC;
 uniform float particleInteraction;
 uniform int takeSnapshot;
 uniform int variableIdx;
@@ -63,14 +63,17 @@ vec4 push_position(int p) {
   vec3 position = fourPosition.xyz;
   float time  = fourPosition.w;
 
-  vec3 fourMomentum = readVariable(ut_velocity, p, 1).xyz;
-  vec3 nextMomentum = readVariable(ut_velocity, p, 0).xyz;
+  //  vec3 velocity = readVariable(ut_velocity, p, 1).xyz;
+  vec4 fourVelocity_current = readVariable(ut_velocity, p, 1);
+  vec4 fourVelocity_next = readVariable(ut_velocity, p, 0);
+  //  vec3 nextGamma = readVariable(ut_velocity, p, 0).xyz;
 
-  float nextTime = time + 2. * halfDeltaTOverC;
+  float nextTime = time + deltaTOverC;
 
   return (particleData.particleType < .1)
-  ? vec4(position + fourMomentum * halfDeltaTOverC  + nextMomentum * halfDeltaTOverC, nextTime)
-  : vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime);
+  ? vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime)
+  : vec4(position + fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
+  //  : vec4(position + velocity / sqrt(1. + dot(velocity, velocity)) * deltaTOverC + nextVelocity / sqrt(1. + dot(nextVelocity, nextVelocity)) * deltaTOverC, nextTime);
 }
 
 
@@ -79,44 +82,45 @@ vec4 push_velocity(int p) {
   ParticleData particleData = getParticleData(p);
 
 
-  vec4 fourPosition = readVariable(ut_position, p, 0);
+  vec4 fourPosition = readVariable(ut_position, p, 1);
   vec4 fourVelocity = readVariable(ut_velocity, p, 0);
-  vec3 velocity = fourVelocity.xyz;
-  float gamma = fourVelocity.w;
 
-  vec3 intermediatePosition = fourPosition.xyz + velocity * halfDeltaTOverC;
+  vec3 velocity = (particleData.particleType > .1)  ? fourVelocity.xyz / fourVelocity.w : fourVelocity.xyz;
+
+  vec3 intermediatePosition = fourPosition.xyz + .5 *  velocity * deltaTOverC;
   vec3 E = getE(intermediatePosition);
   vec3 B = getB(intermediatePosition);
 
-  vec3 u = velocity;
+  float gamma = 1.;
+  vec3 u = fourVelocity.xyz;
+  if (boundingBoxSize > 0.) {
+    vec3 reflect =
+    step(boundingBoxCenter-vec3(boundingBoxSize), fourPosition.xyz)
+    -step(boundingBoxCenter+vec3(boundingBoxSize), fourPosition.xyz);
+    //        u *= (2. * reflect * reflect - 1.);
+    if (fourPosition.x  < -1. || fourPosition.x  > 1.) u.x = -u.x;
+  }
 
   if (particleData.particleType > .1) {
 
     float chargeMassRatio = particleData.chargeMassRatio;
-
-    float hdtc_m = halfDeltaTOverC * chargeMassRatio;
-
-
-    float charge = particleData.charge;
-    float mass = particleData.mass;
+    float hdtc_m =   chargeMassRatio * deltaTOverC / c / 2.;
 
 
     u +=  hdtc_m * E;
-    float gamma = sqrt(1.0 + dot(u, u));
-    vec3 t_ =  halfDeltaTOverC * charge  * c / (gamma * mass) * B;
+
+    gamma = sqrt(1. + dot(u/c, u/c));
+
+    vec3 t_ =  hdtc_m  * B  / gamma;
     u += cross(u, t_);
-    vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
+    vec3 s_ = 2.0 / (1.0 + t_*t_) * t_;
     u += cross(u, s_);
     u += hdtc_m * E;
+    gamma = sqrt(1. + dot(u/c, u/c));
   }
 
-  if (boundingBoxSize > 0.) {
-    vec3 reflect =
-    step(boundingBoxCenter-vec3(boundingBoxSize), intermediatePosition)
-    - step(boundingBoxCenter+vec3(boundingBoxSize), intermediatePosition);
-    u *= 2. * reflect * reflect - 1.;
-  }
-  return vec4(u, gamma);
+
+  return vec4(u, gamma * c);
 }
 
 vec4 push(int p) {
@@ -141,10 +145,9 @@ void main () {
 
   vec4 value = (snapshot == 0)
   ? push(particle)
-  : (takeSnapshot == 1)
+  : (takeSnapshot == 0)
   ? readVariable(particle, snapshot)
   : readVariable(particle, snapshot-1);
-
 
   gl_FragColor =
   (fourComponentIndex == 0)

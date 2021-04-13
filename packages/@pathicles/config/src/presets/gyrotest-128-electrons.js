@@ -21,7 +21,7 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
-    iterations: 511,
+    iterationCount: 511,
     snapshotCount: 512,
     iterationDurationOverC: 1 / 10
   },

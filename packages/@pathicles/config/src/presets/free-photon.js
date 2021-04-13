@@ -1,11 +1,12 @@
 import defaultConfig from './_default'
-import { RUNNER_MODE } from '../constants'
+import { C, RUNNER_MODE } from '../constants'
 
 export default {
   name: 'free-photon',
 
   debug: {
-    logPushing: false
+    logPushing: true,
+    logPerformance: false
   },
 
   view: {
@@ -20,28 +21,30 @@ export default {
     prerender: false,
     loops: 0,
 
-    mode: RUNNER_MODE.NOBREAK,
+    // mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
-    iterations: 10,
+    iterationCount: 10,
     snapshotCount: 11,
     iterationDurationOverC: 0.1
   },
 
   model: {
+    boundingBoxSize: 0,
+    boundingBoxCenter: [0, 0, 0],
     emitter: {
       particleCount: 1,
       particleType: 'PHOTON',
-      direction: [0, 0, 1],
+      direction: [1, 2, 1],
       position: [
         0,
         (defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
-          2,
+        2,
         0
       ],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 1
+      gamma: 2
     },
 
     interactions: {

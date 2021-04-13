@@ -10,7 +10,7 @@ const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 uniform float boundingBoxSize;
-uniform float halfDeltaTOverC;
+uniform float deltaTOverC;
 uniform float particleInteraction;
 uniform int takeSnapshot;
 uniform int variableIdx;
@@ -71,16 +71,16 @@ vec4 push_position(int p) {
   vec3 fourMomentum = readVariable(ut_velocity, p, 1).xyz;
   vec3 nextMomentum = readVariable(ut_velocity, p, 0).xyz;
 
-  float nextTime = time + 2. * halfDeltaTOverC;
+  float nextTime = time + 2. * deltaTOverC;
 
   return (particleData.particleType < .1)
   // photon
-  ? vec4(position + fourMomentum * halfDeltaTOverC  + nextMomentum * halfDeltaTOverC, nextTime)
+  ? vec4(position + fourMomentum * deltaTOverC  + nextMomentum * deltaTOverC, nextTime)
   // massive particles
-  : vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * halfDeltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime);
+  : vec4(position + fourMomentum / sqrt(1. + dot(fourMomentum, fourMomentum)) * deltaTOverC + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * deltaTOverC, nextTime);
 }
 
-//  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * halfDeltaTOverC, nextTime)
+//  + nextMomentum / sqrt(1. + dot(nextMomentum, nextMomentum)) * deltaTOverC, nextTime)
 
 vec4 push_velocity(int p) {
 
@@ -92,7 +92,7 @@ vec4 push_velocity(int p) {
   vec3 velocity = fourVelocity.xyz;
   float gamma = fourVelocity.w;
 
-  vec3 intermediatePosition = fourPosition.xyz + velocity * halfDeltaTOverC;
+  vec3 intermediatePosition = fourPosition.xyz + velocity * deltaTOverC;
   vec3 E = getE(intermediatePosition);
   vec3 B = getB(intermediatePosition);
 
@@ -104,13 +104,13 @@ vec4 push_velocity(int p) {
     float chargeMassRatio = particleData.chargeMassRatio;
     float charge = particleData.charge;
     float mass = particleData.mass;
-    momentum += 0.5 * halfDeltaTOverC * chargeMassRatio * E;
+    momentum += 0.5 * deltaTOverC * chargeMassRatio * E;
     float gamma = sqrt(1.0 + dot(momentum, momentum));
-    vec3 t_ =  halfDeltaTOverC * charge  * c / (gamma * mass) * B;
+    vec3 t_ =  deltaTOverC * charge  * c / (gamma * mass) * B;
     vec3 w_ = momentum + cross(momentum, t_);
     vec3 s_ = 2.0 / (1.0 + dot(t_, t_)) * t_;
     momentum += cross(w_, s_);
-    momentum +=  halfDeltaTOverC * chargeMassRatio * E;
+    momentum +=  deltaTOverC * chargeMassRatio * E;
   }
 
   if (boundingBoxSize > 0.) {
@@ -163,10 +163,10 @@ void main () {
   initLatticeData();
 
   vec4 value = (snapshot == 0)
-    ? push(particle)
-    : (takeSnapshot == 1)
-      ? readVariable(particle, snapshot)
-      : readVariable(particle, snapshot-1);
+  ? push(particle)
+  : (takeSnapshot == 0)
+  ? readVariable(particle, snapshot)
+  : readVariable(particle, snapshot-1);
 
 
 

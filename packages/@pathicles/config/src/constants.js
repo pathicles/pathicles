@@ -12,3 +12,5 @@ export const LATTICE_ELEMENT_TYPES = {
   SBEN,
   QUAD
 }
+
+export const C = 2.99792458e8

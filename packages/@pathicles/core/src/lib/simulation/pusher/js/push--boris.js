@@ -26,7 +26,7 @@ export default function (regl, { runner, variables, model }) {
         snapshotCount: variables.snapshotCount,
         particleCount: variables.particleCount,
         iterationsPerSnapshot: variables.iterationsPerSnapshot,
-        halfDeltaTOverC: variables.iterationDurationOverC / 2,
+        deltaTOverC: variables.iterationDurationOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
         electricField: model.interactions.electricField || [0, 0, 0],

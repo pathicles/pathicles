@@ -5,21 +5,20 @@ export default {
   name: 'spiral',
   view: {
     camera: {
-      center: [0, 2, 0],
-      distance: 10,
+      center: [0, 0, 0],
+      distance: 0.1,
       theta: 90 * (Math.PI / 180),
       phi: 2 * (Math.PI / 180)
     }
   },
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 1,
-    iterationsPerTick: 1,
-    iterationDurationOverC: 0.22,
-    snapshotCount: 512,
-    iterations: 500
+    iterationsPerSnapshot: 10,
+    iterationDurationOverC: 0.04,
+    snapshotCount: 512
+    // iterationCount: 63
   },
 
   model: {
@@ -36,10 +35,10 @@ export default {
         0.02,
         0
       ],
-      direction: [0, 2, 1],
-      positionJitter: [0.0, 0.0, 0.2],
+      direction: [0, 0.1, 1],
+      positionJitter: [0.0, 0.0, 0.1],
 
-      gamma: 2.5
+      gamma: 1.1
     },
     interactions: {
       magneticField: [0, 0.001, 0],
