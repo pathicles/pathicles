@@ -45,9 +45,9 @@ export default {
       position: [
         -1.5,
         defaultConfig.view.pathicleWidth *
-        defaultConfig.view.pathicleRelativeHeight *
-        2 +
-        0.02,
+          defaultConfig.view.pathicleRelativeHeight *
+          2 +
+          0.02,
         0
       ],
       directionJitter: [0, 0, 0],

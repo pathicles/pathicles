@@ -36,8 +36,8 @@ export default {
         0,
         (defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
-        2 +
-        0.01,
+          2 +
+          0.01,
         0
       ],
       direction: [0.4, 0.2, 1],
