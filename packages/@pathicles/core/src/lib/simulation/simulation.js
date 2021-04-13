@@ -40,7 +40,7 @@ export class Simulation {
       this.configuration.runner.iterationCount > 0
         ? this.configuration.runner.iterationCount
         : (this.configuration.runner.snapshotCount - 1) *
-        this.configuration.runner._iterationsPerSnapshot
+          this.configuration.runner._iterationsPerSnapshot
 
     this.configuration.runner.littleEndian = isLittleEndian()
 

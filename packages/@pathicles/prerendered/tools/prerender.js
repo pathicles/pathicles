@@ -206,16 +206,16 @@ const convertImagesSharp = async () => {
           image_2
             .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
             .toFile(
-            imgPath
-              .replace('orig', 'compressed@2x')
-              .replace('.png', `_${quality}.jpg`),
-            // .replace('.png', `.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
+              imgPath
+                .replace('orig', 'compressed@2x')
+                .replace('.png', `_${quality}.jpg`),
+              // .replace('.png', `.jpg`),
+              (err, info) => {
+                console.log(err, info)
+              }
+            )
 
-        image_1
+          image_1
           .toFormat('webp', { quality, progressive: true, optimiseScans: true })
           .toFile(
             imgPath
