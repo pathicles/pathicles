@@ -99,17 +99,17 @@ export function ParticleCollection({
 
     return particle.mass__eVc_2 === 0
       ? [
-        C * jitteredDirection[0],
-        C * jitteredDirection[1],
-        C * jitteredDirection[2],
-        C
-      ]
+          C * jitteredDirection[0],
+          C * jitteredDirection[1],
+          C * jitteredDirection[2],
+          C
+        ]
       : [
-        gamma * beta * C * jitteredDirection[0],
-        gamma * beta * C * jitteredDirection[1],
-        gamma * beta * C * jitteredDirection[2],
-        gamma * C
-      ]
+          gamma * beta * C * jitteredDirection[0],
+          gamma * beta * C * jitteredDirection[1],
+          gamma * beta * C * jitteredDirection[2],
+          gamma * C
+        ]
   })
 
   // const fourMomenta = particles

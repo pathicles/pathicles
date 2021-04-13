@@ -95,7 +95,7 @@ export default {
       default: 2
     }
   },
-  data: function() {
+  data: function () {
     return {
       // story: JSON.parse(JSON.stringify(this.story)),
       showInfoInternal: this.showInfo,

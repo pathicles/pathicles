@@ -109,8 +109,8 @@ export default function (regl, { runner, variables, model }) {
         variables.particleCount *
         Math.min(
           snapshots +
-          variables.iteration -
-          snapshots * variables.iterationsPerSnapshot,
+            variables.iteration -
+            snapshots * variables.iterationsPerSnapshot,
           variables.snapshotCount - 1
         )
 

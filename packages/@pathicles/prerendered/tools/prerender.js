@@ -174,56 +174,56 @@ const imagePaths = async () => {
 }
 
 const convertImagesSharp = async () => {
-    // const qualities = [40]
-    const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
+  // const qualities = [40]
+  const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
 
-    await Promise.all(
-      (await imagePaths()).map(async (imgPath) => {
-        let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
-        //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
-        //     console.log(err, info)
-        //   })
+  await Promise.all(
+    (await imagePaths()).map(async (imgPath) => {
+      let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
+      //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
+      //     console.log(err, info)
+      //   })
 
-        let image_2 = await sharp(imgPath).resize(
-          defaultWidth * 2,
-          defaultHeight * 2
-        )
-        // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
-        //   console.log(err, info)
-        // })
+      let image_2 = await sharp(imgPath).resize(
+        defaultWidth * 2,
+        defaultHeight * 2
+      )
+      // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
+      //   console.log(err, info)
+      // })
 
-        qualities.forEach((quality) => {
-          image_1
-            .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-            .toFile(
-              imgPath
-                .replace('orig', 'compressed@1x')
-                .replace('.png', `_${quality}.jpg`),
-              (err, info) => {
-                console.log(err, info)
-              }
-            )
-          image_2
-            .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-            .toFile(
-              imgPath
-                .replace('orig', 'compressed@2x')
-                .replace('.png', `_${quality}.jpg`),
-              // .replace('.png', `.jpg`),
-              (err, info) => {
-                console.log(err, info)
-              }
-            )
+      qualities.forEach((quality) => {
+        image_1
+          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@1x')
+              .replace('.png', `_${quality}.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
+        image_2
+          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@2x')
+              .replace('.png', `_${quality}.jpg`),
+            // .replace('.png', `.jpg`),
+            (err, info) => {
+              console.log(err, info)
+            }
+          )
 
-          image_1
-            .toFormat('webp', { quality, progressive: true, optimiseScans: true })
-            .toFile(
-              imgPath
-                .replace('orig', 'compressed@1x')
-                .replace('.png', `_${quality}.webp`),
-              (err, info) => {
-                console.log(err, info)
-              }
+        image_1
+          .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+          .toFile(
+            imgPath
+              .replace('orig', 'compressed@1x')
+              .replace('.png', `_${quality}.webp`),
+            (err, info) => {
+              console.log(err, info)
+            }
           )
         image_2
           .toFormat('webp', { quality, progressive: true, optimiseScans: true })

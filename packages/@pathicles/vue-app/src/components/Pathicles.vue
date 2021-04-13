@@ -140,9 +140,9 @@ export default {
         saveCanvas(
           this.reglInstance.regl._gl.canvas,
           'pathicles' +
-          (this.reglInstance.presetName
-            ? '--' + this.reglInstance.presetName
-            : '')
+            (this.reglInstance.presetName
+              ? '--' + this.reglInstance.presetName
+              : '')
         )
       } else if (payload.keyString === 'N') {
         // n for next
