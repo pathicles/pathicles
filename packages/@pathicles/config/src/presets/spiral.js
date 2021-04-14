@@ -5,18 +5,18 @@ export default {
   name: 'spiral',
   view: {
     camera: {
-      center: [0, 0, 0],
-      distance: 0.1,
+      center: [0, 1, 0],
+      distance: 1,
       theta: 90 * (Math.PI / 180),
-      phi: 2 * (Math.PI / 180)
+      phi: 1 * (Math.PI / 180)
     }
   },
   runner: {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 10,
-    iterationDurationOverC: 0.04,
+    iterationsPerSnapshot: 50,
+    iterationDurationOverC: 0.01,
     snapshotCount: 512
     // iterationCount: 63
   },
@@ -30,9 +30,9 @@ export default {
       position: [
         -1.5,
         defaultConfig.view.pathicleWidth *
-        defaultConfig.view.pathicleRelativeHeight *
-        2 +
-        0.02,
+          defaultConfig.view.pathicleRelativeHeight *
+          2 +
+          0.02,
         0
       ],
       direction: [0, 0.1, 1],

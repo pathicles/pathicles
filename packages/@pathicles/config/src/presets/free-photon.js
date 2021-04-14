@@ -23,27 +23,27 @@ export default {
 
     // mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 1,
-    iterationCount: 10,
-    snapshotCount: 11,
-    iterationDurationOverC: 0.1
+    iterationCount: 511,
+    snapshotCount: 512,
+    iterationDurationOverC: 0.05
   },
 
   model: {
-    boundingBoxSize: 0,
+    boundingBoxSize: 1,
     boundingBoxCenter: [0, 0, 0],
     emitter: {
       particleCount: 1,
-      particleType: 'PHOTON',
-      direction: [1, 2, 1],
+      particleType: 'ELECTRON',
+      direction: [0.3, 0.5, 0.1],
       position: [
         0,
         (defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
-        2,
+          2,
         0
       ],
       directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0],
+      positionJitter: [0, 1, 0],
       gamma: 2
     },
 

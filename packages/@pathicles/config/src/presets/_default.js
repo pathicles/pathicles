@@ -11,18 +11,17 @@ export default {
   runner: {
     enabled: true,
     packFloat2UInt8: false,
-    stepwise: false,
-    prerender: true,
-    loops: 1,
+    prerender: false,
+    loops: 5,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 1,
-    // iterationCount: 62,
-    iterationDurationOverC: 0.5,
-    snapshotCount: 128
+    iterationsPerSnapshot: 50,
+    iterationCount: 630 * 10,
+    iterationDurationOverC: 0.01,
+    snapshotCount: 32
   },
 
   model: {
-    boundingBoxSize: 1,
+    boundingBoxSize: 0,
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',

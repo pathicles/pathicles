@@ -10,8 +10,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import pkg from './package.json'
 
 const config: UserConfig = {
-  alias: {
-    '/~/': `${path.resolve(__dirname, 'src')}/`
+  resolve: {
+    alias: {
+      '/~/': `${path.resolve(__dirname, 'src')}/`
+    }
   },
 
   server: {

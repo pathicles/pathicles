@@ -70,10 +70,24 @@ vec4 push_position(int p) {
 
   float nextTime = time + deltaTOverC;
 
-  return (particleData.particleType < .1)
-  ? vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime)
-  : vec4(position + fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
-  //  : vec4(position + velocity / sqrt(1. + dot(velocity, velocity)) * deltaTOverC + nextVelocity / sqrt(1. + dot(nextVelocity, nextVelocity)) * deltaTOverC, nextTime);
+  vec4 next = vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
+
+
+
+  if (boundingBoxSize > 0.) {
+      vec3 reflect = step(boundingBoxCenter-vec3(boundingBoxSize), next.xyz)-step(boundingBoxCenter+vec3(boundingBoxSize), next.xyz);
+            next.xyz -=   reflect*boundingBoxSize;
+//    if (next.x  < -1.) {
+//      next.x += 2.;
+//      next.w = -10.;
+//    }
+//    if (next.x  > 1.) next.x -= 2.;
+  }
+  return next;
+//  return (particleData.particleType < .1)
+//  ? vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime)
+//  : vec4(position + fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
+//  //  : vec4(position + velocity / sqrt(1. + dot(velocity, velocity)) * deltaTOverC + nextVelocity / sqrt(1. + dot(nextVelocity, nextVelocity)) * deltaTOverC, nextTime);
 }
 
 
@@ -93,13 +107,7 @@ vec4 push_velocity(int p) {
 
   float gamma = 1.;
   vec3 u = fourVelocity.xyz;
-  if (boundingBoxSize > 0.) {
-    vec3 reflect =
-    step(boundingBoxCenter-vec3(boundingBoxSize), fourPosition.xyz)
-    -step(boundingBoxCenter+vec3(boundingBoxSize), fourPosition.xyz);
-    //        u *= (2. * reflect * reflect - 1.);
-    if (fourPosition.x  < -1. || fourPosition.x  > 1.) u.x = -u.x;
-  }
+
 
   if (particleData.particleType > .1) {
 

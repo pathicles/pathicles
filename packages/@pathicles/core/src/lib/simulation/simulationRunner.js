@@ -103,7 +103,7 @@ export class SimulationRunner {
     }
     const tick_after = this._simulation.variables.iteration
     const changed = tick_after !== tick_before
-    // if (changed) console.log({ tick_after, tick_before })
+    if (changed) console.log({ state: this.fsm.state, tick_after, tick_before })
     return { changed, tick: tick_after }
   }
 }

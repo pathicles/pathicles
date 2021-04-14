@@ -17,18 +17,18 @@ export default {
   },
 
   runner: {
-    prerender: true,
+    prerender: false,
     loops: 0,
 
-    mode: RUNNER_MODE.NOBREAK,
+    mode: RUNNER_MODE.STEPWISE,
     iterationsPerSnapshot: 1,
     iterationCount: 128,
-    snapshotCount: 16,
+    snapshotCount: 32,
     iterationDurationOverC: 0.05
   },
 
   model: {
-    boundingBoxSize: 0.5,
+    boundingBoxSize: 0,
     boundingBoxCenter: [0, 1, 0],
     emitter: {
       position: [0, 1, 0],
