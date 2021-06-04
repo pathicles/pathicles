@@ -1,11 +1,13 @@
+import { LATTICE_ELEMENT_TYPES } from '../constants'
+
 export default {
   name: 'story-electric',
   view: {
     camera: {
       center: [-0, 1.5, 0],
-      distance: 1,
-      theta: 0 * (-30 / 360) * 2 * Math.PI,
-      phi: 0 * (-1 / 360) * 2 * Math.PI
+      distance: 8,
+      phi: (15 / 360) * 2 * Math.PI,
+      theta: (-45 / 360) * 2 * Math.PI
     }
   },
 
@@ -18,13 +20,23 @@ export default {
     },
 
     interactions: {
-      electricField: [0, 0, -1e-11],
+      electricField: [0, 0, -0],
       particleInteraction: false,
-      magneticField: [0, 0, 0]
+      magneticField: [0, 0.0, 0]
     },
     lattice: {
-      elements: {},
-      beamline: [],
+      elements: {
+        l: {
+          type: LATTICE_ELEMENT_TYPES.DRIF,
+          l: 7
+        },
+        e: {
+          type: LATTICE_ELEMENT_TYPES.ESTA,
+          l: 2,
+          strength: -1e5
+        }
+      },
+      beamline: ['l', 'e', 'l'],
       origin: {
         phi: 0,
         position: [0, 1.5, -8]

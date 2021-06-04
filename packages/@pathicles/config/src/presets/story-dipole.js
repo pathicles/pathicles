@@ -4,17 +4,17 @@ export default {
   name: 'story-dipole',
   view: {
     camera: {
-      center: [-0, 1.5, 0],
-      distance: 5,
-      theta: (-3 / 360) * 2 * Math.PI,
-      phi: (5 / 360) * 2 * Math.PI
+      center: [-0, 0, 0],
+      distance: 15,
+      theta: (0 / 360) * 2 * Math.PI,
+      phi: (80 / 360) * 2 * Math.PI
     }
   },
 
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      position: [0, 1.5, -7],
+      position: [-1, 0, -2.25 * 2],
       direction: [1, 0, 0]
     },
     interactions: {
@@ -22,10 +22,6 @@ export default {
     },
     lattice: {
       elements: {
-        l: {
-          type: LATTICE_ELEMENT_TYPES.DRIF,
-          l: 8
-        },
         l1: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 2
@@ -33,7 +29,8 @@ export default {
         d1: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
-          strength: -0.0001
+          strength: -0.001,
+          angle: (2 * Math.PI) / 8
         }
       },
       // beamline: ['d1'],
@@ -48,12 +45,17 @@ export default {
         'd1',
         'l1',
         'd1',
-        'l1'
+        'l1',
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1'
       ],
       // beamline: [],
       origin: {
-        phi: (90 / 360) * 2 * Math.PI,
-        position: [0, 1, -10]
+        phi: (-90 / 360) * 2 * Math.PI,
+        position: [-1, 0, -2.25 * 2]
       }
     }
   }

@@ -11,10 +11,11 @@ export const LatticeElementTypes = {
 const LatticeElementTypesArray = [DRIF, SBEN, QUAD]
 
 const colors = {
-  DRIF: [0.2, 0.2, 0.2],
-  QUAD: [0.17, 0.03, 0.02],
-  QUAD1: [0.27, 0.13, 0.12],
-  SBEN: [0.6, 0.3, 0]
+  DRIF: [0.3, 0.3, 0.3],
+  QUAD: [0.5, 0.5, 0.0],
+  QUAD1: [0.9, 0.5, 0.0],
+  SBEN: [0.5, 0, 0],
+  ESTA: [0, 0.8, 0]
 }
 
 export class Lattice {
@@ -88,21 +89,25 @@ export class Lattice {
         z + Math.cos(phi_half) * element.l
       ]
 
-      const middle = [(start[0] + end[0]) / 2, y, (start[2] + end[2]) / 2]
+      const middle = [(start[0] + end[0]) / 2, 0.1, (start[2] + end[2]) / 2]
       ;[x, y, z] = end
       phi = element.angle ? phi + element.angle : phi
       return {
         translation: middle,
         phi: phi_half,
-        //scale: [1, 0.15, element.l - 0.2 - (element.type === 'SBEN' ? 0.4 : 0)]
-        scale: [1, 1, 1]
+        scale: [
+          element.type === 'DRIF' ? 0.25 : 0.5,
+          0.2,
+          element.l - 0.2 - (element.type === 'SBEN' ? 0 : 0)
+        ]
+        // scale: [1, 1, 1]
       }
     })
   }
 
   get colors() {
     return this.beamline.map((element) => {
-      if (element.type === LatticeElementTypes.QUAD && element.k1 < 0)
+      if (element.type === LatticeElementTypes.QUAD && element.strength < 0)
         return colors['QUAD1']
       return colors[element.type]
     })

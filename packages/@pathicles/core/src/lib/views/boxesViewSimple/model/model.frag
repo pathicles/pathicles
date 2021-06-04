@@ -95,9 +95,6 @@ void main () {
   directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
   directionalLights[1] = DirectionalLight(shadowDirection+vec3(-5., 0., 5.), vec3(1.), .15);
   directionalLights[2] = DirectionalLight(shadowDirection+vec3(5., 0., -5.), vec3(1.), .15);
-//  directionalLights[3] = DirectionalLight(vec3(shadowDirection.x, -shadowDirection.y, shadowDirection.z), vec3(.5), .15);
-
-  //  vec3 edge = edger(vUv, vScale, 0. * pathicleWidth, vNormalOrig)   * (vec3(.5 * smoothstep(5., 2., length(v_position-eye))));
   vec3 edgedColor = vColor;
   vec3 finalColor = ambientLightAmount * vColor;
 

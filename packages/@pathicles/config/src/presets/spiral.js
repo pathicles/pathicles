@@ -53,7 +53,7 @@ export default {
         d: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 10,
-          strength: 0.0
+          strength: 1.0
         }
       },
       beamline: ['l'],

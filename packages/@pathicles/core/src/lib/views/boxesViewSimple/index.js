@@ -1,12 +1,14 @@
 import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
+import drawLatticeCommands from './lattice/drawLatticeCommands'
 import { Shadow } from './shadow/Shadow'
-// import { drawAxesCommand } from './axes'
+import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 import { PerformanceLogger } from '../../utils/PerformanceLogger'
+import { Lattice } from '../../simulation/lattice/lattice'
 
 export class BoxesViewSimple {
-  constructor(regl, { runner, variables, view, debug }) {
+  constructor(regl, { runner, variables, model, view, debug }) {
     this.regl = regl
     this.performanceLogger = new PerformanceLogger(debug.logPerformance)
 
@@ -38,8 +40,18 @@ export class BoxesViewSimple {
       this.shadow
     )
     this.drawStage = drawStageCommands(regl, view, this.shadow)
+    this.drawLattice = drawLatticeCommands(
+      regl,
+      {
+        runner,
+        model,
+        view
+      },
+      this.shadow
+    )
+    console.log(this.drawLattice)
 
-    // this.drawAxis = drawAxesCommand(regl, 0.5)
+    this.drawAxis = drawAxesCommand(regl, 0.5)
     this.drawVignette = drawVignetteCommandBuilder(regl)
   }
 
@@ -74,6 +86,7 @@ export class BoxesViewSimple {
           { axis: [0, 0, 1] }
         ])
 
+      this.drawLattice.lighting(props)
       this.config.isStageVisible && this.drawStage.lighting(props)
       this.drawModel.lighting(props)
       this.config.showVignette && this.drawVignette.lighting(props)

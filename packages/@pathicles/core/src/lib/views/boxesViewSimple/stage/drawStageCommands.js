@@ -4,6 +4,7 @@ import { createPlane } from './plane'
 
 export default function (regl, view, shadow) {
   const stage = createPlane(view.stageGrid.size, view.stageGrid.size)
+
   const command = (mode) => {
     return regl({
       blend: {

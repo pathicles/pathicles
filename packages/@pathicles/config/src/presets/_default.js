@@ -14,8 +14,8 @@ export default {
     prerender: false,
     loops: 5,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 50,
-    iterationCount: 630 * 10,
+    iterationsPerSnapshot: 20,
+    iterationCount: 32 * 150,
     iterationDurationOverC: 0.01,
     snapshotCount: 32
   },
@@ -25,7 +25,7 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
+      bunchShape: 'SPIRAL_XY',
       particleCount: 121,
       particleSeparation: 0.025,
       gamma: () => 1.25,
@@ -57,7 +57,7 @@ export default {
     diffuseLightAmount: 0.5,
 
     stageGrid: {
-      y: 0,
+      y: -0,
       size: 18
     },
 
@@ -71,7 +71,7 @@ export default {
     pathicleRelativeHeight: 5,
     pathicleWidth: 0.001,
 
-    showAxes: false,
+    showAxes: true,
     showVignette: true,
     viewRange: [0, 1],
 

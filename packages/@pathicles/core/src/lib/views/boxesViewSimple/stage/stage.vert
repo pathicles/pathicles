@@ -19,9 +19,8 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 void main () {
   vUv = 0. * uv ;
-  vPosition = position + uOffset;
 
-  vec4 worldPosition = vec4(position, 1.0);
+  vec4 worldPosition = vec4(position + uOffset, 1.0);
   vPosition = worldPosition.xyz;
   vShadowCoord = (texUnitConverter * shadowProjectionMatrix * shadowViewMatrix * worldPosition).xyz;
 
