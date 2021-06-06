@@ -1,8 +1,8 @@
 import vert from './boris.vert'
 import frag__float from './boris__float.frag'
 import frag__uint from './boris__uint.frag'
-import { latticeChunk } from '../lattice/lattice.gsls.js'
-import { PerformanceLogger } from '../../utils/PerformanceLogger'
+import { latticeChunk } from '../../lattice/lattice.gsls.js'
+import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
 export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
@@ -28,7 +28,6 @@ export default function (regl, { runner, variables, model }) {
         resolution: [variables.snapshotCount * 4, variables.particleCount],
         snapshotCount: variables.snapshotCount,
         particleCount: variables.particleCount,
-        // iterationsPerSnapshot: variables.iterationsPerSnapshot,
         deltaTOverC: variables.iterationDurationOverC,
 
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
@@ -37,7 +36,6 @@ export default function (regl, { runner, variables, model }) {
 
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        // iteration: regl.prop('iteration'),
         takeSnapshot: regl.prop('takeSnapshot'),
 
         variableIdx: variableSlot,
@@ -79,28 +77,10 @@ export default function (regl, { runner, variables, model }) {
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
   return (n = 1, profile = false) => {
-    // console.log(
-    //   'velocity',
-    //   JSON.stringify(
-    //     variables.velocity.pack(variables.velocity.toTypedArray().float32Array)
-    //   )
-    // )
-    // console.log(
-    //   'position',
-    //   JSON.stringify(
-    //     variables.position.pack(variables.position.toTypedArray().float32Array)
-    //   )
-    // )
     for (let i = 0; i < n; i++) {
-      // debugger
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
       variables.velocity.pingPong = variables.iteration % 2
-
-      // const z = variables.iteration * variables.iterationDurationOverC
-      // variables.referencePoint =
-      //   model.lattice.beamline.length &&
-      //   model.lattice.beamline[model.lattice.segmentIndexForZ(z)].start
 
       const snapshots = Math.floor(
         variables.iteration / variables.iterationsPerSnapshot
@@ -120,8 +100,6 @@ export default function (regl, { runner, variables, model }) {
           ? 1
           : 0
 
-      // console.log('variables.iteration', variables.iteration)
-      // console.log('takeSnapshot', takeSnapshot)
       pushVelocity({
         iteration: variables.iteration,
         takeSnapshot
@@ -130,23 +108,6 @@ export default function (regl, { runner, variables, model }) {
         iteration: variables.iteration,
         takeSnapshot
       })
-
-      // console.log(
-      //   'velocity**',
-      //   JSON.stringify(
-      //     variables.velocity.pack(
-      //       variables.velocity.toTypedArray().float32Array
-      //     )
-      //   )
-      // )
-      // console.log(
-      //   'position**',
-      //   JSON.stringify(
-      //     variables.position.pack(
-      //       variables.position.toTypedArray().float32Array
-      //     )
-      //   )
-      // )
     }
 
     if (profile) {

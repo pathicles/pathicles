@@ -1,7 +1,8 @@
 'use strict'
 
 import { ParticleCollection } from '../particle-collection/particle-collection'
-import pushBoris from './pusher/pathicles.push--boris'
+import pushBorisGLSL from './pusher/glsl/push--boris'
+import pushBorisJS from './pusher/js/push--boris'
 
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
@@ -20,12 +21,8 @@ export class Simulation {
     this.configuration = { model, runner, debug }
 
     const { snapshotCount } = runner
-    const {
-      particleCount,
-      particleTypes,
-      fourPositions,
-      fourVelocities
-    } = (this.initialData = new ParticleCollection(model.emitter))
+    const { particleCount, particleTypes, fourPositions, fourVelocities } =
+      (this.initialData = new ParticleCollection(model.emitter))
 
     this.configuration.runner.numberType = this.configuration.runner
       .packFloat2UInt8
@@ -92,17 +89,7 @@ export class Simulation {
         type: 'float'
       })
     }
-    // console.log(
-    //   'particleChargesMassesChargeMassRatios',
-    //   particleTypes
-    //     .map((p) => [
-    //       PARTICLE_TYPES[p].charge__qe,
-    //       PARTICLE_TYPES[p].mass__eVc_2,
-    //       PARTICLE_TYPES[p].chargeMassRatio__Ckg_1,
-    //       p
-    //     ])
-    //     .flat()
-    // )
+
     this.model = {
       boundingBoxSize: model.boundingBoxSize,
       boundingBoxCenter: model.boundingBoxCenter,
@@ -114,15 +101,22 @@ export class Simulation {
         magneticField: model.interactions.magneticField
       }
     }
-    // console.log(this.model)
 
     this.log()
 
-    this.pusher = pushBoris(this._regl, {
-      runner: this.configuration.runner,
-      variables: this.variables,
-      model: this.model
-    })
+    this.pusher =
+      this.configuration.runner.pusher === 'glsl'
+        ? pushBorisGLSL(this._regl, {
+            runner: this.configuration.runner,
+            variables: this.variables,
+            model: this.model
+          })
+        : pushBorisJS(this._regl, {
+            runner: this.configuration.runner,
+            variables: this.variables,
+            model: this.model
+          })
+
     this.performanceLogger.stop()
   }
 

@@ -9,6 +9,7 @@ export default {
     showTextureScale: 1
   },
   runner: {
+    pusher: 'glsl',
     enabled: true,
     packFloat2UInt8: false,
     prerender: false,
