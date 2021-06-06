@@ -14,7 +14,7 @@ BeamlineElement getClosestBeamlineElement(vec3 position) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
 
     BeamlineElement bl = getBeamlineElement(float(i));
-    float currentLength = length(position - (bl.start+bl.end)/2.) ;
+    float currentLength = min(length(position - bl.start), length(position - bl.end));
     if (currentLength < bestLength) {
 
       bestIndex = i;

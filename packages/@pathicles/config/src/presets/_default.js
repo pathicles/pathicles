@@ -3,8 +3,8 @@ import { RUNNER_MODE } from '../constants'
 export default {
   name: 'default',
   debug: {
-    logPushing: false,
-    logPerformance: true,
+    logPushing: true,
+    logPerformance: false,
     showTextures: false,
     showTextureScale: 1
   },
@@ -13,7 +13,7 @@ export default {
     packFloat2UInt8: false,
     prerender: false,
     loops: 5,
-    mode: RUNNER_MODE.NOBREAK,
+    mode: RUNNER_MODE.STEPWISE,
     iterationsPerSnapshot: 20,
     iterationCount: 32 * 150,
     iterationDurationOverC: 0.01,
@@ -27,8 +27,8 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleCount: 121,
-      particleSeparation: 0.025,
-      gamma: () => 1.25,
+      particleSeparation: 0.01,
+      gamma: () => 2.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
       positionJitter: [0.0, 0.0, 0]

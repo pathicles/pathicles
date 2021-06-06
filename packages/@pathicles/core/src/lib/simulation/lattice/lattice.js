@@ -143,7 +143,7 @@ export class Lattice {
             ${LatticeElementTypesArray.indexOf(v.type)},
             ${v.strength ? v.strength.toFixed(10) : '0.'})`
       )
-      .join(',')
+      .join(';')
   }
 
   getClosestBeamlineElement(position) {

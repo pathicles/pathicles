@@ -24,12 +24,12 @@ export default {
       particleCount: 900,
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleSeparation: 0.5,
+      // particleSeparation: 0.25,
       direction: [0, 0, 1],
       position: [0, 1, -5],
       directionJitter: [0, 0, 0],
       positionJitter: [0, 0, 0],
-      gamma: 10
+      gamma: 50
     },
 
     interactions: {

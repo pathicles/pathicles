@@ -1,4 +1,5 @@
 import { LATTICE_ELEMENT_TYPES } from '../constants'
+import { DISTRIBUTIONS } from '../distributions/distributions'
 
 export default {
   name: 'story-dipole',
@@ -7,14 +8,15 @@ export default {
       center: [-0, 0, 0],
       distance: 15,
       theta: (0 / 360) * 2 * Math.PI,
-      phi: (80 / 360) * 2 * Math.PI
+      phi: (90 / 360) * 2 * Math.PI
     }
   },
 
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      position: [-1, 0, -2.25 * 2],
+      bunchShape: 'SPIRAL_YZ',
+      position: [0, 1, -2.25 * 2],
       direction: [1, 0, 0]
     },
     interactions: {
@@ -29,7 +31,7 @@ export default {
         d1: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
-          strength: -0.001,
+          strength: -0.0045,
           angle: (2 * Math.PI) / 8
         }
       },
