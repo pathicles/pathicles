@@ -8,6 +8,8 @@ export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
   performanceLogger.entries = []
 
+  console.log(model.lattice.toGLSLDefinition())
+
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
@@ -64,9 +66,9 @@ export default function (regl, { runner, variables, model }) {
           .replace(
             '/*__latticeSize__*/',
             `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
-              model.lattice.beamline.length || 1
+              model.lattice.activeBeamlineElements().length || 1
             }; const int BEAMLINE_ELEMENT_COUNT = ${
-              model.lattice.beamline.length
+              model.lattice.activeBeamlineElements().length
             };`
           )
       ].join('\n')

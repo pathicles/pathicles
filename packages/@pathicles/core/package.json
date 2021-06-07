@@ -25,14 +25,14 @@
     "glsl-float-to-rgba": "^1.0.0",
     "glsl-inverse": "^1.0.0",
     "glsl-look-at": "^1.0.0",
-    "glsl-random": "0.0.5",
+    "glsl-random": "^0.0.5",
     "glsl-rgba-to-float": "^1.0.0",
     "glsl-transpose": "^1.0.0",
     "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "primitive-cube": "^2.0.1",
-    "regl": "^2.0.1"
+    "regl": "^2.1.0"
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.9.0"

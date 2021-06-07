@@ -112,17 +112,6 @@ export function ParticleCollection({
         ]
   })
 
-  // const fourMomenta = particles
-  //   .map((particle, p) => {
-  //     return [
-  //       (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][0],
-  //       (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][1],
-  //       (particle.mass__eVc_2 === 0 ? 1 : gamma) * fourVelocities[p][2],
-  //       gamma
-  //     ]
-  //   })
-  //   .reduce((acc, val) => acc.concat(val), [])
-
   return {
     fourPositions,
     fourVelocities,

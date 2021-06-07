@@ -10,11 +10,12 @@ export default {
   },
   runner: {
     pusher: 'glsl',
+    factor: 1000,
     enabled: true,
     packFloat2UInt8: false,
     prerender: false,
     loops: 5,
-    mode: RUNNER_MODE.STEPWISE,
+    mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 20,
     iterationCount: 32 * 150,
     iterationDurationOverC: 0.01,

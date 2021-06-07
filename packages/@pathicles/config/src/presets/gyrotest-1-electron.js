@@ -33,7 +33,7 @@ export default {
     iterationsPerSnapshot: 100,
     iterationCount: undefined,
     snapshotCount: 128,
-    iterationDurationOverC: 0.01
+    iterationDurationOverC: 0.005
   },
 
   model: {

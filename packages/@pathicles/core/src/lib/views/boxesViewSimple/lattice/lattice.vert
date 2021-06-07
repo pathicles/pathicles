@@ -43,11 +43,9 @@ void main () {
   vNormal = aNormal;
   vNormalOrig = aNormal;
   vScale = aScale;
-  vPosition = (fromYRotation(aPhi) * vec4((aScale * aPosition), 1.)).xyz + aTranslation;
-//  vPosition = aPosition; //(fromYRotation(aPhi) * vec4((aScale * aPosition), 1.)).xyz + aTranslation;
+  vPosition = (fromYRotation(aPhi) * vec4((aScale * aPosition), 1.)).xyz + vec3(aTranslation.x, aTranslation.y-.5, aTranslation.z);
   vColor = aColor;
   vColorCorrection = vColorCorrection;
-//  vColor = aColor;
   gl_Position = projection * view * model * vec4(
   vPosition,
   1.0);

@@ -7,7 +7,8 @@ import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { BoxesViewSimple } from '../views/boxesViewSimple'
 // import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
-import createREGL from 'regl/dist/regl.min.js'
+// import createREGL from 'regl/dist/regl.min.js'
+import createREGL from 'regl'
 import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
@@ -116,8 +117,8 @@ export class ReglSimulatorInstance {
             this.view.drawDiffuse({
               tick,
               colorCorrections: this.simulation.variables.colorCorrections,
-              particleColorsAndTypes: this.simulation.variables
-                .particleColorsAndTypes,
+              particleColorsAndTypes:
+                this.simulation.variables.particleColorsAndTypes,
               position: this.simulation.variables.position.value()
             })
 

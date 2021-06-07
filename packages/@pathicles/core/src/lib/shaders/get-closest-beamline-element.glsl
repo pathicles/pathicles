@@ -1,4 +1,5 @@
 #pragma glslify: export(getClosestBeamlineElement);
+#pragma glslify: insideBox = require("@pathicles/core/src/lib/shaders/insideBox.glsl");
 
 BeamlineElement getBeamlineElement(float id) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
@@ -14,13 +15,16 @@ BeamlineElement getClosestBeamlineElement(vec3 position) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
 
     BeamlineElement bl = getBeamlineElement(float(i));
-    float currentLength = min(length(position - bl.start), length(position - bl.end));
-    if (currentLength < bestLength) {
-
-      bestIndex = i;
-      bestLength = currentLength;
+    if (insideBox(position, bl.start, bl.end) > 0.) {
+      return bl;
     }
+//    float currentLength = min(length(position - bl.start), length(position - bl.end));
+//    if (currentLength < bestLength) {
+//
+//      bestIndex = i;
+//      bestLength = currentLength;
+//    }
   }
-  return getBeamlineElement(float(bestIndex));
+  return BeamlineElement(vec3(0.), vec3(0.), 0, 0.);
 }
 

@@ -27,13 +27,18 @@ uniform vec3 magneticField;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
+#pragma glslify: insideBox = require("@pathicles/core/src/lib/shaders/insideBox.glsl");
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable__float.glsl", resolution=resolution);
 
+vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
+  return  2.*(step(bottomLeft, v) - step(topRight, v)) - vec3(1.);
+}
 vec3 getE(vec3 position) {
 
   vec3 E = electricField;
   return E;
 }
+
 
 vec3 getB(vec3 position) {
 
@@ -54,13 +59,6 @@ vec3 getB(vec3 position) {
   return B;
 }
 
-float insideBox3D(vec3 v, vec3 bottomLeft, vec3 topRight) {
-  vec3 s = step(bottomLeft, v) - step(topRight, v);
-  return s.x * s.y * s.z;
-}
-vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
-  return vec3(1.) - 2.*(step(bottomLeft, v) - step(topRight, v));
-}
 
 vec4 push_position(int p) {
 
@@ -70,39 +68,14 @@ vec4 push_position(int p) {
   vec3 position = fourPosition.xyz;
   float time  = fourPosition.w;
 
-  //  vec3 velocity = readVariable(ut_velocity, p, 1).xyz;
   vec4 fourVelocity_current = readVariable(ut_velocity, p, 1);
   vec4 fourVelocity_next = readVariable(ut_velocity, p, 0);
-  //  vec3 nextGamma = readVariable(ut_velocity, p, 0).xyz;
 
   float nextTime = time + deltaTOverC;
 
   vec4 next = vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
 
-
-
-//  if (boundingBoxSize > 0.) {
-//
-//    vec3 ref = reflection(next.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
-//
-//    if (ref.y < 0.) { next.y = 1.;}
-//    if (ref.x > 0.) { next.x = 1.;}
-//  }
-
-    //      float outsideBox = 1.0 - insideBox3D(next.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
-////      vec3 reflect = step(boundingBoxCenter-vec3(boundingBoxSize), next.xyz)-step(boundingBoxCenter+vec3(boundingBoxSize), next.xyz);
-//            next.xyz -=   outsideBox*boundingBoxSize;
-////    if (next.x  < -1.) {
-//      next.x += 2.;
-//      next.w = -10.;
-//    }
-//    if (next.x  > 1.) next.x -= 2.;
-//  }
   return next;
-//  return (particleData.particleType < .1)
-//  ? vec4(position +  fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime)
-//  : vec4(position + fourVelocity_next.xyz / fourVelocity_next.w  * deltaTOverC, nextTime);
-//  //  : vec4(position + velocity / sqrt(1. + dot(velocity, velocity)) * deltaTOverC + nextVelocity / sqrt(1. + dot(nextVelocity, nextVelocity)) * deltaTOverC, nextTime);
 }
 
 
@@ -141,8 +114,6 @@ vec4 push_velocity(int p) {
     u += cross(u, s_);
     u += hdtc_m * E;
     gamma = sqrt(1. + dot(u/c, u/c));
-
-
   }
 
 
@@ -152,25 +123,10 @@ vec4 push_velocity(int p) {
 
     vec3 nextPosition = intermediatePosition.xyz + .5 *  velocity * deltaTOverC;
 
-    vec3 ref = -reflection(nextPosition.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
+    vec3 ref = reflection(nextPosition.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
     u *= ref;
 
-//    if (ref.z > 0.) { u.z *= -1.;}
-//    if (ref.y > 0.) { u.y *= -1.;}
-//    if (ref.x > 0.) { u.x *= -1.;}
   }
-
-
-//  if (boundingBoxSize > 0.) {
-//
-//    vec3 ref = reflection(intermediatePosition.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
-//
-////    if (ref.y)
-////    u = reflection * u;
-//
-//
-//  }
-
   return vec4(u, gamma * c);
 }
 
@@ -208,7 +164,6 @@ void main () {
   : (fourComponentIndex == 2)
   ? vec4(value.z, 0., 0., 0.)
   : vec4(value.w, 0., 0., 0.);
-
 
 }
 
