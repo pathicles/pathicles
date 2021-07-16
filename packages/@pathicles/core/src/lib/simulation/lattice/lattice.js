@@ -53,15 +53,15 @@ export const LATTICE_ELEMENTS = {
   DRIF: {
     color: [0.3, 0.3, 0.3],
     width: 0.15,
-    height: 0.1,
+    height: 0.5,
     gap: 0
   },
-  SBEN: { color: [0.5, 0, 0], width: 1, height: 0.1, gap: 0 },
+  SBEN: { color: [0.5, 0, 0], width: 0.5, height: 0.5, gap: 0 },
   QUAD: {
     color: [0.9, 0.4, 0],
     color_minus: [0.5, 0.4, 0],
-    width: 1,
-    height: 0.1,
+    width: 0.5,
+    height: 0.5,
     gap: 0
   },
   ESTA: { color: [0, 0.8, 0], width: 0.5, height: 0.05, gap: 0 }
@@ -161,7 +161,7 @@ export class Lattice {
         (element, i) =>
           `beamline[${i}] = BeamlineElement(
 vec3(${element.middle.join(',')}),
-vec3(${element.size[0]}, 10 , ${element.size[2]}),
+vec3(${element.size[0] / 2}, ${element.size[1] / 2}, ${element.size[2] / 2}),
 ${element.phi ? -element.phi.toFixed(10) : '0.'},
 ${LatticeElementTypesArray.indexOf(element.type)},
 ${element.strength ? element.strength.toFixed(10) : '0.'})`
@@ -186,3 +186,4 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
     return null
   }
 }
+// vec3(${element.size[0]}, 1. , ${element.size[2]}),

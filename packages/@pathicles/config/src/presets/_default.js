@@ -10,16 +10,16 @@ export default {
   },
   runner: {
     pusher: 'glsl',
-    factor: 1000,
+    factor: 1,
     enabled: true,
     packFloat2UInt8: false,
     prerender: false,
-    loops: 0,
-    mode: RUNNER_MODE.STEPWISE,
-    iterationsPerSnapshot: 1,
-    iterationCount: 31,
+    loops: 10,
+    mode: RUNNER_MODE.NOBREAK,
+    iterationsPerSnapshot: 8,
+    iterationCount: 1024,
     iterationDurationOverC: 0.1,
-    snapshotCount: 32
+    snapshotCount: 128
   },
 
   model: {
@@ -28,7 +28,7 @@ export default {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SQUARE_YZ',
-      particleCount: 4,
+      particleCount: 64,
       particleSeparation: 0.05,
       gamma: () => 2.25,
       position: [0, 0, 0],

@@ -40,21 +40,10 @@ DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-  #ifdef depthNormal
-  gl_FragColor = vec4(gl_FragCoord.z, vNormal);
-  #endif
-
-  #ifdef diffuse
-
-
-  vec3 color = vColor;
-  gl_FragColor = vec4(vColor, 1.);
-  // gl_FragColor = vec4(0., 0., 0., 1.);
-  #endif
 
   #ifdef lighting
 
-//  if (vColor.r == 1.) discard;
+  if (length(vColor) == 0.) discard;
   vec3 color = vColor;
   gl_FragColor = vec4(vColor, 1.);
 
@@ -85,16 +74,8 @@ void main () {
 
 
   gl_FragColor =vec4(finalColor, 1.);
-//
-//
-//
-//     gl_FragColor = vec4(1., 0., 0., 1.);
-  #endif
-
-  #ifdef position
-  gl_FragColor = vec4(vPosition, .2);
-  #endif
-
 //  gl_FragColor = vec4(1., 0., 0., 1.);
+//  gl_FragColor = vec4(vColor, .5);
+  #endif
 
 }

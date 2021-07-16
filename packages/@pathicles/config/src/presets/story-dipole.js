@@ -16,7 +16,7 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'ROW_X',
+      bunchShape: 'SQUARE_XY',
       // position: [0, 1, -3.7207765272494715],
       position: [0, 1, 0],
       direction: [0, 0, 1]
@@ -33,7 +33,13 @@ export default {
         d1: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
-          strength: 0.0035,
+          strength: 0.000135,
+          angle: (0 * (2 * Math.PI)) / 360
+        },
+        d2: {
+          type: LATTICE_ELEMENT_TYPES.SBEN,
+          l: 1,
+          strength: -0.000135,
           angle: (0 * (2 * Math.PI)) / 360
         }
       },
@@ -41,8 +47,8 @@ export default {
       beamline: [
         'l1',
         'd1',
-        'l1'
-        // 'd1',
+        'l1',
+        'd2'
         // 'l1',
         // 'd1',
         // 'l1',
@@ -59,7 +65,7 @@ export default {
       // beamline: [],
       origin: {
         phi: (0 / 360) * 2 * Math.PI,
-        position: [0, 0, 0]
+        position: [0, 1, 0]
         // position: [-1, 1, -3.7207765272494715]
       }
     }
