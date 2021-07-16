@@ -28,10 +28,12 @@
     "glsl-random": "^0.0.5",
     "glsl-rgba-to-float": "^1.0.0",
     "glsl-transpose": "^1.0.0",
+    "gl-matrix": "^3.3.0",
     "lethargy": "^1.0.9",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "^3.0.2",
     "primitive-cube": "^2.0.1",
+    "primitive-cylinder": "^1.0.3",
     "regl": "^2.1.0"
   },
   "devDependencies": {

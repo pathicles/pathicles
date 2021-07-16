@@ -1,3 +1,4 @@
+import drawFieldsCommands from './fields/drawFieldsCommands'
 import drawModelCommands from './model/drawModelCommands'
 import drawStageCommands from './stage/drawStageCommands'
 import drawLatticeCommands from './lattice/drawLatticeCommands'
@@ -49,7 +50,8 @@ export class BoxesViewSimple {
       },
       this.shadow
     )
-    console.log(this.drawLattice)
+
+    this.drawFields = drawFieldsCommands(regl, { model, view }, this.shadow)
 
     this.drawAxis = drawAxesCommand(regl, 0.5)
     this.drawVignette = drawVignetteCommandBuilder(regl)
@@ -87,6 +89,7 @@ export class BoxesViewSimple {
         ])
 
       this.drawLattice.lighting(props)
+      this.drawFields.lighting(props)
       this.config.isStageVisible && this.drawStage.lighting(props)
       this.drawModel.lighting(props)
       this.config.showVignette && this.drawVignette.lighting(props)

@@ -9,7 +9,7 @@ describe('Lattice.js', () => {
   })
 })
 
-describe('one drift tube lattice', () => {
+describe('lattice with one drift tube', () => {
   const lattice = new Lattice({
     elements: {
       l0: {
@@ -22,20 +22,15 @@ describe('one drift tube lattice', () => {
   it('has length 1', () => {
     expect(lattice.length()).toEqual(1)
   })
-  it("has one beamline element { l: 1, type: 'DRIF', z_min: 0, local_z_max: 1 }", () => {
+  it('has one beamline element', () => {
     expect(lattice.beamline).toEqual([
       {
-        l: 1,
         type: 'DRIF',
         local_z_min: 0,
         local_z_max: 1,
-        start: [0, 0, 0],
-        startBottomRight: [-0.1, 0, 0],
         middle: [0, 0, 0.5],
-        end: [0, 0, 1],
-        endTopLeft: [0.1, 2, 1],
         phi: 0,
-        phi_half: 0
+        size: [0.15, 0.1, 1]
       }
     ])
   })
@@ -52,61 +47,71 @@ describe('one drift tube lattice', () => {
       }
     ])
   })
+  it('has drift tube at 0,0,0', () => {
+    expect(lattice.getElementForPosition([0, 0, 0])).toBeDefined()
+  })
+  it('has drift tube at 1,0,0', () => {
+    expect(lattice.getElementForPosition([10, 0, 0])).toBeNull()
+  })
 })
-describe('one bending magnet', () => {
+describe('lattice with one bending magnet', () => {
   const lattice = new Lattice({
     elements: {
       l0: {
+        type: LATTICE_ELEMENT_TYPES.DRIF,
+        l: 1
+      },
+      sben: {
         type: LATTICE_ELEMENT_TYPES.SBEN,
         l: Math.sqrt(2),
         strength: 1,
         angle: (2 * Math.PI) / 4
       }
     },
-    beamline: ['l0'],
+    beamline: ['l0', 'sben', 'l0'],
     origin: {
       phi: 0,
       position: [0, 0, -1]
     }
   })
-  it('has total length of 20', () => {
-    expect(lattice.length()).toEqual(Math.sqrt(2))
+  it('has total length of sqrt(2)', () => {
+    expect(lattice.length()).toEqual(2 + Math.sqrt(2))
   })
-  it("has one bending magnet { l: 1, type: 'DRIF', local_z_min: 0, local_z_max: 1 }", () => {
-    expect(lattice.beamline).toEqual([
-      {
-        type: LATTICE_ELEMENT_TYPES.SBEN,
-        strength: 1,
-        l: Math.sqrt(2),
-        local_z_min: 0,
-        local_z_max: Math.sqrt(2),
-        angle: (2 * Math.PI) / 4,
-        phi: (2 * Math.PI) / 4,
-        phi_half: (2 * Math.PI) / 8,
-        start: [0, 0, -1],
-        startBottomRight: [-0.07071067811865477, 0, -1.0707106781186548],
-        middle: [-0.5, 0, -0.4999999999999999],
-        end: [-1, 0, 2.220446049250313e-16],
-        endTopLeft: [-0.9292893218813453, +2, +0.07071067811865497]
-      }
-    ])
+  it('has one bending magnet', () => {
+    expect(lattice.beamline[1]).toEqual({
+      type: LATTICE_ELEMENT_TYPES.SBEN,
+      strength: 1,
+      local_z_min: 0.9999999999999998,
+      local_z_max: 1 + Math.sqrt(2),
+      phi: (2 * Math.PI) / 8,
+      middle: [-0.5, 0, 0.5000000000000001],
+      size: [1, 0.1, Math.sqrt(2)]
+    })
+  })
+  it('has correct end ', () => {
+    expect(lattice.beamline[2]).toEqual({
+      type: LATTICE_ELEMENT_TYPES.DRIF,
+      local_z_min: 1 + Math.sqrt(2),
+      local_z_max: 2 + Math.sqrt(2),
+      phi: (2 * Math.PI) / 4,
+      middle: [-1.5, 0, 1.0000000000000002],
+      size: [0.15, 0.1, 1]
+    })
   })
   it('with correct transformation', () => {
-    expect(lattice.transformations).toEqual([
-      {
-        phi: (2 * Math.PI) / 8,
-        scale: [
-          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].width,
-          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].height,
-          Math.sqrt(2) - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].gap
-        ],
-        translation: [-0.5, 0, -0.4999999999999999]
-      }
-    ])
+    expect(lattice.transformations[1]).toEqual({
+      phi: (2 * Math.PI) / 8,
+      scale: [
+        LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].width,
+        LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].height,
+        Math.sqrt(2) - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.SBEN].gap
+      ],
+      translation: [-0.5, 0, 0.5000000000000001]
+    })
   })
 })
 
-describe('two quadrupoles ', () => {
+describe('lattice with two quadrupoles', () => {
   const lattice = new Lattice({
     elements: {
       q1: {
@@ -131,40 +136,46 @@ describe('two quadrupoles ', () => {
   })
   it('has two quadrupole elements 1', () => {
     expect(lattice.beamline[0]).toEqual({
-      l: 5,
       type: 'QUAD',
       strength: 1,
       phi: 0,
-      phi_half: 0,
       local_z_min: 0,
       local_z_max: 5,
-      start: [0, 0, -5],
-      startBottomRight: [-0.15, 0, -5],
       middle: [0, 0, -2.5],
-      end: [0, 0, 0],
-      endTopLeft: [0.15, 2, 0]
+      size: [1, 0.1, 5]
     })
   })
   it('has two quadrupole elements 2', () => {
     expect(lattice.beamline[1]).toEqual({
-      l: 5,
       type: 'QUAD',
       strength: -1,
       phi: 0,
-      phi_half: 0,
       local_z_min: 5,
       local_z_max: 10,
-      start: [0, 0, 0],
-      startBottomRight: [-0.15, 0, 0],
       middle: [0, 0, 2.5],
-      end: [0, 0, 5],
-      endTopLeft: [0.15, 2, 5]
+      size: [1, 0.1, 5]
     })
   })
   it('with correct transformations', () => {
     expect(lattice.transformations).toEqual([
-      { phi: 0, scale: [0.3, 0.05, 5], translation: [0, 0, -2.5] },
-      { phi: 0, scale: [0.3, 0.05, 5], translation: [0, 0, 2.5] }
+      {
+        phi: 0,
+        scale: [
+          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].width,
+          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].height,
+          5 - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].gap
+        ],
+        translation: [0, 0, -2.5]
+      },
+      {
+        phi: 0,
+        scale: [
+          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].width,
+          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].height,
+          5 - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.QUAD].gap
+        ],
+        translation: [0, 0, 2.5]
+      }
     ])
   })
 })

@@ -96,7 +96,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.clickToInteract)
+    // console.log(this.clickToInteract)
     // getGPUTier().then((tier) => {
     //   console.log(tier)
     // window.addEventListener('resize', this.onWindowResize)
@@ -133,8 +133,8 @@ export default {
         this.reglInstance.pathiclesRunner.toggleMode()
       } else if (payload.keyString === 'T') {
         // t for textures
-        this.reglInstance.config.debug.showTextures = !this.reglInstance.config
-          .debug.showTextures
+        this.reglInstance.config.debug.showTextures =
+          !this.reglInstance.config.debug.showTextures
       } else if (payload.keyString === 'S') {
         // s for image
         saveCanvas(

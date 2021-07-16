@@ -1,119 +1,123 @@
-export default function (regl) {
-  // eslint-disable-next-line no-unused-vars
-  return regl({
-    vert: `
-      precision highp float;
-      uniform mat4 uProjectionView, uView, uProjection;
-      uniform float uTailWidth, uAspect, uScale, uForeshortening;
-      uniform vec2 uArrowheadShape;
-      attribute vec3 aVertex, aNormal;
-      attribute vec4 aArrow;
+import createCylinder from 'primitive-cylinder'
 
-      void main () {
-        vec4 vp = uView * vec4(aVertex, 1);
-        vec4 vpn = uView * vec4(aVertex + uScale * aNormal, 1);
+import vert from './fieldValue.vert'
+import frag from './fieldValue.frag'
+import fromTranslation from 'gl-mat4/fromTranslation'
+import { identity } from 'gl-mat4'
+import { latticeChunk } from '../../../simulation/lattice/lattice.gsls'
 
-        // Project the vertex into homogeneous coordinates
-        vec4 p = uProjection * vp;
+const X = 30
+const Y = 10
+const Z = 30
+const STEP_SIZE = 0.1
 
-        // Project the vertex + normal into homogeneous coordinates
-        vec4 pn = uProjection * vpn;
-
-        float foreshortening = max(0.15, 1.0 - uForeshortening * abs((vp - vpn).z) / length((vp - vpn).xyz));
-
-        // Use the y component of aArrow to select either p or pn
-        gl_Position = mix(p, pn, aArrow.y);
-
-        // Compute a screen-space vector parallel to the arrow.
-        // This step includes "perspective division" to convert homogeneous
-        // 4D coordinates into screen space coordinates.
-        // NB: it also includes an aspect ratio to scale x and y equally. This could be
-        // done more cleanly.
-        vec2 unitVector = normalize((pn.xy / pn.w - p.xy / p.w) * vec2(uAspect, 1));
-
-        // Rotate 90 degrees to get a perpendicular vector
-        vec2 perpUnitVector = vec2(-unitVector.y, unitVector.x);
-
-        // Perturb the point according to the aArrow instance data
-        gl_Position.xy += (
-            // Offset perpendicular to the length of the arrow:
-            perpUnitVector * (aArrow.x * uTailWidth + aArrow.w * uArrowheadShape.y) +
-
-            // and parallel to the length of the arrow:
-            + unitVector * aArrow.z * uArrowheadShape.x * foreshortening
-
-          // This final step is just a bit tricky, but we need to pull the aspect
-          // ratio back out and then multiply by w to get the arrow scaled correctly
-          ) / vec2(uAspect, 1) * gl_Position.w;
-
+export const positionAttributes = () => {
+  const out = []
+  for (let x = 0; x < X; x++)
+    for (let y = 0; y < Y; y++)
+      for (let z = 0; z < Z; z++) {
+        out.push([
+          (x - X / 2) * STEP_SIZE,
+          (y - Y / 2) * STEP_SIZE,
+          (z - Z / 2) * STEP_SIZE
+        ])
       }
-    `,
-    frag: `
-      precision highp float;
-      uniform vec4 uColor;
-      void main () {
-        gl_FragColor = uColor;
-      }
-    `,
-    attributes: {
-      aVertex: {
-        buffer: regl.prop('vertices'),
-        divisor: 1, // Advance the mesh vertex once per instance
-        stride: 12 // each instance advances 3 floats (= 12 bytes)
+
+  return out
+}
+
+export default function (regl, { model, view }, shadow) {
+  const geometry = createCylinder(0, 0.125, 1)
+
+  let modelMatrix = identity([])
+
+  const command = (mode) => {
+    return regl({
+      depth: {
+        enable: true
       },
-      aNormal: {
-        buffer: regl.prop('normals'),
-        divisor: 1,
-        stride: 12
+      blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 1]
       },
-      // prettier-ignore
-      aArrow: new Float32Array([
-        // The per-instance triangles are defined in terms of four pieces of data which tell where
-        // on the arrow we are, using the mesh vertex and mesh normal as inputs. The components are:
-        //    x: selects the position perpendicular to the length of the arrow in screen space
-        //    y: selects either the (vertex) or (vertex + normal) in 3D space
-        //    z: selects the arrowhead length-wise offset in screen space
-        //    w: selects the arrowhead width-wise offset in screen space
-        // The first triangle of the tail:
-        -1, 0, 0, 0,
-        1, 0, 0, 0,
-        1, 1, -1, 0,
+      cull: {
+        enable: true,
+        face: 'back'
+      },
+      elements: geometry.cells,
+      instances: () => X * Y * Z,
+      attributes: {
+        aPosition: geometry.positions,
+        aNormal: geometry.normals,
+        aUV: geometry.uvs,
+        aOffset: {
+          buffer: regl.buffer(positionAttributes()),
+          divisor: 1
+        }
+      },
 
-        // The second triangle of the tail:
-        -1, 0, 0, 0,
-        1, 1, -1, 0,
-        -1, 1, -1, 0,
+      vert: [
+        `#define ${mode} 1`,
+        // `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
+        vert
+          .replace(
+            '/*__latticeDefinition__*/',
+            model.lattice.toGLSLDefinition()
+          )
+          .replace('/*__latticeChunkGLSL__*/', latticeChunk(model.lattice))
+          .replace(
+            '/*__latticeSize__*/',
+            `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
+              model.lattice.activeBeamlineElements().length || 1
+            }; const int BEAMLINE_ELEMENT_COUNT = ${
+              model.lattice.activeBeamlineElements().length
+            };`
+          )
+      ].join('\n'),
+      frag: [`#define ${mode} 1`, frag].join('\n'),
 
-        // The arrowhead:
-        0, 1, -1, -1,
-        0, 1, -1, 1,
-        0, 1, 0, 0
-      ])
-    },
-    uniforms: {
-      // Define the screen-space line width in terms of a property but also
-      // scaled by the pixel ratio so that it remains constant at different
-      // pixel ratios. (The framebuffer height is just for proper screen-space
-      // scaling)
-      uTailWidth: (ctx, props) =>
-        (props.arrowTailWidth / ctx.framebufferHeight) * ctx.pixelRatio,
-      // Define the shape of the arrowhead. This just the scale factor
-      // for the ones and zeros above.
-      uArrowheadShape: (ctx, props) => [
-        (props.arrowheadLength / ctx.framebufferHeight) * ctx.pixelRatio * 2.0,
-        (props.arrowheadWidth / ctx.framebufferHeight) * ctx.pixelRatio
-      ],
-      // The aspect ratio affects computation of offsets for the screen-space
-      // lines.
-      uAspect: (ctx) => ctx.framebufferWidth / ctx.framebufferHeight,
-      uColor: regl.prop('arrowColor'),
-      uForeshortening: (ctx, props) => (props.foreshortening ? 1 : 0),
+      uniforms: {
+        ...shadow.uniforms,
+        stageSize: view.stageGrid.size,
+        magneticField: model.interactions.magneticField,
 
-      // Not really necessary, but an overall scale factor for the normals
-      uScale: regl.prop('arrowScale')
-    },
-    primitive: 'triangles',
-    instances: (ctx, props) => props.vertexCount, // One instance per vertex
-    count: 9 // Nine vertices per instance
-  })
+        ...(mode === 'shadow' && {
+          projection: shadow.shadowProjectionMatrix,
+          view: shadow.shadowViewMatrix
+        }),
+
+        ...(mode === 'lighting' && { shadowMap: shadow.fbo }),
+        utColorCorrections: (ctx, props) => {
+          return props.colorCorrections
+        },
+
+        model: (ctx, props) => {
+          modelMatrix = identity([])
+          return fromTranslation(modelMatrix, [
+            props.modelTranslateX || 0,
+            props.modelTranslateY || 0,
+            0
+          ])
+        }
+      },
+      ...(mode === 'shadow' && {
+        framebuffer: shadow.fbo
+      })
+    })
+  }
+
+  return {
+    lighting: command('lighting'),
+    shadow: command('shadow')
+  }
 }

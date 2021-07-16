@@ -1,5 +1,5 @@
 precision mediump float;
-varying vec4 vPosition;
+varying vec3 vPosition;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec3 vColor;
@@ -59,7 +59,7 @@ void main () {
   gl_FragColor = vec4(vColor, 1.);
 
 
-  vec3 viewDir = normalize(eye - vPosition.xyz);
+  vec3 viewDir = normalize(eye - vPosition);
   vec3 normal = normalize(vNormal);
 
   directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
@@ -92,7 +92,9 @@ void main () {
   #endif
 
   #ifdef position
-  gl_FragColor = vec4(vPosition.xyz, .2);
+  gl_FragColor = vec4(vPosition, .2);
   #endif
+
+//  gl_FragColor = vec4(1., 0., 0., 1.);
 
 }

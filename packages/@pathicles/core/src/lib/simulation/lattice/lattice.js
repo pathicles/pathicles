@@ -3,6 +3,45 @@ const QUAD = 'QUAD'
 const SBEN = 'SBEN'
 const ESTA = 'ESTA'
 
+function rotY([x, y, z], phi) {
+  const c = Math.cos(phi)
+  const s = Math.sin(phi)
+  return [c * x - s * z, y, s * x + c * z]
+}
+
+function signedDistanceToBox(p, size) {
+  const offsetX = Math.abs(p[0]) - size[0] / 2
+  const offsetY = Math.abs(p[1]) - size[1] / 2
+  const offsetZ = Math.abs(p[2]) - size[2] / 2
+
+  const offsetMaxX = Math.max(offsetX, 0)
+  const offsetMaxY = Math.max(offsetY, 0)
+  const offsetMaxZ = Math.max(offsetZ, 0)
+  const offsetMinX = Math.min(offsetX, 0)
+  const offsetMinY = Math.min(offsetY, 0)
+  const offsetMinZ = Math.min(offsetZ, 0)
+
+  const unsignedDst = Math.sqrt(
+    offsetMaxX * offsetMaxX + offsetMaxY * offsetMaxY + offsetMaxZ * offsetMaxZ
+  )
+  const dstInsideBox = Math.max(offsetMinX, offsetMinY, offsetMinZ)
+
+  return unsignedDst + dstInsideBox
+}
+//
+// function sdBox(p, s) {
+//   const d = [
+//     Math.abs(p[0]) - s[0],
+//     Math.abs(p[1]) - s[1],
+//     Math.abs(p[2]) - s[2]
+//   ]
+//
+//   return (
+//     Math.min(Math.max(d[0], Math.max(d[1], d[2])), 0.0) +
+//     length(Math.max(d, 0.0))
+//   )
+// }
+
 export const LATTICE_ELEMENT_TYPES = {
   DRIF,
   SBEN,
@@ -13,16 +52,16 @@ export const LATTICE_ELEMENT_TYPES = {
 export const LATTICE_ELEMENTS = {
   DRIF: {
     color: [0.3, 0.3, 0.3],
-    width: 0.2,
-    height: 0.05,
-    gap: 0.2
+    width: 0.15,
+    height: 0.1,
+    gap: 0
   },
-  SBEN: { color: [0.5, 0, 0], width: 0.2, height: 0.05, gap: 0 },
+  SBEN: { color: [0.5, 0, 0], width: 1, height: 0.1, gap: 0 },
   QUAD: {
-    color: [0.3, 0.3, 0.3],
-    color_minus: [0.9, 0.5, 0.0],
-    width: 0.3,
-    height: 0.05,
+    color: [0.9, 0.4, 0],
+    color_minus: [0.5, 0.4, 0],
+    width: 1,
+    height: 0.1,
     gap: 0
   },
   ESTA: { color: [0, 0.8, 0], width: 0.5, height: 0.05, gap: 0 }
@@ -50,7 +89,7 @@ export class Lattice {
       }
       const element = latticeDescriptor.elements[elementKey]
       local_z += element.l
-      const b = LATTICE_ELEMENTS[element.type].width / 2
+      // const b = LATTICE_ELEMENTS[element.type].width / 2
       const phi_half = element.angle ? phi + element.angle / 2 : phi
       const start = [x, y, z]
 
@@ -61,24 +100,17 @@ export class Lattice {
       ]
       phi = element.angle ? phi + element.angle : phi
       return {
-        ...element,
-        start,
-        startBottomRight: [
-          start[0] - b * Math.cos(phi_half),
-          0,
-          start[2] - b * Math.sin(phi_half)
-        ],
+        type: element.type,
+        ...(element.strength && { strength: element.strength }),
         middle: [(start[0] + x) / 2, y, (start[2] + z) / 2],
-        end: [x, y, z],
-        endTopLeft: [
-          start[0] - Math.sin(phi_half) * element.l + b * Math.cos(phi_half),
-          2,
-          start[2] + Math.cos(phi_half) * element.l + b * Math.sin(phi_half)
-        ],
-        phi,
-        phi_half,
+        phi: phi_half,
         local_z_min: local_z - element.l,
-        local_z_max: local_z
+        local_z_max: local_z,
+        size: [
+          LATTICE_ELEMENTS[element.type].width,
+          LATTICE_ELEMENTS[element.type].height,
+          element.l - LATTICE_ELEMENTS[element.type].gap
+        ]
       }
     })
   }
@@ -87,12 +119,8 @@ export class Lattice {
     return this.beamline.map((element) => {
       return {
         translation: element.middle,
-        phi: element.phi_half,
-        scale: [
-          LATTICE_ELEMENTS[element.type].width,
-          LATTICE_ELEMENTS[element.type].height,
-          element.l - LATTICE_ELEMENTS[element.type].gap
-        ]
+        phi: element.phi,
+        scale: element.size
       }
     })
   }
@@ -105,16 +133,16 @@ export class Lattice {
     })
   }
 
-  segmentIndexForZ(z) {
-    const z_mod = z % this.length()
-    for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
-      if (
-        z_mod >= this.beamline[idx].local_z_min &&
-        z_mod <= this.beamline[idx].local_z_max
-      )
-        return idx
-    }
-  }
+  // segmentIndexForZ(z) {
+  //   const z_mod = z % this.length()
+  //   for (let idx = 0; idx < Math.min(this.beamline.length, 1000); idx++) {
+  //     if (
+  //       z_mod >= this.beamline[idx].local_z_min &&
+  //       z_mod <= this.beamline[idx].local_z_max
+  //     )
+  //       return idx
+  //   }
+  // }
 
   length() {
     return (
@@ -130,33 +158,31 @@ export class Lattice {
   toGLSLDefinition() {
     return this.activeBeamlineElements()
       .map(
-        (v, i) =>
+        (element, i) =>
           `beamline[${i}] = BeamlineElement(
-vec3(${v.startBottomRight.join(',')}),
-vec3(${v.endTopLeft.join(',')}),
-${LatticeElementTypesArray.indexOf(v.type)},
-${v.strength ? v.strength.toFixed(10) : '0.'})`
+vec3(${element.middle.join(',')}),
+vec3(${element.size[0]}, 10 , ${element.size[2]}),
+${element.phi ? -element.phi.toFixed(10) : '0.'},
+${LatticeElementTypesArray.indexOf(element.type)},
+${element.strength ? element.strength.toFixed(10) : '0.'})`
       )
       .join(';\n')
   }
 
-  // getClosestBeamlineElement(position) {
-  //   let bestLength = 1000
-  //   let bestIndex = 0
-  //
-  //   for (let i = 0; i < this.beamline.length; i++) {
-  //     // console.log(i);
-  //     let bl = this.beamline[i]
-  //     const currentLength =
-  //       Math.pow(position[0] - bl.start[0], 2) +
-  //       Math.pow(position[1] - bl.start[1], 2) +
-  //       Math.pow(position[2] - bl.start[2], 2)
-  //     if (currentLength < bestLength) {
-  //       bestIndex = i
-  //       bestLength = currentLength
-  //       // console.log('Bestlength', bestIndex, bestLength)
-  //     }
-  //   }
-  //   return this.beamline[bestIndex]
-  // }
+  getElementForPosition(position) {
+    for (let i = 0; i < this.beamline.length; i++) {
+      let bl = this.beamline[i]
+
+      let localPosition = position
+      localPosition = rotY(position, bl.phi)
+      localPosition[0] -= bl.middle[0]
+      localPosition[1] -= bl.middle[1]
+      localPosition[2] -= bl.middle[2]
+
+      if (signedDistanceToBox(localPosition, bl.size) <= 0) {
+        return bl
+      }
+    }
+    return null
+  }
 }

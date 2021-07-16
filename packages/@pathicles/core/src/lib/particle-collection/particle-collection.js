@@ -83,9 +83,9 @@ export function ParticleCollection({
       jitter: positionJitter
     })
     return [
-      positionFn({ p })[0] + localPosition[0] + jitter[0],
-      positionFn({ p })[1] + localPosition[1] + jitter[1],
-      positionFn({ p })[2] + localPosition[2] + jitter[2],
+      (positionFn({ p })[0] + localPosition[0] + jitter[0]) * 1,
+      (positionFn({ p })[1] + localPosition[1] + jitter[1]) * 1,
+      (positionFn({ p })[2] + localPosition[2] + jitter[2]) * 1,
       0
     ]
   })
@@ -113,8 +113,8 @@ export function ParticleCollection({
   })
 
   return {
-    fourPositions,
-    fourVelocities,
+    fourPositions: fourPositions.map((d) => d.map((e) => e * 1)),
+    fourVelocities: fourVelocities.map((d) => d.map((e) => e * 1)),
     particleCount,
     particleTypes: particles.map((p) => p.id)
   }

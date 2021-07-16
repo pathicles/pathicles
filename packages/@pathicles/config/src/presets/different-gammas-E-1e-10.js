@@ -35,14 +35,14 @@ export default {
       particleCount: 60,
       particleSeparation: 0.0,
       particleType: 'PHOTON ELECTRON PROTON',
-      bunchShape: 'ROW',
+      bunchShape: 'ROW_X',
       direction: [0, 0, -1],
       position: ({ p }) => [
         (Math.floor(p / 3) - 10) / 10 + (p % 3) * 0.025,
         ((defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight) /
           2) *
-        2,
+          2,
         0
       ],
       directionJitter: [0, 0, 0],

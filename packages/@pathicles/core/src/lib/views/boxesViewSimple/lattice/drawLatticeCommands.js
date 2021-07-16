@@ -3,6 +3,7 @@ import createCube from 'primitive-cube'
 import vert from './lattice.vert'
 import frag from './lattice.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
+import { mat4, quat } from 'gl-matrix'
 import { identity } from 'gl-mat4'
 
 export default function (regl, { variables, model, view }, shadow) {
@@ -10,12 +11,13 @@ export default function (regl, { variables, model, view }, shadow) {
 
   const lattice = model.lattice
   const transformations = lattice.transformations
-  console.log(
-    'translation',
-    transformations.map((t) => t.translation)
-  )
+  // console.log(
+  //   geometry,
+  //   'translation',
+  //   transformations.map((t) => t.translation)
+  // )
 
-  let modelMatrix = identity([])
+  // let modelMatrix = identity([])
 
   const command = (mode) => {
     return regl({
@@ -23,7 +25,7 @@ export default function (regl, { variables, model, view }, shadow) {
         enable: true
       },
       blend: {
-        enable: false,
+        enable: true,
         func: {
           srcRGB: 'src alpha',
           srcAlpha: 1,
@@ -72,30 +74,7 @@ export default function (regl, { variables, model, view }, shadow) {
           divisor: 1
         },
         aVertexColorCorrection: [
-          0,
-          1,
-          1,
-          0,
-          0,
-          1,
-          0,
-          1,
-          0,
-          1,
-          1,
-          0,
-          0,
-          1,
-          0,
-          1,
-          0,
-          1,
-          1,
-          0,
-          0,
-          1,
-          0,
-          1
+          0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1
         ]
       },
 
@@ -111,15 +90,17 @@ export default function (regl, { variables, model, view }, shadow) {
       ].join('\n'),
 
       uniforms: {
-        ...shadow.uniforms,
-        model: (ctx, props) => {
-          modelMatrix = identity([])
-          return fromTranslation(modelMatrix, [
-            props.modelTranslateX || 0,
-            props.modelTranslateY || 0,
-            0
-          ])
-        }
+        ...shadow.uniforms
+        // model: (ctx, props) => {
+        //   modelMatrix = mat4.identity([])
+        //   mat4.fromRotationTranslationScale(modelMatrix, )
+        //
+        //   return fromTranslation(modelMatrix, [
+        //     props.modelTranslateX || 0,
+        //     props.modelTranslateY || 0,
+        //     0
+        //   ])
+        // }
       }
     })
   }

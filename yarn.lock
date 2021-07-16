@@ -6273,6 +6273,11 @@ gl-mat4@^1.2.0:
   resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.2.0.tgz#49d8a7636b70aa00819216635f4a3fd3f4669b26"
   integrity sha512-sT5C0pwB1/e9G9AvAoLsoaJtbMGjfd/jfxo8jMCKqYYEnjZuFvqV5rehqar0538EmssjdDeiEWnKyBSTw7quoA==
 
+gl-matrix@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-3.3.0.tgz#232eef60b1c8b30a28cbbe75b2caf6c48fd6358b"
+  integrity sha512-COb7LDz+SXaHtl/h4LeaFcNdJdAQSDeVqjiIihSXNrkWObZLhDI4hIkZC11Aeqp7bcE72clzB0BnDXr2SmslRA==
+
 gl-quat@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/gl-quat/-/gl-quat-1.0.0.tgz#0945ec923386f45329be5dc357b1c8c2d47586c5"
@@ -10066,6 +10071,11 @@ primitive-cube@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/primitive-cube/-/primitive-cube-2.0.1.tgz#8aa5bc3cbff2efee83cce74cfcab8ac9b5b46b06"
   integrity sha1-iqW8PL/y7+6DzOdM/KuKybW0awY=
+
+primitive-cylinder@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/primitive-cylinder/-/primitive-cylinder-1.0.3.tgz#5f957968baab83d81e6f32807834ab342942df10"
+  integrity sha512-RGLQaDWM2lpBF0b3yknJ2syVCp8vMypM7RBsMECircKuQFqXAGyNf/u8f3eAQ7HVzvQSTFGaDghf5eRu0UKbpw==
 
 prismjs@^1.20.0:
   version "1.23.0"

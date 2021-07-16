@@ -44,7 +44,7 @@ export default {
       particleSeparation: 0.0,
       gamma: 1.1,
       particleCount: 1,
-      bunchShape: 'ROW',
+      bunchShape: 'ROW_X',
       particleType: 'PHOTON',
       positionJitter: [0, 0, 0]
     },

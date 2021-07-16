@@ -14,11 +14,11 @@ export default {
     enabled: true,
     packFloat2UInt8: false,
     prerender: false,
-    loops: 5,
-    mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 20,
-    iterationCount: 32 * 150,
-    iterationDurationOverC: 0.01,
+    loops: 0,
+    mode: RUNNER_MODE.STEPWISE,
+    iterationsPerSnapshot: 1,
+    iterationCount: 31,
+    iterationDurationOverC: 0.1,
     snapshotCount: 32
   },
 
@@ -27,9 +27,9 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_XY',
-      particleCount: 121,
-      particleSeparation: 0.01,
+      bunchShape: 'SQUARE_YZ',
+      particleCount: 4,
+      particleSeparation: 0.05,
       gamma: () => 2.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -38,7 +38,7 @@ export default {
     interactions: {
       particleInteraction: false,
       electricField: [0, 0, 0],
-      magneticField: [0, 0, 0]
+      magneticField: [0, 0.0, 0]
     },
     lattice: {
       elements: {},
@@ -71,7 +71,7 @@ export default {
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.001,
+    pathicleWidth: 0.005,
 
     showAxes: true,
     showVignette: true,
@@ -84,7 +84,7 @@ export default {
       phi: (15 / 360) * 2 * Math.PI,
       theta: (45 / 360) * 2 * Math.PI,
 
-      fovY: (2 * Math.PI) / (360 / 35),
+      fovY: (5 * Math.PI) / (360 / 10),
       autorotate: false,
       autorotateDistance: 0.1 * 2 * Math.PI,
       autorotateSpeedTheta: 0.1 * 2 * Math.PI,

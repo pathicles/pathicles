@@ -31,7 +31,7 @@ export default {
       particleCount: 128,
       particleSeparation: 0,
       particleType: 'ELECTRON',
-      bunchShape: 'ROW',
+      bunchShape: 'ROW_X',
       direction: [0, 0.15, 1],
       position: () => [
         0,

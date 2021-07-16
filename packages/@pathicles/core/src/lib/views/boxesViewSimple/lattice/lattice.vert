@@ -10,12 +10,14 @@ attribute vec3 aTranslation;
 attribute vec3 aScale;
 attribute float aPhi;
 uniform mat4 projection, view, model;
-varying vec3 vPosition;
+varying vec4 vPosition;
 varying float vColorCorrection;
 varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec3 vColor;
 varying vec3 vScale;
+
+mat4 instanceMatrix;
 
 mat4 fromYRotation (float phi) {
   float s = sin(phi);
@@ -43,10 +45,8 @@ void main () {
   vNormal = aNormal;
   vNormalOrig = aNormal;
   vScale = aScale;
-  vPosition = (fromYRotation(aPhi) * vec4((aScale * aPosition), 1.)).xyz + vec3(aTranslation.x, aTranslation.y-.5, aTranslation.z);
+  vPosition = (fromYRotation(aPhi) * vec4((aScale * aPosition), 1.)) + vec4(aTranslation.x, aTranslation.y+.1, aTranslation.z, 1.);
   vColor = aColor;
   vColorCorrection = vColorCorrection;
-  gl_Position = projection * view * model * vec4(
-  vPosition,
-  1.0);
+  gl_Position = projection * view  * vPosition;
 }

@@ -24,7 +24,42 @@ uniform vec3 magneticField;
 
 /*__latticeChunkGLSL__*/
 
-#pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
+
+
+
+mat2 rot2D(float phi) {
+  float c = cos(phi);
+  float s = sin(phi);
+  return mat2(c, -s, s, c);
+}
+float sdBox( vec3 p, vec3 s ) {
+  vec3 d = abs(p) - 1. * s;
+  return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
+}
+BeamlineElement getBeamlineElement(float id) {
+  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
+    if (float(i) == id) return beamline[i];
+  }
+  return beamline[0];
+}
+BeamlineElement getClosestBeamlineElement(vec3 position) {
+
+  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
+
+    BeamlineElement bl = getBeamlineElement(float(i));
+
+    vec3 localPosition = position;
+    localPosition.xz *= rot2D(bl.phi);
+    localPosition -= bl.middle;
+
+    if (sdBox(localPosition, bl.size) <= 0.) {
+      return bl;
+    }
+  }
+  return BeamlineElement(vec3(0.), vec3(0.), 0., 0, 0.);
+}
+
+
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
 #pragma glslify: insideBox = require("@pathicles/core/src/lib/shaders/insideBox.glsl");
@@ -38,7 +73,6 @@ vec3 getE(vec3 position) {
   vec3 E = electricField;
   return E;
 }
-
 
 vec3 getB(vec3 position) {
 
@@ -91,21 +125,18 @@ vec4 push_velocity(int p) {
   velocity = fourVelocity.xyz / fourVelocity.w;
 
   vec3 intermediatePosition = fourPosition.xyz + .5 *  velocity * deltaTOverC;
-  vec3 E = getE(intermediatePosition);
-  vec3 B = getB(intermediatePosition);
+  vec3 E = getE(intermediatePosition );
+  vec3 B = getB(intermediatePosition );
 
   float gamma = 1.;
   vec3 u = fourVelocity.xyz;
-
 
   if (particleData.particleType > .1) {
 
     float chargeMassRatio = particleData.chargeMassRatio;
     float hdtc_m =   chargeMassRatio * deltaTOverC / c / 2.;
 
-
     u +=  hdtc_m * E;
-
     gamma = sqrt(1. + dot(u/c, u/c));
 
     vec3 t_ =  hdtc_m  * B  / gamma;
@@ -129,7 +160,6 @@ vec4 push_velocity(int p) {
   }
   return vec4(u, gamma * c);
 }
-
 vec4 push(int p) {
   return (variableIdx == 0)
   ? push_position(p)
@@ -148,6 +178,9 @@ void main () {
   int snapshot = int(floor((gl_FragCoord.x - .5) / 4.));
   int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
 
+// int i;
+
+
   initLatticeData();
 
   vec4 value = (snapshot == 0)
@@ -164,7 +197,4 @@ void main () {
   : (fourComponentIndex == 2)
   ? vec4(value.z, 0., 0., 0.)
   : vec4(value.w, 0., 0., 0.);
-
 }
-
-

@@ -13,7 +13,7 @@ export const T = (2 * Math.PI * R) / betaFromGamma(gamma)
 
 const r = (3.3 * gamma * 0.0005109989461 * betaFromGamma(gamma)) / B_T
 
-console.log({ r, C, beta: betaFromGamma(gamma), T, R })
+// console.log({ r, C, beta: betaFromGamma(gamma), T, R })
 
 export default {
   name: 'gyrotest-1-electron',
@@ -30,10 +30,10 @@ export default {
     prerender: true,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 100,
+    iterationsPerSnapshot: 1,
     iterationCount: undefined,
-    snapshotCount: 128,
-    iterationDurationOverC: 0.005
+    snapshotCount: 16,
+    iterationDurationOverC: 0.1
   },
 
   model: {
@@ -43,7 +43,7 @@ export default {
       bunchShape: 'COLUMN',
       direction: [0, 0, 1],
       position: [
-        -1.5,
+        0,
         defaultConfig.view.pathicleWidth *
           defaultConfig.view.pathicleRelativeHeight *
           2 +

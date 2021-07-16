@@ -1,1 +1,2 @@
-export default from '@pathicles/dev-config/jest.config.mjs'
+
+export { default } from '@pathicles/dev-config/jest.config.mjs'

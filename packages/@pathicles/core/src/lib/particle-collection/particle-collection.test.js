@@ -16,7 +16,9 @@ describe('jitterPosition', () => {
       position: [0, 0, 0],
       jitter: [0, 0, 0]
     })
-    expect(jitteredPosition).toEqual([0, 0, 0])
+    expect(jitteredPosition[0]).toBeCloseTo(0)
+    expect(jitteredPosition[1]).toBeCloseTo(0)
+    expect(jitteredPosition[2]).toBeCloseTo(0)
   })
 })
 

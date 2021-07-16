@@ -101,6 +101,13 @@ void main () {
   vec4 fourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot));
   vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
 
+//  fourPosition.x /= 2.;
+//  fourPosition.y /= 2.;
+//  fourPosition.z /= 2.;
+//  previousFourPosition.x /= 2.;
+//  previousFourPosition.y /= 2.;
+//  previousFourPosition.z /= 2.;
+
   mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1, 0.));
 
   #ifdef lighting
