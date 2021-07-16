@@ -32,9 +32,9 @@ export default {
         },
         d1: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
-          l: 1,
+          l: 2,
           strength: 0.000135,
-          angle: (0 * (2 * Math.PI)) / 360
+          angle: ((2 * Math.PI) / 360) * 45
         },
         d2: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
@@ -48,19 +48,19 @@ export default {
         'l1',
         'd1',
         'l1',
-        'd2'
-        // 'l1',
-        // 'd1',
-        // 'l1',
-        // 'd1',
-        // 'l1',
-        // 'd1',
-        // 'l1',
-        // 'd1',
-        // 'l1',
-        // 'd1'
-        // 'l1',
-        // 'd1'
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1',
+        'l1',
+        'd1'
       ],
       // beamline: [],
       origin: {

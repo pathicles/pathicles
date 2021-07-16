@@ -77,7 +77,7 @@ vec3 getB(vec3 position) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     BeamlineElement ble =  beamline[i];
     vec3 localPosition = position;
-    //    localPosition.xz *= rot2D(ble.phi);
+        localPosition.xz *= rot2D(ble.phi);
     localPosition -= ble.middle;
     if (sdBox(localPosition, ble.size) <= 0.) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
@@ -94,25 +94,6 @@ vec3 getB(vec3 position) {
 
   return B;
 }
-//  B = magneticField; //vec3(ble.strength);
-//  B = vec3(0.,0.,0.); //vec3(ble.strength);
-
-//  return B;
-//
-//  vec3 localPosition = position - vec3(0., 0., 0.);
-//
-//  if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
-//    B += vec3(0., ble.strength, 0.);
-////    B += vec3(0., 1., 0.);
-//  } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
-//    B += abs(ble.strength)  *
-//    ((ble.strength > 0.)
-//    ? vec3(localPosition.y, localPosition.x, 0)
-//    : vec3(-localPosition.y, -localPosition.x, 0.));
-//  }
-//  return B;
-//}
-
 
 
 void main () {
@@ -133,14 +114,6 @@ void main () {
 
   vPosition = (lookAtMat4 * vec4(scaledPosition, 1.)).xyz + aOffset;
   vPosition =  aPosition + aOffset;
-//  BeamlineElement bl = getBeamlineElement(0.);
-//
-//  vec3 localPosition = aOffset;
-////  localPosition.xz *= rot2D(bl.phi);
-//  localPosition -= bl.middle;
-//
-//  float sd =  sdBox(localPosition, bl.size);
-//  vColor = sd < 0. ? vec3(0.,1.,0.) : vec3(1.);
 
   gl_Position = projection * view *  vec4(vPosition, 1.);
 }

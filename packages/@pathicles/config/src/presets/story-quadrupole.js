@@ -16,8 +16,8 @@ export default {
   },
   model: {
     emitter: {
-      // bunchShape: 'SQUARE_XY',
-      // particleSeparation: 0.01,
+      bunchShape: 'SPIRAL_XY',
+      particleSeparation: 0.02,
       particleType: 'PROTON',
       direction: [0, 0, 1],
       position: [0, 1.5, -8],

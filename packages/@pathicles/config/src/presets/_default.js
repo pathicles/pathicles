@@ -16,9 +16,9 @@ export default {
     prerender: false,
     loops: 10,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 8,
+    iterationsPerSnapshot: 4,
     iterationCount: 1024,
-    iterationDurationOverC: 0.1,
+    iterationDurationOverC: 0.05,
     snapshotCount: 128
   },
 
@@ -27,9 +27,9 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_YZ',
+      bunchShape: 'SPIRAL_YZ',
       particleCount: 64,
-      particleSeparation: 0.05,
+      particleSeparation: 0.1,
       gamma: () => 2.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -71,7 +71,7 @@ export default {
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.005,
+    pathicleWidth: 0.0025,
 
     showAxes: true,
     showVignette: true,
