@@ -2,7 +2,7 @@
   "name": "@pathicles/vue-app",
   "description": "Vue 3 app",
   "license": "MIT",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production vite build",
     "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0",
@@ -15,8 +15,8 @@
     "devPort": 9303
   },
   "dependencies": {
-    "@pathicles/config": "^0.9.0",
-    "@pathicles/core": "^0.9.0",
+    "@pathicles/config": "^0.10.0",
+    "@pathicles/core": "^0.10.0",
     "regl": "^2.1.0",
     "tornis": "^0.3.3",
     "tweakpane": "^2.3.0",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config-vue": "^0.4.3",
-    "@pathicles/dev-config": "^0.9.0",
+    "@pathicles/dev-config": "^0.10.0",
     "@vitejs/plugin-vue": "^1.2.2",
     "@vue/compiler-sfc": "^3.0.11",
     "autoprefixer": "^10.2.5",

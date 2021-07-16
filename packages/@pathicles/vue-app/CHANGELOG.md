@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.10.0 (2021-07-16)
+
+
+### Features
+
+* **app:** improved pwa ([b205c25](https://github.com/pathicles/pathicles/commit/b205c258376aad006b97c241e26b6aebba980610))
+* **app:** improved pwa ([be12b7f](https://github.com/pathicles/pathicles/commit/be12b7fbbb20437c3760d910f08cb1ecc3967a14))
+
+
+
+# 0.9.0 (2021-01-20)
+
+
+
+
+
+# 0.10.0 (2021-07-16)
+
+
+### Features
+
+* **app:** improved pwa ([b205c25](https://github.com/pathicles/pathicles/commit/b205c258376aad006b97c241e26b6aebba980610))
+* **app:** improved pwa ([be12b7f](https://github.com/pathicles/pathicles/commit/be12b7fbbb20437c3760d910f08cb1ecc3967a14))
+
+
+
+# 0.9.0 (2021-01-20)
+
+
+
+
+
 # [0.9.0](https://github.com/pathicles/pathicles/compare/@pathicles/app@0.8.0...@pathicles/app@0.9.0) (2021-01-20)
 
 **Note:** Version bump only for package @pathicles/app

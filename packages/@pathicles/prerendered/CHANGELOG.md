@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/pathicles/pathicles/compare/@pathicles/prerendered@0.9.0...@pathicles/prerendered@0.10.0) (2021-07-16)
+
+
+### Features
+
+* **app:** improved pwa ([b205c25](https://github.com/pathicles/pathicles/commit/b205c258376aad006b97c241e26b6aebba980610))
+
+
+
+
+
+# [0.10.0](https://github.com/pathicles/pathicles/compare/@pathicles/prerendered@0.9.0...@pathicles/prerendered@0.10.0) (2021-07-16)
+
+
+### Features
+
+* **app:** improved pwa ([b205c25](https://github.com/pathicles/pathicles/commit/b205c258376aad006b97c241e26b6aebba980610))
+
+
+
+
+
 # [0.9.0](https://github.com/pathicles/pathicles/compare/@pathicles/prerendered@0.8.0...@pathicles/prerendered@0.9.0) (2021-01-20)
 
 **Note:** Version bump only for package @pathicles/prerendered
