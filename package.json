@@ -32,7 +32,7 @@
     "publish": "lerna publish from-git --force-publish=*",
     "version": "lerna version 0.10.0 --conventional-commits --force-publish=* --create-release github; lerna publish from-git --force-publish=*",
     "version:bump-patch": "lerna version 0.8.0 --conventional-commits --force-publish=* --create-release github; lerna publish from-git --force-publish=*",
-    "version:bump-minor": "lerna version minor --no-push --conventional-commits --force --create-release github",
+    "version:bump-minor": "lerna version minor --no-push --conventional-commits  --create-release github",
     "version:bump-major": "lerna version major --no-push --conventional-commits  --force --create-release github",
     "version:changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 -u && git add CHANGELOG.md"
   },
