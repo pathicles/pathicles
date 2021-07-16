@@ -88,3 +88,5 @@ typings/
 /packages/@pathicles/core/dist/pathicles-core.esm.js
 /packages/@pathicles/viewer/stats.html
 /packages/@pathicles/prerendered/build/
+/packages/@pathicles/core/src/ogl/
+/packages/@pathicles/prerendered/files/orig/
