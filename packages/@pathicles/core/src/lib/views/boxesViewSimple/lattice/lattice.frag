@@ -5,7 +5,6 @@ varying vec3 vNormalOrig;
 varying vec3 vColor;
 varying vec2 vUv;
 uniform float ambientLightAmount;
-uniform float vColorCorrection;
 uniform float diffuseLightAmount;
 uniform vec3 shadowDirection;
 uniform float pathicleWidth;
@@ -40,17 +39,6 @@ DirectionalLight directionalLights[NUM_DIR_LIGHTS];
 
 void main () {
 
-  #ifdef depthNormal
-  gl_FragColor = vec4(gl_FragCoord.z, vNormal);
-  #endif
-
-  #ifdef diffuse
-
-
-  vec3 color = vColor;
-  gl_FragColor = vec4(vColor, 1.);
-  // gl_FragColor = vec4(0., 0., 0., 1.);
-  #endif
 
   #ifdef lighting
 
@@ -62,9 +50,9 @@ void main () {
   vec3 viewDir = normalize(eye - vPosition.xyz);
   vec3 normal = normalize(vNormal);
 
-  directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .15);
-  directionalLights[1] = DirectionalLight(shadowDirection+vec3(-5., 0., 5.), vec3(1.), .15);
-  directionalLights[2] = DirectionalLight(shadowDirection+vec3(5., 0., -5.), vec3(1.), .15);
+  directionalLights[0] = DirectionalLight(shadowDirection, vec3(1.), .5);
+  directionalLights[1] = DirectionalLight(shadowDirection+vec3(-1., 0., 1.), vec3(1.), .1);
+  directionalLights[2] = DirectionalLight(shadowDirection+vec3(1., 0., -1.), vec3(1.), .1);
   vec3 edgedColor = vColor;
   vec3 finalColor = ambientLightAmount * vColor;
 
@@ -85,14 +73,6 @@ void main () {
 
 
   gl_FragColor =vec4(finalColor, 1.);
-//
-//
-//
-//     gl_FragColor = vec4(1., 0., 0., 1.);
-  #endif
-
-  #ifdef position
-  gl_FragColor = vec4(vPosition.xyz, .2);
   #endif
 
 }

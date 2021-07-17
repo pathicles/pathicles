@@ -52,8 +52,8 @@ export const LATTICE_ELEMENT_TYPES = {
 export const LATTICE_ELEMENTS = {
   DRIF: {
     color: [0.3, 0.3, 0.3],
-    width: 0.15,
-    height: 0.5,
+    width: 0.1,
+    height: 0.1,
     gap: 0
   },
   SBEN: { color: [0.5, 0, 0], width: 0.5, height: 0.5, gap: 0 },
@@ -120,6 +120,10 @@ export class Lattice {
       return {
         translation: element.middle,
         phi: element.phi,
+        theta:
+          element.type === LATTICE_ELEMENT_TYPES.QUAD
+            ? ((2 * Math.PI) / 360) * 45
+            : 0,
         scale: element.size
       }
     })

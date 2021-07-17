@@ -116,8 +116,8 @@ void main () {
   gl_FragColor =vec4(finalColor, 1.); //map(v_visibility, 0.5, 1., 0.75, .9));
 
   #endif// lighting
-  #ifdef shadow
 
+  #ifdef shadow
   gl_FragColor = packRGBA(vShadowCoord.z );
   #endif
 

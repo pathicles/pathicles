@@ -16,8 +16,6 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      bunchShape: 'SQUARE_XY',
-      // position: [0, 1, -3.7207765272494715],
       position: [0, 1, 0],
       direction: [0, 0, 1]
     },

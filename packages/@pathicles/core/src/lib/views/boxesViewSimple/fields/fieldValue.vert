@@ -103,8 +103,6 @@ void main () {
   vNormalOrig = aNormal;
   float phi = .5;
 
-//  vColor = vec3(0.,.1,.0);
-
   vec3 b = getB(aOffset);
   float scale = length(b) == 0. ? 0. : min(length(b), 1.) / 10. + .0;
   vColor = vec3(scale);

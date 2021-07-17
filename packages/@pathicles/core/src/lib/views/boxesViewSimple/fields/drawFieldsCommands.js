@@ -6,10 +6,10 @@ import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
 import { latticeChunk } from '../../../simulation/lattice/lattice.gsls'
 
-const X = 10
-const Y = 10
-const Z = 50
-const STEP_SIZE = 0.2
+const X = 11
+const Y = 11
+const Z = 11
+const STEP_SIZE = 0.1
 
 export const positionAttributes = () => {
   const out = []
@@ -17,9 +17,9 @@ export const positionAttributes = () => {
     for (let y = 0; y < Y; y++)
       for (let z = 0; z < Z; z++) {
         out.push([
-          (x - X / 2) * STEP_SIZE,
+          (x - (X - 1) / 2) * STEP_SIZE,
           y * STEP_SIZE,
-          (z - Z / 2) * STEP_SIZE
+          (z - (Z - 1) / 2) * STEP_SIZE
         ])
       }
 

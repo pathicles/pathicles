@@ -13,8 +13,6 @@ export default {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
       bunchShape: 'SQUARE_XY',
-      // particleCount: 121,
-      // particleSeparation: 0.01,
       position: [0, 1.5, -10],
       direction: [0, 0, 1]
     },

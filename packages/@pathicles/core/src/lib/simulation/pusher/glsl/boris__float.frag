@@ -25,8 +25,6 @@ uniform vec3 magneticField;
 /*__latticeChunkGLSL__*/
 
 
-
-
 mat2 rot2D(float phi) {
   float c = cos(phi);
   float s = sin(phi);
@@ -35,28 +33,6 @@ mat2 rot2D(float phi) {
 float sdBox( vec3 p, vec3 s ) {
   vec3 d = abs(p) - 1. * s;
   return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
-}
-BeamlineElement getBeamlineElement(float id) {
-  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
-    if (float(i) == id) return beamline[i];
-  }
-  return beamline[0];
-}
-BeamlineElement getClosestBeamlineElement(vec3 position) {
-
-  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
-
-    BeamlineElement bl = getBeamlineElement(float(i));
-
-    vec3 localPosition = position;
-    localPosition.xz *= rot2D(bl.phi);
-    localPosition -= bl.middle;
-
-    if (sdBox(localPosition, bl.size) <= 0.) {
-      return bl;
-    }
-  }
-  return BeamlineElement(vec3(0.), vec3(0.), 0., 0, 0.);
 }
 
 
@@ -73,36 +49,16 @@ vec3 getE(vec3 position) {
   vec3 E = electricField;
   return E;
 }
-//
-//vec3 getB(vec3 position) {
-//
-//  BeamlineElement ble = getClosestBeamlineElement(position);
-//
-//  vec3 B = magneticField;
-//
-//  vec3 localPosition = position;  - vec3(0., 1.5, 0.);
-//
-//  if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
-//    B += vec3(0., ble.strength, 0.);
-//  } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
-//    B += abs(ble.strength)  *
-//    ((ble.strength > 0.)
-//    ? vec3(localPosition.y, localPosition.x, 0)
-//    : vec3(-localPosition.y, -localPosition.x, 0.));
-//  }
-//  return B;
-//}
 
 
 vec3 getB(vec3 position) {
-
 
   vec3 B = magneticField;
 
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     BeamlineElement ble =  beamline[i];
     vec3 localPosition = position;
-        localPosition.xz *= rot2D(ble.phi);
+    localPosition.xz *= rot2D(ble.phi);
     localPosition -= ble.middle;
     if (sdBox(localPosition, ble.size) <= 0.) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
@@ -180,7 +136,11 @@ vec4 push_velocity(int p) {
 
     vec3 nextPosition = intermediatePosition.xyz + .5 *  velocity * deltaTOverC;
 
-    vec3 ref = reflection(nextPosition.xyz, boundingBoxCenter-vec3(boundingBoxSize), boundingBoxCenter+vec3(boundingBoxSize));
+    vec3 ref = reflection(
+      nextPosition.xyz,
+      boundingBoxCenter - vec3(boundingBoxSize),
+      boundingBoxCenter + vec3(boundingBoxSize)
+    );
     u *= ref;
 
   }
@@ -203,8 +163,6 @@ void main () {
   int particle = int(gl_FragCoord.y - .5);
   int snapshot = int(floor((gl_FragCoord.x - .5) / 4.));
   int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
-
-// int i;
 
 
   initLatticeData();

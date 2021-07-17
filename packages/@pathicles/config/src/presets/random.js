@@ -6,6 +6,8 @@ export const random = () => {
 }
 export const boundedRandom = (min = -1, max = 1) => random() * (max - min) + min
 
+console.log([boundedRandom, boundedRandom(), boundedRandom()])
+
 export default {
   name: 'random',
   view: {
@@ -17,13 +19,11 @@ export default {
   },
 
   runner: {
-    prerender: false,
-    loops: 10,
-
-    mode: RUNNER_MODE.NOBREAK,
+    prerender: true,
+    loops: 2,
     iterationsPerSnapshot: 1,
-    iterationCount: 256,
-    snapshotCount: 256,
+    iterationCount: 128,
+    snapshotCount: 16,
     iterationDurationOverC: 0.1
   },
 
@@ -32,14 +32,10 @@ export default {
     boundingBoxCenter: [0, 1, 0],
     emitter: {
       position: [0, 1, 0],
-      // direction: () => [0, 1, 1],
       direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
-      // bunchShape: 'SQUARE_XZ',
-      // bunchShape: 'SQUARE_XZ',
-      particleSeparation: 0.0001,
-      // directionJitter: [1, 1, 1],
-      // positionJitter: [0, 0, 0],
+      particleSeparation: 0.1,
       gamma: 10,
+      bunchShape: 'SQUARE_YZ',
       particleCount: 256,
       particleType: 'PHOTON ELECTRON PROTON'
     }

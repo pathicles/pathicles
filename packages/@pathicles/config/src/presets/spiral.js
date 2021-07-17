@@ -23,10 +23,10 @@ export default {
 
   model: {
     emitter: {
-      particleCount: 121,
+      // particleCount: 121,
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleSeparation: 0.05,
+      // particleSeparation: 0.05,
       position: [
         -1.5,
         defaultConfig.view.pathicleWidth *
@@ -56,7 +56,7 @@ export default {
           strength: 1.0
         }
       },
-      beamline: ['l'],
+      beamline: [],
       origin: {
         phi: 0,
         position: [0, 0.5, -9]

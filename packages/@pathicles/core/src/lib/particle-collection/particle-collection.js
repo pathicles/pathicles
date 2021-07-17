@@ -37,16 +37,16 @@ export function jitterPosition({ position = [0, 0, 0], jitter = [0, 0, 0] }) {
   return position.map((d, i) => boundedRandom() * jitter[i])
 }
 
-export function jitterDirection({
-  direction = [0, 0, 1],
-  directionJitter = [0, 0, 0]
-}) {
-  const jitteredDirection = [
-    ...direction.map((d, i) => d + boundedRandom(0, 1) * directionJitter[i])
-  ]
-
-  return normalize(jitteredDirection)
-}
+// export function jitterDirection({
+//   direction = [0, 0, 1],
+//   directionJitter = [0, 0, 0]
+// }) {
+//   const jitteredDirection = [
+//     ...direction.map((d, i) => d + boundedRandom(0, 1) * directionJitter[i])
+//   ]
+//
+//   return normalize(jitteredDirection)
+// }
 
 export function betaFromGamma(gamma = 0) {
   if (gamma === 0) return NaN

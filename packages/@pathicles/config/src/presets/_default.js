@@ -14,9 +14,9 @@ export default {
     enabled: true,
     packFloat2UInt8: false,
     prerender: false,
-    loops: 10,
+    loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 4,
+    iterationsPerSnapshot: 8,
     iterationCount: 1024,
     iterationDurationOverC: 0.05,
     snapshotCount: 128
@@ -27,9 +27,9 @@ export default {
     emitter: {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_YZ',
+      bunchShape: 'SPIRAL_XY',
       particleCount: 64,
-      particleSeparation: 0.1,
+      particleSeparation: 0.03,
       gamma: () => 2.25,
       position: [0, 0, 0],
       direction: [0, 0, 1],
@@ -38,7 +38,7 @@ export default {
     interactions: {
       particleInteraction: false,
       electricField: [0, 0, 0],
-      magneticField: [0, 0.0, 0]
+      magneticField: [0, 0, 0]
     },
     lattice: {
       elements: {},
