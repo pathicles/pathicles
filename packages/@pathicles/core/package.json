@@ -13,10 +13,10 @@
     "test:unit": "jest"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.14.5",
     "@pathicles/config": "^0.10.0",
     "@petamoriken/float16": "^2.0.0",
-    "b-spline": "^2.0.1",
+    "b-spline": "^2.0.2",
     "detect-it": "^4.0.0",
     "event-emitter": "^0.3.5",
     "gl-mat4": "^1.2.0",
