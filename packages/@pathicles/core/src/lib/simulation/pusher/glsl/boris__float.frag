@@ -1,13 +1,5 @@
 precision highp float;
-
-/*__latticeSize__*/
-
 const highp float c = 2.99792458e+8;
-#pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
-
-const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
-const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
-const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 uniform float boundingBoxSize;
 uniform float deltaTOverC;
@@ -22,6 +14,12 @@ uniform vec3 boundingBoxCenter;
 uniform vec3 electricField;
 uniform vec3 magneticField;
 
+#pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
+const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
+const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
+const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
+
+/*__latticeSize__*/
 /*__latticeChunkGLSL__*/
 
 
@@ -38,8 +36,8 @@ float sdBox( vec3 p, vec3 s ) {
 
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
-#pragma glslify: insideBox = require("@pathicles/core/src/lib/shaders/insideBox.glsl");
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable__float.glsl", resolution=resolution);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN);
+
 
 vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
   return  2.*(step(bottomLeft, v) - step(topRight, v)) - vec3(1.);
@@ -49,8 +47,6 @@ vec3 getE(vec3 position) {
   vec3 E = electricField;
   return E;
 }
-
-
 vec3 getB(vec3 position) {
 
   vec3 B = magneticField;
@@ -99,7 +95,6 @@ vec4 push_velocity(int p) {
 
   ParticleData particleData = getParticleData(p);
 
-
   vec4 fourPosition = readVariable(ut_position, p, 1);
   vec4 fourVelocity = readVariable(ut_velocity, p, 0);
 
@@ -133,9 +128,7 @@ vec4 push_velocity(int p) {
   if (boundingBoxSize > 0.) {
 
     velocity = (particleData.particleType > .1)  ? u / gamma / c : velocity;
-
     vec3 nextPosition = intermediatePosition.xyz + .5 *  velocity * deltaTOverC;
-
     vec3 ref = reflection(
       nextPosition.xyz,
       boundingBoxCenter - vec3(boundingBoxSize),
@@ -163,15 +156,13 @@ void main () {
   int particle = int(gl_FragCoord.y - .5);
   int snapshot = int(floor((gl_FragCoord.x - .5) / 4.));
   int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
-
-
   initLatticeData();
 
   vec4 value = (snapshot == 0)
-  ? push(particle)
-  : (takeSnapshot == 0)
-  ? readVariable(particle, snapshot)
-  : readVariable(particle, snapshot-1);
+    ? push(particle)
+    : (takeSnapshot == 0)
+      ? readVariable(particle, snapshot)
+      : readVariable(particle, snapshot-1);
 
   gl_FragColor =
   (fourComponentIndex == 0)

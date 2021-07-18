@@ -34,14 +34,14 @@ describe('gyroRadius', () => {
     const bField = new Ratio(1n, 100n)
     const charge = Ratio.fromNumber(1.60217662e-19)
     //
-    // console.log(gamma.times(velocity).times(mass).toFixed(5))
-    // console.log(charge.times(bField))
-    // console.log(
-    //   gamma
-    //     .times(velocity)
-    //     .times(mass)
-    //     .divideBy(charge.times(bField))
-    //     .toFixed(5)
-    // )
+    console.log(gamma.times(velocity).times(mass).toFixed(5))
+    console.log(charge.times(bField))
+    console.log(
+      gamma
+        .times(velocity)
+        .times(mass)
+        .divideBy(charge.times(bField))
+        .toFixed(5)
+    )
   })
 })

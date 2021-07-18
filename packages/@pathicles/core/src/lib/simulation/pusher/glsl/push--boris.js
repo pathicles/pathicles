@@ -55,9 +55,12 @@ export default function (regl, { runner, variables, model }) {
       vert,
       frag: [
         ...(variables.packFloat2UInt8
-          ? [`#define LITTLE_ENDIAN ${runner.littleEndian}`]
-          : []),
-        (variables.packFloat2UInt8 ? frag__uint : frag__float)
+          ? [
+              `#define LITTLE_ENDIAN ${runner.littleEndian}`,
+              `#define PACK_FLOAT 1`
+            ]
+          : [`#define PACK_FLOAT 0`]),
+        (variables.packFloat2UInt8 ? frag__float : frag__float)
           .replace(
             '/*__latticeDefinition__*/',
             model.lattice.toGLSLDefinition()

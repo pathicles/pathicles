@@ -3,18 +3,19 @@
 #ifdef LITTLE_ENDIAN
 
 #pragma glslify: rgbaToFloat = require('glsl-rgba-to-float')
+
 bool bLittleEndian = LITTLE_ENDIAN == 1;
 
 #endif
-vec2 resolution = vec2(4*snapshotCount, particleCount);
+
 vec4 readVariable(sampler2D tex, int p, int s) {
 
   #ifdef LITTLE_ENDIAN
   return vec4(
-    rgbaToFloat(texture2D(tex, vec2(4*s,p) / resolution), bLittleEndian),
-    rgbaToFloat(texture2D(tex, vec2(4*s+1,p) / resolution), bLittleEndian),
-    rgbaToFloat(texture2D(tex, vec2(4*s+2,p) / resolution), bLittleEndian),
-    rgbaToFloat(texture2D(tex, vec2(4*s+3,p) / resolution), bLittleEndian)
+  rgbaToFloat(texture2D(tex, vec2(4*s,p) / resolution), bLittleEndian),
+  rgbaToFloat(texture2D(tex, vec2(4*s+1,p) / resolution), bLittleEndian),
+  rgbaToFloat(texture2D(tex, vec2(4*s+2,p) / resolution), bLittleEndian),
+  rgbaToFloat(texture2D(tex, vec2(4*s+3,p) / resolution), bLittleEndian)
   );
 
 #else

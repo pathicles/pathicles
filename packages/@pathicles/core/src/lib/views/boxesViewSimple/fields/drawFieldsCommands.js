@@ -9,7 +9,7 @@ import { latticeChunk } from '../../../simulation/lattice/lattice.gsls'
 const X = 51
 const Y = 3
 const Z = 51
-const STEP_SIZE = 0.2
+const STEP_SIZE = 0.1
 
 export const positionAttributes = () => {
   const out = []

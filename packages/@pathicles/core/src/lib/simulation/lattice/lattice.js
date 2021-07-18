@@ -3,31 +3,31 @@ const QUAD = 'QUAD'
 const SBEN = 'SBEN'
 const ESTA = 'ESTA'
 
-function rotY([x, y, z], phi) {
-  const c = Math.cos(phi)
-  const s = Math.sin(phi)
-  return [c * x - s * z, y, s * x + c * z]
-}
+// function rotY([x, y, z], phi) {
+//   const c = Math.cos(phi)
+//   const s = Math.sin(phi)
+//   return [c * x - s * z, y, s * x + c * z]
+// }
 
-function signedDistanceToBox(p, size) {
-  const offsetX = Math.abs(p[0]) - size[0] / 2
-  const offsetY = Math.abs(p[1]) - size[1] / 2
-  const offsetZ = Math.abs(p[2]) - size[2] / 2
+// function signedDistanceToBox(p, size) {
+//   const offsetX = Math.abs(p[0]) - size[0] / 2
+//   const offsetY = Math.abs(p[1]) - size[1] / 2
+//   const offsetZ = Math.abs(p[2]) - size[2] / 2
 
-  const offsetMaxX = Math.max(offsetX, 0)
-  const offsetMaxY = Math.max(offsetY, 0)
-  const offsetMaxZ = Math.max(offsetZ, 0)
-  const offsetMinX = Math.min(offsetX, 0)
-  const offsetMinY = Math.min(offsetY, 0)
-  const offsetMinZ = Math.min(offsetZ, 0)
+//   const offsetMaxX = Math.max(offsetX, 0)
+//   const offsetMaxY = Math.max(offsetY, 0)
+//   const offsetMaxZ = Math.max(offsetZ, 0)
+//   const offsetMinX = Math.min(offsetX, 0)
+//   const offsetMinY = Math.min(offsetY, 0)
+//   const offsetMinZ = Math.min(offsetZ, 0)
 
-  const unsignedDst = Math.sqrt(
-    offsetMaxX * offsetMaxX + offsetMaxY * offsetMaxY + offsetMaxZ * offsetMaxZ
-  )
-  const dstInsideBox = Math.max(offsetMinX, offsetMinY, offsetMinZ)
+//   const unsignedDst = Math.sqrt(
+//     offsetMaxX * offsetMaxX + offsetMaxY * offsetMaxY + offsetMaxZ * offsetMaxZ
+//   )
+//   const dstInsideBox = Math.max(offsetMinX, offsetMinY, offsetMinZ)
 
-  return unsignedDst + dstInsideBox
-}
+//   return unsignedDst + dstInsideBox
+// }
 
 export const LATTICE_ELEMENT_TYPES = {
   DRIF,
@@ -43,10 +43,10 @@ export const LATTICE_ELEMENTS = {
     height: 0.1,
     gap: 0
   },
-  SBEN: { color: [0.5, 0, 0], width: 0.5, height: 0.5, gap: 0 },
+  SBEN: { color: [0.55, 0, 0], width: 0.5, height: 0.5, gap: 0 },
   QUAD: {
-    color: [0.9, 0.4, 0],
-    color_minus: [0.5, 0.4, 0],
+    color: [1, 0.5, 0],
+    color_minus: [0.5, 0.5, 0],
     width: 0.5,
     height: 0.5,
     gap: 0
@@ -80,13 +80,16 @@ export class Lattice {
       const phi_half = element.angle ? phi + element.angle / 2 : phi
       const start = [x, y, z]
 
-      ;[x, y, z] = [
+      ;[x, z] = [
         x - Math.sin(phi_half) * element.l,
-        y,
         z + Math.cos(phi_half) * element.l
       ]
       phi = element.angle ? phi + element.angle : phi
       return {
+        color:
+          element.type === LATTICE_ELEMENT_TYPES.QUAD && element.strength < 0
+            ? LATTICE_ELEMENTS[element.type].color_minus
+            : LATTICE_ELEMENTS[element.type].color,
         type: element.type,
         ...(element.strength && { strength: element.strength }),
         middle: [(start[0] + x) / 2, y, (start[2] + z) / 2],
@@ -105,6 +108,7 @@ export class Lattice {
   get transformations() {
     return this.beamline.map((element) => {
       return {
+        type: element.type,
         translation: element.middle,
         phi: element.phi,
         theta:

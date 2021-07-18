@@ -178,7 +178,9 @@ const convertImagesSharp = async () => {
   const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
 
   await Promise.all(
-    (await imagePaths()).map(async (imgPath) => {
+    (
+      await imagePaths()
+    ).map(async (imgPath) => {
       let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
       //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
       //     console.log(err, info)

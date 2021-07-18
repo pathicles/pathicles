@@ -1,8 +1,6 @@
 #pragma glslify: export(readVariable);
 
-
 #pragma glslify: rgbaToFloat = require('glsl-rgba-to-float')
-//#pragma glslify: rgbaToFloat = require('./rgba-to-float.glsl')
 bool bLittleEndian = LITTLE_ENDIAN == 1;
 
 vec4 readVariable(sampler2D tex, int p, int s) {

@@ -4,9 +4,9 @@ export default {
   name: 'csr',
   view: {
     camera: {
-      center: [0, 1.5, 0],
-      distance: 18,
-      phi: (45 / 360) * 2 * Math.PI,
+      center: [0, 1, 0],
+      distance: 15,
+      phi: (15 / 360) * 2 * Math.PI,
       theta: (90 / 360) * 2 * Math.PI
     }
   },

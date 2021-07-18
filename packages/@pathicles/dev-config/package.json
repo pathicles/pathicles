@@ -1,9 +1,9 @@
 {
   "name": "@pathicles/dev-config",
+  "version": "0.10.0",
   "description": "eslint, prettier, jest",
   "license": "EUPL-1.2",
   "author": "Dirk Rathje",
-  "version": "0.10.0",
   "type": "module",
   "scripts": {
     "lint": "eslint; prettier-package-json --write"

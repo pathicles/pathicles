@@ -109,16 +109,13 @@ export class ReglViewerInstance {
           this.modelTranslateY = 0
         }
 
-        this.camera.params.phi = storyState.scene.cameraBSplines.phi(
-          sceneProgress
-        )[0]
+        this.camera.params.phi =
+          storyState.scene.cameraBSplines.phi(sceneProgress)[0]
 
-        this.camera.params.distance = storyState.scene.cameraBSplines.distance(
-          sceneProgress
-        )[0]
-        this.camera.params.theta = storyState.scene.cameraBSplines.theta(
-          sceneProgress
-        )[0]
+        this.camera.params.distance =
+          storyState.scene.cameraBSplines.distance(sceneProgress)[0]
+        this.camera.params.theta =
+          storyState.scene.cameraBSplines.theta(sceneProgress)[0]
 
         this.camera.params.center = [
           storyState.scene.cameraBSplines.centerX(sceneProgress)[0],

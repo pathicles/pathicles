@@ -1,7 +1,7 @@
 {
   "name": "@pathicles/core",
-  "license": "MIT",
   "version": "0.10.0",
+  "license": "MIT",
   "type": "module",
   "main": "dist/pathicles-core.min.js",
   "module": "dist/pathicles-core.esm.js",

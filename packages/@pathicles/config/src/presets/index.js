@@ -54,24 +54,24 @@ const toUInt8 = (config) => {
 
 const presets = {
   [csr.name]: csr,
-  [logo.name]: logo,
-  [storyDipole.name]: storyDipole,
-  [storyDipole.name]: storyDipole,
-  [storyElectric.name]: storyElectric,
-  [storyQuadrupole.name]: storyQuadrupole,
-  [freeElectron.name]: freeElectron,
-  [freeElectrons.name]: freeElectrons,
   [differentGammas.name]: differentGammas,
   [differentGammas1e_10.name]: differentGammas1e_10,
   [differentGammas1e_11.name]: differentGammas1e_11,
   [differentGammas1e_12.name]: differentGammas1e_12,
-
+  [freeElectron.name]: freeElectron,
+  [freeElectrons.name]: freeElectrons,
   [freePhoton.name]: freePhoton,
   [freePhotons.name]: freePhotons,
-  [random.name]: random,
-  [spiral.name]: spiral,
   [gyrotest_1_electron.name]: gyrotest_1_electron,
-  [gyrotest_128_electrons.name]: gyrotest_128_electrons
+  [gyrotest_128_electrons.name]: gyrotest_128_electrons,
+  [logo.name]: logo,
+  [random.name]: random,
+
+  [spiral.name]: spiral,
+  [storyDipole.name]: storyDipole,
+  [storyDipole.name]: storyDipole,
+  [storyElectric.name]: storyElectric,
+  [storyQuadrupole.name]: storyQuadrupole
 }
 
 for (let p2 = 0; p2 < 11; p2++) {

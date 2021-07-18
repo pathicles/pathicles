@@ -6,7 +6,6 @@ import { Shadow } from './shadow/Shadow'
 import { drawAxesCommand } from './axes'
 import drawVignetteCommandBuilder from './vignette/drawVignetteCommandBuilder'
 import { PerformanceLogger } from '../../utils/PerformanceLogger'
-import { Lattice } from '../../simulation/lattice/lattice'
 
 export class BoxesViewSimple {
   constructor(regl, { runner, variables, model, view, debug }) {
@@ -89,7 +88,8 @@ export class BoxesViewSimple {
         ])
 
       this.drawFields.lighting(props)
-      this.drawLattice.lighting(props)
+      this.drawLattice.quadLighting(props)
+      this.drawLattice.sbenLighting(props)
       this.config.isStageVisible && this.drawStage.lighting(props)
       this.drawModel.lighting(props)
       this.config.showVignette && this.drawVignette.lighting(props)

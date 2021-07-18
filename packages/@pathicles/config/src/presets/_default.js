@@ -17,7 +17,7 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
     iterationsPerSnapshot: 2,
-    iterationCount: 127,
+    iterationCount: 128 * 2 - 1,
     iterationDurationOverC: 0.05,
     snapshotCount: 128
   },
@@ -29,7 +29,7 @@ export default {
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
       particleCount: 64,
-      particleSeparation: 0.03,
+      particleSeparation: 0.05,
       gamma: () => 2.25,
       positionJitter: [0.0, 0.0, 0]
     },
@@ -40,7 +40,11 @@ export default {
     },
     lattice: {
       elements: {},
-      beamline: []
+      beamline: [],
+      origin: {
+        phi: 0,
+        position: [0, 0, 0]
+      }
     }
   },
 
@@ -76,7 +80,7 @@ export default {
     viewRange: [0, 1],
 
     camera: {
-      center: [0, 1, 0],
+      center: [0, 0, 0.5],
 
       distance: 2,
       phi: (15 / 360) * 2 * Math.PI,

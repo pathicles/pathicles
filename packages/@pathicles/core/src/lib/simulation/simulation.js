@@ -1,5 +1,3 @@
-'use strict'
-
 import { ParticleCollection } from '../particle-collection/particle-collection'
 import pushBorisGLSL from './pusher/glsl/push--boris'
 import pushBorisJS from './pusher/js/push--boris'
@@ -19,7 +17,6 @@ export class Simulation {
     this._regl = regl
 
     this.configuration = { model, runner, debug }
-    console.log(model.emitter)
 
     if (!model.emitter.position)
       model.emitter.position = model.lattice.origin.position
@@ -29,8 +26,6 @@ export class Simulation {
         0,
         Math.cos(model.lattice.origin.phi)
       ]
-
-    console.log(model.emitter.target)
 
     const { snapshotCount } = runner
     const { particleCount, particleTypes, fourPositions, fourVelocities } =
@@ -165,10 +160,16 @@ export class Simulation {
     // )
 
     const packedPositions = this.variables.position.pack(
-      this.variables.position.toTypedArray().float32Array
+      this.variables.position.toTypedArray(
+        this.variables.position.pingPong,
+        precision
+      ).float32Array
     )
     const packedVelocities = this.variables.position.pack(
-      this.variables.velocity.toTypedArray().float32Array
+      this.variables.velocity.toTypedArray(
+        this.variables.position.pingPong,
+        precision
+      ).float32Array
     )
 
     const velocityNorms = packedVelocities.map((p) =>

@@ -55,6 +55,9 @@ export const DISTRIBUTIONS = {
   ROW_X: line({
     swizzle: (x) => [x, 0, 0]
   }),
+  ROW_Y: line({
+    swizzle: (y) => [0, y, 0]
+  }),
   ROW_Z: line({
     swizzle: (z) => [0, 0, z]
   }),

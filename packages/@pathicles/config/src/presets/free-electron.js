@@ -3,18 +3,14 @@ import { RUNNER_MODE } from '../constants'
 
 export default {
   name: 'free-electron',
-  view: {
-    camera: {
-      center: [0, 0, 0.5],
-      distance: 2,
-      phi: (15 / 360) * 2 * Math.PI,
-      theta: (45 / 360) * 2 * Math.PI
-    }
-  },
-
-  debug: {
-    logPushing: false
-  },
+  // view: {
+  //   camera: {
+  //     center: [0, 0, 0.5],
+  //     distance: 2,
+  //     phi: (15 / 360) * 2 * Math.PI,
+  //     theta: (45 / 360) * 2 * Math.PI
+  //   }
+  // },
 
   runner: {
     prerender: true,
@@ -24,34 +20,24 @@ export default {
     iterationsPerSnapshot: 1,
     iterationCount: 10,
     snapshotCount: 11,
-    iterationDurationOverC: 0.5
+    iterationDurationOverC: 0.1
   },
 
   model: {
-    boundingBoxSize: 1,
-    boundingBoxCenter: [0, 0, 0],
-
     emitter: {
-      position: [
-        0,
-        (defaultConfig.view.pathicleWidth *
-          defaultConfig.view.pathicleRelativeHeight) /
-          2 +
-          0.01,
-        0
-      ],
-      direction: [0.4, 0.2, 1],
-      particleSeparation: 0.0,
       gamma: 1.1,
       particleCount: 1,
-      bunchShape: 'ROW_X',
-      particleType: 'ELECTRON',
-      positionJitter: [0, 0, 0]
+      particleType: 'ELECTRON'
     },
-    interactions: {
-      particleInteraction: false,
-      electricField: [0, 0, 0],
-      magneticField: [0, 0.0, 0]
+    lattice: {
+      origin: {
+        position: [
+          0,
+          defaultConfig.view.pathicleWidth *
+            defaultConfig.view.pathicleRelativeHeight,
+          0
+        ]
+      }
     }
   }
 }

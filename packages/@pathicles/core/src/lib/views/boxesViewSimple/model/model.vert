@@ -19,6 +19,7 @@ uniform float pathicleGap;
 uniform float pathicleHeight;
 uniform float stageGrid_size;
 
+uniform vec2 resolution;
 uniform sampler2D utColorCorrections;
 uniform sampler2D utParticleColorAndType;
 uniform sampler2D ut_position;
@@ -49,7 +50,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
 
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", particleCount=particleCount, snapshotCount=snapshotCount, LITTLE_ENDIAN=LITTLE_ENDIAN);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN);
 
 float unpackRGBA (vec4 v) {
   return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));

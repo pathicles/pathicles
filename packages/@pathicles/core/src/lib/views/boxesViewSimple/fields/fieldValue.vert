@@ -97,7 +97,7 @@ void main () {
 
   vec3 b = getB(aOffset);
   vColor = vec3(b);
-  float scale = length(b) == 0. ? .1 : min(length(b), 1.) / 1. + 1.;
+  float scale = length(b) == 0. ? .0 : min(length(b), 1.) / 1. + .5;
 
   vec3 scaledPosition = aPosition * scale;
   mat4 lookAtMat4 = lookAt(aOffset, aOffset + b, vec3(0., 1., 0.));

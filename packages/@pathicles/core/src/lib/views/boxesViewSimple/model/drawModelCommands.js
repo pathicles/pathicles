@@ -100,6 +100,7 @@ export default function (regl, { variables, view }, shadow) {
         iteration: () => variables.iteration,
         packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
         littleEndian: variables.littleEndian,
+        resolution: [variables.snapshotCount * 4, variables.particleCount],
 
         particleCount: variables.particleCount,
 

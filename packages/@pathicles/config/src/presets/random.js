@@ -6,8 +6,6 @@ export const random = () => {
 }
 export const boundedRandom = (min = -1, max = 1) => random() * (max - min) + min
 
-console.log([boundedRandom, boundedRandom(), boundedRandom()])
-
 export default {
   name: 'random',
   view: {

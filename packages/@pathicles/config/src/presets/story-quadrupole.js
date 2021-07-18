@@ -18,12 +18,8 @@ export default {
     emitter: {
       bunchShape: 'SPIRAL_XY',
       particleType: 'PROTON',
-      gamma: 2
+      gamma: 3
     },
-    interactions: {
-      magneticField: [0, 0.0, 0]
-    },
-
     lattice: {
       elements: {
         q1: {

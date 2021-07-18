@@ -8,11 +8,10 @@ var ndarray = require('ndarray')
 const savePixels = require('save-pixels')
 const fs = require('fs')
 
-const dataAsNdarray = ndarray(new Uint8Array(new Float32Array(values).buffer), [
-  128,
-  121,
-  4
-])
+const dataAsNdarray = ndarray(
+  new Uint8Array(new Float32Array(values).buffer),
+  [128, 121, 4]
+)
 savePixels(dataAsNdarray, 'PNG').pipe(
   fs.createWriteStream('story-electric.png')
 )

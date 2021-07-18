@@ -5,37 +5,32 @@ export default {
   view: {
     camera: {
       center: [0, 1, 0],
-      // theta: 0,
-      phi: 0,
-      distance: 1.75
+      theta: 0.001,
+      phi: 0.001,
+      distance: 8.75
     }
   },
 
   runner: {
-    loops: 0,
-    mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 1,
-    snapshotCount: 128,
+    // iterationsPerSnapshot: 1,
+    // snapshotCount: 128,
     iterationDurationOverC: 0.1
   },
 
   model: {
     emitter: {
-      particleCount: 900,
-      particleType: 'ELECTRON',
-      bunchShape: 'SPIRAL_XY',
-      // particleSeparation: 0.25,
-      direction: [0, 0, 1],
-      position: [0, 1, -5],
-      directionJitter: [0, 0, 0],
-      positionJitter: [0, 0, 0],
-      gamma: 50
+      // particleCount: 32,
+      particleType: 'ELECTRON'
+      // bunchShape: 'SPIRAL_XY',
+      // gamma: 10
     },
-
-    interactions: {
-      electricField: [0, 0, 0],
-      particleInteraction: false,
-      magneticField: [0, 0.0, 0]
+    lattice: {
+      elements: {},
+      beamline: [],
+      origin: {
+        phi: 0,
+        position: [0, 1, -5]
+      }
     }
   }
 }
