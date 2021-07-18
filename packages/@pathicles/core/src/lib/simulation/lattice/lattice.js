@@ -28,19 +28,6 @@ function signedDistanceToBox(p, size) {
 
   return unsignedDst + dstInsideBox
 }
-//
-// function sdBox(p, s) {
-//   const d = [
-//     Math.abs(p[0]) - s[0],
-//     Math.abs(p[1]) - s[1],
-//     Math.abs(p[2]) - s[2]
-//   ]
-//
-//   return (
-//     Math.min(Math.max(d[0], Math.max(d[1], d[2])), 0.0) +
-//     length(Math.max(d, 0.0))
-//   )
-// }
 
 export const LATTICE_ELEMENT_TYPES = {
   DRIF,
@@ -76,7 +63,7 @@ export class Lattice {
 
     this.origin = latticeDescriptor.origin || {
       phi: 0,
-      position: [0, 0, 0]
+      position: [0, 1, 0]
     }
 
     let phi = this.origin.phi
@@ -165,7 +152,7 @@ export class Lattice {
         (element, i) =>
           `beamline[${i}] = BeamlineElement(
 vec3(${element.middle.join(',')}),
-vec3(${element.size[0] / 2}, ${element.size[1] / 2}, ${element.size[2] / 2}),
+vec3(${element.size[0]}, ${element.size[1]}, ${element.size[2]}),
 ${element.phi ? -element.phi.toFixed(10) : '0.'},
 ${LatticeElementTypesArray.indexOf(element.type)},
 ${element.strength ? element.strength.toFixed(10) : '0.'})`
@@ -173,21 +160,21 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
       .join(';\n')
   }
 
-  getElementForPosition(position) {
-    for (let i = 0; i < this.beamline.length; i++) {
-      let bl = this.beamline[i]
-
-      let localPosition = position
-      localPosition = rotY(position, bl.phi)
-      localPosition[0] -= bl.middle[0]
-      localPosition[1] -= bl.middle[1]
-      localPosition[2] -= bl.middle[2]
-
-      if (signedDistanceToBox(localPosition, bl.size) <= 0) {
-        return bl
-      }
-    }
-    return null
-  }
+  // getElementForPosition(position) {
+  //   for (let i = 0; i < this.beamline.length; i++) {
+  //     let bl = this.beamline[i]
+  //
+  //     let localPosition = position
+  //     localPosition = rotY(position, bl.phi)
+  //     localPosition[0] -= bl.middle[0]
+  //     localPosition[1] -= bl.middle[1]
+  //     localPosition[2] -= bl.middle[2]
+  //
+  //     if (signedDistanceToBox(localPosition, bl.size) <= 0) {
+  //       return bl
+  //     }
+  //   }
+  //   return null
+  // }
 }
 // vec3(${element.size[0]}, 1. , ${element.size[2]}),

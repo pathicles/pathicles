@@ -34,7 +34,8 @@
     "mouse-event-offset": "^3.0.2",
     "primitive-cube": "^2.0.1",
     "primitive-cylinder": "^1.0.3",
-    "regl": "^2.1.0"
+    "regl": "^2.1.0",
+    "simplicial-complex": "^1.0.0"
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.10.0"

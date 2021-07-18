@@ -16,8 +16,7 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON',
-      position: [0, 1, 0],
-      direction: [0, 0, 1]
+      particleCount: 1
     },
     interactions: {
       magneticField: [0, 0, 0]
@@ -30,15 +29,15 @@ export default {
         },
         d1: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
-          l: 2,
-          strength: 0.000135,
-          angle: ((2 * Math.PI) / 360) * 45
+          l: 1,
+          strength: 0.00135,
+          angle: ((2 * Math.PI) / 360) * 10
         },
         d2: {
           type: LATTICE_ELEMENT_TYPES.SBEN,
           l: 1,
           strength: -0.000135,
-          angle: (0 * (2 * Math.PI)) / 360
+          angle: (((1 * (2 * Math.PI)) / 360) * 45) / 2
         }
       },
       // beamline: ['d1'],
@@ -46,25 +45,24 @@ export default {
         'l1',
         'd1',
         'l1',
-        'd1',
-        'l1',
-        'd1',
-        'l1',
-        'd1',
-        'l1',
-        'd1',
-        'l1',
-        'd1',
-        'l1',
-        'd1',
-        'l1',
         'd1'
+        // 'l1',
+        // 'd1',
+        // 'l1',
+        // 'd1',
+        // 'l1',
+        // 'd1',
+        // 'l1',
+        // 'd1',
+        // 'l1',
+        // 'd1',
+        // 'l1',
+        // 'd1'
       ],
       // beamline: [],
       origin: {
         phi: (0 / 360) * 2 * Math.PI,
         position: [0, 1, 0]
-        // position: [-1, 1, -3.7207765272494715]
       }
     }
   }

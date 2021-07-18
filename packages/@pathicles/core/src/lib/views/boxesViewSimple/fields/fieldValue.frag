@@ -43,7 +43,7 @@ void main () {
 
   #ifdef lighting
 
-  if (length(vColor) == 0.) discard;
+//  if (length(vColor) == 0.) discard;
   vec3 color = vColor;
   gl_FragColor = vec4(vColor, 1.);
 

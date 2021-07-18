@@ -19,6 +19,18 @@ export class Simulation {
     this._regl = regl
 
     this.configuration = { model, runner, debug }
+    console.log(model.emitter)
+
+    if (!model.emitter.position)
+      model.emitter.position = model.lattice.origin.position
+    if (!model.emitter.direction)
+      model.emitter.direction = [
+        Math.sin(model.lattice.origin.phi),
+        0,
+        Math.cos(model.lattice.origin.phi)
+      ]
+
+    console.log(model.emitter.target)
 
     const { snapshotCount } = runner
     const { particleCount, particleTypes, fourPositions, fourVelocities } =

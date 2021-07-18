@@ -13,11 +13,11 @@ export default {
     factor: 1,
     enabled: true,
     packFloat2UInt8: false,
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 8,
-    iterationCount: 1024,
+    iterationsPerSnapshot: 2,
+    iterationCount: 127,
     iterationDurationOverC: 0.05,
     snapshotCount: 128
   },
@@ -31,8 +31,6 @@ export default {
       particleCount: 64,
       particleSeparation: 0.03,
       gamma: () => 2.25,
-      position: [0, 0, 0],
-      direction: [0, 0, 1],
       positionJitter: [0.0, 0.0, 0]
     },
     interactions: {
@@ -59,7 +57,7 @@ export default {
     diffuseLightAmount: 0.5,
 
     stageGrid: {
-      y: -0,
+      y: 0,
       size: 18
     },
 

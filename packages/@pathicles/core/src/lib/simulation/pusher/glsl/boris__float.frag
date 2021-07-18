@@ -31,7 +31,7 @@ mat2 rot2D(float phi) {
   return mat2(c, -s, s, c);
 }
 float sdBox( vec3 p, vec3 s ) {
-  vec3 d = abs(p) - 1. * s;
+  vec3 d = abs(p) - .5 * s;
   return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 
@@ -58,8 +58,8 @@ vec3 getB(vec3 position) {
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     BeamlineElement ble =  beamline[i];
     vec3 localPosition = position;
-    localPosition.xz *= rot2D(ble.phi);
     localPosition -= ble.middle;
+    localPosition.xz *= rot2D(ble.phi);
     if (sdBox(localPosition, ble.size) <= 0.) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
         B += vec3(0., ble.strength, 0.);

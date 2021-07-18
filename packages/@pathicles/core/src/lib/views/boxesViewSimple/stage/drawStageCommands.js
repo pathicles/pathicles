@@ -34,7 +34,6 @@ export default function (regl, view, shadow) {
       },
       uniforms: {
         ...shadow.uniforms,
-
         stageSize: view.stageGrid.size,
         uOffset: [0, view.stageGrid.y, 0],
         ...(mode === 'lighting' && { shadowMap: shadow.fbo })

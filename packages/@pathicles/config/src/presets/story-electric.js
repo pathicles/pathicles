@@ -14,8 +14,6 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
-      position: [0, 1.5, -8],
-      direction: [0, 0, 1],
       gamma: () => 1.1
     },
 
@@ -32,7 +30,7 @@ export default {
         },
         e: {
           type: LATTICE_ELEMENT_TYPES.ESTA,
-          l: 2,
+          l: 1,
           strength: -1e5
         }
       },

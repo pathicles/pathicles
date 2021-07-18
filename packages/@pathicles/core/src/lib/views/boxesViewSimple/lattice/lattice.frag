@@ -42,7 +42,7 @@ void main () {
 
   #ifdef lighting
 
-//  if (vColor.r == 1.) discard;
+  if (vColor.r == vColor.g && vColor.r == vColor.b ) discard;
   vec3 color = vColor;
   gl_FragColor = vec4(vColor, 1.);
 

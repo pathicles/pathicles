@@ -1,11 +1,9 @@
 precision mediump float;
 attribute vec3 aPosition;
-attribute float aVertexColorCorrection;
 attribute vec3 aColor;
 attribute vec3 aNormal;
 attribute vec2 aUV;
 varying vec2 vUv;
-attribute mat4 aTransform;
 attribute vec3 aTranslation;
 attribute vec3 aScale;
 attribute float aPhi;
@@ -45,9 +43,39 @@ void main () {
   vUv = aUV;
   vScale = aScale;
 
-  mat4 aModel = fromYRotation(aPhi) * fromZRotation(aTheta);
-  vPosition = ( aModel * vec4((aScale * aPosition), 1.))
-    + vec4(aTranslation, 1.);
+
+
+// Translate
+mat4 tPos = mat4(vec4(1.0,0.0,0.0,0.0),
+vec4(0.0,1.0,0.0,0.0),
+vec4(0.0,0.0,1.0,0.0),
+vec4(aTranslation,1.0));
+
+//// Rotate
+//mat4 rXPos = mat4(vec4(1.0,0.0,0.0,0.0),
+//vec4(0.0,cos(rotationX),-sin(rotationX),0.0),
+//vec4(0.0,sin(rotationX),cos(rotationX),0.0),
+//vec4(0.0,0.0,0.0,1.0));
+
+mat4 rYPos = mat4(vec4(cos(aPhi),0.,-sin(aPhi),0.0),
+vec4(0.0,1.0,0.0,0.0),
+vec4(sin(aPhi),0.0,cos(aPhi),0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+mat4 rZPos = mat4(vec4(cos(aTheta),-sin(aTheta),0.0,0.0),
+vec4(sin(aTheta),cos(aTheta),0.0,0.0),
+vec4(0.0,0.0,1.0,0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+// Scale
+mat4 sScale = mat4(vec4(aScale.x,0.0,0.0,0.0),
+vec4(0.0,aScale.y,0.0,0.0),
+vec4(0.0,0.0,aScale.z,0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+
+  mat4 aModel = tPos *  rZPos * rYPos * sScale;
+  vPosition =  aModel * vec4(aPosition,1.0);
   vColor = aColor;
 
 

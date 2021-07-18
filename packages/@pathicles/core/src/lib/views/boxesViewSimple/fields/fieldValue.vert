@@ -36,7 +36,7 @@ mat2 rot2D(float phi) {
   return mat2(c, -s, s, c);
 }
 float sdBox( vec3 p, vec3 s ) {
-  vec3 d = abs(p) - s / 2.;
+  vec3 d = abs(p) - .5 * s;
   return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 BeamlineElement getBeamlineElement(float id) {
@@ -66,23 +66,16 @@ BeamlineElement getClosestBeamlineElement(vec3 position) {
 
 vec3 getB(vec3 position) {
 
-//  return vec3(.5,1.,0.);
-
-  //  BeamlineElement ble = getClosestBeamlineElement(position);
-
   vec3 B = magneticField;
-
-//  B = vec3(0., 0., 1.);
 
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     BeamlineElement ble =  beamline[i];
     vec3 localPosition = position;
-        localPosition.xz *= rot2D(ble.phi);
     localPosition -= ble.middle;
+    localPosition.xz *= rot2D(ble.phi);
     if (sdBox(localPosition, ble.size) <= 0.) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
         B += vec3(0., ble.strength, 0.);
-        B += vec3(0., 1., 0.);
       } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
         B += abs(ble.strength)  *
         ((ble.strength > 0.)
@@ -101,17 +94,16 @@ void main () {
   vUv = aUV;
   vNormal = aNormal;
   vNormalOrig = aNormal;
-  float phi = .5;
 
   vec3 b = getB(aOffset);
-  float scale = length(b) == 0. ? 0. : min(length(b), 1.) / 10. + .0;
-  vColor = vec3(scale);
+  vColor = vec3(b);
+  float scale = length(b) == 0. ? .1 : min(length(b), 1.) / 1. + 1.;
 
-  vec3 scaledPosition = aPosition * 1.;
+  vec3 scaledPosition = aPosition * scale;
   mat4 lookAtMat4 = lookAt(aOffset, aOffset + b, vec3(0., 1., 0.));
 
-  vPosition = (lookAtMat4 * vec4(scaledPosition, 1.)).xyz + aOffset;
-  vPosition =  aPosition + aOffset;
+  vPosition = (vec4(scaledPosition, 1.)).xyz + aOffset;
+//  vPosition =  aPosition + aOffset;
 
   gl_Position = projection * view *  vec4(vPosition, 1.);
 }
