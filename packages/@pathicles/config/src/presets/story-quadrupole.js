@@ -1,6 +1,6 @@
 import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
-const quadLength = 1 // m
+const quadLength = 0.5 // m
 const quadF = 0.5 // m
 const quadStrength = (2 * 0.5) / quadF / quadLength // m^-2
 
@@ -8,9 +8,9 @@ export default {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [-0, 1, 0],
+      center: [2, 1, 0],
       distance: 8,
-      theta: (45 / 360) * 2 * Math.PI,
+      theta: (55 / 360) * 2 * Math.PI,
       phi: (0 / 360) * 2 * Math.PI
     }
   },
@@ -42,7 +42,7 @@ export default {
         },
         l_1: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
-          l: quadLength
+          l: 1
         }
       },
       // beamline: ['l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1', 'q1', 'l_1', 'q2', 'l_1'],

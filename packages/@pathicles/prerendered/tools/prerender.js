@@ -7,7 +7,7 @@ const ndarray = require('ndarray')
 const savePixels = require('save-pixels')
 const sharp = require('sharp')
 
-const defaultWidth = 750
+const defaultWidth = 1500
 const defaultHeight = 750
 const deviceScaleFactor = 2
 
@@ -46,20 +46,20 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  { preset: 'pathicles-logo' }
-  // { preset: 'csr' },
-  // { preset: 'spiral' },
-  // { preset: 'random' },
-  // { preset: 'different-gammas' },
-  // { preset: 'free-electron' },
-  // { preset: 'free-electrons' },
-  // { preset: 'free-photon' },
-  // { preset: 'free-photons' },
-  // { preset: 'story-electric', data: true },
-  // { preset: 'story-quadrupole', data: true },
-  // { preset: 'story-dipole', data: true }
-  // { preset: 'gyrotest-1-electron' },
-  // { preset: 'gyrotest-128-electrons' }
+  { preset: 'pathicles-logo' },
+  { preset: 'csr' },
+  { preset: 'spiral' },
+  { preset: 'random' },
+  { preset: 'different-gammas' },
+  { preset: 'free-electron' },
+  { preset: 'free-electrons' },
+  { preset: 'free-photon' },
+  { preset: 'free-photons' },
+  { preset: 'story-electric', data: true },
+  { preset: 'story-quadrupole', data: true },
+  { preset: 'story-dipole', data: true },
+  { preset: 'gyrotest-1-electron' },
+  { preset: 'gyrotest-128-electrons' }
 ]
 
 // jobs = []
@@ -88,94 +88,102 @@ const createImages = async () => {
   const page = await browser.newPage()
 
   for (let i = 0; i < jobs.length; i++) {
-    const preset = jobs[i].preset
-    const width = jobs[i].width || defaultWidth
-    const height = jobs[i].height || defaultHeight
-    await page.setViewport({
-      width,
-      height,
-      deviceScaleFactor
-    })
-    await page.goto(
-      urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
-    )
-    await page.waitForTimeout(3000)
+    try {
+      const preset = jobs[i].preset
+      const width = jobs[i].width || defaultWidth
+      const height = jobs[i].height || defaultHeight
+      await page.setViewport({
+        width,
+        height,
+        deviceScaleFactor
+      })
+      await page.goto(
+        urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
+      )
+      await page.waitForTimeout(3000)
 
-    // await page.screenshot({
-    //   path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
-    // })
-    await page.screenshot({
-      quality: 100,
-      type: 'jpeg',
-      path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.jpg')
-    })
-
-    const performanceEntry = await page.evaluate(() => {
-      const entries = window.performanceLogger.entries
-      return {
-        gpuTime: entries.reduce((acc, item) => {
-          acc += item.stats.gpuTime
-          return acc
-        }, 0),
-
-        packFloat2UInt8: entries[0].packFloat2UInt8,
-        particleCount: entries[0].particleCount,
-        snapshotCount: entries[0].snapshotCount,
-        iterations: entries[0].iterations
-      }
-    })
-
-    await writeCSV({
-      date,
-      preset,
-      ...performanceEntry,
-      gpuTime: round(performanceEntry.gpuTime)
-    })
-
-    console.log({ preset, gpuTime: round(performanceEntry.gpuTime) })
-
-    if (jobs[i].data) {
-      const dump = await page.evaluate(() => {
-        return window.pathicles.simulation.dump()
+      // await page.screenshot({
+      //   path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
+      // })
+      await page.screenshot({
+        quality: 100,
+        type: 'jpeg',
+        path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.jpg')
       })
 
-      const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
-      const values = every_nth(dump.position, 4).map((d) => round(d))
+      const performanceEntry = await page.evaluate(() => {
+        const entries = window.performanceLogger.entries
+        return {
+          gpuTime: entries.reduce((acc, item) => {
+            acc += item.stats.gpuTime
+            return acc
+          }, 0),
 
-      fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, preset + '.json'), {
-        iteration: dump.logEntry.iteration,
-        configuration: dump.configuration,
-        name: preset,
-        data: {
-          position: values,
-          // position2: values,
-          colorCorrections: dump.colorCorrections.map((d) => round(d)),
-          // positionUint8: Array.from(
-          //   new Uint8Array(new Float32Array(values).buffer)
-          // ),
-          particleTypes: dump.particleTypes
+          packFloat2UInt8: entries[0].packFloat2UInt8,
+          particleCount: entries[0].particleCount,
+          snapshotCount: entries[0].snapshotCount,
+          iterations: entries[0].iterations
         }
       })
 
-      const dataAsNdarray = ndarray(
-        new Uint8Array(new Float32Array(values).buffer),
-        [128, 121, 4]
-      )
-      savePixels(dataAsNdarray, 'PNG').pipe(
-        fs.createWriteStream(path.join(OUTPUT_FOLDER_PATH, preset + '.png'))
-      )
+      await writeCSV({
+        date,
+        preset,
+        ...performanceEntry,
+        gpuTime: round(performanceEntry.gpuTime)
+      })
+
+      console.log({ preset, gpuTime: round(performanceEntry.gpuTime) })
+
+      if (jobs[i].data) {
+        const dump = await page.evaluate(() => {
+          return window.pathicles.simulation.dump()
+        })
+
+        console.dir(dump)
+        // const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
+        // const values = every_nth(dump.position, 4).map((d) => round(d))
+
+        fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, preset + '.json'), {
+          iteration: dump.logEntry.iteration,
+          configuration: dump.configuration,
+          name: preset,
+          data: {
+            position: dump.packedPositions,
+            // position2: values,
+            colorCorrections: dump.colorCorrections.map((d) => round(d)),
+            // positionUint8: Array.from(
+            //   new Uint8Array(new Float32Array(values).buffer)
+            // ),
+            particleTypes: dump.particleTypes
+          }
+        })
+
+        // const dataAsNdarray = ndarray(
+        //   new Uint8Array(new Float32Array(values).buffer),
+        //   [128, 121, 4]
+        // )
+        // savePixels(dataAsNdarray, 'PNG').pipe(
+        //   fs.createWriteStream(path.join(OUTPUT_FOLDER_PATH, preset + '.png'))
+        // )
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
   await browser.close()
 }
 
 const imagePaths = async () => {
-  return await fs.glob(OUTPUT_FOLDER_PATH + '/orig/*.png')
+  return await fs.glob(OUTPUT_FOLDER_PATH + '/orig/*.jpg')
 }
 
 const convertImagesSharp = async () => {
+  console.log(await imagePaths())
+
   // const qualities = [40]
-  const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
+  // const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
+  const qualities = [70]
 
   await Promise.all(
     (
@@ -186,10 +194,10 @@ const convertImagesSharp = async () => {
       //     console.log(err, info)
       //   })
 
-      let image_2 = await sharp(imgPath).resize(
-        defaultWidth * 2,
-        defaultHeight * 2
-      )
+      // let image_2 = await sharp(imgPath).resize(
+      //   defaultWidth * 2,
+      //   defaultHeight * 2
+      // )
       // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
       //   console.log(err, info)
       // })
@@ -198,51 +206,50 @@ const convertImagesSharp = async () => {
         image_1
           .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
           .toFile(
-            imgPath
-              .replace('orig', 'compressed@1x')
-              .replace('.png', `_${quality}.jpg`),
+            imgPath.replace('orig', 'compressed@1x'),
+            // .replace('.png', `_${quality}.jpg`),
             (err, info) => {
               console.log(err, info)
             }
           )
-        image_2
-          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@2x')
-              .replace('.png', `_${quality}.jpg`),
-            // .replace('.png', `.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
+        // image_2
+        //   .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+        //   .toFile(
+        //     imgPath
+        //       .replace('orig', 'compressed@2x')
+        //       .replace('.png', `_${quality}.jpg`),
+        //     // .replace('.png', `.jpg`),
+        //     (err, info) => {
+        //       console.log(err, info)
+        //     }
+        //   )
 
-        image_1
-          .toFormat('webp', { quality, progressive: true, optimiseScans: true })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@1x')
-              .replace('.png', `_${quality}.webp`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
-        image_2
-          .toFormat('webp', { quality, progressive: true, optimiseScans: true })
-          .toFile(
-            imgPath
-              .replace('orig', 'compressed@2x')
-              .replace('.png', `_${quality}.webp`),
-            // .replace('.png', `.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
+        // image_1
+        //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+        //   .toFile(
+        //     imgPath
+        //       .replace('orig', 'compressed@1x')
+        //       .replace('.png', `_${quality}.webp`),
+        //     (err, info) => {
+        //       console.log(err, info)
+        //     }
+        //   )
+        // image_2
+        //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+        //   .toFile(
+        //     imgPath
+        //       .replace('orig', 'compressed@2x')
+        //       .replace('.png', `_${quality}.webp`),
+        //     // .replace('.png', `.jpg`),
+        //     (err, info) => {
+        //       console.log(err, info)
+        //     }
+        //   )
       })
     })
   )
 }
 ;(async () => {
-  await createImages()
-  // await convertImagesSharp()
+  // await createImages()
+  await convertImagesSharp()
 })()

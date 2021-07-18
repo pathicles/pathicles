@@ -78,7 +78,7 @@ export default function (regl, { model }, shadow) {
         color: [0, 0, 0, 1]
       },
       cull: {
-        enable: false,
+        enable: true,
         face: 'back'
       },
       elements: geometry.cells,

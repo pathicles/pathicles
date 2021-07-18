@@ -35,7 +35,7 @@ export default {
     },
     interactions: {
       particleInteraction: false,
-      electricField: [0, 0, 0],
+      electricField: [0, 1, 0],
       magneticField: [0, 0, 0]
     },
     lattice: {
@@ -80,7 +80,7 @@ export default {
     viewRange: [0, 1],
 
     camera: {
-      center: [0, 0, 0.5],
+      center: [0, 0, 0],
 
       distance: 2,
       phi: (15 / 360) * 2 * Math.PI,

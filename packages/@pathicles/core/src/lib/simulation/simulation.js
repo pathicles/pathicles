@@ -184,10 +184,10 @@ export class Simulation {
         packedPositions,
         packedVelocities,
         velocityNorms,
-        gammas
-        // colorCorrections: this.colorCorrector.corrections,
-        // configuration: this.configuration,
-        // particleTypes: this.variables.particleTypes
+        gammas,
+        colorCorrections: this.colorCorrector.corrections,
+        configuration: this.configuration,
+        particleTypes: this.variables.particleTypes
       })
     )
   }

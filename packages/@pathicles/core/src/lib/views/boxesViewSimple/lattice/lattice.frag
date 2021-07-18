@@ -64,7 +64,7 @@ void main () {
     float specAmt = specular(light.direction, viewDir, normal, 0.0) * light.intensity;
 
     float shadow = 1.; //.9 * vColorCorrection;//clamp(vColorCorrection + abs(2.+v_position.y*5.), 0., 1.);
-    float specMask = edger(vUv, vScale, 1. * .02, vNormalOrig);
+    float specMask = .5*edger(vUv, vScale, 1. * .02, vNormalOrig);
 //    float specMask = edger(vUv, vScale, 1. * .1, vNormalOrig) * smoothstep(5., 2., length(vPosition-eye));
     vec3 specCol = specMask * sceneLight * specAmt;
     finalColor += shadow * vColor * diffAmt * light.color;

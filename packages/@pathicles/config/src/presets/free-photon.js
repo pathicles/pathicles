@@ -7,7 +7,7 @@ export default {
     camera: {
       center: [0, 0, 0.5],
       distance: 2,
-      phi: (15 / 360) * 2 * Math.PI,
+      phi: (5 / 360) * 2 * Math.PI,
       theta: (45 / 360) * 2 * Math.PI
     }
   },
@@ -17,10 +17,7 @@ export default {
   },
 
   runner: {
-    prerender: false,
-    mode: RUNNER_MODE.NOBREAK,
-
-    loops: 0,
+    prerender: true,
     iterationsPerSnapshot: 1,
     iterationCount: 10,
     snapshotCount: 11,

@@ -50,9 +50,7 @@ export default {
       gamma: ({ p }) => 1 + Math.floor(p / 3) / 50
     },
     interactions: {
-      electricField: [0, 0, -1e-11],
-      particleInteraction: false,
-      magneticField: [0, 0, 0]
+      electricField: [0, 0, -1e-11]
     }
   }
 }
