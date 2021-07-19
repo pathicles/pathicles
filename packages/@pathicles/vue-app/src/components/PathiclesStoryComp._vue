@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* eslint env browser */
 <template lang="pug">
 .pathicles-story__container(
   ref='scrollContainer',

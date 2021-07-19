@@ -5,22 +5,22 @@ import vert from './lattice.vert'
 import frag from './lattice.frag'
 import { LATTICE_ELEMENT_TYPES } from '../../../../../../config/src/constants.js'
 
-import { extrudePolygon } from 'geometry-extrude'
-const squareWithHole = [
-  [
-    [0, 0],
-    [10, 0],
-    [10, 10],
-    [0, 10]
-  ],
-  // Hole
-  [
-    [2, 2],
-    [8, 2],
-    [8, 8],
-    [2, 8]
-  ]
-]
+// import { extrudePolygon } from 'geometry-extrude'
+// const squareWithHole = [
+//   [
+//     [0, 0],
+//     [10, 0],
+//     [10, 10],
+//     [0, 10]
+//   ],
+//   // Hole
+//   [
+//     [2, 2],
+//     [8, 2],
+//     [8, 8],
+//     [2, 8]
+//   ]
+// ]
 
 // function estaGeometry() {
 //   const { indices, position, uv, normal } = extrudePolygon([squareWithHole], {

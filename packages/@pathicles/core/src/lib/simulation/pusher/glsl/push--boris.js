@@ -1,6 +1,6 @@
 import vert from './boris.vert'
 import frag__float from './boris__float.frag'
-import frag__uint from './boris__uint.frag'
+// import frag__uint from './boris__uint.frag'prettier/vue"
 import { latticeChunk } from '../../lattice/lattice.gsls.js'
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 

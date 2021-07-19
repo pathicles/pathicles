@@ -8,17 +8,17 @@ export default {
   name: 'story-quadrupole',
   view: {
     camera: {
-      center: [2, 1, 0],
-      distance: 8,
+      center: [0, 1, 0],
+      distance: 7,
       theta: (55 / 360) * 2 * Math.PI,
-      phi: (0 / 360) * 2 * Math.PI
+      phi: (10 / 360) * 2 * Math.PI
     }
   },
   model: {
     emitter: {
       bunchShape: 'SPIRAL_XY',
       particleType: 'PROTON',
-      gamma: 3
+      gamma: 6
     },
     lattice: {
       elements: {
@@ -59,8 +59,8 @@ export default {
         'q1',
         'l_1',
         'q2',
-        'l_1',
-        'q1'
+        'l_1'
+        // 'q1'
       ],
       origin: {
         phi: 0,

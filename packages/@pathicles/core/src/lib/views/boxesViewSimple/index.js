@@ -87,7 +87,7 @@ export class BoxesViewSimple {
           { axis: [0, 0, 1] }
         ])
 
-#this.config.isStageVisible && this.drawStage.lighting(props)
+      this.config.isStageVisible && this.drawStage.lighting(props)
       this.config.isFieldVisible && this.drawFields.lighting(props)
       this.config.isLatticeVisible && this.drawLattice.estaLighting(props)
       this.config.isLatticeVisible && this.drawLattice.quadLighting(props)

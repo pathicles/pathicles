@@ -3,8 +3,8 @@
 const prerender = require('puppeteer-core')
 const path = require('path')
 const fs = require('fs-extra-plus')
-const ndarray = require('ndarray')
-const savePixels = require('save-pixels')
+// const ndarray = require('ndarray')
+// const savePixels = require('save-pixels')
 const sharp = require('sharp')
 
 const defaultWidth = 1500
@@ -88,8 +88,8 @@ const createImages = async () => {
   const page = await browser.newPage()
 
   for (let i = 0; i < jobs.length; i++) {
+    const presetName = jobs[i].preset
     try {
-      const presetName = jobs[i].preset
       const width = jobs[i].width || defaultWidth
       const height = jobs[i].height || defaultHeight
       await page.setViewport({
@@ -180,8 +180,6 @@ const imagePaths = async () => {
 }
 
 const convertImagesSharp = async () => {
-  console.log(await imagePaths())
-
   // const qualities = [40]
   // const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
   const qualities = [70]

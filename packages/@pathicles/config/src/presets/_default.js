@@ -13,11 +13,11 @@ export default {
     factor: 1,
     enabled: true,
     packFloat2UInt8: false,
-    prerender: true,
+    prerender: false,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 2,
-    iterationCount: 128 * 2 - 1,
+    iterationsPerSnapshot: 8,
+    iterationCount: 128 * 4 - 1,
     iterationDurationOverC: 0.05,
     snapshotCount: 128
   },
@@ -74,7 +74,7 @@ export default {
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,
-    pathicleWidth: 0.0025,
+    pathicleWidth: 0.0015,
 
     showAxes: true,
     showVignette: true,
