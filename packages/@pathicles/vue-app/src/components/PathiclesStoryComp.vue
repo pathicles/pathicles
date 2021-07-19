@@ -7,10 +7,20 @@
   //hotkeys(:shortcuts="['I', 'D', 'A', 'M', 'L', ' ']"
   //  :debug="false"
   //  @triggered="onTriggeredEventHandler")
-  dl.info(v-if='showInfoInternal')
-    div(v-for='(value, key) in info', :key='key')
-      dt {{ key }}
-      dd {{ value }}
+  dl.info(v-if='debug')
+    div
+      dt progress
+      dd {{ progress }}
+    div
+      dt sceneProgress
+      dd {{ sceneProgress }}
+    div
+      dt activeScene
+      dd {{ activeScene }}
+    div
+      dt focused
+      dd {{ focused }}
+
   .canvas-container(ref='canvasContainer')
     canvas#canvas(
       ref='canvas',
@@ -63,6 +73,123 @@
             p(v-html='scene.body')
 </template>
 
+<script setup>
+  import { watch, computed, ref, defineProps, nextTick, onMounted } from 'vue'
+  import {
+    useElementSize,
+    useWindowScroll,
+    useWindowSize,
+    useWindowFocus
+  } from '@vueuse/core'
+
+  const props = defineProps({
+    story: {
+      type: Object,
+      mandatory: true
+    },
+    showInfo: {
+      type: Boolean,
+      default: true
+    },
+    debug: { default: true, type: Boolean },
+    scrollFactor: {
+      type: Number,
+      default: 1
+    },
+    maxCanvasWidth: {
+      type: Number,
+      default: 2048
+    },
+    maxCanvasHeight: {
+      type: Number,
+      default: 1024
+    },
+    maxPixelRatio: {
+      type: Number,
+      default: 2
+    }
+  })
+
+  const focused = useWindowFocus()
+  const scrollContainer = ref(null)
+  const { height: scrollHeight } = useElementSize(scrollContainer)
+
+  const canvasContainer = ref(null)
+
+  const { width: canvasContainerWidth, height: canvasContainerHeight } =
+    useElementSize(canvasContainer)
+  const canvasStyles = computed(() => ({
+    width: canvasContainerWidth + 'px',
+    height: canvasContainerHeight + 'px'
+  }))
+
+  const canvasWidth = computed(() => {
+    canvasContainerWidth * pixelRatio
+  })
+  const canvasHeight = computed(() => {
+    return canvasContainerHeight * pixelRatio
+  })
+  const pixelRatio = computed(() => {
+    return Math.min(window.devicePixelRatio, props.maxPixelRatio)
+  })
+
+  const { y } = useWindowScroll()
+
+  const cameraMode = ref('guided')
+  const progress = ref(0)
+  watch(y, (y) => {
+    progress.value = y / (scrollHeight.value - canvasContainerHeight.value)
+  })
+  watch(scrollHeight, (scrollHeight) => {
+    progress.value = y.value / (scrollHeight - canvasContainerHeight.value)
+  })
+
+  const scenes = props.story.scenes
+  scenes.forEach((scene) => {
+    scene.duration =
+      scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
+  })
+  scenes.duration = scenes.reduce((acc, scene) => acc + scene.duration, 0)
+
+  scenes.forEach((scene) => {
+    scene.presetName = scene.pathicles.preset
+    scene.configuration = config(scene.presetName)
+
+    scene.configuration.view.camera = {
+      ...scene.configuration.view.camera,
+      ...scene.pathicles.camera
+    }
+  })
+  let reglInstance
+  const activeScene = ref(null)
+  const sceneProgress = ref(null)
+  const canvas = ref(null)
+
+  onMounted(() => {
+    nextTick(() => {
+      console.log('onMounted', cameraMode)
+      reglInstance = new ReglViewerInstance({
+        canvas: canvas.value,
+        pixelRatio: pixelRatio.value,
+        control: {
+          // viewRange: this.viewRange,
+          cameraMode,
+          scenes
+        }
+      })
+    })
+  })
+
+  watch(progress, (progress) => {
+    console.log(reglInstance)
+    if (reglInstance) {
+      reglInstance.story.setPosition(progress)
+      activeScene = reglInstance.story.getState().sceneIdx
+      sceneProgress = reglInstance.story.getState().sceneProgress.toFixed(2)
+    }
+  })
+</script>
+
 <script>
   import { unwatchViewport, watchViewport } from 'tornis'
   import { ReglViewerInstance } from '@pathicles/core'
@@ -80,92 +207,16 @@
 
   export default {
     name: 'PathiclesStory',
-    props: {
-      story: {
-        type: Object,
-        mandatory: true
-      },
-      showInfo: {
-        type: Boolean,
-        default: true
-      },
-      debug: { default: true, type: Boolean },
-      scrollFactor: {
-        type: Number,
-        default: 1
-      },
-      maxCanvasWidth: {
-        type: Number,
-        default: 2048
-      },
-      maxCanvasHeight: {
-        type: Number,
-        default: 1024
-      },
-      maxPixelRatio: {
-        type: Number,
-        default: 1
-      }
-    },
     data: function () {
       return {
-        // story: JSON.parse(JSON.stringify(this.story)),
-        showInfoInternal: this.showInfo,
-        containerHeight: 0,
-        containerWidth: 0,
-        storyHeight: 500,
-        progress: 0,
-        sceneProgress: 0,
-        vp: null,
-        cameraMode: 'guided',
+        // cameraMode: 'guided',
         viewRange: [0, 0],
-        activeScene: 0,
-        info: {}
-      }
-    },
-
-    computed: {
-      pixelRatio() {
-        return Math.min(
-          window.devicePixelRatio,
-          this.maxCanvasWidth / this.containerHeight
-        )
-      },
-      canvasStyles() {
-        return {
-          width: this.containerWidth + 'px',
-          height: this.containerHeight + 'px'
-        }
-      },
-      canvasWidth() {
-        return this.containerWidth * this.pixelRatio
-      },
-      canvasHeight() {
-        return this.containerHeight * this.pixelRatio
+        activeScene: 0
       }
     },
 
     mounted() {
-      watchViewport(this.handleViewportChange, true)
-
-      this.story.scenes.forEach((scene) => {
-        scene.duration =
-          scene.duration || (scene.type && scene.type === 'filler' ? 1 : 1)
-      })
-      this.story.scenes.duration = this.story.scenes.reduce(
-        (acc, scene) => acc + scene.duration,
-        0
-      )
-
-      this.story.scenes.forEach((scene) => {
-        scene.presetName = scene.pathicles.preset
-        scene.configuration = config(scene.presetName)
-
-        scene.configuration.view.camera = {
-          ...scene.configuration.view.camera,
-          ...scene.pathicles.camera
-        }
-      })
+      // watchViewport(this.handleViewportChange, true)
 
       const cameraBSplointer = (scenes, s, key, index) => {
         return typeof index === 'undefined'
@@ -209,21 +260,21 @@
       })
 
       this.$nextTick(() => {
-        watchViewport(this.handleViewportChange)
-        this.reglInstance = new ReglViewerInstance({
-          canvas: this.$refs.canvas,
-          pixelRatio: this.pixelRatio,
-          control: {
-            viewRange: this.viewRange,
-            cameraMode: this.cameraMode,
-            scenes: this.story.scenes
-          }
-        })
+        // watchViewport(this.handleViewportChange)
+        // this.reglInstance = new ReglViewerInstance({
+        //   canvas: this.$refs.canvas,
+        //   pixelRatio: this.pixelRatio,
+        //   control: {
+        //     viewRange: this.viewRange,
+        //     cameraMode: this.cameraMode,
+        //     scenes: this.story.scenes
+        //   }
+        // })
       })
     },
     unmounted() {
       this.reglInstance.destroy()
-      unwatchViewport(this.handleViewportChange)
+      // unwatchViewport(this.handleViewportChange)
     },
 
     methods: {
@@ -234,28 +285,6 @@
           this.storyHeight = this.$refs.scrollContainer.clientHeight
 
           if (this.reglInstance) this.reglInstance.resize()
-        }
-
-        if (scroll.changed) {
-          this.top = scroll.top
-          this.progress = clamp(
-            this.top / (this.storyHeight - this.containerHeight)
-          )
-
-          if (this.reglInstance) {
-            this.reglInstance.story.setPosition(this.progress)
-            this.activeScene = this.reglInstance.story.getState().sceneIdx
-            this.sceneProgress = this.reglInstance.story
-              .getState()
-              .sceneProgress.toFixed(2)
-          }
-        }
-        if (scroll.changed || size.changed) {
-          this.info = {
-            progress: this.progress.toFixed(2),
-            sceneProgress: this.sceneProgress,
-            activeScene: this.activeScene
-          }
         }
       }
     }

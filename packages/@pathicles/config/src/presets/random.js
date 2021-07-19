@@ -10,8 +10,8 @@ export default {
   name: 'random',
   view: {
     camera: {
-      center: [-5, 0, -5],
-      distance: 15,
+      center: [-5, 0.5, -5],
+      distance: 14,
       theta: 45 * (Math.PI / 180),
       phi: 5 * (Math.PI / 180)
     }
@@ -30,12 +30,12 @@ export default {
     boundingBoxSize: 1,
     boundingBoxCenter: [0, 1, 0],
     emitter: {
-      position: [0, 1, 0],
+      position: [0, 0.5, 0],
       direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
       particleSeparation: 0.1,
       gamma: 10,
       bunchShape: 'SQUARE_YZ',
-      particleCount: 256,
+      particleCount: 512,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

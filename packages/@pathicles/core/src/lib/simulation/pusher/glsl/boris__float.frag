@@ -18,6 +18,7 @@ uniform vec3 magneticField;
 const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
 const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
+const int BEAMLINE_ELEMENT_TYPE_ESTA = 3;
 
 /*__latticeSize__*/
 /*__latticeChunkGLSL__*/
@@ -45,8 +46,22 @@ vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
 vec3 getE(vec3 position) {
 
   vec3 E = electricField;
+  // E += vec3(1e10);
+  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
+    BeamlineElement ble =  beamline[i];
+    if (ble.type == BEAMLINE_ELEMENT_TYPE_ESTA) {
+      vec3 localPosition = position;
+      localPosition -= ble.middle;
+      localPosition.xz *= rot2D(ble.phi);
+      if (sdBox(localPosition, ble.size) <= 0.) {
+        E += vec3(0., 0., ble.strength);
+      }
+    }
+  }
+    
   return E;
 }
+
 vec3 getB(vec3 position) {
 
   vec3 B = magneticField;
@@ -60,8 +75,7 @@ vec3 getB(vec3 position) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
         B += vec3(0., ble.strength, 0.);
       } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
-        B += abs(ble.strength)  *
-        ((ble.strength > 0.)
+        B += abs(ble.strength) * ((ble.strength > 0.)
         ? vec3(localPosition.y, localPosition.x, 0)
         : vec3(-localPosition.y, -localPosition.x, 0.));
       }
@@ -102,8 +116,8 @@ vec4 push_velocity(int p) {
   velocity = fourVelocity.xyz / fourVelocity.w;
 
   vec3 intermediatePosition = fourPosition.xyz + .5 *  velocity * deltaTOverC;
-  vec3 E = getE(intermediatePosition );
-  vec3 B = getB(intermediatePosition );
+  vec3 E = getE(intermediatePosition);
+  vec3 B = getB(intermediatePosition);
 
   float gamma = 1.;
   vec3 u = fourVelocity.xyz;

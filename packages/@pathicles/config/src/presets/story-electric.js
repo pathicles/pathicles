@@ -26,18 +26,18 @@ export default {
       elements: {
         l: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
-          l: 7
+          l: 4.75
         },
         e: {
           type: LATTICE_ELEMENT_TYPES.ESTA,
-          l: 1,
-          strength: -1e5
+          l: 0.5,
+          strength: -1e10
         }
       },
       beamline: ['l', 'e', 'l'],
       origin: {
         phi: 0,
-        position: [0, 1.5, -8]
+        position: [0, 1, -5]
       }
     }
   }

@@ -46,20 +46,20 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  { preset: 'pathicles-logo' },
-  { preset: 'csr' },
-  { preset: 'spiral' },
-  { preset: 'random' },
-  { preset: 'different-gammas' },
-  { preset: 'free-electron' },
-  { preset: 'free-electrons' },
-  { preset: 'free-photon' },
-  { preset: 'free-photons' },
+  // { preset: 'pathicles-logo' },
+  // { preset: 'csr' },
+  // { preset: 'spiral' },
+  // { preset: 'random' },
+  // { preset: 'different-gammas' },
+  // { preset: 'free-electron' },
+  // { preset: 'free-electrons' },
+  // { preset: 'free-photon' },
+  // { preset: 'free-photons' },
   { preset: 'story-electric', data: true },
   { preset: 'story-quadrupole', data: true },
-  { preset: 'story-dipole', data: true },
-  { preset: 'gyrotest-1-electron' },
-  { preset: 'gyrotest-128-electrons' }
+  { preset: 'story-dipole', data: true }
+  // { preset: 'gyrotest-1-electron' },
+  // { preset: 'gyrotest-128-electrons' }
 ]
 
 // jobs = []
@@ -89,7 +89,7 @@ const createImages = async () => {
 
   for (let i = 0; i < jobs.length; i++) {
     try {
-      const preset = jobs[i].preset
+      const presetName = jobs[i].preset
       const width = jobs[i].width || defaultWidth
       const height = jobs[i].height || defaultHeight
       await page.setViewport({
@@ -97,18 +97,16 @@ const createImages = async () => {
         height,
         deviceScaleFactor
       })
-      await page.goto(
-        urlBase + '?debug=0&prerender=1&presetName=' + preset + queryString
-      )
+      await page.goto(urlBase + '?presetName=' + presetName + queryString)
       await page.waitForTimeout(3000)
 
-      // await page.screenshot({
-      //   path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.png')
-      // })
+      await page.screenshot({
+        path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.png')
+      })
       await page.screenshot({
         quality: 100,
         type: 'jpeg',
-        path: path.join(OUTPUT_FOLDER_PATH, 'orig', preset + '.jpg')
+        path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.jpg')
       })
 
       const performanceEntry = await page.evaluate(() => {
@@ -128,12 +126,15 @@ const createImages = async () => {
 
       await writeCSV({
         date,
-        preset,
+        preset: presetName,
         ...performanceEntry,
         gpuTime: round(performanceEntry.gpuTime)
       })
 
-      console.log({ preset, gpuTime: round(performanceEntry.gpuTime) })
+      console.log({
+        preset: presetName,
+        gpuTime: round(performanceEntry.gpuTime)
+      })
 
       if (jobs[i].data) {
         const dump = await page.evaluate(() => {
@@ -144,12 +145,12 @@ const createImages = async () => {
         // const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
         // const values = every_nth(dump.position, 4).map((d) => round(d))
 
-        fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, preset + '.json'), {
+        fs.writeJSONSync(path.join(OUTPUT_FOLDER_PATH, presetName + '.json'), {
           iteration: dump.logEntry.iteration,
           configuration: dump.configuration,
-          name: preset,
+          name: presetName,
           data: {
-            position: dump.packedPositions,
+            position: dump.packedPositions.flat(2),
             // position2: values,
             colorCorrections: dump.colorCorrections.map((d) => round(d)),
             // positionUint8: Array.from(
@@ -168,7 +169,7 @@ const createImages = async () => {
         // )
       }
     } catch (e) {
-      console.error(e)
+      console.error('Error occured for preset ', presetName, e)
     }
   }
   await browser.close()
@@ -250,6 +251,5 @@ const convertImagesSharp = async () => {
   )
 }
 ;(async () => {
-  // await createImages()
-  await convertImagesSharp()
+  await createImages(), await convertImagesSharp()
 })()

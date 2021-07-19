@@ -35,7 +35,8 @@
     "primitive-cube": "^2.0.1",
     "primitive-cylinder": "^1.0.3",
     "regl": "^2.1.0",
-    "simplicial-complex": "^1.0.0"
+    "simplicial-complex": "^1.0.0",
+    "geometry-extrude": "^0.1.2"
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.10.0"

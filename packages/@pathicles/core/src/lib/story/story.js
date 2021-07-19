@@ -9,10 +9,10 @@ import { BoxesViewSimple } from '../views/boxesViewSimple'
 import { boundedRandom } from '../utils/random'
 import freeCameraFactory from '../utils/freeCameraFactory'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
+import { Lattice } from '../simulation/lattice/lattice.js'
 
 export class ReglViewerInstance {
   constructor({ canvas, pixelRatio, control }) {
-    // console.log('ReglViewerInstance')
     this.config = defaultConfig
     this.control = control
 
@@ -67,8 +67,11 @@ export class ReglViewerInstance {
 
     this.drawTexture = drawTextureCommand(regl)
 
+    this.config.model.lattice = new Lattice(this.config.model.lattice)
+
     this.view = new BoxesViewSimple(regl, {
       variables: this.variables,
+      model: this.config.model,
       view: this.config.view,
       debug: this.config.debug
     })

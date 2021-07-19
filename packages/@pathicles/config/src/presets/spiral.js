@@ -11,21 +11,21 @@ export default {
     }
   },
   runner: {
-    iterationDurationOverC: 0.01,
-    iterationsPerSnapshot: 8,
-    iterationCount: 512 * 8 - 1,
-    snapshotCount: 512
+    iterationDurationOverC: 0.1,
+    iterationsPerSnapshot: 1,
+    iterationCount: 256 * 1 - 1,
+    snapshotCount: 256
   },
 
   model: {
     emitter: {
       bunchShape: 'SPIRAL_XY',
-      direction: [0, 0.1, 1],
+      direction: [0, 0.2, 1],
 
-      gamma: 4
+      gamma: 5
     },
     interactions: {
-      magneticField: [0, 0.005, 0],
+      magneticField: [0, 0.01, 0],
       particleInteraction: false
     },
     lattice: {

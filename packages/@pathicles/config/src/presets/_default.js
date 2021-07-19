@@ -28,7 +28,7 @@ export default {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleCount: 64,
+      particleCount: 128,
       particleSeparation: 0.05,
       gamma: () => 2.25,
       positionJitter: [0.0, 0.0, 0]
@@ -62,14 +62,15 @@ export default {
 
     stageGrid: {
       y: 0,
-      size: 18
+      size: 10
     },
 
     rgbGamma: 1,
 
     isStageVisible: true,
     isShadowEnabled: true,
-    isLatticeVisible: false,
+    isLatticeVisible: true,
+    isFieldVisible: false,
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,

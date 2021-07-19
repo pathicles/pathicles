@@ -6,14 +6,14 @@ import bspline from 'b-spline'
 import { variableTexture } from '../simulation/utils/variableTexture'
 import { PARTICLE_TYPES } from '@pathicles/config'
 import { isLittleEndian } from '../utils/little-endian'
-
+import { Lattice } from '../simulation/lattice/lattice.js'
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
     console.log('sequencer.start')
     scene.loaded = false
     const numberType = 'float'
-    const particleCount = 121 //scene.configuration.model.emitter.particleCount
+    const particleCount = 64 //scene.configuration.model.emitter.particleCount
     const snapshotCount = 128
 
     scene.variables = {
@@ -37,7 +37,6 @@ export default function (regl, scenes, stateVars, onStateChange) {
       scene.configuration = configuration
       scene.runner = scene.configuration.runner
       scene.model = scene.configuration.model
-
       scene.variables.position = {
         buffers: [
           variableTexture(
@@ -65,6 +64,7 @@ export default function (regl, scenes, stateVars, onStateChange) {
         type: 'float'
       })
       scene.model = {
+        lattice: new Lattice(scene.model.lattice),
         boundingBoxSize: configuration.model.boundingBoxSize,
         interactions: {
           particleInteraction:

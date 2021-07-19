@@ -64,7 +64,7 @@ export default {
       ],
       origin: {
         phi: 0,
-        position: [0, 1, -8]
+        position: [0, 1, -5]
       }
     }
   }

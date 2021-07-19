@@ -51,7 +51,7 @@ export const LATTICE_ELEMENTS = {
     height: 0.5,
     gap: 0
   },
-  ESTA: { color: [0, 0.8, 0], width: 0.5, height: 0.05, gap: 0 }
+  ESTA: { color: [0, 0.8, 0], width: 0.5, height: 0.5, gap: 0 }
 }
 
 const LatticeElementTypesArray = [DRIF, SBEN, QUAD, ESTA]

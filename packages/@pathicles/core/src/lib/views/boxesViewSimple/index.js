@@ -87,10 +87,11 @@ export class BoxesViewSimple {
           { axis: [0, 0, 1] }
         ])
 
-      this.drawFields.lighting(props)
-      this.drawLattice.quadLighting(props)
-      this.drawLattice.sbenLighting(props)
-      this.config.isStageVisible && this.drawStage.lighting(props)
+#this.config.isStageVisible && this.drawStage.lighting(props)
+      this.config.isFieldVisible && this.drawFields.lighting(props)
+      this.config.isLatticeVisible && this.drawLattice.estaLighting(props)
+      this.config.isLatticeVisible && this.drawLattice.quadLighting(props)
+      this.config.isLatticeVisible && this.drawLattice.sbenLighting(props)
       this.drawModel.lighting(props)
       this.config.showVignette && this.drawVignette.lighting(props)
     })
