@@ -57,13 +57,11 @@ vec3 getE(vec3 position) {
         E += vec3(0., 0., ble.strength);
       }
     }
-  }
-    
+  }    
   return E;
 }
 
 vec3 getB(vec3 position) {
-
   vec3 B = magneticField;
 
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
