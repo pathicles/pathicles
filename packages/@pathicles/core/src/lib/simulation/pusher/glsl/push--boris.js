@@ -8,13 +8,10 @@ export default function (regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
   performanceLogger.entries = []
 
-  // console.log(model.lattice.toGLSLDefinition())
-
   const pushFactory = (variableName, bufferVariableName, variableSlot) => {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
     return regl({
-      profile: false,
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',

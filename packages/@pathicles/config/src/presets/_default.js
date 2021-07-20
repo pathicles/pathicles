@@ -35,7 +35,7 @@ export default {
     },
     interactions: {
       particleInteraction: false,
-      electricField: [0, 1, 0],
+      electricField: [0, 0, 0],
       magneticField: [0, 0, 0]
     },
     lattice: {
@@ -70,7 +70,7 @@ export default {
     isStageVisible: true,
     isShadowEnabled: true,
     isLatticeVisible: true,
-    isFieldVisible: false,
+    isFieldVisible: true,
 
     pathicleRelativeGap: 3,
     pathicleRelativeHeight: 5,

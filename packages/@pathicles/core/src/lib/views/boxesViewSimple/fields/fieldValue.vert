@@ -21,7 +21,7 @@ const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
 
-#pragma glslify: lookAt = require("@pathicles/core/src/lib/shaders/look-at.glsl");
+#pragma glslify: mat3LookAt = require("@pathicles/core/src/lib/shaders/mat3-look-at.glsl");
 
 
 /*__latticeChunkGLSL__*/
@@ -45,23 +45,6 @@ BeamlineElement getBeamlineElement(float id) {
   }
   return beamline[0];
 }
-BeamlineElement getClosestBeamlineElement(vec3 position) {
-
-  for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
-
-    BeamlineElement bl = getBeamlineElement(float(i));
-
-    vec3 localPosition = position;
-    localPosition.xz *= rot2D(bl.phi);
-    localPosition -= bl.middle;
-
-    if (sdBox(localPosition, bl.size) <= 0.) {
-      return bl;
-    }
-  }
-  return BeamlineElement(vec3(0.), vec3(0.), 0., 0, 0.);
-}
-
 
 
 vec3 getB(vec3 position) {
@@ -75,7 +58,7 @@ vec3 getB(vec3 position) {
     localPosition.xz *= rot2D(ble.phi);
     if (sdBox(localPosition, ble.size) <= 0.) {
       if (ble.type == BEAMLINE_ELEMENT_TYPE_DIPOLE) {
-        B += vec3(0., ble.strength, 0.);
+        B += vec3(10., ble.strength, 0.);
       } else if (ble.type == BEAMLINE_ELEMENT_TYPE_QUADRUPOLE) {
         B += abs(ble.strength)  *
         ((ble.strength > 0.)
@@ -99,11 +82,48 @@ void main () {
   vColor = vec3(b);
   float scale = length(b) == 0. ? .0 : min(length(b), 1.) / 1. + .5;
 
-  vec3 scaledPosition = aPosition * scale;
-  mat4 lookAtMat4 = lookAt(aOffset, aOffset + b, vec3(0., 1., 0.));
+  
+  mat3 lookAt = mat3LookAt(vec3(0.), normalize(b), 0.1);
 
-  vPosition = (vec4(scaledPosition, 1.)).xyz + aOffset;
-//  vPosition =  aPosition + aOffset;
+  // Translate
+mat4 tPos = mat4(vec4(1.0,0.0,0.0,0.0),
+vec4(0.0,1.0,0.0,0.0),
+vec4(0.0,0.0,1.0,0.0),
+vec4(aOffset,1.0));
+
+float angleX = dot(b, vec3(1.,0.,0.));
+float angleZ = 0.;
+float angleY = 0.;
+
+
+// Rotate
+mat4 rXPos = mat4(vec4(1.0,0.0,0.0,0.0),
+vec4(0.0,cos(angleX),-sin(angleX),0.0),
+vec4(0.0,sin(angleX),cos(angleX),0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+
+mat4 rYPos = mat4(vec4(cos(angleY),0.,-sin(angleY),0.0),
+vec4(0.0,1.0,0.0,0.0),
+vec4(sin(angleY),0.0,cos(angleY),0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+mat4 rZPos = mat4(vec4(cos(angleZ),-sin(angleZ),0.0,0.0),
+vec4(sin(angleZ),cos(angleZ),0.0,0.0),
+vec4(0.0,0.0,1.0,0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+// Scale
+mat4 sScale = mat4(vec4(1.,0.0,0.0,0.0),
+vec4(0.0,scale,0.0,0.0),
+vec4(0.0,0.0,1.,0.0),
+vec4(0.0,0.0,0.0,1.0));
+
+
+  mat4 aModel = tPos *  rZPos * rYPos * rXPos * sScale;
+
+  vPosition = (aModel * vec4(aPosition, 1.)).xyz;
+
 
   gl_Position = projection * view *  vec4(vPosition, 1.);
 }

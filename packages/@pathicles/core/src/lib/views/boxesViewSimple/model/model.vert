@@ -102,7 +102,7 @@ void main () {
   vec4 fourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot));
   vec4 previousFourPosition = readVariable(ut_position, int(a_particle), int(a_snapshot) + 1);
 
-  mat4 lookAtMa t4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(1., 1., 1.));
+  mat4 lookAtMat4 = lookAt(fourPosition.xyz, previousFourPosition.xyz, vec3(0., 1., 0.));
 
 #ifdef lighting
     vScale = vec3(
@@ -116,14 +116,13 @@ void main () {
     vScale = vec3(
       pathicleWidth * 10.,
       pathicleHeight,
-      leng th(previousFourPosition.xyz - fourPosition.xyz) );
+      length(previousFourPosition.xyz - fourPosition.xyz) );
 #endif
 
   vec3 scaledPosition = aPosition * vScale;
 
   v_position = (((lookAtMat4 * vec4(scaledPosition, 1.)).xyz
     + 0.5 * (fourPosition.xyz + previousFourPosition.xyz)));
-
 
   vNormalOrig = aNormal;
   vNormal = normalize((transpose(inverse(lookAtMat4)) * vec4(aNormal, 0.)).xyz);
@@ -140,7 +139,8 @@ void main () {
 
   v_lightNDC = texUnitConverter * shadowProjectionMatrix * shadowViewMatrix * model * vec4(v_position, 1.0);
   vColorCorrection = get_colorCorrection(int(a_particle));
-  v_visibility = v_visibility;
+  v_visibility = v_visibility; // * clamp(shadowValue(), 1., 1.);
+
   gl_Position = projection * view *  model * vec4(v_position, 1.0);
 
 #endif// lighting

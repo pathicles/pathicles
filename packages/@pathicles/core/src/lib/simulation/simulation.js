@@ -116,12 +116,14 @@ export class Simulation {
         ? pushBorisGLSL(this._regl, {
             runner: this.configuration.runner,
             variables: this.variables,
-            model: this.model
+            model: this.model,
+            debug: this.debug
           })
         : pushBorisJS(this._regl, {
             runner: this.configuration.runner,
             variables: this.variables,
-            model: this.model
+            model: this.model,
+            debug: this.debug
           })
 
     this.performanceLogger.stop()

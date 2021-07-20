@@ -14,10 +14,6 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON'
-      // particleCount: 1
-    },
-    interactions: {
-      magneticField: [0, 0, 0]
     },
     lattice: {
       elements: {
