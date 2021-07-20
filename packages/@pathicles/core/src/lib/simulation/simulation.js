@@ -1,6 +1,6 @@
 import { ParticleCollection } from '../particle-collection/particle-collection'
-import pushBorisGLSL from './pusher/glsl/push--boris'
-import pushBorisJS from './pusher/js/push--boris'
+import { glslBorisPush } from './pusher/glsl/glslBorisPush'
+// import { jsBorisPush } from './pusher/js/jsBorisPush'
 
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
@@ -8,6 +8,7 @@ import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES, C } from '@pathicles/config'
 import { isLittleEndian } from '../utils/little-endian'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
+import { jsBorisPush } from './pusher/js/jsBorisPush'
 
 export class Simulation {
   constructor(regl, { model, runner, debug }) {
@@ -76,7 +77,6 @@ export class Simulation {
       ),
 
       iteration: 0,
-      referencePoint: [0, 0, 0],
       particleColorsAndTypes: regl.texture({
         data: particleTypes.map((p) => PARTICLE_TYPES[p].color.concat(p)),
         shape: [particleCount, 1, 4],
@@ -113,13 +113,13 @@ export class Simulation {
 
     this.pusher =
       this.configuration.runner.pusher === 'glsl'
-        ? pushBorisGLSL(this._regl, {
+        ? glslBorisPush(this._regl, {
             runner: this.configuration.runner,
             variables: this.variables,
             model: this.model,
             debug: this.debug
           })
-        : pushBorisJS(this._regl, {
+        : jsBorisPush({
             runner: this.configuration.runner,
             variables: this.variables,
             model: this.model,

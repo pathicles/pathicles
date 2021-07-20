@@ -23,7 +23,6 @@ const int BEAMLINE_ELEMENT_TYPE_ESTA = 3;
 /*__latticeSize__*/
 /*__latticeChunkGLSL__*/
 
-
 mat2 rot2D(float phi) {
   float c = cos(phi);
   float s = sin(phi);
@@ -33,12 +32,12 @@ float sdBox( vec3 p, vec3 s ) {
   vec3 d = abs(p) - .5 * s;
   return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
-
+#pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
 
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN);
 
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN, PACK_FLOAT=PACK_FLOAT);
 
 vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
   return  2.*(step(bottomLeft, v) - step(topRight, v)) - vec3(1.);
@@ -176,6 +175,19 @@ void main () {
       ? readVariable(particle, snapshot)
       : readVariable(particle, snapshot-1);
 
+
+#ifdef PACK_FLOAT
+  
+  gl_FragColor =
+  (fourComponentIndex == 0)
+  ? packFloat(value.x)
+  : (fourComponentIndex == 1)
+  ? packFloat(value.y)
+  : (fourComponentIndex == 2)
+  ? packFloat(value.z)
+  : packFloat(value.w);
+
+#else
   gl_FragColor =
   (fourComponentIndex == 0)
   ? vec4(value.x, 0., 0., 0.)
@@ -184,4 +196,8 @@ void main () {
   : (fourComponentIndex == 2)
   ? vec4(value.z, 0., 0., 0.)
   : vec4(value.w, 0., 0., 0.);
+
+#endif
+
+
 }

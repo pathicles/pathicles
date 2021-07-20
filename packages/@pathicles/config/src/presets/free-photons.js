@@ -10,7 +10,10 @@ export default {
     }
   },
 
-  runner: {},
+  runner: {
+    packFloat2UInt8: true,
+    prerender: true
+  },
 
   model: {
     emitter: {

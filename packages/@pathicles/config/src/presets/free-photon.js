@@ -18,6 +18,7 @@ export default {
 
   runner: {
     prerender: true,
+    packFloat2UInt8: false,
     iterationsPerSnapshot: 1,
     iterationCount: 10,
     snapshotCount: 11,

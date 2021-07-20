@@ -5,7 +5,7 @@ export default {
   debug: {
     logPushing: true,
     logPerformance: false,
-    showTextures: false,
+    showTextures: true,
     showTextureScale: 1
   },
   runner: {
@@ -16,7 +16,7 @@ export default {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 8,
+    iterationsPerSnapshot: 4,
     iterationCount: 128 * 4 - 1,
     iterationDurationOverC: 0.05,
     snapshotCount: 128

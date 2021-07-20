@@ -11,6 +11,7 @@ export class VariableBuffers {
     this.numberType = numberType
     this.initialData = initialData
     this.pingPong = 0
+    this.data = new Array(2)
     const width = (this.width = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT)
     const height = (this.height = particleCount)
     this.buffers = [0, 1].map(() => {
@@ -28,7 +29,7 @@ export class VariableBuffers {
   }
 
   load(fourVectors) {
-    const data =
+    this.data[0] = this.data[1] =
       this.numberType === 'float'
         ? new Float32Array(
             fourVectors
@@ -39,11 +40,11 @@ export class VariableBuffers {
           )
         : new Uint8Array(new Float32Array(fourVectors.flat()).buffer)
 
-    this.buffers.forEach((buffer) =>
+    this.buffers.forEach((buffer, i) =>
       buffer.color[0].subimage({
         width: FOUR_VECTOR_COMPONENT_COUNT,
         height: this.particleCount,
-        data
+        data: this.data[i]
       })
     )
 

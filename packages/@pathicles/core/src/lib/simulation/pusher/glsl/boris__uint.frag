@@ -27,7 +27,7 @@ uniform vec3 magneticField;
 #pragma glslify: getClosestBeamlineElement = require("@pathicles/core/src/lib/shaders/get-closest-beamline-element.glsl", beamline=beamline, BeamlineElement=BeamlineElement, BEAMLINE_ELEMENT_COUNT=BEAMLINE_ELEMENT_COUNT);
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable__uint.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable__uint.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN, LITTLE_ENDIAN=LITTLE_ENDIAN);
 
 
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
@@ -167,7 +167,6 @@ void main () {
   : (takeSnapshot == 0)
   ? readVariable(particle, snapshot)
   : readVariable(particle, snapshot-1);
-
 
 
   gl_FragColor =

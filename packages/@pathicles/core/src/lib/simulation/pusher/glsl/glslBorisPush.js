@@ -1,10 +1,10 @@
 import vert from './boris.vert'
-import frag__float from './boris__float.frag'
-// import frag__uint from './boris__uint.frag'prettier/vue"
+import frag from './boris.frag'
+// import frag__uint from './boris__uint.frag'
 import { latticeChunk } from '../../lattice/lattice.gsls.js'
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
-export default function (regl, { runner, variables, model }) {
+export function glslBorisPush(regl, { runner, variables, model }) {
   const performanceLogger = new PerformanceLogger()
   performanceLogger.entries = []
 
@@ -54,10 +54,10 @@ export default function (regl, { runner, variables, model }) {
         ...(variables.packFloat2UInt8
           ? [
               `#define LITTLE_ENDIAN ${runner.littleEndian}`,
-              `#define PACK_FLOAT 1`
+              `#define PACK_FLOAT`
             ]
-          : [`#define PACK_FLOAT 0`]),
-        (variables.packFloat2UInt8 ? frag__float : frag__float)
+          : []),
+        (variables.packFloat2UInt8 ? frag : frag)
           .replace(
             '/*__latticeDefinition__*/',
             model.lattice.toGLSLDefinition()

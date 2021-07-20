@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
-export default function (regl, { runner, variables, model, debug }) {
+export function jsBorisPush(regl, { runner, variables, model, debug }) {
   const performanceLogger = new PerformanceLogger()
 
   performanceLogger.entries = []

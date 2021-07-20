@@ -61,9 +61,11 @@ export default function (regl, { variables, view }, shadow) {
 
       vert: [
         ...(variables.packFloat2UInt8
-          ? [`#define LITTLE_ENDIAN ${variables.littleEndian}`]
+          ? [
+              `#define LITTLE_ENDIAN ${variables.littleEndian}`,
+              `#define PACK_FLOAT`
+            ]
           : []),
-
         `#define ${mode} 1`,
         // `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
         vert

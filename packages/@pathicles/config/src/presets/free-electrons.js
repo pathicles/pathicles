@@ -12,9 +12,18 @@ export default {
   },
 
   runner: {
-    // iterationsPerSnapshot: 1,
-    // snapshotCount: 128,
+    prerender: false,
+    mode: RUNNER_MODE.NOBREAK,
+    packFloat2UInt8: true,
+    loops: 0,
+    iterationsPerSnapshot: 1,
+    iterationCount: 100,
+    snapshotCount: 11,
     iterationDurationOverC: 0.1
+    // // iterationsPerSnapshot: 1,
+    // // snapshotCount: 128,
+    // iterationDurationOverC: 0.025,
+    // packFloat2UInt8: false
   },
 
   model: {

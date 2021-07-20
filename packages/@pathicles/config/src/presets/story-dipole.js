@@ -10,6 +10,10 @@ export default {
       phi: (10 / 360) * 2 * Math.PI
     }
   },
+  runner: {
+    prerender: true,
+    packFloat2UInt8: true
+  },
 
   model: {
     emitter: {

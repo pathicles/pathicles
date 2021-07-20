@@ -15,7 +15,7 @@ export default {
   runner: {
     prerender: true,
     mode: RUNNER_MODE.NOBREAK,
-
+    packFloat2UInt8: false,
     loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 10,
