@@ -4,6 +4,6 @@ struct BeamlineElement {
   vec3 middle;
   vec3 size;
   float phi;
-  int type; //0: drift, 1: dipole, 2: quadrupole
+  int type; //0: drift, 1: dipole, 2: quadrupole, 3: esta
   float strength;
 };
