@@ -5,7 +5,7 @@ import { glslBorisPush } from './pusher/glsl/glslBorisPush'
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
-import { PARTICLE_TYPES, C } from '@pathicles/config'
+import { PARTICLE_TYPES } from '@pathicles/config'
 
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { jsBorisPush } from './pusher/js/jsBorisPush'

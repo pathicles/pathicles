@@ -118,7 +118,6 @@ export class ReglSimulatorInstance {
 
       this.camera.doAutorotate()
       this.camera.tick()
-      
 
       if (this.isDirty || this.camera.state.dirty) {
         this.isDirty = false

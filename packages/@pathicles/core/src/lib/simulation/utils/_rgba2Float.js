@@ -14,7 +14,7 @@ function mod(x, y) {
         return x % y[i]
       })
     }
-    return x.map(function (x, i) {
+    return x.map(function (x) {
       if (x === 0 || y === 0) {
         return 0
       }
