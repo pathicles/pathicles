@@ -5,7 +5,7 @@ export default {
   view: {
     camera: {
       center: [0, 1, 0],
-      distance: 7,
+      distance: 5,
       theta: (45 / 360) * 2 * Math.PI,
       phi: (10 / 360) * 2 * Math.PI
     }

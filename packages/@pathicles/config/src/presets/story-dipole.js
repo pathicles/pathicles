@@ -11,7 +11,7 @@ export default {
     }
   },
   runner: {
-    prerender: true,
+    prerender: false,
     packFloat2UInt8: false
   },
 

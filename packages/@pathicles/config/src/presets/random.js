@@ -10,8 +10,8 @@ export default {
   name: 'random',
   view: {
     camera: {
-      center: [-5, 0.5, -5],
-      distance: 14,
+      center: [0, 0.5, 0],
+      distance: 8,
       theta: 45 * (Math.PI / 180),
       phi: 5 * (Math.PI / 180)
     }

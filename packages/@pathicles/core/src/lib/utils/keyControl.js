@@ -59,7 +59,7 @@ const onDocumentKeyDown = (app) => (event) => {
     console.log(app.simulation.dump())
   } else if (code === 'KeyM') {
     // m for mode
-    app.pathiclesRunner.toggleMode()
+    app.runner.toggleMode()
   } else if (code === 'KeyT') {
     // t for textures
     app.config.debug.showTextures = !app.config.debug.showTextures
@@ -71,14 +71,14 @@ const onDocumentKeyDown = (app) => (event) => {
     )
   } else if (code === 'KeyN') {
     // n for loop
-    app.pathiclesRunner.next()
+    app.runner.next()
   } else if (code === 'KeyL') {
     // l for loop
-    app.pathiclesRunner.toggleLooping()
+    app.runner.toggleLooping()
   } else if (code === 'Space') {
     // SPACE for Start/stop or nextStep
 
-    app.pathiclesRunner.toggleActivity()
+    app.runner.toggleActivity()
   }
 
   return false

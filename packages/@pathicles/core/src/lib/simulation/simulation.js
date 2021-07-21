@@ -37,18 +37,16 @@ export class Simulation {
       ? 'uint8'
       : 'float'
 
-
-
     this.configuration.runner.snapshotCount = snapshotCount
     this.configuration.runner._iterationsPerSnapshot =
       runner.iterationsPerSnapshot
+    this.configuration.runner._snapshotsPerTick = runner.snapshotsPerTick
 
     this.configuration.runner._iterationsPerRun =
       this.configuration.runner.iterationCount > 0
         ? this.configuration.runner.iterationCount
         : (this.configuration.runner.snapshotCount - 1) *
           this.configuration.runner._iterationsPerSnapshot
-
 
     this.colorCorrector = new ColorCorrector(
       regl,

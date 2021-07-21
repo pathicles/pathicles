@@ -126,18 +126,18 @@ export default {
             .sceneProgress.toFixed(2)
         }
 
-        if (scroll.changed || size.changed) {
-          this.vp = {
-            // sceneCount: this.story.scenes.length,
-            scene: this.activeScene + '/' + this.story.scenes.length,
-            sceneProgress: this.sceneProgress,
-            progress: this.progress.toFixed(2)
-            // storyHeight: this.storyHeight,
-            // duration: this.story.scenes.duration,
-            // dt: this.duration,
-            // scrollTop: scroll.top + this.screenHeight
-          }
-        }
+        // if (scroll.changed || size.changed) {
+        //   this.vp = {
+        //     // sceneCount: this.story.scenes.length,
+        //     scene: this.activeScene + '/' + this.story.scenes.length,
+        //     sceneProgress: this.sceneProgress,
+        //     progress: this.progress.toFixed(2)
+        //     // storyHeight: this.storyHeight,
+        //     // duration: this.story.scenes.duration,
+        //     // dt: this.duration,
+        //     // scrollTop: scroll.top + this.screenHeight
+        //   }
+        // }
       }
     }
   },

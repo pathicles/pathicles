@@ -14,16 +14,17 @@ import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 export class ReglSimulatorInstance {
   constructor({ canvas, config }) {
     // keyControlMount(this)
-    this.config = config
+    this.configuration = config
+    this.isDirty = true
 
     window.performanceLogger = null
     this.performanceLogger = new PerformanceLogger(
-      this.config.debug.logPerformance
+      this.configuration.debug.logPerformance
     )
     // eslint-disable-next-line no-undef
     createREGL({
       canvas,
-      profile: this.config.debug.profile,
+      profile: this.configuration.debug.profile,
       attributes: {
         preserveDrawingBuffer: true,
         antialiasing: true
@@ -59,6 +60,7 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
+    this.isDirty = true
   }
 
   destroy() {
@@ -68,47 +70,58 @@ export class ReglSimulatorInstance {
 
   loadConfig(config) {
     this.stop(this.regl)
-    this.config = config
+    this.configuration = config
     this.init(this.regl)
     this.run(this.regl)
+    this.isDirty = true
   }
 
   checkSupport() {
     this.support = checkSupport()
   }
 
+  toggleShowTextures() {
+    this.configuration.debug.showTextures =
+      !this.configuration.debug.showTextures
+    this.isDirty = true
+  }
+
   init(regl) {
     this.camera = freeCameraFactory(regl, {
-      ...this.config.view.camera,
+      ...this.configuration.view.camera,
       aspectRatio: regl._gl.canvas.clientWidth / regl._gl.canvas.clientHeight
     })
 
     this.drawTexture = drawTextureCommand(regl)
 
-    this.simulation = new Simulation(regl, this.config, this.support)
+    this.simulation = new Simulation(regl, this.configuration, this.support)
 
-    this.pathiclesRunner = new SimulationRunner(
+    this.runner = new SimulationRunner(
       this.simulation,
-      this.config.runner,
-      this.config.debug
+      this.configuration.runner,
+      this.configuration.debug
     )
 
     this.view = new BoxesViewSimple(regl, {
-      runner: this.simulation.runner,
       variables: this.simulation.variables,
+      runner: this.simulation.runner,
       model: this.simulation.model,
-      view: this.config.view,
-      debug: this.config.debug
+      view: this.configuration.view,
+      debug: this.configuration.debug
     })
   }
 
   run(regl) {
-    this.loop = regl.frame(({ viewportWidth, viewportHeight, tick }) => {
-      const { changed } = this.pathiclesRunner.next()
+    this.loop = regl.frame(({ viewportHeight, tick }) => {
+      const { changed } = this.runner.next()
+      this.isDirty = this.isDirty || changed
+
       this.camera.doAutorotate()
       this.camera.tick()
+      
 
-      if (changed || this.camera.state.dirty) {
+      if (this.isDirty || this.camera.state.dirty) {
+        this.isDirty = false
         this.camera.setCameraUniforms(
           {
             ...this.camera
@@ -122,33 +135,31 @@ export class ReglSimulatorInstance {
               position: this.simulation.variables.position.value()
             })
 
-            if (this.config.debug.showTextures) {
+            if (this.configuration.debug.showTextures) {
               this.drawTexture({
-                decode: this.config.runner.packFloat2UInt8
+                decode: this.configuration.runner.packFloat2UInt8
                   ? DECODE.UNPACK_RGBA
                   : DECODE.R,
-                y0: viewportHeight - 100,
+                y0:
+                  viewportHeight -
+                  this.simulation.variables.velocity.height *
+                    this.configuration.debug.showTextureScale,
                 texture: this.simulation.variables.position.value(),
-                scale: 1 * this.config.debug.showTextureScale
+                scale: 1 * this.configuration.debug.showTextureScale
               })
               this.drawTexture({
-                decode: this.config.runner.packFloat2UInt8
+                decode: this.configuration.runner.packFloat2UInt8
                   ? DECODE.UNPACK_RGBA
                   : DECODE.R,
                 texture: this.simulation.variables.velocity.value(),
                 y0:
                   viewportHeight -
                   50 -
-                  this.simulation.variables.velocity.height *
-                    this.config.debug.showTextureScale,
-                scale: 1 * this.config.debug.showTextureScale
+                  2 *
+                    this.simulation.variables.velocity.height *
+                    this.configuration.debug.showTextureScale,
+                scale: this.configuration.debug.showTextureScale
               })
-              // this.drawTexture({
-              //   decode: DECODE.UNPACK_RGBA,
-              //   texture: this.view.shadow.fbo,
-              //   x0: viewportWidth - this.view.shadow.SHADOW_MAP_SIZE * 0.5,
-              //   scale: 0.5
-              // })
             }
           }
         )
