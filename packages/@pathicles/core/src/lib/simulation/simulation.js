@@ -37,6 +37,8 @@ export class Simulation {
       ? 'uint8'
       : 'float'
 
+
+
     this.configuration.runner.snapshotCount = snapshotCount
     this.configuration.runner._iterationsPerSnapshot =
       runner.iterationsPerSnapshot
@@ -132,7 +134,7 @@ export class Simulation {
   push(n = 1, profile = false) {
     this.performanceLogger.start(`simulation.push (n=${n})`)
     this.pusher(n, profile)
-    // this.log()
+    this.log()
     this.performanceLogger.stop()
   }
 
@@ -174,10 +176,10 @@ export class Simulation {
       ).float32Array
     )
 
-    const velocityNorms = packedVelocities.map((p) =>
-      p.map((s) => s[3] * s[3] - s[0] * s[0] - s[1] * s[1] - s[2] * s[2])
-    )
-    const gammas = packedVelocities.map((p) => p.map((s) => s[3] / C))
+    // const velocityNorms = packedVelocities.map((p) =>
+    //   p.map((s) => s[3] * s[3] - s[0] * s[0] - s[1] * s[1] - s[2] * s[2])
+    // )
+    // const gammas = packedVelocities.map((p) => p.map((s) => s[3] / C))
 
     return JSON.parse(
       JSON.stringify({
@@ -185,8 +187,8 @@ export class Simulation {
         // position,
         packedPositions,
         packedVelocities,
-        velocityNorms,
-        gammas,
+        // velocityNorms,
+        // gammas,
         colorCorrections: this.colorCorrector.corrections,
         configuration: this.configuration,
         particleTypes: this.variables.particleTypes
@@ -201,6 +203,6 @@ export class Simulation {
   }
 
   prerender() {
-    this.push(this.configuration.runner._iterationsPerRun, true)
+    this.push(this.configuration.runner._iterationsPerRun, false)
   }
 }

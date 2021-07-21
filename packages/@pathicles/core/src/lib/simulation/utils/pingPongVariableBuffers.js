@@ -18,8 +18,8 @@ export class VariableBuffers {
       return regl.framebuffer({
         height: this.height,
         width: this.width,
-        format: 'rgba',
-        colorType: numberType,
+        // colorFormat: 'rgba',
+        // colorType: numberType,
         depthStencil: false,
         color: variableTexture(regl, { width, height }, numberType)
       })
@@ -62,17 +62,16 @@ export class VariableBuffers {
 
   toTypedArray(pingPong = this.pingPong, precision = 3) {
     let float32Array
-
+    let colorUint8Array
     if (this.numberType === 'uint8') {
-      const colorUint8Array = new Uint8Array(
-        this.particleCount * this.snapshotCount * 4 * 4 * 4
-      )
+      let data = new Uint8Array(this.particleCount * this.snapshotCount * 4 * 4)
       this.regl({
         framebuffer: this.buffers[pingPong]
       })(() => {
-        this.regl.read({ data: colorUint8Array })
+        this.regl.read({ data: data })
       })
-      float32Array = new Float32Array(colorUint8Array.buffer) //.filter((d, i) => i % 4 === 0)
+      colorUint8Array = Array.from(data) //new Uint8Array(data.buffer) //.filter((d, i) => i % 4 === 0)
+      float32Array = new Float32Array(data.buffer) //.filter((d, i) => i % 4 === 0)
     }
     if (this.numberType === 'float') {
       try {
@@ -92,6 +91,7 @@ export class VariableBuffers {
     }
 
     return {
+      colorUint8Array,
       float32Array: Array.from(float32Array).map((d) =>
         precision
           ? Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision)

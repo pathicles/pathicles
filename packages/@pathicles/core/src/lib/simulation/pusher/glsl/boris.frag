@@ -1,6 +1,7 @@
 precision highp float;
 const highp float c = 2.99792458e+8;
 
+uniform bool littleEndian;
 uniform float boundingBoxSize;
 uniform float deltaTOverC;
 uniform float particleInteraction;
@@ -33,11 +34,12 @@ float sdBox( vec3 p, vec3 s ) {
   return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 #pragma glslify: packFloat = require("@pathicles/core/src/lib/shaders/packFloat.glsl");
+#pragma glslify: floatToRgba = require("@pathicles/core/src/lib/shaders/floatToRgba.glsl");
 
 #pragma glslify: ParticleData = require("@pathicles/core/src/lib/shaders/ParticleData.glsl");
 #pragma glslify: getParticleData = require("@pathicles/core/src/lib/shaders/getParticleData.glsl", ParticleData=ParticleData, particleCount=resolution.y, ut_particleChargesMassesChargeMassRatios=ut_particleChargesMassesChargeMassRatios);
 
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN, PACK_FLOAT=PACK_FLOAT);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, littleEndian=littleEndian, PACK_FLOAT=PACK_FLOAT);
 
 vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
   return  2.*(step(bottomLeft, v) - step(topRight, v)) - vec3(1.);
@@ -169,6 +171,7 @@ void main () {
   int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
   initLatticeData();
 
+  
   vec4 value = (snapshot == 0)
     ? push(particle)
     : (takeSnapshot == 0)
@@ -177,7 +180,7 @@ void main () {
 
 
 #ifdef PACK_FLOAT
-  
+
   gl_FragColor =
   (fourComponentIndex == 0)
   ? packFloat(value.x)
@@ -187,7 +190,18 @@ void main () {
   ? packFloat(value.z)
   : packFloat(value.w);
 
+  // gl_FragColor =
+  // (fourComponentIndex == 0)
+  // ? floatToRgba(value.x, littleEndian)
+  // : (fourComponentIndex == 1)
+  // ? floatToRgba(value.y, littleEndian)
+  // : (fourComponentIndex == 2)
+  // ? floatToRgba(value.z, littleEndian)
+  // : floatToRgba(value.w, littleEndian);
+
+
 #else
+  
   gl_FragColor =
   (fourComponentIndex == 0)
   ? vec4(value.x, 0., 0., 0.)

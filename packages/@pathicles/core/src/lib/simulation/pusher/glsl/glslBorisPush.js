@@ -12,6 +12,7 @@ export function glslBorisPush(regl, { runner, variables, model }) {
     const latticeChunkGLSL = latticeChunk(model.lattice)
 
     return regl({
+      profile: true,
       framebuffer: (context, props) =>
         variables[variableName].buffers[props.iteration % 2],
       primitive: 'triangles',
@@ -38,6 +39,7 @@ export function glslBorisPush(regl, { runner, variables, model }) {
         takeSnapshot: regl.prop('takeSnapshot'),
 
         variableIdx: variableSlot,
+        littleEndian: runner.littleEndian === 1,
 
         ut_particleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
@@ -53,7 +55,7 @@ export function glslBorisPush(regl, { runner, variables, model }) {
       frag: [
         ...(variables.packFloat2UInt8
           ? [
-              `#define LITTLE_ENDIAN ${runner.littleEndian}`,
+              // `#define LITTLE_ENDIAN ${runner.littleEndian}`,
               `#define PACK_FLOAT`
             ]
           : []),
@@ -112,7 +114,7 @@ export function glslBorisPush(regl, { runner, variables, model }) {
       })
     }
 
-    if (profile) {
+    if (true) {
       regl.poll()
       performanceLogger.entries.push({
         name: 'pushVelocity',

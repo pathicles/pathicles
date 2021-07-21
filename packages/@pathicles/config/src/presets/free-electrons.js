@@ -12,9 +12,9 @@ export default {
   },
 
   runner: {
-    prerender: false,
+    prerender: true,
     mode: RUNNER_MODE.NOBREAK,
-    packFloat2UInt8: true,
+    packFloat2UInt8: false,
     loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 100,

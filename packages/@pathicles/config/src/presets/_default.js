@@ -3,10 +3,10 @@ import { RUNNER_MODE } from '../constants'
 export default {
   name: 'default',
   debug: {
-    logPushing: true,
+    logPushing: false,
     logPerformance: false,
     showTextures: true,
-    showTextureScale: 1
+    showTextureScale: 50
   },
   runner: {
     pusher: 'glsl',

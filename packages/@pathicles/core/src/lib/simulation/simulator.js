@@ -127,6 +127,7 @@ export class ReglSimulatorInstance {
                 decode: this.config.runner.packFloat2UInt8
                   ? DECODE.UNPACK_RGBA
                   : DECODE.R,
+                y0: viewportHeight - 100,
                 texture: this.simulation.variables.position.value(),
                 scale: 1 * this.config.debug.showTextureScale
               })
@@ -137,16 +138,17 @@ export class ReglSimulatorInstance {
                 texture: this.simulation.variables.velocity.value(),
                 y0:
                   viewportHeight -
+                  50 -
                   this.simulation.variables.velocity.height *
                     this.config.debug.showTextureScale,
                 scale: 1 * this.config.debug.showTextureScale
               })
-              this.drawTexture({
-                decode: DECODE.UNPACK_RGBA,
-                texture: this.view.shadow.fbo,
-                x0: viewportWidth - this.view.shadow.SHADOW_MAP_SIZE * 0.5,
-                scale: 0.5
-              })
+              // this.drawTexture({
+              //   decode: DECODE.UNPACK_RGBA,
+              //   texture: this.view.shadow.fbo,
+              //   x0: viewportWidth - this.view.shadow.SHADOW_MAP_SIZE * 0.5,
+              //   scale: 0.5
+              // })
             }
           }
         )

@@ -12,7 +12,7 @@ export default {
   },
   runner: {
     prerender: true,
-    packFloat2UInt8: true
+    packFloat2UInt8: false
   },
 
   model: {

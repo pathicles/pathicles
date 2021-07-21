@@ -1,4 +1,5 @@
 import createCylinder from 'primitive-cylinder'
+import { mergeMeshes } from './../lattice/mergeMeshes.js'
 
 import vert from './fieldValue.vert'
 import frag from './fieldValue.frag'
@@ -26,7 +27,16 @@ export const positionAttributes = () => {
 }
 
 export default function (regl, { model, view }, shadow) {
-  const geometry = createCylinder(0, 0.01, 0.05)
+  const coneGeometry = createCylinder(0, 0.01, 0.05)
+  const tailGeometry = createCylinder(0.005, 0.005, 0.05)
+
+  tailGeometry.positions = tailGeometry.positions.map(([x, y, z]) => [
+    x,
+    y - 0.05,
+    z
+  ])
+
+  const geometry = mergeMeshes([coneGeometry, tailGeometry])
 
   let modelMatrix = identity([])
 

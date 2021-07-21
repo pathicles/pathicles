@@ -17,7 +17,7 @@
     "build": "yarn workspace @pathicles/config run build; yarn workspace @pathicles/core run build; yarn workspace @pathicles/vue-app run build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
     "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/vue-app/dist",
-    "dev:app": "yarn workspace @pathicles/vue-app run dev",
+    "dev:app": "yarn workspace @pathicles/vue-app run dev --host",
     "dev:config": "yarn workspace @pathicles/config run dev",
     "dev:core": "yarn workspace @pathicles/core run dev",
     "docs:build": "vitepress build docs --emptyOutDir --manifest",

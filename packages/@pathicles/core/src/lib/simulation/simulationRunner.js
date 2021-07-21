@@ -58,7 +58,11 @@ export class SimulationRunner {
   }
 
   next() {
+    
+    
+    
     const tick_before = this._simulation.variables.iteration
+    
     if (this.fsm.state === STATES.INITIAL) {
       this._loopCount = 1
 
@@ -103,6 +107,7 @@ export class SimulationRunner {
     }
     const tick_after = this._simulation.variables.iteration
     const changed = tick_after !== tick_before
+    
     return { changed, tick: tick_after }
   }
 }

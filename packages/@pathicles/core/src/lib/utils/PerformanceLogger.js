@@ -44,11 +44,11 @@ export class PerformanceLogger {
     const marks = performance.getEntriesByType('mark')
     const measures = marks.map((mark, m) => ({
       name: mark.name,
-      dt: round(
+      Δt: round(
         marks[Math.min(m + 1, marks.length - 1)].startTime - mark.startTime
-      ),
-      t0: round(mark.startTime),
-      t_next: round(marks[Math.min(m + 1, marks.length - 1)].startTime)
+      )
+      // t0: round(mark.startTime),
+      // t_next: round(marks[Math.min(m + 1, marks.length - 1)].startTime)
     }))
 
     return measures.filter((m) => m.name.indexOf('stop') === -1)
