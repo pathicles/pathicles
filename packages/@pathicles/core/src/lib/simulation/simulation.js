@@ -6,7 +6,7 @@ import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
 import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES, C } from '@pathicles/config'
-import { isLittleEndian } from '../utils/little-endian'
+
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { jsBorisPush } from './pusher/js/jsBorisPush'
 
@@ -49,7 +49,6 @@ export class Simulation {
         : (this.configuration.runner.snapshotCount - 1) *
           this.configuration.runner._iterationsPerSnapshot
 
-    this.configuration.runner.littleEndian = isLittleEndian()
 
     this.colorCorrector = new ColorCorrector(
       regl,

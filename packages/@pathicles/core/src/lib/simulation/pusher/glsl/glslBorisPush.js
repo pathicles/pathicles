@@ -3,8 +3,8 @@ import frag from './boris.frag'
 // import frag__uint from './boris__uint.frag'
 import { latticeChunk } from '../../lattice/lattice.gsls.js'
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
-
-export function glslBorisPush(regl, { runner, variables, model }) {
+import { isLittleEndian } from '../../../utils/little-endian'
+export function glslBorisPush(regl, { variables, model }) {
   const performanceLogger = new PerformanceLogger()
   performanceLogger.entries = []
 
@@ -13,8 +13,7 @@ export function glslBorisPush(regl, { runner, variables, model }) {
 
     return regl({
       profile: true,
-      framebuffer: (context, props) =>
-        variables[variableName].buffers[props.iteration % 2],
+      framebuffer: () => variables[variableName].value(),
       primitive: 'triangles',
       elements: null,
       offset: 0,
@@ -25,6 +24,8 @@ export function glslBorisPush(regl, { runner, variables, model }) {
       },
 
       uniforms: {
+        variableIdx: variableSlot,
+
         resolution: [variables.snapshotCount * 4, variables.particleCount],
         snapshotCount: variables.snapshotCount,
         particleCount: variables.particleCount,
@@ -33,22 +34,21 @@ export function glslBorisPush(regl, { runner, variables, model }) {
         particleInteraction: model.interactions.particleInteraction ? 1 : 0,
         electricField: model.interactions.electricField || [0, 0, 0],
         magneticField: model.interactions.magneticField || [0, 0, 1],
+        takeSnapshot: () => variables.takeSnapshot,
 
         boundingBoxSize: model.boundingBoxSize,
         boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        takeSnapshot: regl.prop('takeSnapshot'),
 
-        variableIdx: variableSlot,
-        littleEndian: runner.littleEndian === 1,
+        littleEndian: isLittleEndian(),
 
         ut_particleChargesMassesChargeMassRatios: () =>
           variables.particleChargesMassesChargeMassRatios,
-        ut_position: (context, props) =>
-          variables.position.buffers[(props.iteration + 1) % 2],
-        ut_velocity: (context, props) =>
+        ut_position: () =>
+          variables.position.buffers[(variables.iteration + 1) % 2],
+        ut_velocity: () =>
           variableName === 'position'
-            ? variables.velocity.buffers[props.iteration % 2]
-            : variables.velocity.buffers[(props.iteration + 1) % 2]
+            ? variables.velocity.buffers[variables.iteration % 2]
+            : variables.velocity.buffers[(variables.iteration + 1) % 2]
       },
 
       vert,
@@ -98,23 +98,17 @@ export function glslBorisPush(regl, { runner, variables, model }) {
           variables.snapshotCount - 1
         )
 
-      const takeSnapshot =
+      variables.takeSnapshot =
         variables.iterationsPerSnapshot === 1 ||
         variables.iteration % variables.iterationsPerSnapshot === 1
           ? 1
           : 0
 
-      pushVelocity({
-        iteration: variables.iteration,
-        takeSnapshot
-      })
-      pushPosition({
-        iteration: variables.iteration,
-        takeSnapshot
-      })
+      pushVelocity()
+      pushPosition()
     }
 
-    if (true) {
+    if (profile) {
       regl.poll()
       performanceLogger.entries.push({
         name: 'pushVelocity',

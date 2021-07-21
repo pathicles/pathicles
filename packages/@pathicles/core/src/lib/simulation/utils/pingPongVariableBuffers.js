@@ -11,7 +11,14 @@ export class VariableBuffers {
     this.numberType = numberType
     this.initialData = initialData
     this.pingPong = 0
-    this.data = new Array(2)
+    this.data = [
+      new Float32Array(
+        snapshotCount * FOUR_VECTOR_COMPONENT_COUNT * particleCount
+      ),
+      new Float32Array(
+        snapshotCount * FOUR_VECTOR_COMPONENT_COUNT * particleCount
+      )
+    ]
     const width = (this.width = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT)
     const height = (this.height = particleCount)
     this.buffers = [0, 1].map(() => {

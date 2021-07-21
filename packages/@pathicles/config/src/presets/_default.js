@@ -6,7 +6,7 @@ export default {
     logPushing: false,
     logPerformance: false,
     showTextures: true,
-    showTextureScale: 50
+    showTextureScale: 5
   },
   runner: {
     pusher: 'glsl',

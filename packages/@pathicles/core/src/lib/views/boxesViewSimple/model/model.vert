@@ -30,7 +30,7 @@ uniform vec3 eye;
 uniform mat4 shadowProjectionMatrix;
 uniform mat4 shadowViewMatrix;
 uniform vec3 shadowDirection;
-uniform int littleEndian;
+uniform bool littleEndian;
 varying float v_visibility;
 varying vec3 vScale;
 varying vec3 v_position;
@@ -42,20 +42,20 @@ varying vec3 vColor;
 varying float vColorCorrection;
 varying vec4 v_lightNDC;
 uniform sampler2D shadowMap;
+
 const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
+
+
 
 #pragma glslify: inverse = require(glsl-inverse)
 #pragma glslify: transpose = require(glsl-transpose)
 #pragma glslify: lookAt = require("@pathicles/core/src/lib/shaders/look-at.glsl");
 
-// #pragma glslify: decodeFloat = require("@pathicles/core/src/lib/shaders/decodeFloat.glsl");
-
-#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, LITTLE_ENDIAN=LITTLE_ENDIAN, PACK_FLOAT=PACK_FLOAT);
+#pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, littleEndian=littleEndian, PACK_FLOAT=PACK_FLOAT);
 
 float unpackRGBA (vec4 v) {
   return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
 }
-
 float shadowValue() {
   vec3 tex = texture2D(shadowMap, vUv).rgb;
 
@@ -110,7 +110,6 @@ void main () {
       pathicleHeight,
       length(previousFourPosition.xyz - fourPosition.xyz) - pathicleGap);
 #endif
-
 
 #ifdef shadow
     vScale = vec3(

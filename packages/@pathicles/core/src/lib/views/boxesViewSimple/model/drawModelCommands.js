@@ -4,6 +4,7 @@ import vert from './model.vert'
 import frag from './model.frag'
 import fromTranslation from 'gl-mat4/fromTranslation'
 import { identity } from 'gl-mat4'
+import { isLittleEndian } from './../../../utils/little-endian'
 
 export const stepAttributes = ({ particleCount, snapshotCount }) => {
   return Array(particleCount * snapshotCount)
@@ -60,12 +61,7 @@ export default function (regl, { variables, view }, shadow) {
       },
 
       vert: [
-        ...(variables.packFloat2UInt8
-          ? [
-              `#define LITTLE_ENDIAN ${variables.littleEndian}`,
-              `#define PACK_FLOAT`
-            ]
-          : []),
+        ...(variables.packFloat2UInt8 ? [`#define PACK_FLOAT`] : []),
         `#define ${mode} 1`,
         // `#define texelSize 1.0 / float(${shadow.shadowMapSize})`,
         vert
@@ -101,7 +97,7 @@ export default function (regl, { variables, view }, shadow) {
         iterations: variables.iterations,
         iteration: () => variables.iteration,
         packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
-        littleEndian: variables.littleEndian,
+        littleEndian: isLittleEndian(),
         resolution: [variables.snapshotCount * 4, variables.particleCount],
 
         particleCount: variables.particleCount,

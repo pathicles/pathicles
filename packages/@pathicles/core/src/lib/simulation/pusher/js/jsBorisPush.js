@@ -1,51 +1,69 @@
 /* eslint-disable */
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 
-export function jsBorisPush(regl, { runner, variables, model, debug }) {
+export function jsBorisPush({ runner, variables, model, debug }) {
   const performanceLogger = new PerformanceLogger()
 
   performanceLogger.entries = []
 
-  const pushFactory = (variableName, bufferVariableName, variableSlot) => {
-    const latticeChunkGLSL = latticeChunk(model.lattice)
 
-    return regl({
-      profile: true,
-      framebuffer: (context, props) =>
-        variables[variableName].buffers[props.iteration % 2],
-      primitive: 'triangles',
-      elements: null,
-      offset: 0,
-      dither: false,
-      count: 3,
-      attributes: {
-        aXY: [-4, -4, 4, -4, 0, 4]
-      },
+  const pushFactory = () => {
 
-      uniforms: {
-        snapshotCount: variables.snapshotCount,
-        particleCount: variables.particleCount,
-        iterationsPerSnapshot: variables.iterationsPerSnapshot,
-        deltaTOverC: variables.iterationDurationOverC,
 
-        particleInteraction: model.interactions.particleInteraction ? 1 : 0,
-        electricField: model.interactions.electricField || [0, 0, 0],
-        magneticField: model.interactions.magneticField || [0, 0, 1],
+    const uniforms = {
+      lattice: model.lattice,
+      snapshotCount: variables.snapshotCount,
+      particleCount: variables.particleCount,
+      deltaTOverC: variables.iterationDurationOverC,
 
-        boundingBoxSize: model.boundingBoxSize,
-        boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-        iteration: regl.prop('iteration'),
-        takeSnapshot: regl.prop('takeSnapshot'),
+      particleInteraction: model.interactions.particleInteraction ? 1 : 0,
+      electricField: model.interactions.electricField || [0, 0, 0],
+      magneticField: model.interactions.magneticField || [0, 0, 1],
+      takeSnapshot: () => variables.takeSnapshot,
 
-        variableIdx: variableSlot,
+      boundingBoxSize: model.boundingBoxSize,
+      boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
 
-        ut_particleChargesMassesChargeMassRatios: () =>
-          variables.particleChargesMassesChargeMassRatios,
-        ut_position: (context, props) =>
-          variables.position.buffers[(props.iteration + 1) % 2],
-        ut_velocity: (context, props) =>
-          variables.velocity.buffers[(props.iteration + 1) % 2]
+      littleEndian: runner.littleEndian === 1,
+
+      particleChargesMassesChargeMassRatios: variables.particleChargesMassesChargeMassRatios,
+      
+    }
+
+    return () => {
+
+      for (let i = 0; i < variables.particleCount; i++) {
+
+
+        console.log(variables.position.data[(variables.iteration + 1) % 2])
       }
+
+    }
+
+    //   uniforms: {
+    //     snapshotCount: variables.snapshotCount,
+    //     particleCount: variables.particleCount,
+    //     iterationsPerSnapshot: variables.iterationsPerSnapshot,
+    //     deltaTOverC: variables.iterationDurationOverC,
+
+    //     particleInteraction: model.interactions.particleInteraction ? 1 : 0,
+    //     electricField: model.interactions.electricField || [0, 0, 0],
+    //     magneticField: model.interactions.magneticField || [0, 0, 1],
+
+    //     boundingBoxSize: model.boundingBoxSize,
+    //     boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
+    //     iteration: regl.prop('iteration'),
+    //     takeSnapshot: regl.prop('takeSnapshot'),
+
+    //     variableIdx: variableSlot,
+
+    //     ut_particleChargesMassesChargeMassRatios: () =>
+    //       variables.particleChargesMassesChargeMassRatios,
+    //     ut_position: (context, props) =>
+    //       variables.position.buffers[(props.iteration + 1) % 2],
+    //     ut_velocity: (context, props) =>
+    //       variables.velocity.buffers[(props.iteration + 1) % 2]
+    //   }
 
       // vert,
       // frag: [
@@ -64,13 +82,13 @@ export function jsBorisPush(regl, { runner, variables, model, debug }) {
       //       };`
       //     )
       // ].join('\n')
-    })
+    
   }
 
-  const pushVelocity = pushFactory('velocity', 'ut_velocity', 1)
-  const pushPosition = pushFactory('position', 'ut_position', 0)
+  const push = pushFactory()
 
-  return (n = 1) => {
+
+  return (n = 1, profile = false) => {
     for (let i = 0; i < n; i++) {
       variables.iteration++
       variables.position.pingPong = variables.iteration % 2
@@ -79,7 +97,6 @@ export function jsBorisPush(regl, { runner, variables, model, debug }) {
       const snapshots = Math.floor(
         variables.iteration / variables.iterationsPerSnapshot
       )
-
       variables.segments =
         variables.particleCount *
         Math.min(
@@ -89,19 +106,14 @@ export function jsBorisPush(regl, { runner, variables, model, debug }) {
           variables.snapshotCount - 1
         )
 
-      const takeSnapshot =
-        variables.iterationsPerSnapshot !== 1 &&
-        variables.iteration % variables.iterationsPerSnapshot === 0
+      variables.takeSnapshot =
+        variables.iterationsPerSnapshot === 1 ||
+        variables.iteration % variables.iterationsPerSnapshot === 1
           ? 1
           : 0
-      pushVelocity({
-        iteration: variables.iteration,
-        takeSnapshot
-      })
-      pushPosition({
-        iteration: variables.iteration,
-        takeSnapshot
-      })
+
+      push()
+    
     }
   }
 }

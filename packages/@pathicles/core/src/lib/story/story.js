@@ -63,7 +63,6 @@ export class ReglViewerInstance {
     })
 
     this.initStory()
-    this.loopTick = -1
 
     this.drawTexture = drawTextureCommand(regl)
 

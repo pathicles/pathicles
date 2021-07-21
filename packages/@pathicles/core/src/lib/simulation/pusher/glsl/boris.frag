@@ -46,8 +46,10 @@ vec3 reflection(vec3 v, vec3 bottomLeft, vec3 topRight) {
 }
 vec3 getE(vec3 position) {
 
+
+
   vec3 E = electricField;
-  // E += vec3(1e10);
+
   for (int i=0; i < BEAMLINE_ELEMENT_COUNT; i++) {
     BeamlineElement ble =  beamline[i];
     if (ble.type == BEAMLINE_ELEMENT_TYPE_ESTA) {
