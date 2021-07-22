@@ -1,24 +1,42 @@
-#pragma glslify: export(packFloat);
+#define FLOAT_MAX  1.70141184e38
+#define FLOAT_MIN  1.17549435e-38
 
-vec4 packFloat(float d) {
-    if(d == 0.)
-        return vec4(0, 0, 0, 0);
-    vec4 a;
-    float b, c, f;
-    f = step(0., -d);
-    d = abs(d);
-    b = floor(log2(d));
-    c = d * pow(2., -b) - 1.;
-    b = b + 127.;
-    a = vec4(0, 0, 0, 0);
-    a.a = floor(b / 2.);
-    b = b - a.a * 2.;
-    a.a = a.a + 128. * f;
-    a.b = floor(c * 128.);
-    c = c - a.b / 128.;
-    a.b = a.b + b * 128.;
-    a.g = floor(c * 32768.);
-    c = c - a.g / 32768.;
-    a.r = floor(c * 8388608.);
-    return a / 255.;
+lowp vec4 packFloat(highp float v) {
+  highp float av = abs(v);
+
+  //Handle special cases
+  if(av < FLOAT_MIN) {
+    return vec4(0.0, 0.0, 0.0, 0.0);
+  } else if(v > FLOAT_MAX) {
+    return vec4(127.0, 128.0, 0.0, 0.0) / 255.0;
+  } else if(v < -FLOAT_MAX) {
+    return vec4(255.0, 128.0, 0.0, 0.0) / 255.0;
+  }
+
+  highp vec4 c = vec4(0,0,0,0);
+
+  //Compute exponent and mantissa
+  highp float e = floor(log2(av));
+  highp float m = av * pow(2.0, -e) - 1.0;
+  
+  //Unpack mantissa
+  c[1] = floor(128.0 * m);
+  m -= c[1] / 128.0;
+  c[2] = floor(32768.0 * m);
+  m -= c[2] / 32768.0;
+  c[3] = floor(8388608.0 * m);
+  
+  //Unpack exponent
+  highp float ebias = e + 127.0;
+  c[0] = floor(ebias / 2.0);
+  ebias -= c[0] * 2.0;
+  c[1] += floor(ebias) * 128.0; 
+
+  //Unpack sign bit
+  c[0] += 128.0 * step(0.0, -v);
+
+  //Scale back to range
+  return c / 255.0;
 }
+
+#pragma glslify: export(packFloat)

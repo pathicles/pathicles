@@ -1,6 +1,6 @@
 import { ParticleCollection } from '../particle-collection/particle-collection'
 import { glslBorisPush } from './pusher/glsl/glslBorisPush'
-// import { jsBorisPush } from './pusher/js/jsBorisPush'
+import { jsBorisPush } from './pusher/js/jsBorisPush'
 
 import { VariableBuffers } from './utils/pingPongVariableBuffers'
 import { ColorCorrector } from './utils/colorCorrection'
@@ -8,7 +8,6 @@ import { Lattice } from './lattice/lattice'
 import { PARTICLE_TYPES } from '@pathicles/config'
 
 import { PerformanceLogger } from '../utils/PerformanceLogger'
-import { jsBorisPush } from './pusher/js/jsBorisPush'
 
 export class Simulation {
   constructor(regl, { model, runner, debug }) {
@@ -32,15 +31,12 @@ export class Simulation {
     const { particleCount, particleTypes, fourPositions, fourVelocities } =
       (this.initialData = new ParticleCollection(model.emitter))
 
+    console.log(this.initialData)
+
     this.configuration.runner.numberType = this.configuration.runner
       .packFloat2UInt8
       ? 'uint8'
       : 'float'
-
-    this.configuration.runner.snapshotCount = snapshotCount
-    this.configuration.runner._iterationsPerSnapshot =
-      runner.iterationsPerSnapshot
-    this.configuration.runner._snapshotsPerTick = runner.snapshotsPerTick
 
     this.configuration.runner._iterationsPerRun =
       this.configuration.runner.iterationCount > 0

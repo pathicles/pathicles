@@ -86,8 +86,8 @@ export class SimulationRunner {
         }
       } else {
         this._simulation.push(
-          this._simulation.configuration.runner._iterationsPerSnapshot *
-            this._simulation.configuration.runner._snapshotsPerTick
+          this._simulation.configuration.runner.iterationsPerSnapshot *
+            this._simulation.configuration.runner.snapshotsPerTick
         )
 
         if (this._mode === RUNNER_MODE.STEPWISE) {
@@ -98,8 +98,8 @@ export class SimulationRunner {
       this._loopCount++
       this._simulation.reset()
       this._simulation.push(
-        this._simulation.configuration.runner._iterationsPerSnapshot *
-          this._simulation.configuration.runner._snapshotsPerTick
+        this._simulation.configuration.runner.iterationsPerSnapshot *
+          this._simulation.configuration.runner.snapshotsPerTick
       )
       this.fsm.state = this.fsm.state.replace(
         /restart/,

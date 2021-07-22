@@ -60,7 +60,7 @@ vec3 getE(vec3 position) {
         E += vec3(0., 0., ble.strength);
       }
     }
-  }    
+  }
   return E;
 }
 
@@ -173,12 +173,13 @@ void main () {
   int fourComponentIndex = int(floor(gl_FragCoord.x - .5))  - snapshot * 4;
   initLatticeData();
 
-  
+
   vec4 value = (snapshot == 0)
     ? push(particle)
     : (takeSnapshot == 0)
       ? readVariable(particle, snapshot)
       : readVariable(particle, snapshot-1);
+
 
 
 #ifdef PACK_FLOAT
@@ -203,7 +204,7 @@ void main () {
 
 
 #else
-  
+
   gl_FragColor =
   (fourComponentIndex == 0)
   ? vec4(value.x, 0., 0., 0.)

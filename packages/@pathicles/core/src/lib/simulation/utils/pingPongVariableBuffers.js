@@ -1,5 +1,6 @@
 // import { convertToHalfFloat } from './../../webgl-utils/to-half-float'
 import { variableTexture } from './variableTexture'
+import { packFloat } from './packFloat.js'
 
 const FOUR_VECTOR_COMPONENT_COUNT = 4
 
@@ -36,6 +37,8 @@ export class VariableBuffers {
   }
 
   load(fourVectors) {
+    // console.log(fourVectors.flat(2).map((component) => packFloat(component)))
+
     this.data[0] = this.data[1] =
       this.numberType === 'float'
         ? new Float32Array(
@@ -45,7 +48,11 @@ export class VariableBuffers {
               )
               .flat(2)
           )
-        : new Uint8Array(new Float32Array(fourVectors.flat()).buffer)
+        : new Uint8Array(
+            new Float32Array(
+              fourVectors.flat(2).map((component) => packFloat(component))
+            ).buffer
+          )
 
     this.buffers.forEach((buffer, i) =>
       buffer.color[0].subimage({

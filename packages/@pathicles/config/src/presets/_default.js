@@ -16,7 +16,7 @@ export default {
     prerender: false,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    snapshotsPerTick: 2,
+    snapshotsPerTick: 1,
     iterationsPerSnapshot: 8,
     iterationCount: 128 * 8 - 1,
     iterationDurationOverC: 0.02,
