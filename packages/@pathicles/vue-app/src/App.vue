@@ -16,7 +16,10 @@
     v-else,
     :preset-name='presetName',
     :prerender='prerender',
-    :click-to-interact='false && !printMode'
+    :click-to-interact='false && !printMode',
+    :particleCount='particleCount',
+    :snapshotCount='snapshotCount',
+    :pusher='pusher'
   )
 </template>
 
@@ -151,7 +154,21 @@ export default {
 
     prerender: function () {
       return this.urlSearchParams.get('prerender') !== null
-    }
+    },
+    particleCount: function () {
+      return +this.urlSearchParams.get('particleCount')
+    },
+    snapshotCount: function () {
+      return +this.urlSearchParams.get('snapshotCount')
+    },
+    iterationCount: function () {
+      return +this.urlSearchParams.get('iterationCount')
+    },
+    pusher: function () {
+      return this.urlSearchParams.get('pusher')
+    },
+
+
   },
   beforeMount() {
     if (this.urlSearchParams.get('presetName'))

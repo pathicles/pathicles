@@ -73,18 +73,19 @@ const presets = {
   [storyElectric.name]: storyElectric,
   [storyQuadrupole.name]: storyQuadrupole
 }
-
-for (let p2 = 0; p2 < 11; p2++) {
-  for (let s2 = 0; s2 < 11; s2++) {
-    let randomClone = deepcopy(random)
-    randomClone.name = `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}`
-    randomClone.model.emitter.particleCount = Math.pow(2, p2)
-    randomClone.runner.snapshotCount = Math.pow(2, s2)
-    randomClone.runner.iterations = Math.pow(2, s2) - 1
-    presets[randomClone.name] = randomClone
+;['glsl', 'js'].forEach((pusher) => {
+  for (let p2 = 0; p2 < 11; p2++) {
+    for (let s2 = 0; s2 < 11; s2++) {
+      let randomClone = deepcopy(random)
+      randomClone.name = `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}__${pusher}`
+      randomClone.model.emitter.particleCount = Math.pow(2, p2)
+      randomClone.runner.pusher = pusher
+      randomClone.runner.snapshotCount = Math.pow(2, s2)
+      randomClone.runner.iterations = Math.pow(2, s2) - 1
+      presets[randomClone.name] = randomClone
+    }
   }
-}
-
+})
 Object.keys(presets).forEach((presetName) => {
   const preset = presets[presetName]
   presets[toUInt8(preset).name] = toUInt8(preset)

@@ -80,52 +80,55 @@ export function glslBorisPush(regl, { variables, model }) {
   const pushVelocity = pushFactory('velocity', 'ut_velocity', 1)
   const pushPosition = pushFactory('position', 'ut_position', 0)
 
-  return (n = 1, profile = false) => {
-    for (let i = 0; i < n; i++) {
-      variables.iteration++
-      variables.position.pingPong = variables.iteration % 2
-      variables.velocity.pingPong = variables.iteration % 2
+  return {
+    push: (n = 1, profile = false) => {
+      for (let i = 0; i < n; i++) {
+        variables.iteration++
+        variables.position.pingPong = variables.iteration % 2
+        variables.velocity.pingPong = variables.iteration % 2
 
-      const snapshots = Math.floor(
-        variables.iteration / variables.iterationsPerSnapshot
-      )
-      variables.segments =
-        variables.particleCount *
-        Math.min(
-          snapshots +
-            variables.iteration -
-            snapshots * variables.iterationsPerSnapshot,
-          variables.snapshotCount - 1
+        const snapshots = Math.floor(
+          variables.iteration / variables.iterationsPerSnapshot
         )
+        variables.segments =
+          variables.particleCount *
+          Math.min(
+            snapshots +
+              variables.iteration -
+              snapshots * variables.iterationsPerSnapshot,
+            variables.snapshotCount - 1
+          )
 
-      variables.takeSnapshot =
-        variables.iterationsPerSnapshot === 1 ||
-        variables.iteration % variables.iterationsPerSnapshot === 1
-          ? 1
-          : 0
+        variables.takeSnapshot =
+          variables.iterationsPerSnapshot === 1 ||
+          variables.iteration % variables.iterationsPerSnapshot === 1
+            ? 1
+            : 0
 
-      pushVelocity()
-      pushPosition()
-    }
+        pushVelocity()
+        pushPosition()
+      }
 
-    if (profile) {
-      regl.poll()
-      performanceLogger.entries.push({
-        name: 'pushVelocity',
-        particleCount: variables.particleCount,
-        snapshotCount: variables.snapshotCount,
-        packFloat2UInt8: variables.packFloat2UInt8,
-        iterations: variables.iteration,
-        stats: pushVelocity.stats
-      })
-      performanceLogger.entries.push({
-        name: 'pushPosition',
-        particleCount: variables.particleCount,
-        snapshotCount: variables.snapshotCount,
-        packFloat2UInt8: variables.packFloat2UInt8,
-        iterations: variables.iteration,
-        stats: pushPosition.stats
-      })
-    }
+      if (profile) {
+        regl.poll()
+        performanceLogger.entries.push({
+          name: 'pushVelocity',
+          particleCount: variables.particleCount,
+          snapshotCount: variables.snapshotCount,
+          packFloat2UInt8: variables.packFloat2UInt8,
+          iterations: variables.iteration,
+          stats: pushVelocity.stats
+        })
+        performanceLogger.entries.push({
+          name: 'pushPosition',
+          particleCount: variables.particleCount,
+          snapshotCount: variables.snapshotCount,
+          packFloat2UInt8: variables.packFloat2UInt8,
+          iterations: variables.iteration,
+          stats: pushPosition.stats
+        })
+      }
+    },
+    reset() {}
   }
 }

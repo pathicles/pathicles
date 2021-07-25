@@ -23,18 +23,29 @@
 </template>
 
 <script lang="ts">
-import { watch, computed, ref, defineComponent } from 'vue'
+import { watch, computed, ref, defineComponent, onMounted } from 'vue'
 import { useElementSize, useWindowSize, useWindowFocus } from '@vueuse/core'
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import Hotkeys from './Hotkeys.vue'
 import saveCanvas from './saveCanvas.js'
 
+
 export default defineComponent({
   name: 'Pathicles',
   components: { Hotkeys },
 
+
   props: {
+    pusher: {
+      type: String
+    },
+    particleCount: {
+      type: Number
+    },
+    snapshotCount: {
+      type: Number
+    },
     presetName: {
       type: String,
       default: 'story-dipole'
@@ -72,6 +83,7 @@ export default defineComponent({
     const focused = useWindowFocus()
     const showInfo = ref(props.showInfo)
 
+
     const canvasContainer = ref(null)
     const canvas = ref(null)
     const { height, width } = useWindowSize()
@@ -83,9 +95,7 @@ export default defineComponent({
       height: canvasContainerHeight.value + 'px'
     }))
 
-    const pixelRatio = computed(() => {
-      return Math.min(window.devicePixelRatio, props.maxPixelRatio)
-    })
+    const pixelRatio = computed(() => Math.min(window.devicePixelRatio, props.maxPixelRatio))
     const canvasWidth = computed(
       () => canvasContainerWidth.value * pixelRatio.value
     )
@@ -96,17 +106,29 @@ export default defineComponent({
     const isInteractive = ref(!props.clickToInteract)
 
     const reglInstance = ref(null)
+    onMounted(() => {
+
+      reglInstance.value = new ReglSimulatorInstance({
+        canvas: canvas.value,
+        // config: this.config,
+        control: {
+          // viewRange: this.viewRange,
+          // cameraMode: this.cameraMode
+        }
+      })
+    })
+
 
     watch(width, () => {
-      reglInstance && reglInstance.value && reglInstance.value.resize()
+      reglInstance.value.resize()
     })
     watch(height, () => {
-      reglInstance && reglInstance.value && reglInstance.value.resize()
+      reglInstance.value.resize()
     })
     watch(focused, () => {
-      reglInstance &&
-        reglInstance.value &&
-        reglInstance.value.runner.toggleActivity()
+      // reglInstance &&
+      //   reglInstance.value &&
+      //   reglInstance.value.runner.toggleActivity()
     })
 
     const info = ref(null)
@@ -125,22 +147,14 @@ export default defineComponent({
   },
 
   mounted() {
-    this.loadConfig()
+    // this.loadConfig()
 
     this.$nextTick(() => {
-      this.reglInstance = new ReglSimulatorInstance({
-        canvas: this.$refs.canvas,
-        config: this.config,
-        control: {
-          viewRange: this.viewRange,
-          progress: this.progress,
-          cameraMode: this.cameraMode
-        }
-      })
+      this.loadConfig(this.config)
+
     })
   },
   unmounted() {
-    // unwatchViewport(this.handleViewportChange)
     this.reglInstance.destroy()
   },
 
@@ -163,9 +177,9 @@ export default defineComponent({
         saveCanvas(
           this.reglInstance.regl._gl.canvas,
           'pathicles' +
-            (this.reglInstance.presetName
-              ? '--' + this.reglInstance.presetName
-              : '')
+          (this.reglInstance.presetName
+            ? '--' + this.reglInstance.presetName
+            : '')
         )
       } else if (payload.keyString === 'N') {
         // n for next
@@ -181,19 +195,28 @@ export default defineComponent({
     },
     loadConfig() {
       this.config = loadConfig(this.presetName)
+      if (this.particleCount) this.config.model.emitter.particleCount = this.particleCount
+      if (this.snapshotCount) this.config.runner.snapshotCount = this.snapshotCount
+      if (this.pusher) this.config.runner.pusher = this.pusher
+      // alert(JSON.stringify(this.config.runner));
+      
       this.info = {
+        pusher: this.config.runner.pusher,
         particles: this.config.model.emitter.particleCount,
         snapshots: this.config.runner.snapshotCount,
+        snapshotsPerTick: this.config.runner.snapshotsPerTick,
+        iterationsPerSnapshot: this.config.runner.iterationsPerSnapshot,
         iterations: this.config.runner.iterationCount,
         dt: this.config.runner.iterationDurationOverC + ' c',
         ɣ: this.config.model.emitter.gamma.toString().replace(/=>/, '=>\n')
       }
+      this.reglInstance.loadConfig(this.config)
     }
   },
   watch: {
     presetName(presetName) {
       this.loadConfig(presetName)
-      this.reglInstance.loadConfig(this.config)
+
     }
   }
 })

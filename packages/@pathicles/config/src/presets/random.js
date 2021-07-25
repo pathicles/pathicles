@@ -18,8 +18,9 @@ export default {
   },
 
   runner: {
+    pusher: "js",
     prerender: true,
-    loops: 2,
+    loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 128,
     snapshotCount: 16,
@@ -30,12 +31,12 @@ export default {
     boundingBoxSize: 1,
     boundingBoxCenter: [0, 1, 0],
     emitter: {
-      position: [0, 0.5, 0],
+      position: [0, 1, 0],
       direction: () => [boundedRandom(), boundedRandom(), boundedRandom()],
       particleSeparation: 0.1,
       gamma: 10,
       bunchShape: 'SQUARE_YZ',
-      particleCount: 512,
+      particleCount: 16,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

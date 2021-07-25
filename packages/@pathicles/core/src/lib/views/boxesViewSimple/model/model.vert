@@ -9,7 +9,6 @@ attribute float a_snapshot;
 
 uniform int particleCount;
 uniform int snapshotCount;
-uniform int iterations;
 uniform int packFloat2UInt8;
 
 uniform vec2 viewRange;

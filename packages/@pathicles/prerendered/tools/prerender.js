@@ -1,10 +1,8 @@
 /* eslint-env node, browser */
 
-const prerender = require('puppeteer-core')
+const prerender = require('puppeteer')
 const path = require('path')
 const fs = require('fs-extra-plus')
-// const ndarray = require('ndarray')
-// const savePixels = require('save-pixels')
 const sharp = require('sharp')
 
 const defaultWidth = 1500
@@ -54,20 +52,32 @@ let jobs = [
   // { preset: 'free-electron' },
   // { preset: 'free-electrons' },
   // { preset: 'free-photon' },
-  // { preset: 'free-photons' },
-  { preset: 'story-electric', data: true },
-  { preset: 'story-quadrupole', data: true },
-  { preset: 'story-dipole', data: true }
+  // { preset: 'free-photons' }
+  // { preset: 'story-electric', data: true },
+  // { preset: 'story-quadrupole', data: true },
+  // { preset: 'story-dipole', data: true }
   // { preset: 'gyrotest-1-electron' },
   // { preset: 'gyrotest-128-electrons' }
 ]
 
-// jobs = []
-// for (let p2 = 0; p2 < 11; p2++) {
-//   for (let s2 = 0; s2 < 11; s2++) {
-//     jobs.push({ preset: `random__${Math.pow(2, p2)}__${Math.pow(2, s2)}` })
-//   }
-// }
+jobs = []
+;['js', 'glsl'].forEach((pusher) => {
+  for (let p2 = 0; p2 < 12; p2 += 1) {
+    for (let s2 = 0; s2 < 12; s2 += 1) {
+      const particleCount = Math.pow(2, p2)
+      const snapshotCount = Math.pow(2, s2)
+
+      jobs.push({
+        preset: 'free-photons',
+        particleCount,
+        snapshotCount,
+        pusher,
+        query: `&particleCount=${particleCount}&snapshotCount=${snapshotCount}&pusher=${pusher}`
+      })
+    }
+  }
+})
+
 console.log(jobs)
 
 // jobs = [
@@ -82,13 +92,18 @@ const queryString = '&debug=false&print=true&prerender=true'
 const createImages = async () => {
   const browser = await prerender.launch({
     headless: false,
-    executablePath:
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    waitForNavigation: 'networkidle0'
+    // executablePath:
+    //   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   })
   const page = await browser.newPage()
 
+  
+
   for (let i = 0; i < jobs.length; i++) {
     const presetName = jobs[i].preset
+    const { particleCount, snapshotCount, pusher } = jobs[i]
+    const query = (jobs[i].query || '') + queryString
     try {
       const width = jobs[i].width || defaultWidth
       const height = jobs[i].height || defaultHeight
@@ -97,7 +112,7 @@ const createImages = async () => {
         height,
         deviceScaleFactor
       })
-      await page.goto(urlBase + '?presetName=' + presetName + queryString)
+      await page.goto(urlBase + '?presetName=' + presetName + query)
       await page.waitForTimeout(3000)
 
       await page.screenshot({
@@ -109,31 +124,42 @@ const createImages = async () => {
         path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.jpg')
       })
 
-      const performanceEntry = await page.evaluate(() => {
-        const entries = window.performanceLogger.entries
-        return {
-          gpuTime: entries.reduce((acc, item) => {
-            acc += item.stats.gpuTime
-            return acc
-          }, 0),
+      const performanceEntry = await page.evaluate(async () => {
+        const entries = await window.performanceLogger.report() //window.performanceLogger.entries
 
-          packFloat2UInt8: entries[0].packFloat2UInt8,
-          particleCount: entries[0].particleCount,
-          snapshotCount: entries[0].snapshotCount,
-          iterations: entries[0].iterations
+        return {
+          time: entries[2].Δt,
+          entries
+
+          // entries.reduce((acc, item) => {
+          //   acc += item.stats.gpuTime
+          //   return accˆ∏
+          // }, 0),
+
+          // packFloat2UInt8: entries[0].packFloat2UInt8,
+          // particleCount: jobs[i].particleCount,
+          // snapshotCount: jobs[i].snapshotCount,
+          // pusher: entries[0].pusherﬂ
         }
       })
 
       await writeCSV({
         date,
-        preset: presetName,
-        ...performanceEntry,
-        gpuTime: round(performanceEntry.gpuTime)
+        presetName: presetName,
+        particleCount,
+        snapshotCount,
+        pusher,
+        time: round(performanceEntry.time),
+        query
       })
 
       console.log({
         preset: presetName,
-        gpuTime: round(performanceEntry.gpuTime)
+        particleCount,
+        snapshotCount,
+        pusher,
+        ...performanceEntry,
+        time: round(performanceEntry.time)
       })
 
       if (jobs[i].data) {
@@ -141,7 +167,7 @@ const createImages = async () => {
           return window.pathicles.simulation.dump()
         })
 
-        console.dir(dump)
+        // console.dir(dump)
         // const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0)
         // const values = every_nth(dump.position, 4).map((d) => round(d))
 
@@ -159,17 +185,9 @@ const createImages = async () => {
             particleTypes: dump.particleTypes
           }
         })
-
-        // const dataAsNdarray = ndarray(
-        //   new Uint8Array(new Float32Array(values).buffer),
-        //   [128, 121, 4]
-        // )
-        // savePixels(dataAsNdarray, 'PNG').pipe(
-        //   fs.createWriteStream(path.join(OUTPUT_FOLDER_PATH, preset + '.png'))
-        // )
       }
     } catch (e) {
-      console.error('Error occured for preset ', presetName, e)
+      console.trace('Error occured for preset ', presetName, e)
     }
   }
   await browser.close()
@@ -249,5 +267,6 @@ const convertImagesSharp = async () => {
   )
 }
 ;(async () => {
-  await createImages(), await convertImagesSharp()
+  await createImages()
+  //  await convertImagesSharp()
 })()

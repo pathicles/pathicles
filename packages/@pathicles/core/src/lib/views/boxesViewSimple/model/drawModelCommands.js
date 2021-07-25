@@ -94,8 +94,6 @@ export default function (regl, { variables, view }, shadow) {
         },
         viewRange: (ctx, props) => props.viewRange || [0, 1],
         snapshotCount: variables.snapshotCount,
-        iterations: variables.iterations,
-        iteration: () => variables.iteration,
         packFloat2UInt8: variables.packFloat2UInt8 ? 1 : 0,
         littleEndian: isLittleEndian(),
         resolution: [variables.snapshotCount * 4, variables.particleCount],

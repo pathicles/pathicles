@@ -74,7 +74,7 @@ vec4(0.0,0.0,aScale.z,0.0),
 vec4(0.0,0.0,0.0,1.0));
 
 
-  mat4 aModel = tPos *  rZPos * rYPos * sScale;
+  mat4 aModel = tPos *  rYPos * rZPos  * sScale;
   vPosition =  aModel * vec4(aPosition,1.0);
   vColor = aColor;
 

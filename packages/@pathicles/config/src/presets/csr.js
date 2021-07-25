@@ -17,7 +17,7 @@ export default {
     iterationsPerSnapshot: 8,
     iterationDurationOverC: 0.01,
     snapshotCount: 32,
-    iterationCount: 512 * 4 - 1
+    iterationCount: 1024 * 4 - 1
   },
 
   model: {
@@ -40,6 +40,10 @@ export default {
           type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 1
         },
+        l_: {
+          type: LATTICE_ELEMENT_TYPES.DRIF,
+          l: 0.25
+        },
         l2: {
           type: LATTICE_ELEMENT_TYPES.DRIF,
           l: 0.35
@@ -61,7 +65,7 @@ export default {
         },
         q4: {
           type: LATTICE_ELEMENT_TYPES.QUAD,
-          k1: 5.5089117863,
+          strength: 0.01,
           l: 0.25
         },
         d1: {
@@ -81,12 +85,20 @@ export default {
       },
       beamline: [
         'l1',
+        'q4',
+        'l_',
         'd1',
+        'l_',
+        'q4',
         'l1',
+        'q4',
+        'l_',
         'd1',
-        'l1',
+        'l_',
+        'q4',
+        'l_',
         'd1',
-        'l1',
+        'l_',
         'd1',
         'l1',
         'd1',

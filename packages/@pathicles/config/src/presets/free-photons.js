@@ -11,15 +11,21 @@ export default {
   },
 
   runner: {
+    pusher: 'glsl',
     packFloat2UInt8: false,
-    prerender: true
+    prerender: true,
+    loops: 0,
+    iterationsPerSnapshot: 1,
+    snapshotCount: 101,
+    
+    iterationDurationOverC: 0.1
   },
 
   model: {
     emitter: {
       particleType: 'PHOTON',
       bunchShape: 'SPIRAL_XY',
-      position: [0, 0.5, -10],
+      position: [0, 0.5, -5],
       gamma: 1
     }
   }

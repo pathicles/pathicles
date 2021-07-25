@@ -12,19 +12,16 @@ import createREGL from 'regl'
 import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, config }) {
-    // keyControlMount(this)
-    this.configuration = config
+  constructor({ canvas, profile = false }) {
+    // this.configuration = config
     this.isDirty = true
 
     window.performanceLogger = null
-    this.performanceLogger = new PerformanceLogger(
-      this.configuration.debug.logPerformance
-    )
+    this.performanceLogger = new PerformanceLogger()
     // eslint-disable-next-line no-undef
-    createREGL({
+    this.regl = createREGL({
       canvas,
-      profile: this.configuration.debug.profile,
+      profile,
       attributes: {
         preserveDrawingBuffer: true,
         antialiasing: true
@@ -38,19 +35,12 @@ export class ReglSimulatorInstance {
         'EXT_color_buffer_half_float'
       ],
       optionalExtensions: ['EXT_disjoint_timer_query'],
-      onDone: (err, regl) => {
+      onDone: (err) => {
         if (err) return console.error(err)
         try {
-          this.regl = regl
-
           window.pathicles = this
 
-          this.performanceLogger.start('checkSupport')
-          this.checkSupport(regl)
-
-          this.performanceLogger.start('init')
-          this.init(regl)
-          this.run(regl)
+          this.checkSupport()
         } catch (e) {
           console.error(e)
         }
@@ -64,7 +54,6 @@ export class ReglSimulatorInstance {
   }
 
   destroy() {
-    // keyControlUnmount(this)
     this.regl.destroy()
   }
 
@@ -114,13 +103,13 @@ export class ReglSimulatorInstance {
   run(regl) {
     this.loop = regl.frame(({ viewportHeight, tick }) => {
       const { changed } = this.runner.next()
-      this.isDirty = this.isDirty || changed
 
       this.camera.doAutorotate()
       this.camera.tick()
+      
 
-      if (this.isDirty || this.camera.state.dirty) {
-        this.isDirty = false
+
+      if (tick < 3 || changed || this.isDirty || this.camera.state.dirty) {
         this.camera.setCameraUniforms(
           {
             ...this.camera
@@ -164,6 +153,7 @@ export class ReglSimulatorInstance {
         )
       }
       this.performanceLogger.stop()
+      this.isDirty = false
     })
   }
 

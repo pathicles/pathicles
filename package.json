@@ -16,6 +16,7 @@
   "scripts": {
     "build": "yarn workspace @pathicles/config run build; yarn workspace @pathicles/core run build; yarn workspace @pathicles/vue-app run build",
     "clean": "lerna exec -- rm -rf node_modules && rm -rf node_modules",
+    "build:serve": "NODE_ENV=production serve ./packages/@pathicles/vue-app/dist",
     "deploy": "yarn run build; NODE_DEBUG=gh-pages gh-pages -d ./packages/@pathicles/vue-app/dist",
     "dev:app": "yarn workspace @pathicles/vue-app run dev --host",
     "dev:config": "yarn workspace @pathicles/config run dev",
@@ -23,7 +24,7 @@
     "docs:build": "vitepress build docs --emptyOutDir --manifest",
     "docs:serve": "vitepress serve docs",
     "lint": "npx prettier-package-json --write; yarn workspaces run lint",
-    "publish": "lerna publish from-git --force-publish=*",
+    "publish": "lerna publish from-git --dry-run --force-publish=*",
     "version": "lerna version 0.10.0 --conventional-commits --force-publish=* --create-release github; lerna publish from-git --force-publish=*",
     "version:bump-major": "lerna version major --no-push --conventional-commits  --force --create-release github",
     "version:bump-minor": "lerna version minor --no-push --conventional-commits  --create-release github",
@@ -49,7 +50,8 @@
     "lint-staged": "^11.0.1",
     "release-it": "^14.10.0",
     "release-it-yarn-workspaces": "^2.0.1",
-    "vitepress": "^0.15.6"
+    "vitepress": "^0.15.6",
+    "https-localhost": "^4.6.5"
   },
   "publishConfig": {
     "access": "public"

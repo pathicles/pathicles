@@ -4,9 +4,9 @@ export default {
   name: 'default',
   debug: {
     logPushing: false,
-    logPerformance: false,
+    logPerformance: true,
     showTextures: false,
-    showTextureScale: 1
+    showTextureScale: 10
   },
   runner: {
     pusher: 'glsl',
@@ -17,9 +17,9 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
     snapshotsPerTick: 1,
-    iterationsPerSnapshot: 8,
-    iterationCount: 128 * 8 - 1,
-    iterationDurationOverC: 0.02,
+    iterationsPerSnapshot: 1,
+    // iterationCount: 128 * 2 - 1,
+    iterationDurationOverC: 0.1,
     snapshotCount: 128
   },
 

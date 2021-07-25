@@ -57,16 +57,20 @@ function estaGeometry() {
   return mergeMeshes([estaStart, estaEnd])
 }
 function dipoleGeometry() {
-  const geometryDipoleTop = createCube(1, 0.1, 1)
+  const geometryDipoleTop = createCube(1, 0.25, 1)
   geometryDipoleTop.positions = geometryDipoleTop.positions.map(([x, y, z]) => [
     x,
     y + 0.4,
     z
   ])
-  const geometryDipoleBottom = createCube(1, 0.1, 1)
+  const geometryDipoleBottom = createCube(1, 0.25, 1)
   geometryDipoleBottom.positions = geometryDipoleBottom.positions.map(
     ([x, y, z]) => [x, y - 0.4, z]
   )
+  // const geometryFoot = createCube(.25, 1, 1)
+  // geometryFoot.positions = geometryFoot.positions.map(
+  //   ([x, y, z]) => [x, y - 1, z]
+  // )
   return mergeMeshes([geometryDipoleTop, geometryDipoleBottom])
 }
 

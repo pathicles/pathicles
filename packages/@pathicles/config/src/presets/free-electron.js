@@ -3,19 +3,19 @@ import { RUNNER_MODE } from '../constants'
 
 export default {
   name: 'free-electron',
-  // view: {
-  //   camera: {
-  //     center: [0, 0, 0.5],
-  //     distance: 2,
-  //     phi: (15 / 360) * 2 * Math.PI,
-  //     theta: (45 / 360) * 2 * Math.PI
-  //   }
-  // },
+  view: {
+    camera: {
+      center: [0, 0, 0.5],
+      distance: 3,
+      phi: (15 / 360) * 2 * Math.PI,
+      theta: (45 / 360) * 2 * Math.PI
+    }
+  },
 
   runner: {
+    pusher: 'js',
     prerender: true,
-    mode: RUNNER_MODE.NOBREAK,
-    packFloat2UInt8: true,
+    packFloat2UInt8: false,
     loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 10,
@@ -25,7 +25,7 @@ export default {
 
   model: {
     emitter: {
-      gamma: 1.1,
+      gamma: 100.1,
       particleCount: 1,
       particleType: 'ELECTRON'
     },

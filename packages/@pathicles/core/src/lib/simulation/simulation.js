@@ -31,18 +31,18 @@ export class Simulation {
     const { particleCount, particleTypes, fourPositions, fourVelocities } =
       (this.initialData = new ParticleCollection(model.emitter))
 
-    console.log(this.initialData)
-
     this.configuration.runner.numberType = this.configuration.runner
       .packFloat2UInt8
       ? 'uint8'
       : 'float'
 
-    this.configuration.runner._iterationsPerRun =
-      this.configuration.runner.iterationCount > 0
-        ? this.configuration.runner.iterationCount
-        : (this.configuration.runner.snapshotCount - 1) *
-          this.configuration.runner._iterationsPerSnapshot
+    
+    this.configuration.runner._iterationsPerRun = this.configuration.runner
+      .iterationCount
+      ? this.configuration.runner.iterationCount
+      : (this.configuration.runner.snapshotCount - 1) *
+        this.configuration.runner.iterationsPerSnapshot
+
 
     this.colorCorrector = new ColorCorrector(
       regl,
@@ -118,7 +118,8 @@ export class Simulation {
             runner: this.configuration.runner,
             variables: this.variables,
             model: this.model,
-            debug: this.debug
+            debug: this.debug,
+            initialData: this.initialData
           })
 
     this.performanceLogger.stop()
@@ -126,7 +127,7 @@ export class Simulation {
 
   push(n = 1, profile = false) {
     this.performanceLogger.start(`simulation.push (n=${n})`)
-    this.pusher(n, profile)
+    this.pusher.push(n, profile)
     this.log()
     this.performanceLogger.stop()
   }
@@ -177,11 +178,8 @@ export class Simulation {
     return JSON.parse(
       JSON.stringify({
         logEntry: this.logEntry(),
-        // position,
         packedPositions,
         packedVelocities,
-        // velocityNorms,
-        // gammas,
         colorCorrections: this.colorCorrector.corrections,
         configuration: this.configuration,
         particleTypes: this.variables.particleTypes
@@ -193,9 +191,11 @@ export class Simulation {
     this.variables.position.reset()
     this.variables.velocity.reset()
     this.variables.iteration = 0
+    this.pusher.reset()
   }
 
   prerender() {
+    
     this.push(this.configuration.runner._iterationsPerRun, false)
   }
 }

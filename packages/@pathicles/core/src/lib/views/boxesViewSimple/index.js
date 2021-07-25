@@ -24,7 +24,7 @@ export class BoxesViewSimple {
     this.setParams = regl({
       uniforms: {
         stageGrid_size: this.config.stageGrid.size / 2,
-        viewRange: regl.prop('viewRange'),
+        viewRange: regl.prop('viewRange') || [0,1],
         ambientLightAmount: this.config.ambientLightAmount,
         diffuseLightAmount: this.config.diffuseLightAmount
       }
@@ -88,7 +88,7 @@ export class BoxesViewSimple {
         ])
 
       this.config.isStageVisible && this.drawStage.lighting(props)
-      this.config.isFieldVisible && this.drawFields.lighting(props)
+      // this.config.isFieldVisible && this.drawFields.lighting(props)
       this.config.isLatticeVisible && this.drawLattice.estaLighting(props)
       this.config.isLatticeVisible && this.drawLattice.quadLighting(props)
       this.config.isLatticeVisible && this.drawLattice.sbenLighting(props)

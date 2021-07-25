@@ -7,18 +7,19 @@ export default {
       center: [0, 1, 0],
       theta: 0.001,
       phi: 0.001,
-      distance: 8.75
+      distance: 6
     }
   },
 
   runner: {
+    pusher: 'js',
     prerender: true,
     mode: RUNNER_MODE.NOBREAK,
     packFloat2UInt8: false,
     loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 100,
-    snapshotCount: 11,
+    snapshotCount: 101,
     iterationDurationOverC: 0.1
     // // iterationsPerSnapshot: 1,
     // // snapshotCount: 128,
@@ -29,9 +30,9 @@ export default {
   model: {
     emitter: {
       // particleCount: 32,
-      particleType: 'ELECTRON'
+      particleType: 'ELECTRON',
       // bunchShape: 'SPIRAL_XY',
-      // gamma: 10
+      gamma: 10
     },
     lattice: {
       elements: {},

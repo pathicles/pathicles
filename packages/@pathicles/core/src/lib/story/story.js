@@ -17,7 +17,7 @@ export class ReglViewerInstance {
     this.control = control
 
     // eslint-disable-next-line no-undef
-    createREGL({
+    this.regl = createREGL({
       canvas,
       attributes: {
         preserveDrawingBuffer: true,
@@ -47,6 +47,7 @@ export class ReglViewerInstance {
 
   resize() {
     this.regl.poll()
+    this.isDirty = true
   }
 
   destroy() {

@@ -4,7 +4,7 @@
   "description": "Vue 3 app",
   "license": "MIT",
   "scripts": {
-    "build": "cross-env NODE_ENV=production vite build",
+    "build": "vite build",
     "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0",
     "dev": "vite",
     "lint": "eslint --fix src ; prettier-package-json --write",

@@ -10,7 +10,7 @@ import { Lattice } from '../simulation/lattice/lattice.js'
 export default function (regl, scenes, stateVars, onStateChange) {
   let t = 0
   scenes.forEach((scene, s) => {
-    console.log('sequencer.start')
+
     scene.loaded = false
     const numberType = 'float'
     const particleCount = 64 //scene.configuration.model.emitter.particleCount

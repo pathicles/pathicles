@@ -26,8 +26,6 @@ export class VariableBuffers {
       return regl.framebuffer({
         height: this.height,
         width: this.width,
-        // colorFormat: 'rgba',
-        // colorType: numberType,
         depthStencil: false,
         color: variableTexture(regl, { width, height }, numberType)
       })
@@ -37,8 +35,6 @@ export class VariableBuffers {
   }
 
   load(fourVectors) {
-    // console.log(fourVectors.flat(2).map((component) => packFloat(component)))
-
     this.data[0] = this.data[1] =
       this.numberType === 'float'
         ? new Float32Array(
@@ -56,7 +52,9 @@ export class VariableBuffers {
 
     this.buffers.forEach((buffer, i) =>
       buffer.color[0].subimage({
-        width: FOUR_VECTOR_COMPONENT_COUNT,
+        width:
+          (FOUR_VECTOR_COMPONENT_COUNT * fourVectors.length) /
+          this.particleCount,
         height: this.particleCount,
         data: this.data[i]
       })
