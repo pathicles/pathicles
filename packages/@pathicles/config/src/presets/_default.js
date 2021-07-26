@@ -18,9 +18,9 @@ export default {
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
     snapshotsPerTick: 1,
-    iterationsPerSnapshot: 1,
-    iterationDurationOverC: 0.1,
-    snapshotCount: 16
+    iterationsPerSnapshot: 2,
+    iterationDurationOverC: 0.05,
+    snapshotCount: 128
   },
 
   model: {
@@ -29,9 +29,9 @@ export default {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleCount: 16,
+      particleCount: 128,
       particleSeparation: 0.05,
-      gamma: () => 2.25,
+      gamma: () => 6,
       positionJitter: [0.0, 0.0, 0]
     },
     interactions: {

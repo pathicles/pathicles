@@ -9,16 +9,14 @@ export default {
   view: {
     camera: {
       center: [0, 1, 0],
-      distance: 7,
+      distance: 10,
       theta: (55 / 360) * 2 * Math.PI,
       phi: (10 / 360) * 2 * Math.PI
     }
   },
   model: {
     emitter: {
-      bunchShape: 'SPIRAL_XY',
-      particleType: 'PROTON',
-      gamma: 6
+      particleType: 'PROTON'
     },
     lattice: {
       elements: {

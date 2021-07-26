@@ -53,6 +53,7 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
+    console.trace("resize", this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight);
     this.camera.resize(
       this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     )
@@ -110,6 +111,8 @@ export class ReglSimulatorInstance {
     
     this.loop = regl.frame(({ viewportHeight, tick }) => {
       const { changed } = this.runner.next()
+
+      
 
       this.camera.doAutorotate()
       this.camera.tick()

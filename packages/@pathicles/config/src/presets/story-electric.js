@@ -14,7 +14,7 @@ export default {
   model: {
     emitter: {
       particleType: 'ELECTRON PHOTON PROTON',
-      gamma: () => 1.5
+      // gamma: () => 1.5
     },
 
     lattice: {

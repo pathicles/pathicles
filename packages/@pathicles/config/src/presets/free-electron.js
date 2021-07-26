@@ -19,7 +19,7 @@ export default {
 
   model: {
     emitter: {
-      gamma: 10,
+      gamma: 2,
       particleCount: 1,
       particleType: 'ELECTRON'
     },

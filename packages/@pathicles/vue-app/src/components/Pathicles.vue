@@ -148,7 +148,7 @@ export default defineComponent({
         console.log("nextTick");
 
         reglInstance.value.loadConfig(config.value)
-        reglInstance.value.resize()
+        // reglInstance.value.resize()
       })
     })
     watch(width, () => {
