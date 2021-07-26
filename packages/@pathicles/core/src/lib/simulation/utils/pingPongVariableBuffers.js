@@ -5,8 +5,16 @@ import { packFloat } from './packFloat.js'
 const FOUR_VECTOR_COMPONENT_COUNT = 4
 
 export class VariableBuffers {
-  constructor(regl, particleCount, snapshotCount, numberType, initialData) {
+  constructor(
+    regl,
+    canRenderToFloatTexture,
+    particleCount,
+    snapshotCount,
+    numberType,
+    initialData
+  ) {
     this.regl = regl
+    this.canRenderToFloatTexture = canRenderToFloatTexture
     this.particleCount = particleCount
     this.snapshotCount = snapshotCount
     this.numberType = numberType
@@ -23,12 +31,14 @@ export class VariableBuffers {
     const width = (this.width = snapshotCount * FOUR_VECTOR_COMPONENT_COUNT)
     const height = (this.height = particleCount)
     this.buffers = [0, 1].map(() => {
-      return regl.framebuffer({
-        height: this.height,
-        width: this.width,
-        depthStencil: false,
-        color: variableTexture(regl, { width, height }, numberType)
-      })
+      return canRenderToFloatTexture
+        ? regl.framebuffer({
+            height: this.height,
+            width: this.width,
+            depthStencil: false,
+            color: variableTexture(regl, { width, height }, numberType)
+          })
+        : variableTexture(regl, { width, height }, numberType)
     })
 
     if (initialData) this.load(initialData)
@@ -51,7 +61,7 @@ export class VariableBuffers {
           )
 
     this.buffers.forEach((buffer, i) =>
-      buffer.color[0].subimage({
+      ((buffer.color && buffer.color) || buffer).subimage({
         width:
           (FOUR_VECTOR_COMPONENT_COUNT * fourVectors.length) /
           this.particleCount,

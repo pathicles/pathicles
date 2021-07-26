@@ -11,13 +11,13 @@ export default {
     }
   },
   runner: {
-    prerender: false,
+    // prerender: false,
     loops: 0,
-    mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 8,
+    // mode: RUNNER_MODE.NOBREAK,
+    // iterationsPerSnapshot: 8,
     iterationDurationOverC: 0.01,
-    snapshotCount: 32,
-    iterationCount: 1024 * 4 - 1
+    snapshotCount: 128,
+    // iterationCount: 1024 * 4 - 1
   },
 
   model: {
@@ -84,21 +84,21 @@ export default {
         }
       },
       beamline: [
+        // 'l1',
+        // 'q4',
         'l1',
-        'q4',
-        'l_',
         'd1',
-        'l_',
-        'q4',
+        // 'l1',
+        // 'q4',
+        // 'l1',
+        // 'q4',
         'l1',
-        'q4',
-        'l_',
         'd1',
-        'l_',
-        'q4',
-        'l_',
+        // 'l1',
+        // 'q4',
+        'l1',
         'd1',
-        'l_',
+        'l1',
         'd1',
         'l1',
         'd1',

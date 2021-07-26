@@ -1,16 +1,43 @@
 /* eslint-disable */
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
+import bp from './boris.push.js'
+import ParticleTypes, {
+  LIST
+} from '../../../../../../specrel/src/ParticleTypes'
+
+import { C } from '@pathicles/config'
+
+function dot(x, y) {
+  var sum = 0
+  for (var i = 0; i < x.length; i++) {
+    sum += x[i] * y[i]
+  }
+  return sum
+}
+function sqrt(x) {
+  if (x.length) {
+    return x.map(sqrt)
+  }
+  return Math.sqrt(x)
+}
+function cross(x, y) {
+  var x0 = x[0],
+    x1 = x[1],
+    x2 = x[2],
+    y0 = y[0],
+    y1 = y[1],
+    y2 = y[2]
+  var out = [0, 0, 0]
+  out[0] = x1 * y2 - x2 * y1
+  out[1] = x2 * y0 - x0 * y2
+  out[2] = x0 * y1 - x1 * y0
+  return out
+}
 
 export function jsBorisPush({ runner, variables, model, debug, initialData }) {
   const performanceLogger = new PerformanceLogger()
 
   performanceLogger.entries = []
-
-  // const positions = new Float32Array(variables.snapshotCount * variables.particleCount * 4)
-  // positions.set(initialData.fourPositions.flat(), 0)
-
-  // const velocities = new Float32Array(variables.snapshotCount * variables.particleCount * 4)
-  // velocities.set(initialData.fourVelocities.flat(), 0)
 
   const snapshots = [
     {
@@ -56,7 +83,7 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
 
         // intermediate
 
-        const velocity = [
+        let velocity = [
           fourVelocity[0] / fourVelocity[3],
           fourVelocity[1] / fourVelocity[3],
           fourVelocity[2] / fourVelocity[3]
@@ -68,19 +95,50 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
           fourPosition[2] + 0.5 * velocity[2] * uniforms.deltaTOverC,
           fourPosition[3] + 0.5 * uniforms.deltaTOverC
         ]
+        let gamma = 1; //fourVelocity[3] / C;
+        let u = [fourVelocity[0], fourVelocity[1], fourVelocity[2]]
 
-        const nextFourVelocity = [
-          fourVelocity[0],
-          fourVelocity[1],
-          fourVelocity[2],
-          fourVelocity[3]
-        ]
+        if (initialData.particleTypes[p] > 0) {
+        //   const E = uniforms.lattice.getE(intermediateFourPosition)
+
+        //   const B = uniforms.lattice.getB(intermediateFourPosition)
+
+        //   debugger
+
+        //   const { mass__eVc_2, charge__qe, chargeMassRatio__Ckg_1 } =
+        //     LIST[initialData.particleTypes[p]]
+
+        //   var hdtc_m = (chargeMassRatio__Ckg_1 * uniforms.deltaTOverC) / C / 2
+        //   u = [u[0] + hdtc_m * E[0], u[1] + hdtc_m * E[1], u[2] + hdtc_m * E[2]]
+          gamma = sqrt(1 + dot(u / C, u / C))
+
+        //   var t_ = (hdtc_m * B) / gamma
+        //   u = cross(u, t_).map(function (_) {
+        //     return this + _
+        //   }, u)
+        //   var s_ = [
+        //     (2.0 / (1.0 + t_[0] * t_[0])) * t_[0],
+        //     (2.0 / (1.0 + t_[1] * t_[1])) * t_[1],
+        //     (2.0 / (1.0 + t_[2] * t_[2])) * t_[2]
+        //   ]
+        //   u = cross(u, s_).map(function (_) {
+        //     return this + _
+        //   }, u)
+        //   u = [u[0] + hdtc_m * E[0], u[1] + hdtc_m * E[1], u[2] + hdtc_m * E[2]]
+        //   gamma = sqrt(1 + dot(u / C, u / C))
+        }
+        const nextFourVelocity = [...u].concat(gamma * C)
+
+
+        // console.log({fourVelocity, nextFourVelocity});
+        
 
         const nextVelocity = [
           nextFourVelocity[0] / nextFourVelocity[3],
           nextFourVelocity[1] / nextFourVelocity[3],
           nextFourVelocity[2] / nextFourVelocity[3]
         ]
+        console.log({nextFourVelocity, nextVelocity});
 
         const nextFourPosition = [
           intermediateFourPosition[0] +
@@ -100,49 +158,6 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
         fourVelocities: nextFourVelocities
       })
     }
-
-    //   uniforms: {
-    //     snapshotCount: variables.snapshotCount,
-    //     particleCount: variables.particleCount,
-    //     iterationsPerSnapshot: variables.iterationsPerSnapshot,
-    //     deltaTOverC: variables.iterationDurationOverC,
-
-    //     particleInteraction: model.interactions.particleInteraction ? 1 : 0,
-    //     electricField: model.interactions.electricField || [0, 0, 0],
-    //     magneticField: model.interactions.magneticField || [0, 0, 1],
-
-    //     boundingBoxSize: model.boundingBoxSize,
-    //     boundingBoxCenter: model.boundingBoxCenter || [0, 1, 0],
-    //     iteration: regl.prop('iteration'),
-    //     takeSnapshot: regl.prop('takeSnapshot'),
-
-    //     variableIdx: variableSlot,
-
-    //     ut_particleChargesMassesChargeMassRatios: () =>
-    //       variables.particleChargesMassesChargeMassRatios,
-    //     ut_position: (context, props) =>
-    //       variables.position.buffers[(props.iteration + 1) % 2],
-    //     ut_velocity: (context, props) =>
-    //       variables.velocity.buffers[(props.iteration + 1) % 2]
-    //   }
-
-    // vert,
-    // frag: [
-    //   frag
-    //     .replace(
-    //       '/*__latticeDefinition__*/',
-    //       model.lattice.toGLSLDefinition()
-    //     )
-    //     .replace('/*__latticeChunkGLSL__*/', latticeChunkGLSL)
-    //     .replace(
-    //       '/*__latticeSize__*/',
-    //       `const int BEAMLINE_ELEMENT_COUNT_OR_1 = ${
-    //         model.lattice.beamline.length || 1
-    //       }; const int BEAMLINE_ELEMENT_COUNT = ${
-    //         model.lattice.beamline.length
-    //       };`
-    //     )
-    // ].join('\n')
   }
 
   const push = pushFactory()
@@ -151,9 +166,6 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
     push: (n = 1, profile = false) => {
       for (let i = 0; i < n; i++) {
         variables.iteration++
-        // console.log(variables.iteration);
-        variables.position.pingPong = variables.iteration % 2
-        variables.velocity.pingPong = variables.iteration % 2
 
         const snapshots = Math.floor(
           variables.iteration / variables.iterationsPerSnapshot
@@ -178,13 +190,16 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
 
       const fourPositions = []
       for (let p = 0; p < variables.particleCount; p++) {
-        for (let s = snapshots.length - 1; s >= 0; s--) {
+        for (
+          let s = snapshots.length - 1;
+          s >= Math.max(0, snapshots.length - variables.snapshotCount);
+          s--
+        ) {
           fourPositions.push(
             Array.from(snapshots[s].fourPositions.subarray(p * 4, p * 4 + 4))
           )
         }
       }
-      // console.log(fourPositions);
       variables.position.load(fourPositions)
     },
     reset: () => {

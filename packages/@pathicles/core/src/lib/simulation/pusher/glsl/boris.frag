@@ -90,7 +90,7 @@ vec4 push_position(int p) {
   vec3 position = fourPosition.xyz;
   float time = fourPosition.w;
 
-  vec4 fourVelocity_current = readVariable(ut_velocity, p, 1);
+  // vec4 fourVelocity_current = readVariable(ut_velocity, p, 1);
   vec4 fourVelocity_next = readVariable(ut_velocity, p, 0);
 
   float nextTime = time + deltaTOverC;

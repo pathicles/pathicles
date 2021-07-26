@@ -1,5 +1,5 @@
 import defaultConfig from './_default'
-import { RUNNER_MODE } from '../constants'
+
 
 export default {
   name: 'free-electron',
@@ -13,19 +13,13 @@ export default {
   },
 
   runner: {
-    pusher: 'js',
-    prerender: true,
-    packFloat2UInt8: false,
-    loops: 0,
-    iterationsPerSnapshot: 1,
-    iterationCount: 10,
     snapshotCount: 11,
     iterationDurationOverC: 0.1
   },
 
   model: {
     emitter: {
-      gamma: 100.1,
+      gamma: 10,
       particleCount: 1,
       particleType: 'ELECTRON'
     },

@@ -18,8 +18,7 @@ export default {
   },
 
   runner: {
-    pusher: "js",
-    prerender: true,
+    // pusher: "js",
     loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 128,

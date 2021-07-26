@@ -12,26 +12,14 @@ export default {
   },
 
   runner: {
-    pusher: 'js',
-    prerender: true,
-    mode: RUNNER_MODE.NOBREAK,
-    packFloat2UInt8: false,
-    loops: 0,
-    iterationsPerSnapshot: 1,
-    iterationCount: 100,
     snapshotCount: 101,
     iterationDurationOverC: 0.1
-    // // iterationsPerSnapshot: 1,
-    // // snapshotCount: 128,
-    // iterationDurationOverC: 0.025,
-    // packFloat2UInt8: false
   },
 
   model: {
     emitter: {
-      // particleCount: 32,
+      particleCount: 32,
       particleType: 'ELECTRON',
-      // bunchShape: 'SPIRAL_XY',
       gamma: 10
     },
     lattice: {

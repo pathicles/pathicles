@@ -23,35 +23,32 @@ describe('lattice with one drift tube', () => {
     expect(lattice.length()).toEqual(1)
   })
   it('has one beamline element', () => {
-    expect(lattice.beamline).toEqual([
-      {
-        type: 'DRIF',
-        local_z_min: 0,
-        local_z_max: 1,
-        middle: [0, 0, 0.5],
-        phi: 0,
-        size: [0.15, 0.1, 1]
-      }
-    ])
+    const element = lattice.beamline[0]
+
+    expect(element.type).toEqual(LATTICE_ELEMENT_TYPES.DRIF)
+    expect(element.local_z_min).toEqual(0)
+    expect(element.local_z_max).toEqual(1)
+    expect(element.middle).toEqual([0, 1, 0.5])
+    expect(element.phi).toEqual(0)
+    expect(element.size).toEqual([0.1, 0.1, 1])
   })
   it('has correct default transformations', () => {
-    expect(lattice.transformations).toEqual([
-      {
-        phi: 0,
-        scale: [
-          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].width,
-          LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].height,
-          1 - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].gap
-        ],
-        translation: [0, 0, 0.5]
-      }
+    const transformation = lattice.transformations[0]
+
+    expect(transformation.phi).toEqual(0)
+    expect(transformation.theta).toEqual(0)
+    expect(transformation.translation).toEqual([0, 1, 0.5])
+    expect(transformation.scale).toEqual([
+      LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].width,
+      LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].height,
+      1 - LATTICE_ELEMENTS[LATTICE_ELEMENT_TYPES.DRIF].gap
     ])
   })
-  it('has drift tube at 0,0,0', () => {
-    expect(lattice.getElementForPosition([0, 0, 0])).toBeDefined()
+  it('has zero E field at 0,0,0', () => {
+    expect(lattice.getE([0, 0, 0])).toEqual([0, 0, 0])
   })
-  it('has drift tube at 1,0,0', () => {
-    expect(lattice.getElementForPosition([10, 0, 0])).toBeNull()
+  it('has zero B field at 0,0,0', () => {
+    expect(lattice.getB([0, 0, 0])).toEqual([0, 0, 0])
   })
 })
 describe('lattice with one bending magnet', () => {
@@ -78,15 +75,19 @@ describe('lattice with one bending magnet', () => {
     expect(lattice.length()).toEqual(2 + Math.sqrt(2))
   })
   it('has one bending magnet', () => {
-    expect(lattice.beamline[1]).toEqual({
-      type: LATTICE_ELEMENT_TYPES.SBEN,
-      strength: 1,
-      local_z_min: 0.9999999999999998,
-      local_z_max: 1 + Math.sqrt(2),
-      phi: (2 * Math.PI) / 8,
-      middle: [-0.5, 0, 0.5000000000000001],
-      size: [1, 0.1, Math.sqrt(2)]
-    })
+    const element = lattice.beamline[1]
+    expect(element.phi).toEqual((2 * Math.PI) / 8)
+    expect(element.middle).toEqual([-0.5, 0, 0.5000000000000001])
+    expect(element.strength).toEqual(1)
+    expect(element.size).toEqual([0.5, 0.5, Math.sqrt(2)])
+    expect(element.local_z_min).toEqual(0.9999999999999998)
+    expect(element.local_z_max).toEqual(1 + Math.sqrt(2))
+  })
+  it('has zero E field at 0,0,0', () => {
+    expect(lattice.getE([-0.5, 0, 0.5000000000000001])).toEqual([0, 0, 0])
+  })
+  it('has zero B field at 0,0,0', () => {
+    expect(lattice.getB([-0.5, 0, 0.5000000000000001])).toEqual([0, 1, 0])
   })
   it('has correct end ', () => {
     expect(lattice.beamline[2]).toEqual({
@@ -135,7 +136,7 @@ describe('lattice with two quadrupoles', () => {
     expect(lattice.length()).toEqual(10)
   })
   it('has two quadrupole elements 1', () => {
-    expect(lattice.beamline[0]).toEqual({
+    expect(element).toEqual({
       type: 'QUAD',
       strength: 1,
       phi: 0,
@@ -253,7 +254,7 @@ describe('lattice with two quadrupoles', () => {
 //   //   ])
 //   // })
 //   // it('five other elements', () => {
-//   //   expect(lattice.beamline.map((e) => e.type)).toEqual([
+//   //   expect(element.map((e) => e.type)).toEqual([
 //   //     'DRIF',
 //   //     'QUAD',
 //   //     'SBEN',

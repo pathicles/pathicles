@@ -10,7 +10,7 @@ import { PARTICLE_TYPES } from '@pathicles/config'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 
 export class Simulation {
-  constructor(regl, { model, runner, debug }) {
+  constructor(regl, { model, runner, debug }, webglSupport) {
     this.performanceLogger = new PerformanceLogger(debug.logPerformance)
 
     this.performanceLogger.start('Simulation()')
@@ -36,13 +36,11 @@ export class Simulation {
       ? 'uint8'
       : 'float'
 
-    
     this.configuration.runner._iterationsPerRun = this.configuration.runner
       .iterationCount
       ? this.configuration.runner.iterationCount
       : (this.configuration.runner.snapshotCount - 1) *
         this.configuration.runner.iterationsPerSnapshot
-
 
     this.colorCorrector = new ColorCorrector(
       regl,
@@ -58,6 +56,7 @@ export class Simulation {
       particleTypes,
       position: new VariableBuffers(
         regl,
+        webglSupport.canRenderToFloatTexture,
         particleCount,
         snapshotCount,
         this.configuration.runner.numberType,
@@ -65,6 +64,7 @@ export class Simulation {
       ),
       velocity: new VariableBuffers(
         regl,
+        webglSupport.canRenderToFloatTexture,
         particleCount,
         snapshotCount,
         this.configuration.runner.numberType,
@@ -106,8 +106,10 @@ export class Simulation {
 
     this.log()
 
+    
     this.pusher =
-      this.configuration.runner.pusher === 'glsl'
+      this.configuration.runner.pusher === 'glsl' &&
+      webglSupport.canRenderToFloatTexture
         ? glslBorisPush(this._regl, {
             runner: this.configuration.runner,
             variables: this.variables,
@@ -195,7 +197,6 @@ export class Simulation {
   }
 
   prerender() {
-    
     this.push(this.configuration.runner._iterationsPerRun, false)
   }
 }

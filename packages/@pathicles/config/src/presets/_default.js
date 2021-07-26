@@ -5,6 +5,7 @@ export default {
   debug: {
     logPushing: false,
     logPerformance: true,
+    showInfo: true,
     showTextures: false,
     showTextureScale: 10
   },
@@ -13,14 +14,13 @@ export default {
     factor: 1,
     enabled: true,
     packFloat2UInt8: false,
-    prerender: false,
+    prerender: true,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
     snapshotsPerTick: 1,
     iterationsPerSnapshot: 1,
-    // iterationCount: 128 * 2 - 1,
     iterationDurationOverC: 0.1,
-    snapshotCount: 128
+    snapshotCount: 16
   },
 
   model: {
@@ -29,7 +29,7 @@ export default {
       // "electron", "photon", "proton", "mixed"
       particleType: 'ELECTRON',
       bunchShape: 'SPIRAL_XY',
-      particleCount: 128,
+      particleCount: 16,
       particleSeparation: 0.05,
       gamma: () => 2.25,
       positionJitter: [0.0, 0.0, 0]

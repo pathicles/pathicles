@@ -17,10 +17,6 @@ export default {
   },
 
   runner: {
-    pusher: 'js',
-    prerender: false,
-    packFloat2UInt8: false,
-    loops: 0,
     iterationsPerSnapshot: 1,
     iterationCount: 10,
     snapshotCount: 11,

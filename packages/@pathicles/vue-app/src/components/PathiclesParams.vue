@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Tweakpane from 'tweakpane'
+import VTweakpane from './VTweakpane.vue'
 // import { presets } from '@pathicles/config'
 import { DISTRIBUTIONS } from '@pathicles/config/src/distributions/distributions'
 
@@ -29,11 +29,12 @@ export default {
       default: false
     }
   },
+  components: [VTweakpane],
   data: () => {
     return { model: {} }
   },
   computed: {},
-  unmounted() {},
+  unmounted() { },
   mounted() {
     this.model = this.$store.getters['model']
     console.log(this.model)

@@ -2,15 +2,6 @@
 
 <template lang="pug">
 .app(:class='{ print: printMode }')
-  .configurator
-    label preset
-      select(v-model='presetName', v-on:change='onPresetChange($event)')
-        option(value='story') STORY
-        option(
-          v-for='name of Object.keys(presets)',
-          :value='name',
-          :selected='name === presetName'
-        ) {{ name }}
   PathiclesStory(v-if='presetName === "story"', :story='story')
   pathicles(
     v-else,
@@ -175,19 +166,9 @@ export default {
       this.presetName = this.urlSearchParams.get('presetName')
   },
   mounted() {
-    this.onPresetChange()
+    // this.onPresetChange()
   },
-  methods: {
-    onPresetChange() {
-      let params = this.urlSearchParams
-      params.set('presetName', this.presetName)
-      history.pushState(
-        {},
-        null,
-        document.location.pathname + '?' + params.toString()
-      )
-    }
-  }
+
 }
 </script>
 
@@ -200,27 +181,11 @@ html
 body, #app
   margin 0
   padding 0
-  font-family 'Barlow Semi Condensed', sans-serif
+  font-family 'Barlow', sans-serif
 
 .prerender, .print
   select, .configurator, dl.info
     display none
 
-.configurator
-  // display none
-  padding 0.75rem 1rem
-  position fixed
-  top 0
-  z-index 1000
 
-  select
-    margin-left 1rem
-    width 8.75rem
-    cursor pointer
-    display inline-block
-    position relative
-    font-size 10px
-    color black
-    border none
-    font-family monospace
 </style>

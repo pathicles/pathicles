@@ -3,31 +3,110 @@ const QUAD = 'QUAD'
 const SBEN = 'SBEN'
 const ESTA = 'ESTA'
 
+function cos(angle) {
+  if (angle.length) {
+    return angle.map(cos)
+  }
+  return Math.cos(angle)
+}
+
+function sin(angle) {
+  if (angle.length) {
+    return angle.map(sin)
+  }
+  return Math.sin(angle)
+}
+
+function abs(x) {
+  if (x.length) {
+    return x.map(abs)
+  }
+  return Math.abs(x)
+}
+
+function max(x, y) {
+  if (x.length) {
+    if (y.length) {
+      return x.map(function (x, i) {
+        return Math.max(x, y[i])
+      })
+    }
+    return x.map(function (x, i) {
+      return Math.max(x, y)
+    })
+  }
+  return Math.max(x, y)
+}
+
+function min(x, y) {
+  if (x.length) {
+    if (y.length) {
+      return x.map(function (x, i) {
+        return Math.min(x, y[i])
+      })
+    }
+    return x.map(function (x, i) {
+      return Math.min(x, y)
+    })
+  }
+  return Math.min(x, y)
+}
+
+function length(x) {
+  var sum = 0
+  for (var i = 0; i < x.length; i++) {
+    sum += x[i] * x[i]
+  }
+  return Math.sqrt(sum)
+}
+
+function rot2D(phi) {
+  var c = cos(phi)
+  var s = sin(phi)
+  return [c, -s, s, c]
+}
+
+function sdBox(p, s) {
+  // p = p.slice()
+  // s = s.slice()
+  let absP = abs(p)
+  var d = [0.5 * s[0] - absP[0], 0.5 * s[1] - absP[1], 0.5 * s[2] - absP[2]]
+  return min(max(d[0], max(d[1], d[2])), 0.0) + length(max(d, 0.0))
+}
+
+function dot(x, y) {
+  var sum = 0
+  for (var i = 0; i < x.length; i++) {
+    sum += x[i] * y[i]
+  }
+  return sum
+}
+
 // function rotY([x, y, z], phi) {
 //   const c = Math.cos(phi)
 //   const s = Math.sin(phi)
 //   return [c * x - s * z, y, s * x + c * z]
 // }
 
-// function signedDistanceToBox(p, size) {
-//   const offsetX = Math.abs(p[0]) - size[0] / 2
-//   const offsetY = Math.abs(p[1]) - size[1] / 2
-//   const offsetZ = Math.abs(p[2]) - size[2] / 2
+function signedDistanceToBox(p, size) {
+  const offsetX = Math.abs(p[0]) - size[0] / 2
+  const offsetY = Math.abs(p[1]) - size[1] / 2
+  const offsetZ = Math.abs(p[2]) - size[2] / 2
 
-//   const offsetMaxX = Math.max(offsetX, 0)
-//   const offsetMaxY = Math.max(offsetY, 0)
-//   const offsetMaxZ = Math.max(offsetZ, 0)
-//   const offsetMinX = Math.min(offsetX, 0)
-//   const offsetMinY = Math.min(offsetY, 0)
-//   const offsetMinZ = Math.min(offsetZ, 0)
+  const offsetMaxX = Math.max(offsetX, 0)
+  const offsetMaxY = Math.max(offsetY, 0)
+  const offsetMaxZ = Math.max(offsetZ, 0)
+  const offsetMinX = Math.min(offsetX, 0)
+  const offsetMinY = Math.min(offsetY, 0)
+  const offsetMinZ = Math.min(offsetZ, 0)
 
-//   const unsignedDst = Math.sqrt(
-//     offsetMaxX * offsetMaxX + offsetMaxY * offsetMaxY + offsetMaxZ * offsetMaxZ
-//   )
-//   const dstInsideBox = Math.max(offsetMinX, offsetMinY, offsetMinZ)
+  const unsignedDst = Math.sqrt(
+    offsetMaxX * offsetMaxX + offsetMaxY * offsetMaxY + offsetMaxZ * offsetMaxZ
+  )
+  const dstInsideBox = Math.max(offsetMinX, offsetMinY, offsetMinZ)
 
-//   return unsignedDst + dstInsideBox
-// }
+  return unsignedDst + dstInsideBox
+}
 
 export const LATTICE_ELEMENT_TYPES = {
   DRIF,
@@ -164,6 +243,80 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
       .join(';\n')
   }
 
+  getE(position) {
+    let E = [0, 0, 0]
+
+    this.beamline
+      .filter((element) => element.type === LATTICE_ELEMENT_TYPES.ESTA)
+      .forEach((ble) => {
+        let localPosition = position
+
+        localPosition = [
+          localPosition[0] - ble.middle[0],
+          localPosition[1] - ble.middle[1],
+          localPosition[2] - ble.middle[2]
+        ]
+
+        localPosition = [
+          dot([localPosition[0], localPosition[1]], rot2D(ble.phi).slice(0, 2)),
+          dot([localPosition[0], localPosition[1]], rot2D(ble.phi).slice(2, 4)),
+          localPosition[2]
+        ]
+
+        if (sdBox(localPosition, ble.size) <= 0) {
+          E = [E[0], E[1], E[2] + ble.strength]
+        }
+      })
+
+    return E
+  }
+
+  getB(position) {
+    let B = [0, 0, 0]
+
+    this.beamline
+      .filter(
+        (element) =>
+          element.type === LATTICE_ELEMENT_TYPES.SBEN ||
+          element.type === LATTICE_ELEMENT_TYPES.QUAD
+      )
+      .forEach((ble) => {
+        let localPosition = position
+
+        localPosition = [
+          localPosition[0] - ble.middle[0],
+          localPosition[1] - ble.middle[1],
+          localPosition[2] - ble.middle[2]
+        ]
+
+        localPosition = [
+          dot([localPosition[0], localPosition[1]], rot2D(ble.phi).slice(0, 2)),
+          dot([localPosition[0], localPosition[1]], rot2D(ble.phi).slice(2, 4)),
+          localPosition[2]
+        ]
+        if (signedDistanceToBox(localPosition, ble.size) <= 0) {
+          if (ble.type == LATTICE_ELEMENT_TYPES.SBEN) {
+            B = [B[0], B[1] + ble.strength, B[2]]
+          } else if (ble.type == LATTICE_ELEMENT_TYPES.QUAD) {
+            B =
+              ble.strength > 0
+                ? [
+                    B[0] + abs(ble.strength) * localPosition[1],
+                    B[1] + abs(ble.strength) * localPosition[0],
+                    B[2]
+                  ]
+                : [
+                    B[0] - abs(ble.strength) * localPosition[1],
+                    B[1] - abs(ble.strength) * localPosition[0],
+                    B[2]
+                  ]
+          }
+        }
+      })
+
+    return B
+  }
+
   // getElementForPosition(position) {
   //   for (let i = 0; i < this.beamline.length; i++) {
   //     let bl = this.beamline[i]
@@ -181,4 +334,5 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
   //   return null
   // }
 }
+
 // vec3(${element.size[0]}, 1. , ${element.size[2]}),

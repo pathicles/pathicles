@@ -4,15 +4,26 @@
 .pathicles(:class='{ "is-interactive": isInteractive }', ref='scrollContainer')
   .interaction-overlay
     .button(@click='isInteractive = !isInteractive') Start
-  hotkeys(
+
+
+    hotkeys(
     :shortcuts='["I", "D", "A", "M", "N", "L", "S", "T", " "]',
     :debug='false',
     @triggered='onTriggeredEventHandler'
   )
-  dl.info(v-if='showInfo')
-    div(v-for='(value, key) in info', :key='key')
-      dt {{ key }}
-      dd {{ value }}
+  .info(v-if='showInfo')
+    label preset
+      select(v-model='presetName')
+        option(value='story') STORY
+        option(
+          v-for='name of Object.keys(presets)',
+          :value='name',
+          :selected='name === presetName'
+        ) {{ name }}
+    dl.info
+      div(v-for='(value, key) in info', :key='key')
+        dt {{ key }}
+        dd {{ value }}
   .canvas-container(ref='canvasContainer')
     canvas#canvas(
       ref='canvas',
@@ -23,18 +34,25 @@
 </template>
 
 <script lang="ts">
-import { watch, computed, ref, defineComponent, onMounted } from 'vue'
+import { presets } from '@pathicles/config'
+import {
+  watch,
+  computed,
+  ref,
+  defineComponent,
+  onMounted,
+  nextTick,
+  onUnmounted
+} from 'vue'
 import { useElementSize, useWindowSize, useWindowFocus } from '@vueuse/core'
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import Hotkeys from './Hotkeys.vue'
 import saveCanvas from './saveCanvas.js'
 
-
 export default defineComponent({
   name: 'Pathicles',
   components: { Hotkeys },
-
 
   props: {
     pusher: {
@@ -83,7 +101,6 @@ export default defineComponent({
     const focused = useWindowFocus()
     const showInfo = ref(props.showInfo)
 
-
     const canvasContainer = ref(null)
     const canvas = ref(null)
     const { height, width } = useWindowSize()
@@ -95,7 +112,9 @@ export default defineComponent({
       height: canvasContainerHeight.value + 'px'
     }))
 
-    const pixelRatio = computed(() => Math.min(window.devicePixelRatio, props.maxPixelRatio))
+    const pixelRatio = computed(() =>
+      Math.min(window.devicePixelRatio, props.maxPixelRatio)
+    )
     const canvasWidth = computed(
       () => canvasContainerWidth.value * pixelRatio.value
     )
@@ -105,34 +124,96 @@ export default defineComponent({
 
     const isInteractive = ref(!props.clickToInteract)
 
+    const config = ref({ runner: {}, model: { emitter: {} } })
+    const presetName = ref(props.presetName)
+
     const reglInstance = ref(null)
     onMounted(() => {
+      nextTick(() => {
+        loadPreset(presetName.value)
+        console.log("onMounted");
+        console.log(reglInstance.value);
+        console.log(canvas.value);
+        reglInstance.value = new ReglSimulatorInstance({
+          canvas: canvas.value,
+          config: config.value,
+          control: {
+            // viewRange: this.viewRange,
+            // cameraMode: this.cameraMode
+          }
+        })
+        console.log(reglInstance.value);
 
-      reglInstance.value = new ReglSimulatorInstance({
-        canvas: canvas.value,
-        // config: this.config,
-        control: {
-          // viewRange: this.viewRange,
-          // cameraMode: this.cameraMode
-        }
+
+        console.log("nextTick");
+
+        reglInstance.value.loadConfig(config.value)
+        reglInstance.value.resize()
       })
     })
-
-
     watch(width, () => {
       reglInstance.value.resize()
     })
     watch(height, () => {
       reglInstance.value.resize()
     })
+
     watch(focused, () => {
       // reglInstance &&
       //   reglInstance.value &&
       //   reglInstance.value.runner.toggleActivity()
     })
 
-    const info = ref(null)
+    watch(presetName, () => {
+      let url = new URL(window.location.href)
+
+      let params = new URLSearchParams(url.search)
+      params.set('presetName', presetName.value)
+      history.pushState(
+        {},
+        null,
+        document.location.pathname + '?' + params.toString()
+      )
+      
+      loadPreset(presetName.value)
+      reglInstance.value.loadConfig(config.value)
+    })
+
+    const info = computed(() => ({
+      pusher: config.value.runner.pusher,
+      particles: config.value.model.emitter.particleCount,
+      snapshots: config.value.runner.snapshotCount,
+      prerender: config.value.runner.prerender,
+      snapshotsPerTick: config.value.runner.snapshotsPerTick,
+      iterationsPerSnapshot: config.value.runner.iterationsPerSnapshot,
+      iterations: config.value.runner.iterationCount,
+      dt: config.value.runner.iterationDurationOverC + ' c',
+      ɣ: config.value.model.emitter.gamma // .toString().replace(/=>/, '=>\n')
+    }))
+
+    const loadPreset = (presetName: String) => {
+      console.log("loadpreset");
+
+      config.value = loadConfig(presetName)
+
+      showInfo.value = config.value.debug.showInfo
+      if (props.particleCount)
+        config.value.model.emitter.particleCount = props.particleCount
+      if (props.snapshotCount)
+        config.value.runner.snapshotCount = props.snapshotCount
+      if (props.pusher) config.value.value.config.runner.pusher = props.pusher
+      if (props.prerender) config.value.runner.prerender = props.prerender
+
+
+    }
+
+    onUnmounted(() => {
+      reglInstance.value.destroy()
+    })
+
     return {
+      presets,
+      presetName,
       canvasContainer,
       canvas,
       focused,
@@ -141,21 +222,10 @@ export default defineComponent({
       canvasHeight,
       reglInstance,
       showInfo,
+      loadPreset,
       info,
       isInteractive
     }
-  },
-
-  mounted() {
-    // this.loadConfig()
-
-    this.$nextTick(() => {
-      this.loadConfig(this.config)
-
-    })
-  },
-  unmounted() {
-    this.reglInstance.destroy()
   },
 
   methods: {
@@ -192,31 +262,6 @@ export default defineComponent({
 
         this.reglInstance.runner.toggleActivity()
       }
-    },
-    loadConfig() {
-      this.config = loadConfig(this.presetName)
-      if (this.particleCount) this.config.model.emitter.particleCount = this.particleCount
-      if (this.snapshotCount) this.config.runner.snapshotCount = this.snapshotCount
-      if (this.pusher) this.config.runner.pusher = this.pusher
-      // alert(JSON.stringify(this.config.runner));
-      
-      this.info = {
-        pusher: this.config.runner.pusher,
-        particles: this.config.model.emitter.particleCount,
-        snapshots: this.config.runner.snapshotCount,
-        snapshotsPerTick: this.config.runner.snapshotsPerTick,
-        iterationsPerSnapshot: this.config.runner.iterationsPerSnapshot,
-        iterations: this.config.runner.iterationCount,
-        dt: this.config.runner.iterationDurationOverC + ' c',
-        ɣ: this.config.model.emitter.gamma.toString().replace(/=>/, '=>\n')
-      }
-      this.reglInstance.loadConfig(this.config)
-    }
-  },
-  watch: {
-    presetName(presetName) {
-      this.loadConfig(presetName)
-
     }
   }
 })
@@ -265,16 +310,33 @@ export default defineComponent({
     position relative
     top 1px
 
-dl
-  margin-top 2em
-  margin-left 0
+
+.info
+  width 200px
+  height 100vh
+  background-color rgba(gray, 0.5)
   z-index 10000
   position fixed
 
+  select
+    margin-left 1rem
+    width 8.75rem
+    cursor pointer
+    display inline-block
+    position relative
+    font-size 15px
+    color black
+    border none
+
+
+dl
+  margin-top 2em
+  margin-left 0
+
   div
-    width 11rem
+    // width 11rem
     display flex
-    font-size 10px
+    // font-size 14px
 
     dt
       flex 0 0 1rem
@@ -289,7 +351,7 @@ dl
       margin 0.25em
       background-color rgba(white, 0.5)
       white-space pre
-      font-family monospace
+
 
 .pathicles
   position fixed

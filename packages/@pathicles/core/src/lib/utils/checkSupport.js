@@ -22,39 +22,51 @@ function getExt(gl, name, msg) {
   return ext
 }
 
-//test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
+
+function float2Int(regl) {
+
+
+
+}
+
+
+
+// test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
 function test_canRTT(glContext, internalFormat, pixelType) {
-  const testFbo = glContext.createFramebuffer()
-  glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
+  try {
 
-  const testTexture = glContext.createTexture()
-  glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
-  glContext.texImage2D(
-    glContext.TEXTURE_2D,
-    0,
-    internalFormat,
-    1,
-    1,
-    0,
-    glContext.RGBA,
-    pixelType,
-    null
-  )
+    const testFbo = glContext.createFramebuffer()
+    glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
 
-  glContext.framebufferTexture2D(
-    glContext.FRAMEBUFFER,
-    glContext.COLOR_ATTACHMENT0,
-    glContext.TEXTURE_2D,
-    testTexture,
-    0
-  )
-  const fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
+    const testTexture = glContext.createTexture()
+    glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
+    glContext.texImage2D(
+      glContext.TEXTURE_2D,
+      0,
+      internalFormat,
+      1,
+      1,
+      0,
+      glContext.RGBA,
+      pixelType,
+      null
+    )
 
-  return fbStatus === glContext.FRAMEBUFFER_COMPLETE
+    glContext.framebufferTexture2D(
+      glContext.FRAMEBUFFER,
+      glContext.COLOR_ATTACHMENT0,
+      glContext.TEXTURE_2D,
+      testTexture,
+      0
+    )
+    const fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
+
+    return fbStatus === glContext.FRAMEBUFFER_COMPLETE
+  } catch (e) {}
+  return false
 }
 
 function getcolorType(glContext) {
-
   if (
     glContext.getExtension('WEBGL_color_buffer_float') &&
     glContext.getExtension('OES_texture_float') &&
@@ -69,14 +81,13 @@ function getcolorType(glContext) {
   ) {
     return 'half float'
   }
-  return 'half float'
+  return 'uint8'
 }
 
 export function checkSupport() {
   // Get A WebGL context
   const support = {}
   try {
-
     const canvas = document.createElement('canvas')
     if (
       !!window.WebGLRenderingContext &&
@@ -85,6 +96,12 @@ export function checkSupport() {
       const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
+        
+      support.canRenderToFloatTexture = test_canRTT(
+        glContext,
+        glContext.RGBA,
+        glContext.FLOAT
+      )
       support.colorType = getcolorType(glContext)
       //
       // console.log(gl)

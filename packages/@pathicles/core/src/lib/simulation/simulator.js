@@ -12,8 +12,8 @@ import createREGL from 'regl'
 import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, profile = false }) {
-    // this.configuration = config
+  constructor({ canvas, config }) {
+    this.configuration = config
     this.isDirty = true
 
     window.performanceLogger = null
@@ -21,7 +21,7 @@ export class ReglSimulatorInstance {
     // eslint-disable-next-line no-undef
     this.regl = createREGL({
       canvas,
-      profile,
+      profile: config.debug.profile,
       attributes: {
         preserveDrawingBuffer: true,
         antialiasing: true
@@ -35,12 +35,15 @@ export class ReglSimulatorInstance {
         'EXT_color_buffer_half_float'
       ],
       optionalExtensions: ['EXT_disjoint_timer_query'],
-      onDone: (err) => {
+      onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
           window.pathicles = this
 
-          this.checkSupport()
+          this.support = checkSupport()
+          this.performanceLogger.start('init')
+          this.init(regl)
+          this.run(regl)
         } catch (e) {
           console.error(e)
         }
@@ -50,6 +53,9 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
+    this.camera.resize(
+      this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
+    )
     this.isDirty = true
   }
 
@@ -60,13 +66,13 @@ export class ReglSimulatorInstance {
   loadConfig(config) {
     this.stop(this.regl)
     this.configuration = config
+    if (!this.support.canRenderToFloatTexture) {
+      console.warn('canRenderToFloatTexture = false')
+      this.configuration.runner.pusher = 'js'
+    }
     this.init(this.regl)
     this.run(this.regl)
     this.isDirty = true
-  }
-
-  checkSupport() {
-    this.support = checkSupport()
   }
 
   toggleShowTextures() {
@@ -101,13 +107,12 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
+    
     this.loop = regl.frame(({ viewportHeight, tick }) => {
       const { changed } = this.runner.next()
 
       this.camera.doAutorotate()
       this.camera.tick()
-      
-
 
       if (tick < 3 || changed || this.isDirty || this.camera.state.dirty) {
         this.camera.setCameraUniforms(
