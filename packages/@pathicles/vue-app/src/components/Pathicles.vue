@@ -201,7 +201,7 @@ export default defineComponent({
         config.value.model.emitter.particleCount = props.particleCount
       if (props.snapshotCount)
         config.value.runner.snapshotCount = props.snapshotCount
-      if (props.pusher) config.value.value.config.runner.pusher = props.pusher
+      if (props.pusher) config.value.runner.pusher = props.pusher
       if (props.prerender) config.value.runner.prerender = props.prerender
 
 

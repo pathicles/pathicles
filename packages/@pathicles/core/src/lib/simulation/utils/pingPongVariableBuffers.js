@@ -61,7 +61,7 @@ export class VariableBuffers {
           )
 
     this.buffers.forEach((buffer, i) =>
-      ((buffer.color && buffer.color) || buffer).subimage({
+      ((buffer.color && buffer.color[0]) || buffer).subimage({
         width:
           (FOUR_VECTOR_COMPONENT_COUNT * fourVectors.length) /
           this.particleCount,

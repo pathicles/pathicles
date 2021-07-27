@@ -24,7 +24,7 @@ export class BoxesViewSimple {
     this.setParams = regl({
       uniforms: {
         stageGrid_size: this.config.stageGrid.size / 2,
-        viewRange: regl.prop('viewRange') || [0,1],
+        viewRange: regl.prop('viewRange') || [0, 1],
         ambientLightAmount: this.config.ambientLightAmount,
         diffuseLightAmount: this.config.diffuseLightAmount
       }

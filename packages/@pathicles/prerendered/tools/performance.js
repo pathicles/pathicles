@@ -38,7 +38,7 @@ const writeCSV = async (data) => {
 
 const date = new Date().toISOString()
 
-const jobs = []
+let jobs = []
 ;['js', 'glsl'].forEach((pusher) => {
   for (let p = 1; p < 11; p += 1) {
     for (let s = 1; s < 11; s += 1) {
@@ -46,7 +46,7 @@ const jobs = []
       const snapshotCount = Math.pow(2, s)
 
       jobs.push({
-        presetName: 'free-photons',
+        presetName: 'gyrotest-1-electron',
         particleCount,
         snapshotCount,
         pusher,
@@ -72,14 +72,16 @@ const runJobs = async () => {
     const { presetName, query, particleCount, snapshotCount, pusher } = jobs[i]
     const queryExtended = (query || '') + queryString
     try {
-      await page.goto(urlBase + '?presetName=' + presetName + queryExtended)
+      const url = urlBase + '?presetName=' + presetName + queryExtended
+      console.log(url)
+      await page.goto(url)
       await page.waitForTimeout(3000)
 
       const performanceEntry = await page.evaluate(async () => {
         const entries = await window.performanceLogger.report() //window.performanceLogger.entries
 
         return {
-          time: entries[2].Δt,
+          time: entries[5].Δt,
           entries
         }
       })

@@ -136,6 +136,7 @@ describe('lattice with two quadrupoles', () => {
     expect(lattice.length()).toEqual(10)
   })
   it('has two quadrupole elements 1', () => {
+    const element = lattice.beamline[0]
     expect(element).toEqual({
       type: 'QUAD',
       strength: 1,
@@ -147,7 +148,8 @@ describe('lattice with two quadrupoles', () => {
     })
   })
   it('has two quadrupole elements 2', () => {
-    expect(lattice.beamline[1]).toEqual({
+    const element = lattice.beamline[1]
+    expect(element).toEqual({
       type: 'QUAD',
       strength: -1,
       phi: 0,

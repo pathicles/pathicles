@@ -53,7 +53,10 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
-    console.trace("resize", this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight);
+    console.trace(
+      'resize',
+      this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
+    )
     this.camera.resize(
       this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     )
@@ -67,10 +70,10 @@ export class ReglSimulatorInstance {
   loadConfig(config) {
     this.stop(this.regl)
     this.configuration = config
-    if (!this.support.canRenderToFloatTexture) {
-      console.warn('canRenderToFloatTexture = false')
-      this.configuration.runner.pusher = 'js'
-    }
+    // if (!this.support.canRenderToFloatTexture) {
+    //   console.warn('canRenderToFloatTexture = false')
+    //   this.configuration.runner.pusher = 'js'
+    // }
     this.init(this.regl)
     this.run(this.regl)
     this.isDirty = true
@@ -108,11 +111,8 @@ export class ReglSimulatorInstance {
   }
 
   run(regl) {
-    
     this.loop = regl.frame(({ viewportHeight, tick }) => {
       const { changed } = this.runner.next()
-
-      
 
       this.camera.doAutorotate()
       this.camera.tick()

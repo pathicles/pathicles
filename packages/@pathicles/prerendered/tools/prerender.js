@@ -98,8 +98,6 @@ const createImages = async () => {
   })
   const page = await browser.newPage()
 
-  
-
   for (let i = 0; i < jobs.length; i++) {
     const presetName = jobs[i].preset
     const { particleCount, snapshotCount, pusher } = jobs[i]

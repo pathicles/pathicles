@@ -55,7 +55,7 @@ function cross(x, y) {
 export function jsBorisPush({ runner, variables, model, debug, initialData }) {
   const performanceLogger = new PerformanceLogger()
 
-
+  console.log(initialData)
 
   performanceLogger.entries = []
 
@@ -115,12 +115,17 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
           fourPosition[3] + 0.5 * uniforms.deltaTOverC
         ]
 
-        const intermediatePosition = intermediateFourPosition.slice(0,3);
-        
-        
+        const intermediatePosition = intermediateFourPosition.slice(0, 3)
 
-        var E = uniforms.lattice.getE(intermediatePosition)
-        var B = uniforms.lattice.getB(intermediatePosition)
+        var E = uniforms.lattice.getE(
+          intermediatePosition,
+          uniforms.electricField
+        )
+        var B = uniforms.lattice.getB(
+          intermediatePosition,
+          uniforms.magneticField
+        )
+
         var gamma = 1
         var u = [0, 1, 2].map(function (x, i) {
           return this[x]
@@ -192,7 +197,6 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
           nextFourVelocity[1] / nextFourVelocity[3],
           nextFourVelocity[2] / nextFourVelocity[3]
         ]
-
 
         const nextFourPosition = [
           intermediateFourPosition[0] +

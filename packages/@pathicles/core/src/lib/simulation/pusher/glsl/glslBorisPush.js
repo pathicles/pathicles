@@ -1,5 +1,5 @@
-import vert from './boris.vert'
-import frag from './boris.frag'
+import vert from './boris.vert.glsl'
+import frag from './boris.frag.glsl'
 // import frag__uint from './boris__uint.frag'
 import { latticeChunk } from '../../lattice/lattice.gsls.js'
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'

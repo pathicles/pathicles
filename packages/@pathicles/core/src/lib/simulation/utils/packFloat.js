@@ -34,7 +34,7 @@ function step(edge, x) {
         return step(edge[i], x)
       })
     }
-    return x.map(function (x, i) {
+    return x.map(function (x) {
       return step(edge, x)
     })
   }

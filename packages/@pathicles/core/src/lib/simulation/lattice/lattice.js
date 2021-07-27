@@ -31,7 +31,7 @@ function max(x, y) {
         return Math.max(x, y[i])
       })
     }
-    return x.map(function (x, i) {
+    return x.map(function (x) {
       return Math.max(x, y)
     })
   }
@@ -45,7 +45,7 @@ function min(x, y) {
         return Math.min(x, y[i])
       })
     }
-    return x.map(function (x, i) {
+    return x.map(function (x) {
       return Math.min(x, y)
     })
   }
@@ -243,8 +243,8 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
       .join(';\n')
   }
 
-  getE(position) {
-    let E = [0, 0, 0]
+  getE(position, E0 = [0, 0, 0]) {
+    let E = E0
 
     this.beamline
       .filter((element) => element.type === LATTICE_ELEMENT_TYPES.ESTA)
@@ -271,8 +271,8 @@ ${element.strength ? element.strength.toFixed(10) : '0.'})`
     return E
   }
 
-  getB(position) {
-    let B = [0, 0, 0]
+  getB(position, B0 = [0, 0, 0]) {
+    let B = B0
 
     this.beamline
       .filter(

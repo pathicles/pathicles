@@ -56,7 +56,7 @@ export class Simulation {
       particleTypes,
       position: new VariableBuffers(
         regl,
-        webglSupport.canRenderToFloatTexture,
+        this.configuration.runner.pusher === 'glsl',
         particleCount,
         snapshotCount,
         this.configuration.runner.numberType,
@@ -64,7 +64,7 @@ export class Simulation {
       ),
       velocity: new VariableBuffers(
         regl,
-        webglSupport.canRenderToFloatTexture,
+        this.configuration.runner.pusher === 'glsl',
         particleCount,
         snapshotCount,
         this.configuration.runner.numberType,
@@ -106,10 +106,8 @@ export class Simulation {
 
     this.log()
 
-    
     this.pusher =
-      this.configuration.runner.pusher === 'glsl' &&
-      webglSupport.canRenderToFloatTexture
+      this.configuration.runner.pusher === 'glsl'
         ? glslBorisPush(this._regl, {
             runner: this.configuration.runner,
             variables: this.variables,
