@@ -16,75 +16,69 @@ function glEnum(gl, v) {
   return '0x' + v.toString(16)
 }
 
-function getExt(gl, name, msg) {
-  let ext = glContext.getExtension(name)
-  log((ext ? 'can ' : 'can **NOT** ') + msg)
-  return ext
-}
+// function getExt(gl, name, msg) {
+//   let ext = glContext.getExtension(name)
+//   log((ext ? 'can ' : 'can **NOT** ') + msg)
+//   return ext
+// }
 
+// function float2Int(regl) {}
 
-function float2Int(regl) {
+// // test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
+// function test_canRTT(glContext, internalFormat, pixelType) {
+//   try {
+//     const testFbo = glContext.createFramebuffer()
+//     glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
 
+//     const testTexture = glContext.createTexture()
+//     glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
+//     glContext.texImage2D(
+//       glContext.TEXTURE_2D,
+//       0,
+//       internalFormat,
+//       1,
+//       1,
+//       0,
+//       glContext.RGBA,
+//       pixelType,
+//       null
+//     )
 
+//     glContext.framebufferTexture2D(
+//       glContext.FRAMEBUFFER,
+//       glContext.COLOR_ATTACHMENT0,
+//       glContext.TEXTURE_2D,
+//       testTexture,
+//       0
+//     )
+//     const fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
 
-}
-
-
-
-// test if it is possible to do RTT with FLOAT/HALF FLOAT textures :
-function test_canRTT(glContext, internalFormat, pixelType) {
-  try {
-
-    const testFbo = glContext.createFramebuffer()
-    glContext.bindFramebuffer(glContext.FRAMEBUFFER, testFbo)
-
-    const testTexture = glContext.createTexture()
-    glContext.bindTexture(glContext.TEXTURE_2D, testTexture)
-    glContext.texImage2D(
-      glContext.TEXTURE_2D,
-      0,
-      internalFormat,
-      1,
-      1,
-      0,
-      glContext.RGBA,
-      pixelType,
-      null
-    )
-
-    glContext.framebufferTexture2D(
-      glContext.FRAMEBUFFER,
-      glContext.COLOR_ATTACHMENT0,
-      glContext.TEXTURE_2D,
-      testTexture,
-      0
-    )
-    const fbStatus = glContext.checkFramebufferStatus(glContext.FRAMEBUFFER)
-
-    return fbStatus === glContext.FRAMEBUFFER_COMPLETE
-  } catch (e) {}
-  return false
-}
+//     return fbStatus === glContext.FRAMEBUFFER_COMPLETE
+//   } catch (e) {}
+//   return false
+// }
 
 function getcolorType(glContext) {
   if (
     glContext.getExtension('WEBGL_color_buffer_float') &&
-    glContext.getExtension('OES_texture_float') &&
-    test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
+    glContext.getExtension('OES_texture_float') 
+    // &&
+    // test_canRTT(glContext, glContext.RGBA, glContext.FLOAT)
   ) {
     return 'float'
   }
   if (
     glContext.getExtension('WEBGL_color_buffer_float') &&
-    glContext.getExtension('OES_texture_half_float') &&
-    test_canRTT(glContext, glContext.RGBA, glContext.HALF_FLOAT)
+    glContext.getExtension('OES_texture_half_float') 
+    // &&
+    // test_canRTT(glContext, glContext.RGBA, glContext.HALF_FLOAT)
   ) {
     return 'half float'
   }
   return 'uint8'
 }
 
-export function checkSupport() {
+export function checkSupport(regl) {
   // Get A WebGL context
   const support = {}
   try {
@@ -96,11 +90,8 @@ export function checkSupport() {
       const glContext =
         canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
-        
-      support.canRenderToFloatTexture = test_canRTT(
-        glContext,
-        glContext.RGBA,
-        glContext.FLOAT
+      support.canRenderToFloatTexture = regl.hasExtension(
+        'WEBGL_color_buffer_float'
       )
       support.colorType = getcolorType(glContext)
       //

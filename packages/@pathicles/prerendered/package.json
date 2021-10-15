@@ -4,11 +4,12 @@
   "version": "0.10.0",
   "scripts": {
     "lint": "eslint --fix tools",
-    "performance": "node ./tools/performance.js",
-    "prerender": "node ./tools/prerender.js",
-    "ipp": "ipp --input files/orig/ --output build"
+    "performance": "node ./build-tools/performance.js",
+    "prerender": "node ./build-tools/prerender.js",
+    "convert": "ipp --input files/orig/ --output dist"
   },
   "devDependencies": {
+    "@ipp/cli": "^1.2.3",
     "@pathicles/dev-config": "^0.10.0",
     "csv-append": "^1.0.0",
     "d3-array": "^3.0.1",
@@ -17,7 +18,7 @@
     "fs-extra-plus": "^0.5.22",
     "json2csv": "^5.0.6",
     "ndarray": "^1.0.19",
-    "puppeteer": "^10.1.0",
+    "puppeteer": "^10.4.0",
     "save-pixels": "2.3.5",
     "sharp": "^0.28.3"
   },

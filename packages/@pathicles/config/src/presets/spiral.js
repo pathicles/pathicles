@@ -1,5 +1,3 @@
-import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
-
 export default {
   name: 'spiral',
   view: {

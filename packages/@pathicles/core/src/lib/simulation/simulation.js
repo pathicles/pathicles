@@ -36,6 +36,8 @@ export class Simulation {
       ? 'uint8'
       : 'float'
 
+    this.configuration.runner.numberType = 'float'
+
     this.configuration.runner._iterationsPerRun = this.configuration.runner
       .iterationCount
       ? this.configuration.runner.iterationCount

@@ -8,16 +8,13 @@
   "scripts": {
     "build": "rollup --config",
     "dev": "rollup --config -w",
-    "lint": "eslint; prettier-package-json --write",
-    "prepare": "yarn build",
+    "lint": "eslint --fix src; prettier-package-json --write",
     "test": "jest"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.14.5",
-    "deepcopy": "^2.1.0"
+    "@babel/plugin-transform-runtime": "^7.14.5"
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.10.0"
-  },
-  "gitHead": "09e9a3be936f493ced5ecbfdb7eab14fcf398c87"
+  }
 }

@@ -1,0 +1,3 @@
+ivec4 f(vec4 a,bool c){ivec4 b=ivec4(a*255.);return c?b.abgr:b;}void j(const in ivec4 e,out bool k[32]){for(int a=0;a<4;++a){float c=float(e[a]);for(int b=7;b>-1;--b){float d=exp2(float(b));bool l=c>=d;k[a*8+(7-b)]=l,c=mod(c,d);}}}float g(bool c[32]){float b=0.;int d=7;for(int a=1;a<9;++a)b+=float(c[a])*exp2(float(d--));return b;}float h(bool d[32],bool b){float c=float(!b)*exp2(float(23));int e=22;for(int a=9;a<32;++a)c+=float(d[a])*exp2(float(e--));return c;}float m(bool a[32]){float d=float(a[0])*-2.+1.,b=g(a);bool c=abs(b)<.01;float e=h(a,c);return d*e*exp2(b-127.-23.);}
+float rgbaToFloat(vec4 a,bool b){ivec4 d=f(a,b);bool c[32];j(d,c);return m(c);}
+#pragma glslify: export(rgbaToFloat);

@@ -4,8 +4,6 @@
 .pathicles(:class='{ "is-interactive": isInteractive }', ref='scrollContainer')
   .interaction-overlay
     .button(@click='isInteractive = !isInteractive') Start
-
-
     hotkeys(
     :shortcuts='["I", "D", "A", "M", "N", "L", "S", "T", " "]',
     :debug='false',
@@ -44,7 +42,7 @@ import {
   nextTick,
   onUnmounted
 } from 'vue'
-import { useElementSize, useWindowSize, useWindowFocus } from '@vueuse/core'
+import { useElementSize, useWindowSize, useWindowFocus, debouncedWatch, throttledWatch, watchWithFilter, debounceFilter } from '@vueuse/core'
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import Hotkeys from './Hotkeys.vue'
@@ -124,39 +122,35 @@ export default defineComponent({
 
     const isInteractive = ref(!props.clickToInteract)
 
-    const config = ref({ runner: {}, model: { emitter: {} } })
+    const config = ref({ debug: {}, runner: {}, model: { emitter: {} } })
     const presetName = ref(props.presetName)
-
     const reglInstance = ref(null)
     onMounted(() => {
       nextTick(() => {
+
         loadPreset(presetName.value)
-        console.log("onMounted");
-        console.log(reglInstance.value);
-        console.log(canvas.value);
+
         reglInstance.value = new ReglSimulatorInstance({
           canvas: canvas.value,
-          config: config.value,
+          configuration: config.value,
           control: {
             // viewRange: this.viewRange,
             // cameraMode: this.cameraMode
           }
         })
-        console.log(reglInstance.value);
-
-
-        console.log("nextTick");
-
-        reglInstance.value.loadConfig(config.value)
-        // reglInstance.value.resize()
       })
     })
-    watch(width, () => {
-      reglInstance.value.resize()
-    })
-    watch(height, () => {
-      reglInstance.value.resize()
-    })
+
+
+    watchWithFilter(
+      width,
+      () => {
+        reglInstance.value.resize()
+      }, 
+      {
+        eventFilter: debounceFilter(500), 
+      }
+    )
 
     watch(focused, () => {
       // reglInstance &&
@@ -174,7 +168,7 @@ export default defineComponent({
         null,
         document.location.pathname + '?' + params.toString()
       )
-      
+
       loadPreset(presetName.value)
       reglInstance.value.loadConfig(config.value)
     })
@@ -192,8 +186,6 @@ export default defineComponent({
     }))
 
     const loadPreset = (presetName: String) => {
-      console.log("loadpreset");
-
       config.value = loadConfig(presetName)
 
       showInfo.value = config.value.debug.showInfo
@@ -362,15 +354,8 @@ dl
   overflow hidden
 
 .canvas-container
-  height 100vh
-  width 100vw
-  position absolute
-  top 0
-  left 0
-  z-index 1000
-
-  canvas
-    image-rendering crisp-edges
+  height 100%
+  width 100%
 
 .pathicles-simulator
   touch-action pinch-zoom

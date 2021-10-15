@@ -12,8 +12,8 @@ import createREGL from 'regl'
 import { DECODE, drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 
 export class ReglSimulatorInstance {
-  constructor({ canvas, config }) {
-    this.configuration = config
+  constructor({ canvas, configuration }) {
+    this.configuration = configuration
     this.isDirty = true
 
     window.performanceLogger = null
@@ -21,7 +21,7 @@ export class ReglSimulatorInstance {
     // eslint-disable-next-line no-undef
     this.regl = createREGL({
       canvas,
-      profile: config.debug.profile,
+      profile: this.configuration.debug.profile,
       attributes: {
         preserveDrawingBuffer: true,
         antialiasing: true
@@ -34,16 +34,21 @@ export class ReglSimulatorInstance {
         'WEBGL_depth_texture',
         'EXT_color_buffer_half_float'
       ],
-      optionalExtensions: ['EXT_disjoint_timer_query'],
+      optionalExtensions: [
+        'EXT_disjoint_timer_query',
+        'WEBGL_color_buffer_float'
+      ],
       onDone: (err, regl) => {
         if (err) return console.error(err)
         try {
           window.pathicles = this
 
-          this.support = checkSupport()
+          this.regl = regl
+
+          this.support = checkSupport(regl)
+
           this.performanceLogger.start('init')
-          this.init(regl)
-          this.run(regl)
+          this.loadConfig(this.configuration)
         } catch (e) {
           console.error(e)
         }
@@ -53,7 +58,7 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
-    console.trace(
+    console.log(
       'resize',
       this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     )
@@ -70,10 +75,11 @@ export class ReglSimulatorInstance {
   loadConfig(config) {
     this.stop(this.regl)
     this.configuration = config
-    // if (!this.support.canRenderToFloatTexture) {
-    //   console.warn('canRenderToFloatTexture = false')
-    //   this.configuration.runner.pusher = 'js'
-    // }
+    console.log({ support: this.support })
+    if (!this.support.canRenderToFloatTexture) {
+      console.warn('canRenderToFloatTexture = false')
+      this.configuration.runner.pusher = 'js'
+    }
     this.init(this.regl)
     this.run(this.regl)
     this.isDirty = true

@@ -1,4 +1,4 @@
-import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants.js'
+import { LATTICE_ELEMENT_TYPES } from '../constants.js'
 
 export default {
   name: 'csr',
@@ -16,7 +16,7 @@ export default {
     // mode: RUNNER_MODE.NOBREAK,
     // iterationsPerSnapshot: 8,
     iterationDurationOverC: 0.01,
-    snapshotCount: 128,
+    snapshotCount: 128
     // iterationCount: 1024 * 4 - 1
   },
 

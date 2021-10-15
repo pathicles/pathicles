@@ -1,5 +1,3 @@
-import deepcopy from 'deepcopy/src/index.mjs'
-
 import defaultConfig from './_default'
 import spiral from './spiral'
 import csr from './csr'
@@ -44,13 +42,13 @@ const merge = (...theArgs) => {
   return target
 }
 
-const toUInt8 = (config) => {
-  let clone = deepcopy(config)
-  clone.name = clone.name + '-uint8'
-  if (!clone.runner) clone.runner = {}
-  clone.runner.packFloat2UInt8 = true
-  return clone
-}
+// const toUInt8 = (config) => {
+//   let clone = deepcopy(config)
+//   clone.name = clone.name + '-uint8'
+//   if (!clone.runner) clone.runner = {}
+//   clone.runner.packFloat2UInt8 = true
+//   return clone
+// }
 
 const presets = {
   [csr.name]: csr,

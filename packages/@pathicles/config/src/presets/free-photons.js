@@ -1,5 +1,3 @@
-import { RUNNER_MODE } from '../constants'
-
 export default {
   name: 'free-photons',
   view: {
@@ -17,7 +15,7 @@ export default {
     loops: 0,
     iterationsPerSnapshot: 1,
     snapshotCount: 101,
-    
+
     iterationDurationOverC: 0.1
   },
 

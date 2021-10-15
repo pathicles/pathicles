@@ -1,0 +1,171 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script type="module">
+      console.log('xxx')
+      import { GPGPUtility } from './GPGPUtility.js'
+      import { ToUnsignedBytes } from './ToUnsignedBytes.js'
+      import { MatrixInitializer } from './MatrixInitializer.js'
+      // import { UnsignedBytesComputer } from './UnsignedBytesComputer.js'
+      import { M128Squared } from './M128Squared.js'
+
+      const matrixColumns = 128
+      const matrixRows = 128
+      const gpgpUtility = new GPGPUtility(matrixColumns, matrixRows, {
+        premultipliedAlpha: false
+      })
+
+      console.log(gpgpUtility.isFloatingTexture())
+
+      let texture, framebuffer, bufferStatus, initializer
+
+      // if (gpgpUtility.isFloatingTexture()) {
+      //   // Height and width are set in the constructor.
+      //   texture = gpgpUtility.makeTexture(WebGLRenderingContext.FLOAT, null)
+      //   framebuffer = gpgpUtility.attachFrameBuffer(texture)
+      //   bufferStatus = gpgpUtility.frameBufferIsComplete()
+      //
+      //   if (bufferStatus.isComplete) {
+      //     initializer = new MatrixInitializer(gpgpUtility)
+      //     initializer.initialize(matrixColumns, matrixRows)
+      //
+      //     console.log(initializer.getPixels(matrixColumns, matrixRows))
+      //     // Delete resources no longer in use.
+      //     initializer.done()
+      //
+      //     // Tests, terminate on first failure.
+      //
+      //     for (let i = 0; i < matrixColumns; i++) {
+      //       for (let j = 0; j < matrixColumns; j++) {
+      //         initializer.test(i, j)
+      //       }
+      //     }
+      //
+      //     console.log('passed')
+      //   } else {
+      //     alert(bufferStatus.message)
+      //   }
+      // } else {
+      //   alert('Floating point textures are not supported.')
+      // }
+
+      function renderToUnsignedBytes(texture) {
+        let unsignedByteTexture = gpgpUtility.makeTexture(
+          WebGLRenderingContext.UNSIGNED_BYTE,
+          null
+        )
+        let unsignedByteFramebuffer = gpgpUtility.attachFrameBuffer(
+          unsignedByteTexture
+        )
+
+        let bufferStatus = gpgpUtility.frameBufferIsComplete()
+        if (bufferStatus.isComplete) {
+          let unsignedByteConverter = new ToUnsignedBytes(gpgpUtility)
+          unsignedByteConverter.convert(matrixColumns, matrixRows, texture)
+
+          // Delete resources no longer in use.
+          unsignedByteConverter.done()
+
+          // Tests, terminate on first failure.
+          const success =
+            unsignedByteConverter.test(0, 0) &&
+            unsignedByteConverter.test(10, 12) &&
+            unsignedByteConverter.test(100, 100)
+        } else {
+          alert(bufferStatus.message)
+        }
+      }
+
+      function initialize(gpgpUtility) {
+        // Height and width are set in the constructor.
+        const m = gpgpUtility.makeTexture(WebGLRenderingContext.FLOAT, null)
+        framebuffer = gpgpUtility.attachFrameBuffer(m)
+
+        bufferStatus = gpgpUtility.frameBufferIsComplete()
+
+        if (bufferStatus.isComplete) {
+          initializer = new MatrixInitializer(gpgpUtility)
+          initializer.initialize(matrixColumns, matrixRows)
+
+          // Delete resources no longer in use.
+          initializer.done()
+
+          // Tests, terminate on first failure.
+          initializer.test(0, 0) &&
+            initializer.test(10, 12) &&
+            initializer.test(100, 100)
+        } else {
+          alert(bufferStatus.message)
+        }
+
+        return m
+      }
+
+      function multiply(gpgpUtility, m) {
+        let tableCaption, tableCell, tableHeader, tableRow
+
+        // This is expected to be a table or body.
+        const display = document.getElementById('results')
+
+        const m2 = gpgpUtility.makeTexture(WebGLRenderingContext.FLOAT, null)
+
+        const multiplier = new M128Squared(gpgpUtility)
+        // Square m placing the results into m2
+        multiplier.square(m, m2)
+
+        tableHeader = display.createTHead()
+        tableRow = tableHeader.insertRow()
+        tableCell = document.createElement('TH')
+        tableCell.appendChild(document.createTextNode('Coordinates'))
+        tableRow.appendChild(tableCell)
+        tableCell = document.createElement('TH')
+        tableCell.appendChild(document.createTextNode('Value'))
+        tableRow.appendChild(tableCell)
+        tableCell = document.createElement('TH')
+        tableCell.appendChild(document.createTextNode('Expected'))
+        tableRow.appendChild(tableCell)
+        tableCell = document.createElement('TH')
+        tableCell.appendChild(document.createTextNode('Relative Error'))
+        tableRow.appendChild(tableCell)
+
+        // Tests, showing results in the display area.
+        multiplier.test(1, 1, display)
+        multiplier.test(10, 12, display)
+        multiplier.test(20, 30, display)
+        multiplier.test(100, 100, display)
+        multiplier.test(101, 101, display)
+        multiplier.test(127, 127, display)
+
+        tableCaption = display.createCaption()
+        tableCaption.appendChild(
+          document.createTextNode(
+            'GPGPU results compared with 64 bit JavaScript results.'
+          )
+        )
+
+        return m2
+      }
+
+      // const square128 = new M128Squared(gpgpUtility)
+      //
+      // square128.square()
+      //
+      // const unsignedBytesComputer = new UnsignedBytesComputer(gpgpUtility)
+      //
+      // console.log(gpgpUtility.getPixels())
+
+      if (gpgpUtility.isFloatingTexture()) {
+        // Height and width are set in the constructor.
+        const m = initialize(gpgpUtility);
+        const m2 = multiply(gpgpUtility, m);
+      }
+      else {
+        alert("Floating point textures are not supported.");
+      }
+    </script>
+  </head>
+  <body>
+    <table id="results"></table>
+  </body>
+</html>

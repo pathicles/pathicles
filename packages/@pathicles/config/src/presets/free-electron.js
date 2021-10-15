@@ -1,6 +1,5 @@
 import defaultConfig from './_default'
 
-
 export default {
   name: 'free-electron',
   view: {

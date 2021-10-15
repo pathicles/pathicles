@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "packages/@pathicles/config/",
+      "problemMatcher": [],
+      "label": "npm: dev - packages/@pathicles/config",
+      "detail": "rollup --config -w"
+    }
+  ]
+}

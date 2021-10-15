@@ -1,5 +1,6 @@
 # VS Code
 .yarn
+.idea
 sw.*
 .history
 .trash_

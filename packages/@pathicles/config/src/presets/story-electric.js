@@ -13,7 +13,7 @@ export default {
 
   model: {
     emitter: {
-      particleType: 'ELECTRON PHOTON PROTON',
+      particleType: 'ELECTRON PHOTON PROTON'
       // gamma: () => 1.5
     },
 

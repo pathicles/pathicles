@@ -1,4 +1,3 @@
-import { RUNNER_MODE } from '../constants'
 let seed = 1
 export const random = () => {
   let x = Math.sin(seed++) * 10000

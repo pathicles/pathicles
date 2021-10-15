@@ -1,4 +1,4 @@
-import { LATTICE_ELEMENT_TYPES, RUNNER_MODE } from '../constants'
+import { RUNNER_MODE } from '../constants'
 import defaultConfig from './_default'
 
 export default {

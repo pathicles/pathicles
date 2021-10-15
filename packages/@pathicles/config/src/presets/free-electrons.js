@@ -1,5 +1,3 @@
-import { RUNNER_MODE } from '../constants'
-
 export default {
   name: 'free-electrons',
   view: {

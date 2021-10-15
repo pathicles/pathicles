@@ -1,9 +1,7 @@
 /* eslint-disable */
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 import bp from './boris.push.js'
-import ParticleTypes, {
-  LIST
-} from '../../../../../../specrel/src/ParticleTypes'
+import { particleByName } from '@pathicles/config'
 
 import { C } from '@pathicles/config'
 function vec3(x, y, z) {
@@ -132,7 +130,7 @@ export function jsBorisPush({ runner, variables, model, debug, initialData }) {
         }, fourVelocity)
         if (initialData.particleTypes[p] > 0) {
           const { mass__eVc_2, charge__qe, chargeMassRatio__Ckg_1 } =
-            LIST[initialData.particleTypes[p]]
+            particleByName(initialData.particleTypes[p])
 
           var hdtc_m = (chargeMassRatio__Ckg_1 * uniforms.deltaTOverC) / C / 2
           u = [u[0] + hdtc_m * E[0], u[1] + hdtc_m * E[1], u[2] + hdtc_m * E[2]]

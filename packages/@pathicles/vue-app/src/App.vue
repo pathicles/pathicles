@@ -187,5 +187,4 @@ body, #app
   select, .configurator, dl.info
     display none
 
-
 </style>

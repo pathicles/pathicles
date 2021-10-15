@@ -1,12 +1,12 @@
 input: files/orig
-output: build/
+output: dist/
 
 pipeline:
   - pipe: convert
     options:
       format: jpg
-    save: "[source.name].jpg"
+    save: '[source.name].jpg'
   - pipe: convert
     options:
       format: webp
-    save: "[source.name].webp"
+    save: '[source.name].webp'

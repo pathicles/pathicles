@@ -11,7 +11,7 @@ export const gamma = 1.1
 export const R = ((gamma / B_T) * betaFromGamma(gamma) * C) / 1.75882001076e11
 export const T = (2 * Math.PI * R) / betaFromGamma(gamma)
 
-const r = (3.3 * gamma * 0.0005109989461 * betaFromGamma(gamma)) / B_T
+// const r = (3.3 * gamma * 0.0005109989461 * betaFromGamma(gamma)) / B_T
 
 // console.log({ r, C, beta: betaFromGamma(gamma), T, R })
 
