@@ -2,7 +2,7 @@ import { config, presets } from '../../src'
 
 describe('config size', () => {
   it('{}', () => {
-    expect(Object.keys(presets)).toHaveLength(5)
+    expect(Object.keys(presets)).toHaveLength(17)
   })
 
   it('config()', () => {

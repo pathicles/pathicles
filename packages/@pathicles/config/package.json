@@ -9,7 +9,7 @@
     "build": "rollup --config",
     "dev": "rollup --config -w",
     "lint": "eslint --fix src; prettier-package-json --write",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.14.5"

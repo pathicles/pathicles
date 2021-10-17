@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import freeCameraFactory from '../utils/freeCameraFactory'
+import freeCameraFactory from '../utils/freeCameraFactory.mjs'
 import { Simulation } from './simulation'
 import { SimulationRunner } from './simulationRunner'
 import { PerformanceLogger } from '../utils/PerformanceLogger'

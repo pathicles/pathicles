@@ -18,19 +18,19 @@ lowp vec4 packFloat(highp float v) {
   //Compute exponent and mantissa
   highp float e = floor(log2(av));
   highp float m = av * pow(2.0, -e) - 1.0;
-  
+
   //Unpack mantissa
   c[1] = floor(128.0 * m);
   m -= c[1] / 128.0;
   c[2] = floor(32768.0 * m);
   m -= c[2] / 32768.0;
   c[3] = floor(8388608.0 * m);
-  
+
   //Unpack exponent
   highp float ebias = e + 127.0;
   c[0] = floor(ebias / 2.0);
   ebias -= c[0] * 2.0;
-  c[1] += floor(ebias) * 128.0; 
+  c[1] += floor(ebias) * 128.0;
 
   //Unpack sign bit
   c[0] += 128.0 * step(0.0, -v);

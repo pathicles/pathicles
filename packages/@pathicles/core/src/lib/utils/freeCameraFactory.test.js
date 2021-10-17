@@ -1,7 +1,7 @@
 'use strict'
 
 import { beforeAll, describe, expect, test } from '@jest/globals'
-import freeCameraFactory from './freeCameraFactory'
+import freeCameraFactory from './freeCameraFactory.mjs'
 import createREGL from 'regl'
 
 let glContext

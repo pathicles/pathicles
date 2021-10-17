@@ -10,7 +10,7 @@ import { PARTICLE_TYPES } from '@pathicles/config'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 
 export class Simulation {
-  constructor(regl, { model, runner, debug }, webglSupport) {
+  constructor(regl, { model, runner, debug }) {
     this.performanceLogger = new PerformanceLogger(debug.logPerformance)
 
     this.performanceLogger.start('Simulation()')

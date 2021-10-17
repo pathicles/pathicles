@@ -97,7 +97,11 @@ const config: UserConfig = {
     // VueI18n({
     //   include: [path.resolve(__dirname, 'locales/**')]
     // })
-  ]
+  ],
+  build: {
+    brotliSize: true,
+    minify: "terser"
+  }
 }
 
 export default config

@@ -157,9 +157,7 @@ export default {
     },
     pusher: function () {
       return this.urlSearchParams.get('pusher')
-    },
-
-
+    }
   },
   beforeMount() {
     if (this.urlSearchParams.get('presetName'))
@@ -167,8 +165,7 @@ export default {
   },
   mounted() {
     // this.onPresetChange()
-  },
-
+  }
 }
 </script>
 
@@ -183,8 +180,7 @@ body, #app
   padding 0
   font-family 'Barlow', sans-serif
 
-.prerender, .print
-  select, .configurator, dl.info
+.app.print
+  select, .configurator, .info
     display none
-
 </style>

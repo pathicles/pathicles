@@ -2,7 +2,7 @@
 
 <template lang="pug">
 .pathicles.pathicles-simulator(ref="scrollContainer")
-  pathicles-params
+  //pathicles-params
   dl.debug.debug-only
     div(v-for="(value,  key) in info" :key="key")
       dt {{ key }}

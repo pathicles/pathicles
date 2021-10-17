@@ -7,7 +7,7 @@ import createREGL from 'regl/dist/regl.min.js'
 // import drawVariableTexture from '@pathicles/core/src/lib/simulation/pathicles.variables.drawTexture'
 import { BoxesViewSimple } from '../views/boxesViewSimple'
 import { boundedRandom } from '../utils/random'
-import freeCameraFactory from '../utils/freeCameraFactory'
+import freeCameraFactory from '../utils/freeCameraFactory.mjs'
 import { drawTextureCommand } from '../webgl-utils/drawTextureCommand'
 import { Lattice } from '../simulation/lattice/lattice.js'
 

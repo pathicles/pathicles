@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.10.0",
   "scripts": {
-    "lint": "eslint --fix tools",
+    "lint": "eslint --fix build-tools",
     "performance": "node ./build-tools/performance.js",
     "prerender": "node ./build-tools/prerender.js",
     "convert": "ipp --input files/orig/ --output dist"

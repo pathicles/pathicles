@@ -1,9 +1,9 @@
 /* eslint-env browser */
 
 import { mat4 } from 'gl-matrix'
-import freeCameraFactory from './utils/freeCameraFactory'
+import freeCameraFactory from './utils/freeCameraFactory.mjs'
 import PerformanceLogger from './utils/PerformanceLogger'
-import { keyControlMount, keyControlUnmount } from './utils/keyControl'
+import { keyControlMount } from './utils/keyControl'
 import { checkSupport } from './utils/checkSupport'
 import createREGL from 'regl'
 import createCube from 'primitive-cube'

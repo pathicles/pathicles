@@ -2,7 +2,7 @@
 
 import camera from './inertial-turntable-camera.js'
 
-import interactionEvents from './normalized-interaction-events'
+import interactionEvents from './normalized-interaction-events.js'
 import { Lethargy } from './Lethargy.js'
 
 // function calcPhiThetaDistance(eye, center) {

@@ -42,7 +42,12 @@ import {
   nextTick,
   onUnmounted
 } from 'vue'
-import { useElementSize, useWindowSize, useWindowFocus, debouncedWatch, throttledWatch, watchWithFilter, debounceFilter } from '@vueuse/core'
+import {
+  useElementSize,
+  useWindowFocus,
+  watchWithFilter,
+  debounceFilter
+} from '@vueuse/core'
 import { ReglSimulatorInstance } from '@pathicles/core'
 import { config as loadConfig } from '@pathicles/config'
 import Hotkeys from './Hotkeys.vue'
@@ -101,7 +106,6 @@ export default defineComponent({
 
     const canvasContainer = ref(null)
     const canvas = ref(null)
-    const { height, width } = useWindowSize()
 
     const { width: canvasContainerWidth, height: canvasContainerHeight } =
       useElementSize(canvasContainer)
@@ -127,7 +131,6 @@ export default defineComponent({
     const reglInstance = ref(null)
     onMounted(() => {
       nextTick(() => {
-
         loadPreset(presetName.value)
 
         reglInstance.value = new ReglSimulatorInstance({
@@ -141,14 +144,13 @@ export default defineComponent({
       })
     })
 
-
     watchWithFilter(
-      width,
+      canvasContainerWidth,
       () => {
         reglInstance.value.resize()
-      }, 
+      },
       {
-        eventFilter: debounceFilter(500), 
+        eventFilter: debounceFilter(500)
       }
     )
 
@@ -195,8 +197,6 @@ export default defineComponent({
         config.value.runner.snapshotCount = props.snapshotCount
       if (props.pusher) config.value.runner.pusher = props.pusher
       if (props.prerender) config.value.runner.prerender = props.prerender
-
-
     }
 
     onUnmounted(() => {
@@ -239,9 +239,9 @@ export default defineComponent({
         saveCanvas(
           this.reglInstance.regl._gl.canvas,
           'pathicles' +
-          (this.reglInstance.presetName
-            ? '--' + this.reglInstance.presetName
-            : '')
+            (this.reglInstance.presetName
+              ? '--' + this.reglInstance.presetName
+              : '')
         )
       } else if (payload.keyString === 'N') {
         // n for next

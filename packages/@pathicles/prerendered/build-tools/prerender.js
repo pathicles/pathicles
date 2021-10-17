@@ -44,41 +44,43 @@ const writeCSV = async (data) => {
 const date = new Date().toISOString()
 
 let jobs = [
-  // { preset: 'pathicles-logo' },
-  // { preset: 'csr' },
-  // { preset: 'spiral' },
-  // { preset: 'random' },
-  // { preset: 'different-gammas' },
-  // { preset: 'free-electron' },
-  // { preset: 'free-electrons' },
-  // { preset: 'free-photon' },
-  // { preset: 'free-photons' }
-  // { preset: 'story-electric', data: true },
-  // { preset: 'story-quadrupole', data: true },
-  // { preset: 'story-dipole', data: true }
-  // { preset: 'gyrotest-1-electron' },
-  // { preset: 'gyrotest-128-electrons' }
+  { preset: 'pathicles-logo' },
+  { preset: 'csr' },
+  { preset: 'spiral' },
+  { preset: 'random' },
+  { preset: 'different-gammas' },
+  { preset: 'free-electron' },
+  { preset: 'free-electrons' },
+  { preset: 'free-photon' },
+  { preset: 'free-photons' },
+  { preset: 'story-electric', data: true },
+  { preset: 'story-quadrupole', data: true },
+  { preset: 'story-dipole', data: true },
+  { preset: 'gyrotest-1-electron' },
+  { preset: 'gyrotest-128-electrons' }
 ]
 
-jobs = []
-;['js', 'glsl'].forEach((pusher) => {
-  for (let p2 = 0; p2 < 12; p2 += 1) {
-    for (let s2 = 0; s2 < 12; s2 += 1) {
-      const particleCount = Math.pow(2, p2)
-      const snapshotCount = Math.pow(2, s2)
+// jobs = []
+// ;['js', 'glsl'].forEach((pusher) => {
+//   for (let p2 = 0; p2 < 12; p2 += 1) {
+//     for (let s2 = 0; s2 < 12; s2 += 1) {
+//       const particleCount = Math.pow(2, p2)
+//       const snapshotCount = Math.pow(2, s2)
 
-      jobs.push({
-        preset: 'free-photons',
-        particleCount,
-        snapshotCount,
-        pusher,
-        query: `&particleCount=${particleCount}&snapshotCount=${snapshotCount}&pusher=${pusher}`
-      })
-    }
-  }
-})
+//       jobs.push({
+//         preset: 'free-photons',
+//         particleCount,
+//         snapshotCount,
+//         pusher,
+//         query: `&particleCount=${particleCount}&snapshotCount=${snapshotCount}&pusher=${pusher}`
+//       })
+//     }
+//   }
+// })
 
-console.log(jobs)
+// console.log(jobs)
+
+// jobs = jobs.slice(0, 5)
 
 // jobs = [
 //   ...jobs,
@@ -115,11 +117,6 @@ const createImages = async () => {
 
       await page.screenshot({
         path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.png')
-      })
-      await page.screenshot({
-        quality: 100,
-        type: 'jpeg',
-        path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.jpg')
       })
 
       const performanceEntry = await page.evaluate(async () => {
@@ -191,79 +188,80 @@ const createImages = async () => {
   await browser.close()
 }
 
-const imagePaths = async () => {
-  return await fs.glob(OUTPUT_FOLDER_PATH + '/orig/*.jpg')
-}
+// const imagePaths = async () => {
+//   return await fs.glob(OUTPUT_FOLDER_PATH + '/orig/*.jpg')
+// }
 
-const convertImagesSharp = async () => {
-  // const qualities = [40]
-  // const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
-  const qualities = [70]
+// // eslint-disable-next-line no-unused-vars
+// const convertImagesSharp = async () => {
+//   // const qualities = [40]
+//   // const qualities = [20, 40, 50, 60, 80, 85, 90, 95, 100]
+//   const qualities = [70]
 
-  await Promise.all(
-    (
-      await imagePaths()
-    ).map(async (imgPath) => {
-      let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
-      //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
-      //     console.log(err, info)
-      //   })
+//   await Promise.all(
+//     (
+//       await imagePaths()
+//     ).map(async (imgPath) => {
+//       let image_1 = await sharp(imgPath).resize(defaultWidth, defaultHeight)
+//       //   .toFile(imgPath.replace('orig', 'compressed@1x'), (err, info) => {
+//       //     console.log(err, info)
+//       //   })
 
-      // let image_2 = await sharp(imgPath).resize(
-      //   defaultWidth * 2,
-      //   defaultHeight * 2
-      // )
-      // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
-      //   console.log(err, info)
-      // })
+//       // let image_2 = await sharp(imgPath).resize(
+//       //   defaultWidth * 2,
+//       //   defaultHeight * 2
+//       // )
+//       // .toFile(imgPath.replace('orig', 'compressed@2x'), (err, info) => {
+//       //   console.log(err, info)
+//       // })
 
-      qualities.forEach((quality) => {
-        image_1
-          .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-          .toFile(
-            imgPath.replace('orig', 'compressed@1x'),
-            // .replace('.png', `_${quality}.jpg`),
-            (err, info) => {
-              console.log(err, info)
-            }
-          )
-        // image_2
-        //   .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
-        //   .toFile(
-        //     imgPath
-        //       .replace('orig', 'compressed@2x')
-        //       .replace('.png', `_${quality}.jpg`),
-        //     // .replace('.png', `.jpg`),
-        //     (err, info) => {
-        //       console.log(err, info)
-        //     }
-        //   )
+//       qualities.forEach((quality) => {
+//         image_1
+//           .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+//           .toFile(
+//             imgPath.replace('orig', 'compressed@1x'),
+//             // .replace('.png', `_${quality}.jpg`),
+//             (err, info) => {
+//               console.log(err, info)
+//             }
+//           )
+//         // image_2
+//         //   .toFormat('jpg', { quality, progressive: true, optimiseScans: true })
+//         //   .toFile(
+//         //     imgPath
+//         //       .replace('orig', 'compressed@2x')
+//         //       .replace('.png', `_${quality}.jpg`),
+//         //     // .replace('.png', `.jpg`),
+//         //     (err, info) => {
+//         //       console.log(err, info)
+//         //     }
+//         //   )
 
-        // image_1
-        //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
-        //   .toFile(
-        //     imgPath
-        //       .replace('orig', 'compressed@1x')
-        //       .replace('.png', `_${quality}.webp`),
-        //     (err, info) => {
-        //       console.log(err, info)
-        //     }
-        //   )
-        // image_2
-        //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
-        //   .toFile(
-        //     imgPath
-        //       .replace('orig', 'compressed@2x')
-        //       .replace('.png', `_${quality}.webp`),
-        //     // .replace('.png', `.jpg`),
-        //     (err, info) => {
-        //       console.log(err, info)
-        //     }
-        //   )
-      })
-    })
-  )
-}
+//         // image_1
+//         //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+//         //   .toFile(
+//         //     imgPath
+//         //       .replace('orig', 'compressed@1x')
+//         //       .replace('.png', `_${quality}.webp`),
+//         //     (err, info) => {
+//         //       console.log(err, info)
+//         //     }
+//         //   )
+//         // image_2
+//         //   .toFormat('webp', { quality, progressive: true, optimiseScans: true })
+//         //   .toFile(
+//         //     imgPath
+//         //       .replace('orig', 'compressed@2x')
+//         //       .replace('.png', `_${quality}.webp`),
+//         //     // .replace('.png', `.jpg`),
+//         //     (err, info) => {
+//         //       console.log(err, info)
+//         //     }
+//         //   )
+//       })
+//     })
+//   )
+// }
 ;(async () => {
   await createImages()
   //  await convertImagesSharp()

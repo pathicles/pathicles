@@ -23,7 +23,8 @@ export default (pkg) => ({
         getBabelOutputPlugin({
           presets: ['@babel/preset-env'],
           plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
-        })
+        }),
+        terser()
       ]
     }
   ],

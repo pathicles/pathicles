@@ -1,20 +1,18 @@
-import { describe, expect, test } from '@jest/globals'
+import { config, presets } from '../../src'
 
-import { config, presets } from './index.js'
-
-describe('presets', () => {
-  test('count presets', () => {
-    expect(Object.keys(presets)).toHaveLength(10)
+describe('config size', () => {
+  it('count of presets is 17', () => {
+    expect(Object.keys(presets)).toHaveLength(17)
   })
-  test('count members', () => {
+
+  it('config()', () => {
     expect(Object.keys(config())).toHaveLength(5)
   })
-
-  test("config('does-not-exist')", () => {
-    expect(config('does-not-exist').name).toEqual('default')
+  it("config('does-not-exist')", () => {
+    expect(Object.keys(config('story-quadrupole'))).toHaveLength(5)
   })
 
-  test("config('story-quadrupole')", () => {
-    expect(config('story-quadrupole').name).toEqual('story-quadrupole')
+  it("config('story-quadrupole')", () => {
+    expect(Object.keys(config('story-quadrupole'))).toHaveLength(5)
   })
 })

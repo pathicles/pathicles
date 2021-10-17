@@ -138,6 +138,8 @@ describe('lattice with two quadrupoles', () => {
   it('has two quadrupole elements 1', () => {
     const element = lattice.beamline[0]
     expect(element).toEqual({
+      color: Array[(1, 0.5, 0)],
+
       type: 'QUAD',
       strength: 1,
       phi: 0,

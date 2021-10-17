@@ -10,7 +10,7 @@
     "dev": "rollup --config -w",
     "lint": "eslint --fix src; prettier-package-json --write",
     "publish": "npm publish --access=public",
-    "test:unit": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.14.5",
@@ -24,6 +24,7 @@
     "gl-matrix": "^3.3.0",
     "gl-quat": "^1.0.0",
     "gl-vec3": "^1.1.3",
+    "global-mouse-events": "^1.0.7",
     "glsl-float-to-rgba": "^1.0.0",
     "glsl-inverse": "^1.0.0",
     "glsl-look-at": "^1.0.0",

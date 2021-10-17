@@ -6,7 +6,7 @@
   "author": "Dirk Rathje",
   "type": "module",
   "scripts": {
-    "lint": "eslintn *.mjs --fix; prettier-package-json --write"
+    "lint": "eslint *.mjs --fix; prettier-package-json --write"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1"

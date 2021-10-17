@@ -4,7 +4,7 @@
   "description": "Vue 3 app",
   "license": "MIT",
   "scripts": {
-    "build": "vite build",
+    "build": "NODE_ENV=production vite build",
     "createPWAIcons": "npx pwa-asset-generator  ./pwa/icons/pathicles.png ./public/icons --icon-only --favicon --padding 0",
     "dev": "vite",
     "lint": "eslint --fix src ; prettier-package-json --write",
@@ -17,15 +17,15 @@
   "dependencies": {
     "@pathicles/config": "^0.10.0",
     "@pathicles/core": "^0.10.0",
-    "@vueuse/core": "^5.1.4",
+    "@vueuse/core": "^6.6.1",
     "regl": "^2.1.0",
     "tornis": "^0.3.4",
-    "tweakpane": "^3.0.4",
+    "tweakpane": "^3.0.5",
     "typeface-barlow": "^1.1.13",
     "typeface-barlow-condensed": "^1.1.13",
     "typeface-barlow-semi-condensed": "^1.1.13",
-    "vue": "^3.1.5",
-    "vue-router": "^4.0.10"
+    "vue": "^3.2.20",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@pathicles/dev-config": "^0.10.0",

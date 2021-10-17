@@ -1,3 +1,6 @@
+.DS_STORE
+packages/@pathicles/docs**
+
 # VS Code
 .yarn
 .idea
