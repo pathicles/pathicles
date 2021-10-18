@@ -1,19 +1,27 @@
 import defaultConfig from './_default'
 import { C, RUNNER_MODE } from '../constants'
+import { ELECTRON } from './../particle-types.js'
 
 function betaFromGamma(gamma = 0) {
   if (gamma === 0) return NaN
   return Math.sqrt(1 - 1 / Math.pow(gamma, 2))
 }
 
-export const B_T = 0.0004
-export const gamma = 1.1
-export const R = ((gamma / B_T) * betaFromGamma(gamma) * C) / 1.75882001076e11
-export const T = (2 * Math.PI * R) / betaFromGamma(gamma)
+export const B_T = 0.01
+export const gamma = 2
+export const R =
+  ((gamma / B_T) * betaFromGamma(gamma) * C) / ELECTRON.chargeMassRatio__Ckg_1
+export const T = (2 * Math.PI * R) / betaFromGamma(gamma) / C
+
+const iterationDurationOverC = 0.001
+
+const STEPS = 256
 
 // const r = (3.3 * gamma * 0.0005109989461 * betaFromGamma(gamma)) / B_T
 
-// console.log({ r, C, beta: betaFromGamma(gamma), T, R })
+// eslint-disable-next-line no-undef
+
+console.log({ R, C, beta: betaFromGamma(gamma), T, STEPS })
 
 export default {
   name: 'gyrotest-1-electron',
@@ -30,10 +38,11 @@ export default {
     prerender: true,
     loops: 0,
     mode: RUNNER_MODE.NOBREAK,
-    iterationsPerSnapshot: 1,
+    snapshotsPerTick: 5,
+    iterationsPerSnapshot: 5,
     iterationCount: undefined,
-    snapshotCount: 16,
-    iterationDurationOverC: 0.025
+    snapshotCount: STEPS,
+    iterationDurationOverC: iterationDurationOverC
   },
 
   model: {

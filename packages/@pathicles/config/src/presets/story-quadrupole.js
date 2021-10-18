@@ -9,9 +9,9 @@ export default {
   view: {
     camera: {
       center: [0, 1, 0],
-      distance: 10,
-      theta: (55 / 360) * 2 * Math.PI,
-      phi: (10 / 360) * 2 * Math.PI
+      distance: 7,
+      theta: (45 / 360) * 2 * Math.PI,
+      phi: (5 / 360) * 2 * Math.PI
     }
   },
   model: {

@@ -3,20 +3,20 @@ export default {
   view: {
     camera: {
       center: [0, 1, 0],
-      theta: 0.001,
-      phi: 0.001,
-      distance: 6
+      theta: 0,
+      phi: 0.0,
+      distance: 2
     }
   },
 
   runner: {
-    snapshotCount: 101,
+    snapshotCount: 35,
     iterationDurationOverC: 0.1
   },
 
   model: {
     emitter: {
-      particleCount: 32,
+      particleCount: 129,
       particleType: 'ELECTRON',
       gamma: 10
     },

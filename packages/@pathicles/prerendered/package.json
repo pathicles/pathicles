@@ -6,7 +6,7 @@
     "lint": "eslint --fix build-tools",
     "performance": "node ./build-tools/performance.js",
     "prerender": "node ./build-tools/prerender.js",
-    "convert": "ipp --input files/orig/ --output dist"
+    "convert": "ipp"
   },
   "devDependencies": {
     "@ipp/cli": "^1.2.3",

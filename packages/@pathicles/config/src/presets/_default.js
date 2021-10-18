@@ -19,8 +19,8 @@ export default {
     mode: RUNNER_MODE.NOBREAK,
     snapshotsPerTick: 1,
     iterationsPerSnapshot: 2,
-    iterationDurationOverC: 0.05,
-    snapshotCount: 128
+    iterationDurationOverC: 0.025,
+    snapshotCount: 256
   },
 
   model: {

@@ -5,7 +5,6 @@ import { Simulation } from './simulation'
 import { SimulationRunner } from './simulationRunner'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 import { BoxesViewSimple } from '../views/boxesViewSimple'
-// import { keyControlMount, keyControlUnmount } from '../utils/keyControl'
 import { checkSupport } from '../utils/checkSupport'
 // import createREGL from 'regl/dist/regl.min.js'
 import createREGL from 'regl'
@@ -58,10 +57,7 @@ export class ReglSimulatorInstance {
 
   resize() {
     this.regl.poll()
-    console.log(
-      'resize',
-      this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
-    )
+
     this.camera.resize(
       this.regl._gl.canvas.clientWidth / this.regl._gl.canvas.clientHeight
     )

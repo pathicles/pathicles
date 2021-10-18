@@ -26,7 +26,7 @@ export default {
         e: {
           type: LATTICE_ELEMENT_TYPES.ESTA,
           l: 0.5,
-          strength: -1e10
+          strength: -1e1
         }
       },
       beamline: ['l', 'e', 'l'],

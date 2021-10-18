@@ -3,7 +3,7 @@
 const prerender = require('puppeteer')
 const path = require('path')
 const fs = require('fs-extra-plus')
-const sharp = require('sharp')
+// const sharp = require('sharp')
 
 const defaultWidth = 1500
 const defaultHeight = 750
@@ -14,12 +14,10 @@ const round = (d, precision = 2) =>
 
 const port = process.env.npm_package_config_devPort || 9303
 
-const urlBase = 'http://localhost:' + port + '/simulator/'
+const urlBase = 'http://localhost:' + port + '/'
 const OUTPUT_FOLDER_PATH = path.join(__dirname, '..', 'files')
 
 fs.ensureDirSync(OUTPUT_FOLDER_PATH)
-fs.ensureDirSync(path.join(OUTPUT_FOLDER_PATH, 'compressed@1x'))
-fs.ensureDirSync(path.join(OUTPUT_FOLDER_PATH, 'compressed@2x'))
 
 const CSV_FILEPATH_NAME = path.join(OUTPUT_FOLDER_PATH, 'performance.csv')
 
@@ -49,9 +47,9 @@ let jobs = [
   { preset: 'spiral' },
   { preset: 'random' },
   { preset: 'different-gammas' },
-  { preset: 'free-electron' },
+  // { preset: 'free-electron' },
   { preset: 'free-electrons' },
-  { preset: 'free-photon' },
+  // { preset: 'free-photon' },
   { preset: 'free-photons' },
   { preset: 'story-electric', data: true },
   { preset: 'story-quadrupole', data: true },
@@ -116,7 +114,7 @@ const createImages = async () => {
       await page.waitForTimeout(3000)
 
       await page.screenshot({
-        path: path.join(OUTPUT_FOLDER_PATH, 'orig', presetName + '.png')
+        path: path.join(OUTPUT_FOLDER_PATH, 'screenshots', presetName + '.png')
       })
 
       const performanceEntry = await page.evaluate(async () => {

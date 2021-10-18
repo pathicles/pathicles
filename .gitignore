@@ -94,3 +94,47 @@ typings/
 /packages/@pathicles/prerendered/build/
 /packages/@pathicles/core/src/ogl/
 /packages/@pathicles/prerendered/files/orig/
+packages/@pathicles/prerendered/files_/cover__pathicles.json
+packages/@pathicles/prerendered/files_/gpuTimes.json
+packages/@pathicles/prerendered/files_/jerrobs.json
+packages/@pathicles/prerendered/files_/performance-comparison.csv
+packages/@pathicles/prerendered/files_/performance.csv
+packages/@pathicles/prerendered/files_/story-dipole Kopie.json
+packages/@pathicles/prerendered/files_/story-dipole Kopie.json.zip
+packages/@pathicles/prerendered/files_/story-dipole_dump.json
+packages/@pathicles/prerendered/files_/story-dipole-uint8.json
+packages/@pathicles/prerendered/files_/story-dipole-uint8.png
+packages/@pathicles/prerendered/files_/story-dipole.json
+packages/@pathicles/prerendered/files_/story-dipole.json 2.zip
+packages/@pathicles/prerendered/files_/story-dipole.json.zip
+packages/@pathicles/prerendered/files_/story-dipole.png
+packages/@pathicles/prerendered/files_/story-electric Kopie.json
+packages/@pathicles/prerendered/files_/story-electric_dump.json
+packages/@pathicles/prerendered/files_/story-electric-uint8.json
+packages/@pathicles/prerendered/files_/story-electric-uint8.png
+packages/@pathicles/prerendered/files_/story-electric.json
+packages/@pathicles/prerendered/files_/story-electric.png
+packages/@pathicles/prerendered/files_/story-quadrupole Kopie.json
+packages/@pathicles/prerendered/files_/story-quadrupole_dump.json
+packages/@pathicles/prerendered/files_/story-quadrupole-uint8.json
+packages/@pathicles/prerendered/files_/story-quadrupole-uint8.png
+packages/@pathicles/prerendered/files_/story-quadrupole.json
+packages/@pathicles/prerendered/files_/story-quadrupole.png
+packages/@pathicles/prerendered/files_/orig/csr.png
+packages/@pathicles/prerendered/files_/orig/different-gammas.png
+packages/@pathicles/prerendered/files_/orig/free-electron.png
+packages/@pathicles/prerendered/files_/orig/free-electrons.png
+packages/@pathicles/prerendered/files_/orig/free-photon.png
+packages/@pathicles/prerendered/files_/orig/free-photons.png
+packages/@pathicles/prerendered/files_/orig/gyrotest-1-electron.png
+packages/@pathicles/prerendered/files_/orig/gyrotest-128-electrons.png
+packages/@pathicles/prerendered/files_/orig/pathicles-logo.png
+packages/@pathicles/prerendered/files_/orig/random.png
+packages/@pathicles/prerendered/files_/orig/spiral.png
+packages/@pathicles/prerendered/files_/orig/story-dipole.png
+packages/@pathicles/prerendered/files_/orig/story-electric.png
+packages/@pathicles/prerendered/files_/orig/story-quadrupole.png
+packages/@pathicles/prerendered/files/performance.csv
+packages/@pathicles/prerendered/files/story-dipole.json
+packages/@pathicles/prerendered/files/story-electric.json
+packages/@pathicles/prerendered/files/story-quadrupole.json

@@ -86,8 +86,7 @@ export class SimulationRunner {
         }
       } else {
         this._simulation.push(
-          this._simulation.configuration.runner.iterationsPerSnapshot *
-            this._simulation.configuration.runner.snapshotsPerTick
+          this._simulation.configuration.runner.iterationsPerSnapshot
         )
 
         if (this._mode === RUNNER_MODE.STEPWISE) {

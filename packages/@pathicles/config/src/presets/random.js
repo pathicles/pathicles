@@ -10,7 +10,7 @@ export default {
   view: {
     camera: {
       center: [0, 0.5, 0],
-      distance: 8,
+      distance: 5,
       theta: 45 * (Math.PI / 180),
       phi: 5 * (Math.PI / 180)
     }
@@ -19,10 +19,11 @@ export default {
   runner: {
     // pusher: "js",
     loops: 0,
+    snapshotsPerTick: 1,
     iterationsPerSnapshot: 1,
+    iterationDurationOverC: 0.1,
     iterationCount: 128,
-    snapshotCount: 16,
-    iterationDurationOverC: 0.1
+    snapshotCount: 128
   },
 
   model: {
@@ -34,7 +35,7 @@ export default {
       particleSeparation: 0.1,
       gamma: 10,
       bunchShape: 'SQUARE_YZ',
-      particleCount: 16,
+      particleCount: 256,
       particleType: 'PHOTON ELECTRON PROTON'
     }
   }

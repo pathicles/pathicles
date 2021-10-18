@@ -15,18 +15,18 @@ export default (pkg) => ({
     {
       format: 'esm',
       file: pkg.module
-    },
-    {
-      format: 'cjs',
-      file: pkg.main,
-      plugins: [
-        getBabelOutputPlugin({
-          presets: ['@babel/preset-env'],
-          plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
-        }),
-        terser()
-      ]
     }
+    // {
+    //   format: 'cjs',
+    //   file: pkg.main,
+    //   plugins: [
+    //     getBabelOutputPlugin({
+    //       presets: ['@babel/preset-env'],
+    //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
+    //     })
+    //     // terser()
+    //   ]
+    // }
   ],
   plugins: [
     glslify({ compress: false }),

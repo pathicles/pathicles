@@ -4,20 +4,51 @@ A **pathicle** is the visualization of the motion of a particle by sampling this
 
 ## Screenshots
 
+### Free electrons
+
+![free-electrons.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/free-electrons.jpg)
+
+Without any magnetic or electric fields, electrons follow a straight path. Here,
+
+### Spiraling electrons in a homogeneous static magnetic field
+
+![spiral.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/spiral.jpg)
+
+### Deflection of electrons in a magnetic dipole field
+
 ![story-dipole.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/story-dipole.jpg)
+
+In accelerators, dipole magnets are used for deflecting beams.
+
+### Particles in a homogeneous static electric field
+
 ![story-electric.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/story-electric.jpg)
+
+While charged particles lose or gain velocity due to electrical forces, photons do not care at all.
+
+### Proton beam collimation by alternating quadrupole fields
+
 ![story-quadrupole.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/story-quadrupole.jpg)
 
+### Particle propagation at different Lorentz factors
+
 ![Different gammas](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/different-gammas.jpg)
-![dipole.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/dipole.jpg)
-![free-electron.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/free-electron.jpg)
-![free-electrons.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/free-electrons.jpg)
-![free-photon.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/free-photon.jpg)
+
+### Pathicles logo
+
+![pathicles-logo.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/pathicles-logo.jpg)
+
+The pathicles logo shows photon, electron, and proton pathicles
+
+### Photon beam
+
 ![free-photons.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/free-photons.jpg)
+
+Not only for enlightening students, Pathicles has photon beams included.
+
+### Random particles in a field-free box
+
 ![random.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/random.jpg)
-![spiral.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/spiral.jpg)
-![gyrotest-1-electron.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/gyrotest-1-electron.jpg)
-![gyrotest-128-electrons.jpg](https://raw.githubusercontent.com/pathicles/pathicles/main/screenshots/gyrotest-128-electrons.jpg)
 
 ## Versions
 

@@ -1,12 +1,25 @@
-input: files/orig
-output: dist/
+input: files/screenshots
+output: ./../../../screenshots/
 
 pipeline:
-  - pipe: convert
+  - pipe: resize
     options:
-      format: jpg
-    save: '[source.name].jpg'
-  - pipe: convert
-    options:
-      format: webp
-    save: '[source.name].webp'
+      breakpoints:
+        # - name: sm
+        #   resizeOptions:
+        #     width: 480
+        # - name: md
+        #   resizeOptions:
+        # width: 720
+        - name: lg
+          resizeOptions:
+            width: 1920
+        # - name: xl
+        #       resizeOptions:
+        #         width: 3840
+        # # save: '[name]-[breakpoint][ext]'
+    then:
+      - pipe: convert
+        options:
+          format: jpeg
+        save: '[name][ext]'

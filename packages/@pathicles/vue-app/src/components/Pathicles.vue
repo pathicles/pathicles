@@ -31,8 +31,12 @@
     )
 </template>
 
-<script lang="ts">
-import { presets } from '@pathicles/config'
+<script setup lang="ts">
+import { ReglSimulatorInstance } from '@pathicles/core'
+// import { ReglSimulatorInstance } from './../../../core/src/lib/simulation/simulator.js'
+import { presets, config as loadConfig } from '@pathicles/config'
+import Hotkeys from './Hotkeys.vue'
+import saveCanvas from './saveCanvas.js'
 import {
   watch,
   computed,
@@ -48,177 +52,156 @@ import {
   watchWithFilter,
   debounceFilter
 } from '@vueuse/core'
-import { ReglSimulatorInstance } from '@pathicles/core'
-import { config as loadConfig } from '@pathicles/config'
-import Hotkeys from './Hotkeys.vue'
-import saveCanvas from './saveCanvas.js'
 
+const props = defineProps({
+  pusher: {
+    type: String
+  },
+  particleCount: {
+    type: Number
+  },
+  snapshotCount: {
+    type: Number
+  },
+  presetName: {
+    type: String,
+    default: 'story-dipole'
+  },
+  showInfo: {
+    type: Boolean,
+    default: true
+  },
+  prerender: {
+    type: Boolean,
+    default: true
+  },
+  debug: {
+    type: Boolean,
+    default: false
+  },
+  maxCanvasWidth: {
+    type: Number,
+    default: 2048
+  },
+  maxCanvasHeight: {
+    type: Number,
+    default: 1024
+  },
+  maxPixelRatio: {
+    type: Number,
+    default: 2
+  },
+  clickToInteract: {
+    type: Boolean,
+    default: false
+  }
+})
+const focused = useWindowFocus()
+const showInfo = ref(props.showInfo)
+
+const canvasContainer = ref(null)
+const canvas = ref(null)
+
+const { width: canvasContainerWidth, height: canvasContainerHeight } =
+  useElementSize(canvasContainer)
+const canvasStyles = computed(() => ({
+  width: canvasContainerWidth.value + 'px',
+  height: canvasContainerHeight.value + 'px'
+}))
+
+const pixelRatio = computed(() =>
+  Math.min(window.devicePixelRatio, props.maxPixelRatio)
+)
+const canvasWidth = computed(
+  () => canvasContainerWidth.value * pixelRatio.value
+)
+const canvasHeight = computed(
+  () => canvasContainerHeight.value * pixelRatio.value
+)
+
+const isInteractive = ref(!props.clickToInteract)
+
+const config = ref({ debug: {}, runner: {}, model: { emitter: {} } })
+const presetName = ref(props.presetName)
+const reglInstance = ref(null)
+onMounted(() => {
+  nextTick(() => {
+    loadPreset(presetName.value)
+
+    reglInstance.value = new ReglSimulatorInstance({
+      canvas: canvas.value,
+      configuration: config.value,
+      control: {
+        // viewRange: this.viewRange,
+        // cameraMode: this.cameraMode
+      }
+    })
+  })
+})
+
+watchWithFilter(
+  canvasContainerWidth,
+  () => {
+    reglInstance && reglInstance.value && reglInstance.value.resize()
+  },
+  {
+    eventFilter: debounceFilter(100)
+  }
+)
+
+watch(focused, () => {
+  // reglInstance &&
+  //   reglInstance.value &&
+  //   reglInstance.value.runner.toggleActivity()
+})
+
+watch(presetName, () => {
+  let url = new URL(window.location.href)
+
+  let params = new URLSearchParams(url.search)
+  params.set('presetName', presetName.value)
+  history.pushState(
+    {},
+    null,
+    document.location.pathname + '?' + params.toString()
+  )
+
+  loadPreset(presetName.value)
+  reglInstance.value.loadConfig(config.value)
+})
+
+const info = computed(() => ({
+  pusher: config.value.runner.pusher,
+  particles: config.value.model.emitter.particleCount,
+  snapshots: config.value.runner.snapshotCount,
+  prerender: config.value.runner.prerender,
+  snapshotsPerTick: config.value.runner.snapshotsPerTick,
+  iterationsPerSnapshot: config.value.runner.iterationsPerSnapshot,
+  iterations: config.value.runner.iterationCount,
+  dt: config.value.runner.iterationDurationOverC + ' c',
+  ɣ: config.value.model.emitter.gamma // .toString().replace(/=>/, '=>\n')
+}))
+
+const loadPreset = (presetName: String) => {
+  config.value = loadConfig(presetName)
+
+  showInfo.value = config.value.debug.showInfo
+  if (props.particleCount)
+    config.value.model.emitter.particleCount = props.particleCount
+  if (props.snapshotCount)
+    config.value.runner.snapshotCount = props.snapshotCount
+  if (props.pusher) config.value.runner.pusher = props.pusher
+  if (props.prerender) config.value.runner.prerender = props.prerender
+}
+
+onUnmounted(() => {
+  // reglInstance.value.destroy()
+})
+</script>
+
+<script lang="ts">
 export default defineComponent({
   name: 'Pathicles',
-  components: { Hotkeys },
-
-  props: {
-    pusher: {
-      type: String
-    },
-    particleCount: {
-      type: Number
-    },
-    snapshotCount: {
-      type: Number
-    },
-    presetName: {
-      type: String,
-      default: 'story-dipole'
-    },
-    showInfo: {
-      type: Boolean,
-      default: true
-    },
-    prerender: {
-      type: Boolean,
-      default: true
-    },
-    debug: {
-      type: Boolean,
-      default: false
-    },
-    maxCanvasWidth: {
-      type: Number,
-      default: 2048
-    },
-    maxCanvasHeight: {
-      type: Number,
-      default: 1024
-    },
-    maxPixelRatio: {
-      type: Number,
-      default: 2
-    },
-    clickToInteract: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props) {
-    const focused = useWindowFocus()
-    const showInfo = ref(props.showInfo)
-
-    const canvasContainer = ref(null)
-    const canvas = ref(null)
-
-    const { width: canvasContainerWidth, height: canvasContainerHeight } =
-      useElementSize(canvasContainer)
-    const canvasStyles = computed(() => ({
-      width: canvasContainerWidth.value + 'px',
-      height: canvasContainerHeight.value + 'px'
-    }))
-
-    const pixelRatio = computed(() =>
-      Math.min(window.devicePixelRatio, props.maxPixelRatio)
-    )
-    const canvasWidth = computed(
-      () => canvasContainerWidth.value * pixelRatio.value
-    )
-    const canvasHeight = computed(
-      () => canvasContainerHeight.value * pixelRatio.value
-    )
-
-    const isInteractive = ref(!props.clickToInteract)
-
-    const config = ref({ debug: {}, runner: {}, model: { emitter: {} } })
-    const presetName = ref(props.presetName)
-    const reglInstance = ref(null)
-    onMounted(() => {
-      nextTick(() => {
-        loadPreset(presetName.value)
-
-        reglInstance.value = new ReglSimulatorInstance({
-          canvas: canvas.value,
-          configuration: config.value,
-          control: {
-            // viewRange: this.viewRange,
-            // cameraMode: this.cameraMode
-          }
-        })
-      })
-    })
-
-    watchWithFilter(
-      canvasContainerWidth,
-      () => {
-        reglInstance.value.resize()
-      },
-      {
-        eventFilter: debounceFilter(500)
-      }
-    )
-
-    watch(focused, () => {
-      // reglInstance &&
-      //   reglInstance.value &&
-      //   reglInstance.value.runner.toggleActivity()
-    })
-
-    watch(presetName, () => {
-      let url = new URL(window.location.href)
-
-      let params = new URLSearchParams(url.search)
-      params.set('presetName', presetName.value)
-      history.pushState(
-        {},
-        null,
-        document.location.pathname + '?' + params.toString()
-      )
-
-      loadPreset(presetName.value)
-      reglInstance.value.loadConfig(config.value)
-    })
-
-    const info = computed(() => ({
-      pusher: config.value.runner.pusher,
-      particles: config.value.model.emitter.particleCount,
-      snapshots: config.value.runner.snapshotCount,
-      prerender: config.value.runner.prerender,
-      snapshotsPerTick: config.value.runner.snapshotsPerTick,
-      iterationsPerSnapshot: config.value.runner.iterationsPerSnapshot,
-      iterations: config.value.runner.iterationCount,
-      dt: config.value.runner.iterationDurationOverC + ' c',
-      ɣ: config.value.model.emitter.gamma // .toString().replace(/=>/, '=>\n')
-    }))
-
-    const loadPreset = (presetName: String) => {
-      config.value = loadConfig(presetName)
-
-      showInfo.value = config.value.debug.showInfo
-      if (props.particleCount)
-        config.value.model.emitter.particleCount = props.particleCount
-      if (props.snapshotCount)
-        config.value.runner.snapshotCount = props.snapshotCount
-      if (props.pusher) config.value.runner.pusher = props.pusher
-      if (props.prerender) config.value.runner.prerender = props.prerender
-    }
-
-    onUnmounted(() => {
-      reglInstance.value.destroy()
-    })
-
-    return {
-      presets,
-      presetName,
-      canvasContainer,
-      canvas,
-      focused,
-      canvasStyles,
-      canvasWidth,
-      canvasHeight,
-      reglInstance,
-      showInfo,
-      loadPreset,
-      info,
-      isInteractive
-    }
-  },
 
   methods: {
     onTriggeredEventHandler(payload) {
@@ -228,6 +211,7 @@ export default defineComponent({
         this.reglInstance.camera.toggleAutorotate()
       } else if (payload.keyString === 'D') {
         console.log(this.reglInstance.simulation.dump())
+        console.log(this.reglInstance.camera)
       } else if (payload.keyString === 'M') {
         // m for mode
         this.reglInstance.runner.toggleMode()
@@ -354,8 +338,8 @@ dl
   overflow hidden
 
 .canvas-container
-  height 100%
-  width 100%
+  height 100vh
+  width 100vw
 
 .pathicles-simulator
   touch-action pinch-zoom
