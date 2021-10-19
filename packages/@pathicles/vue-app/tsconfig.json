@@ -29,8 +29,7 @@
     ],
     "types": [
       "node",
-      "@tweakpane/core",
-      "@storybook/vue3"
+      "@tweakpane/core"
     ]
   },
   "include": [

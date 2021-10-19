@@ -1,0 +1,26 @@
+{
+  "name": "@pathicles/docs",
+  "license": "MIT",
+  "private": "true",
+  "version": "0.9.0",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev src",
+    "docs:build": "vitepress build src --mpa",
+    "docs:serve": "vitepress serve src",
+    "lint": "echo 'lint-fix'"
+  },
+  "dependencies": {
+    "vue": "^3.2.20"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^5.0.0",
+    "vitepress": "^0.20.0",
+    "vite": "^2.6.7",
+    "vite-plugin-components": "^0.12.0",
+    "vite-plugin-icons": "^0.6.4",
+    "vite-plugin-pwa": "^0.8.1",
+    "vite-plugin-windicss": "^1.2.0"
+  },
+  "gitHead": "af3cbce46e0f3a2a20594e7f298aa704384334bc"
+}

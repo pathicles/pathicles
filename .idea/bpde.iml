@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/.history" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.netlify" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@bpde/strategie-2030/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@bpde/strategie-2030/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@bpde/website/.temp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@bpde/website/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@bpde/website/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@drkrthj" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@drkrthj/website/.temp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@drkrthj/website/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@jerrobs/journal" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@jerrobs/vuepress-theme-test" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@jerrobs/vuepress-theme-test/.temp" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@jerrobs/vuepress-theme-test/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@jerrobs/website/.temp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@pathicles/core/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@pathicles/ogl/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/../bpde Kopie/packages/@pathicles/simulator" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/@pathicles/viewer-ogl" />
+    </content>
+    <content url="file://$MODULE_DIR$/packages/@bpde/website/dist/production" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jest-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="@types/intl" level="application" />
+    <orderEntry type="library" name="@types/cypress-axe" level="application" />
+    <orderEntry type="library" name="vuepress-types" level="project" />
+    <orderEntry type="library" name="@types/amazon-cognito-auth-js" level="application" />
+    <orderEntry type="library" name="@types/jest" level="application" />
+  </component>
+</module>
