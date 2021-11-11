@@ -15,8 +15,8 @@
     "devPort": 9303
   },
   "dependencies": {
-    "@pathicles/config": "^0.10.0",
-    "@pathicles/core": "^0.10.0",
+    "@pathicles/config": "*",
+    "@pathicles/core": "*",
     "@vueuse/core": "^6.6.1",
     "regl": "^2.1.0",
     "tweakpane": "^3.0.5",
@@ -28,7 +28,7 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.10.0",
+    "@pathicles/dev-config": "*",
     "@vitejs/plugin-vue": "^1.9.3",
     "@vue/compiler-sfc": "^3.2.20",
     "autoprefixer": "^10.3.7",

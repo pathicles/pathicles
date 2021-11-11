@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.15.8",
-    "@pathicles/config": "^0.10.0",
+    "@pathicles/config": "*",
     "@petamoriken/float16": "^3.5.0",
     "b-spline": "^2.0.2",
     "detect-it": "^4.0.1",
@@ -40,7 +40,7 @@
     "simplicial-complex": "^1.0.0"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "^0.10.0"
+    "@pathicles/dev-config": "*"
   },
   "gitHead": "09e9a3be936f493ced5ecbfdb7eab14fcf398c87"
 }

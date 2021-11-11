@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@ipp/cli": "^1.2.3",
-    "@pathicles/dev-config": "^0.10.0",
+    "@pathicles/dev-config": "*",
     "csv-append": "^1.0.0",
     "d3-array": "^3.1.1",
     "d3-dsv": "3.0.1",
