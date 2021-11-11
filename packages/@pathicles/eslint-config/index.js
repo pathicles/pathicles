@@ -5,22 +5,22 @@
 module.exports = {
   overrides: [
     {
-      files: ["*.ts"],
-      parser: "@typescript-eslint/parser",
-      extends: ["prettier", "plugin:@typescript-eslint/recommended"],
-      plugins: ["@typescript-eslint"],
+      files: ['*.ts'],
+      parser: '@typescript-eslint/parser',
+      extends: ['prettier', 'plugin:@typescript-eslint/recommended'],
+      plugins: ['@typescript-eslint']
     },
     {
-      files: ["*.js"],
-      parser: "@babel/eslint-parser",
+      files: ['*.js'],
+      parser: '@babel/eslint-parser',
       parserOptions: {
-        requireConfigFile: false,
+        requireConfigFile: false
       },
       env: {
         browser: true,
         jest: true,
-        node: true,
-      },
-    },
-  ],
-};
+        node: true
+      }
+    }
+  ]
+}

@@ -8,7 +8,8 @@
   "scripts": {
     "build": "NODE_ENV=production rollup --config ",
     "dev": "rollup --config -w",
-    "lint": "prettier-package-json --write && eslint --fix src; ",
+    "lint": "eslint src",
+    "lint:fix": "prettier-package-json --write  && eslint --fix src",
     "publish": "npm publish --access=public",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },

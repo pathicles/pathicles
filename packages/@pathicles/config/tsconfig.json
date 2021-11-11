@@ -4,6 +4,9 @@
     "outDir": "./dist/"
   },
   "include": [
-    "./**/*.ts"
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/data/**/*.ts"
   ]
 }

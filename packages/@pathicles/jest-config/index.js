@@ -1,10 +1,10 @@
 module.exports = {
   // Map workspaces to their source code so that Jest can resolve them correctly.
   moduleNameMapper: {
-    "^@pathicles/(.*)$": "<rootDir>/../$1/src",
+    '^@pathicles/(.*)$': '<rootDir>/../$1/src'
   },
   // Use esbuild to transpile TypeScript files on the fly.
   transform: {
-    "^.+\\.tsx?$": "esbuild-jest",
-  },
-};
+    '^.+\\.tsx?$': 'esbuild-jest'
+  }
+}
