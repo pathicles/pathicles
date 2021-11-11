@@ -5,46 +5,6 @@ import vert from './lattice.vert'
 import frag from './lattice.frag'
 import { LATTICE_ELEMENT_TYPES } from '../../../../../../config/src/constants.js'
 
-// import { extrudePolygon } from 'geometry-extrude'
-// const squareWithHole = [
-//   [
-//     [0, 0],
-//     [10, 0],
-//     [10, 10],
-//     [0, 10]
-//   ],
-//   // Hole
-//   [
-//     [2, 2],
-//     [8, 2],
-//     [8, 8],
-//     [2, 8]
-//   ]
-// ]
-
-// function estaGeometry() {
-//   const { indices, position, uv, normal } = extrudePolygon([squareWithHole], {
-//     depth: 2
-//   })
-
-//   const estaGeometryStart = {
-//     cells: Array.from(indices),
-//     positions: Array.from(position),
-//     uvs: Array.from(uv),
-//     normals: Array.from(normal)
-//   }
-//   // debugger
-//   estaGeometryStart.position = estaGeometryStart.positions.map((x) => x + 1)
-//   // const estaGeometryEnd = createCube(1, 0.1, 1)
-//   // estaGeometryEnd.positions = estaGeometryEnd.positions.map(([x, y, z]) => [
-//   //   x,
-//   //   y - 0.4,
-//   //   z
-//   // ])
-
-//   return mergeMeshes([estaGeometryStart])
-// }
-
 function estaGeometry() {
   const estaStart = createCube(1, 1, 0.05)
   estaStart.positions = estaStart.positions.map(([x, y, z]) => [x, y, z - 1])

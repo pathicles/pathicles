@@ -8,7 +8,7 @@
   "scripts": {
     "build": "NODE_ENV=production rollup --config ",
     "dev": "rollup --config -w",
-    "lint": "eslint --fix src; prettier-package-json --write",
+    "lint": "prettier-package-json --write && eslint --fix src; ",
     "publish": "npm publish --access=public",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
@@ -40,7 +40,8 @@
     "simplicial-complex": "^1.0.0"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "*"
+    "@pathicles/dev-config": "*",
+    "prettier-package-json": "^2.6.0"
   },
   "gitHead": "09e9a3be936f493ced5ecbfdb7eab14fcf398c87"
 }

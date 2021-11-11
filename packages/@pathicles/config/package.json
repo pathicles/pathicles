@@ -8,13 +8,24 @@
   "scripts": {
     "build": "rollup --config",
     "dev": "rollup --config -w",
-    "lint": "eslint --fix src; prettier-package-json --write",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "typecheck": "tsc",
+    "lint": "prettier-package-json --write && eslint .",
+    "lint:fix": "yarn lint:fix",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.15.8"
+    "commander": "^8.3.0",
+    "esbuild-runner": "^2.2.1"
   },
   "devDependencies": {
-    "@pathicles/dev-config": "*"
+    "prettier-package-json": "^2.6.0",
+    "@pathicles/eslint-config": "*",
+    "@pathicles/jest-config": "*",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.7",
+    "eslint": "^8.2.0",
+    "jest": "^27.3.1",
+    "typescript": "^4.4.4"
   }
 }
