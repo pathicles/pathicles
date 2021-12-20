@@ -4,9 +4,15 @@ export const round = (N: number) => (x: number) =>
 
 const ID = (x: number) => Math.sign(x) * Math.abs(x)
 
+
+type DistributionFn = (n: number, separation: number) => Array<number>
+
+type DistributionFnCreator = (x: number, y: number, z: number) => DistributionFn
+
+
 export const line =
   ({ swizzle = (x: number) => [x, 0, 0], round = ID }) =>
-    ({ n = 0, d = 0 }) => {
+    (n = 0, d = 0) => {
       const dOffset = (d * (n - 1)) / 2
       return Array(n)
         .fill(0)

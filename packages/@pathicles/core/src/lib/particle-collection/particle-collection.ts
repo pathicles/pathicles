@@ -81,7 +81,7 @@ export function ParticleCollection({
     d: particleSeparation
   })
 
-  const fourPositions = localPositions.map(([x1: number, x2: number, x3: number], p) => {
+  const fourPositions = localPositions.map(([x1, x2, x3], p) => {
     const jitter = jitterPosition({
       jitter: positionJitter
     })

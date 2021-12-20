@@ -43,7 +43,9 @@
     "packages/@pathicles/eslint-config",
     "packages/@pathicles/jest-config",
     "packages/@pathicles/config",
-    "packages/@pathicles/core"
+    "packages/@pathicles/core",
+    "packages/@pathicles/vue-app",
+    "packages/@pathicles/prerendered"
   ],
   "dependencies": {
     "ultra-runner": "^3.10.5"
