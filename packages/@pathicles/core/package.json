@@ -3,8 +3,8 @@
   "version": "0.10.0",
   "license": "MIT",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/pathicles-core.esm.js",
+  "main": "dist/pathicles-core.cjs.js",
+  "module": "dist/index.mjs",
   "scripts": {
     "build": "node ./build-tools/build.js",
     "dev": "rollup --config -w",
