@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import { RUNNER_MODE } from '@pathicles/config/src/constants.js'
+import { RUNNER_MODE } from '@pathicles/config'
 import { PerformanceLogger } from '../utils/PerformanceLogger'
 
 const INITIAL = 'initial'

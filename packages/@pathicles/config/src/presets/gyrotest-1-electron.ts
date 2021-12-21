@@ -1,6 +1,6 @@
 import defaultConfig from './_default'
 import { C, RUNNER_MODE } from '../constants'
-import { ELECTRON } from './../particle-types'
+import { ELECTRON } from '../particle-types'
 
 function betaFromGamma(gamma = 0) {
   if (gamma === 0) return NaN

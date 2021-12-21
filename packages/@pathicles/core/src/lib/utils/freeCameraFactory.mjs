@@ -1,9 +1,9 @@
 /* eslint-env browser */
 
-import camera from './inertial-turntable-camera.js'
+import camera from './inertial-turntable-camera.ts'
 
-import interactionEvents from './normalized-interaction-events.js'
-import { Lethargy } from './Lethargy.js'
+import interactionEvents from './normalized-interaction-events.ts'
+import { Lethargy } from './Lethargy.ts'
 
 // function calcPhiThetaDistance(eye, center) {
 //   const d = [-center[0] + eye[0], -center[1] + eye[1], -center[2] + eye[2]]

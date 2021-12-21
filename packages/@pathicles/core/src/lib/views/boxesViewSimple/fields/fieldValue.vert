@@ -1,3 +1,4 @@
+
 precision mediump float;
 attribute vec3 aOffset;
 attribute vec3 aPosition;
@@ -14,14 +15,31 @@ varying vec3 vNormal;
 varying vec3 vNormalOrig;
 varying vec3 vColor;
 varying vec3 vScale;
-#pragma glslify: BeamlineElement = require("@pathicles/core/src/lib/shaders/beamline-element.glsl");
+
+struct BeamlineElement {
+  vec3 middle;
+  vec3 size;
+  float phi;
+  int type; //0: drift, 1: dipole, 2: quadrupole, 3: esta
+  float strength;
+};
+
 /*__latticeSize__*/
 
 const int BEAMLINE_ELEMENT_TYPE_DRIFT = 0;
 const int BEAMLINE_ELEMENT_TYPE_DIPOLE = 1;
 const int BEAMLINE_ELEMENT_TYPE_QUADRUPOLE = 2;
 
-#pragma glslify: mat3LookAt = require("@pathicles/core/src/lib/shaders/mat3-look-at.glsl");
+
+mat3 mat3LookAt(vec3 eye, vec3 target, float roll) {
+  vec3 rr = vec3(sin(roll), cos(roll), 0.0);
+  vec3 ww = normalize(target - eye);
+  vec3 uu = normalize(cross(ww, rr));
+  vec3 vv = normalize(cross(uu, ww));
+
+  return mat3(uu, vv, ww);
+}
+
 
 /*__latticeChunkGLSL__*/
 

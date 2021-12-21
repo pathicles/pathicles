@@ -1,18 +1,21 @@
 {
   "name": "@pathicles/core",
   "version": "0.10.0",
-  "license": "MIT",
-  "type": "module",
-  "main": "dist/pathicles-core.cjs.js",
-  "module": "dist/index.mjs",
+  "main": "./dist/pathicles-core.umd.js",
+  "module": "./dist/pathicles-core.es.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "node ./build-tools/build.js",
-    "dev": "rollup --config -w",
-    "lint": "eslint src",
-    "lint:fix": "prettier-package-json --write  && eslint --fix src",
-    "publish": "npm publish --access=public",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "build": "vite build",
+    "dev": "yarn build --watch",
+    "lint": "prettier-package-json --write  && eslint --fix src",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch",
+    "typecheck": "tsc"
   },
+  "type": "module",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@pathicles/config": "*",
     "b-spline": "^2.0.2",
@@ -38,16 +41,22 @@
     "simplicial-complex": "^1.0.0"
   },
   "devDependencies": {
-    "@befunky/esbuild-plugin-glslify-minify": "^1.2.0",
     "@pathicles/eslint-config": "*",
     "@pathicles/jest-config": "*",
     "@types/jest": "^27.0.3",
-    "@types/node": "^17.0.1",
+    "@types/node": "^17.0.2",
     "eslint": "^8.5.0",
-    "jest": "^27.4.5",
     "glslify": "^7.1.1",
-    "typescript": "^4.5.4",
-    "prettier-package-json": "^2.6.0"
+    "jest": "^27.4.5",
+    "prettier-package-json": "^2.6.0",
+    "rollup-plugin-glslify": "^1.2.1",
+    "typescript": "^4.5.4"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/pathicles-core.es.js",
+      "require": "./dist/pathicles-core.umd.js"
+    }
   },
   "gitHead": "09e9a3be936f493ced5ecbfdb7eab14fcf398c87"
 }

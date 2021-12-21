@@ -4,7 +4,7 @@ import { boundedRandom } from '../utils/random'
 
 // type functionalizeType = (x: function | number) => () => (x: number | number[]) 
 
-let functionalize = (x: number | number[]) => (typeof x == 'function' ? x : () => x)
+const functionalize = (x: number | number[]) => (typeof x == 'function' ? x : () => x)
 
 // function normalize(a) {
 //   let x = a[0]

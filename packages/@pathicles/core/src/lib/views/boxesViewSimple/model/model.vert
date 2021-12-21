@@ -48,7 +48,7 @@ const mat4 texUnitConverter = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 
 
 #pragma glslify: inverse = require(glsl-inverse)
 #pragma glslify: transpose = require(glsl-transpose)
-#pragma glslify: lookAt = require("@pathicles/core/src/lib/shaders/look-at.glsl");
+#pragma glslify: lookAt = require(look-at.glsl);
 
 #pragma glslify: readVariable = require("@pathicles/core/src/lib/shaders/readVariable.glsl", resolution=resolution, littleEndian=littleEndian, PACK_FLOAT=PACK_FLOAT);
 

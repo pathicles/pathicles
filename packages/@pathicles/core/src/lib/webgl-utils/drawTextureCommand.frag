@@ -1,4 +1,4 @@
-precision highp float;
+//precision highp float;
 uniform sampler2D texture;
 uniform float decode;
 varying vec2 uv;
