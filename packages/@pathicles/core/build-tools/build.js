@@ -11,9 +11,9 @@ build({
 	target: [
 		'es2018'
 	],
-	sourcemap: true,
+	// sourcemap: true,
 	bundle: true,
-	minify: true,
+	// minify: true,
 	plugins: [esbuildPluginGlslifyMinify({
 		// What extensions to compile. Defaults:
 		extensions: ['vs', 'fs', 'vert', 'frag', 'glsl'],

@@ -2,7 +2,7 @@
   "name": "@pathicles/config",
   "version": "0.10.0",
   "license": "MIT",
-  "main": "src/index.ts",
+  "main": "dist/index.ts",
   "scripts": {
     "build": "esbuild ./src/index.js --bundle --minify --sourcemap --target=es2018 --outfile=dist/index.js",
     "build:watch": "yarn build --watch",
