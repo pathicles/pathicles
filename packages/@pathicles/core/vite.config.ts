@@ -2,7 +2,8 @@
 import glslify from 'rollup-plugin-glslify'
 import path from 'path'
 import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+// import dts from 'vite-plugin-dts'
+// import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
 export default defineConfig({
   build: {
     lib: {
@@ -15,21 +16,20 @@ export default defineConfig({
       // into your library
       // external: ['vue'],
       plugins: [
-        glslify({
-          inclwde: [
-            '**/*.vs',
-            '**/*.fs',
-            '**/*.vert',
-            '**/*.frag',
-            '**/*.glsl'
-          ],
-
-          // Undefined by default
-          exclude: 'node_modules/**',
-
-          // Compress shader by default using logic from rollup-plugin-glsl
-          compress: true
-        })
+        // dynamicImportVars(),
+        // glslify({
+        //   inclwde: [
+        //     '**/*.vs',
+        //     '**/*.fs',
+        //     '**/*.vert',
+        //     '**/*.frag',
+        //     '**/*.glsl'
+        //   ],
+        //   // Undefined by default
+        //   exclude: 'node_modules/**',
+        //   // Compress shader by default using logic from rollup-plugin-glsl
+        //   compress: false
+        // })
       ],
       output: {
         // Provide global variables to use in the UMD build
