@@ -1,9 +1,10 @@
 // vite.config.js
-import glslify from 'rollup-plugin-glslify'
+
+import glslify from 'vite-plugin-glslify'
 import path from 'path'
 import { defineConfig } from 'vite'
 // import dts from 'vite-plugin-dts'
-// import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
+
 export default defineConfig({
   build: {
     lib: {
@@ -15,22 +16,7 @@ export default defineConfig({
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       // external: ['vue'],
-      plugins: [
-        // dynamicImportVars(),
-        // glslify({
-        //   inclwde: [
-        //     '**/*.vs',
-        //     '**/*.fs',
-        //     '**/*.vert',
-        //     '**/*.frag',
-        //     '**/*.glsl'
-        //   ],
-        //   // Undefined by default
-        //   exclude: 'node_modules/**',
-        //   // Compress shader by default using logic from rollup-plugin-glsl
-        //   compress: false
-        // })
-      ],
+
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
@@ -39,6 +25,7 @@ export default defineConfig({
         }
       }
     }
-  }
-  // plugins: [dts()]
+  },
+
+  plugins: [glslify()]
 })

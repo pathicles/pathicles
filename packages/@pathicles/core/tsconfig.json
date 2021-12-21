@@ -4,6 +4,7 @@
     "outDir": "dist_"
   },
   "include": [
-    "./**/*.ts"
+    "./**/*.ts",
+    "vite.config.js"
   ]
 }

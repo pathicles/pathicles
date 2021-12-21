@@ -49,7 +49,7 @@
     "glslify": "^7.1.1",
     "jest": "^27.4.5",
     "prettier-package-json": "^2.6.0",
-    "rollup-plugin-glslify": "^1.2.1",
+    "vite-plugin-glslify": "^2.0.1",
     "typescript": "^4.5.4"
   },
   "exports": {
