@@ -36,7 +36,7 @@
   },
   "workspaces": [
     "packages/@pathicles/dev-config",
-    "packages/@pathicles/docs",
+    "packages/@pathicles_/docs",
     "packages/@pathicles/config",
     "packages/@pathicles/core",
     "packages/@pathicles/prerendered",
@@ -50,7 +50,9 @@
     "lint-staged": "^11.0.1",
     "release-it": "^14.10.0",
     "release-it-yarn-workspaces": "^2.0.1",
-    "vitepress": "^0.15.6"
+    "vitepress": "^0.15.6",
+
+    "@rollup/plugin-commonjs": "^21.0.1"
   },
   "publishConfig": {
     "access": "public"
