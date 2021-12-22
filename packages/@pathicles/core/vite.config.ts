@@ -1,16 +1,26 @@
 // vite.config.js
 
-import glslify from 'vite-plugin-glslify'
+import {glslify} from 'vite-plugin-glslify'
 import path from 'path'
 import { defineConfig } from 'vite'
 // import dts from 'vite-plugin-dts'
 
+
+const moduleURL = new URL(import.meta.url);
+// console.log(`pathname ${moduleURL.pathname}`);
+// console.log(`dirname ${path.dirname(moduleURL.pathname)}`);
+
+const dirname = path.dirname(moduleURL.pathname);
+
+
+console.log(glslify)
+
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'PathiclesConfig',
-      fileName: (format) => `index.${format}.js`
+      entry: path.resolve(dirname, 'src/index.ts'),
+      name: 'pathicles-core',
+      fileName: (format) => `pathicles-core.${format}.js`
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

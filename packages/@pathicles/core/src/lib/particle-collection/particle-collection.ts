@@ -76,7 +76,7 @@ export function ParticleCollection({
 
   const particles = particleTypesFromDescriptor(particleType, particleCount)
 
-  const localPositions = DISTRIBUTIONS[bunchShape]({
+  const localPositions = DISTRIBUTIONS.get(bunchShape)({
     n: particleCount,
     d: particleSeparation
   })

@@ -1,5 +1,4 @@
 precision highp float;
-#define GLSLIFY 1
 const highp float c = 2.99792458e+8;
 
 uniform bool littleEndian;
