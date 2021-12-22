@@ -4,7 +4,7 @@ import frag from './boris.frag.glsl'
 import { latticeChunk } from '../../lattice/lattice.gsls.js'
 import { PerformanceLogger } from '../../../utils/PerformanceLogger'
 import { isLittleEndian } from '../../../utils/little-endian'
-export function glslBorisPush(regl, { variables, model }) {
+export function glslBorisPush(regl, {runner, variables, model, debug, initialData}) {
   const performanceLogger = new PerformanceLogger()
   performanceLogger.entries = []
 

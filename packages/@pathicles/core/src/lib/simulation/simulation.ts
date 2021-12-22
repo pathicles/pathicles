@@ -106,15 +106,24 @@ export class Simulation {
       }
     }
 
-    this.log()
+    // this.log()
 
+
+    console.log(glslBorisPush(this._regl, {
+      runner: this.configuration.runner,
+      variables: this.variables,
+      model: this.model,
+      debug: this.debug,
+      initialData: this.initialData
+    }))
     this.pusher =
       this.configuration.runner.pusher === 'glsl'
         ? glslBorisPush(this._regl, {
           runner: this.configuration.runner,
           variables: this.variables,
           model: this.model,
-          debug: this.debug
+          debug: this.debug,
+          initialData: this.initialData
         })
         : jsBorisPush({
           runner: this.configuration.runner,
